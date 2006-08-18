@@ -1,0 +1,18 @@
+SCHILY_1.0 {
+global:
+	build_edc;
+	decode_L2_P;
+	decode_L2_Q;
+	decode_LSUB_P;
+	decode_LSUB_Q;
+	do_decode_sub;
+	do_encode_L1;
+	do_encode_L2;
+	do_encode_sub;
+	get_sector_type;
+	scramble_L2;
+	set_sector_type;
+
+local:
+	*;
+};

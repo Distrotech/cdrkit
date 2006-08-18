@@ -1,0 +1,15 @@
+SCHILY_1.0 {
+global:
+	find_unls;
+	init_unls;
+	init_unls_file;
+	list_unls;
+	load_unls;
+	load_unls_default;
+	register_unls;
+	unload_unls;
+	unregister_unls;
+
+local:
+	*;
+};
