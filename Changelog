@@ -1,3 +1,11 @@
+icewm (2.01.01a08+X) UNRELEASED; urgency=low
+
+  * moved documentation around, READMEs/ directory contains a structure, moved
+    mkisofs docs from the source directory to it
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 22 Aug 2006 12:40:05 +0200
+
+
 ***** Version 2.01 ********
 
 Wed Sep  8 20:26:34 2004 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
