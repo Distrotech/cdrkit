@@ -54,6 +54,7 @@ get_722(p)
 		| ((p[0] & 0xff) << 8));
 }
 
+#if 0
 EXPORT int
 main(argc, argv)
 	int	argc;
@@ -181,3 +182,4 @@ main(argc, argv)
 
 	return (0);
 }
+#endif

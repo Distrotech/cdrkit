@@ -24,6 +24,9 @@
 
 /* APPLE_HYB James Pearson j.pearson@ge.ucl.ac.uk 23/2/2000 */
 
+#define APPID_DEFAULT "MKISOFS ISO 9660/HFS FILESYSTEM BUILDER & CDRECORD CD-R/DVD CREATOR (C) 1993 E.YOUNGDALE (C) 1997 J.PEARSON/J.SCHILLING"
+
+
 #include <mconfig.h>	/* Must be before stdio.h for LARGEFILE support */
 #include <stdio.h>
 #include <statdefs.h>

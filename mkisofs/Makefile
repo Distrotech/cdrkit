@@ -91,6 +91,61 @@ depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 
 # Convenience name for target.
+mkisofs/CMakeFiles/devdump.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 mkisofs/CMakeFiles/devdump.dir/rule
+
+# Convenience name for target.
+devdump: mkisofs/CMakeFiles/devdump.dir/rule
+
+# fast build rule for target.
+devdump/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/build
+
+# Convenience name for target.
+mkisofs/CMakeFiles/isodebug.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 mkisofs/CMakeFiles/isodebug.dir/rule
+
+# Convenience name for target.
+isodebug: mkisofs/CMakeFiles/isodebug.dir/rule
+
+# fast build rule for target.
+isodebug/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/build
+
+# Convenience name for target.
+mkisofs/CMakeFiles/isodump.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 mkisofs/CMakeFiles/isodump.dir/rule
+
+# Convenience name for target.
+isodump: mkisofs/CMakeFiles/isodump.dir/rule
+
+# fast build rule for target.
+isodump/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/build
+
+# Convenience name for target.
+mkisofs/CMakeFiles/isoinfo.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 mkisofs/CMakeFiles/isoinfo.dir/rule
+
+# Convenience name for target.
+isoinfo: mkisofs/CMakeFiles/isoinfo.dir/rule
+
+# fast build rule for target.
+isoinfo/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/build
+
+# Convenience name for target.
+mkisofs/CMakeFiles/isovfy.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 mkisofs/CMakeFiles/isovfy.dir/rule
+
+# Convenience name for target.
+isovfy: mkisofs/CMakeFiles/isovfy.dir/rule
+
+# fast build rule for target.
+isovfy/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/build
+
+# Convenience name for target.
 mkisofs/CMakeFiles/mkisofs.dir/rule:
 	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 mkisofs/CMakeFiles/mkisofs.dir/rule
 
@@ -104,10 +159,6 @@ mkisofs/fast:
 # target for object file
 apple.o:
 	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/apple.o
-
-# target for object file
-apple_driver.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/apple_driver.o
 
 # target for object file
 boot.o:
@@ -124,6 +175,74 @@ defaults.o:
 # target for object file
 desktop.o:
 	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/desktop.o
+
+# target for object file
+diag/cd_misc.o:
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/diag/cd_misc.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/diag/cd_misc.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/diag/cd_misc.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/diag/cd_misc.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/diag/cd_misc.o
+
+# target for object file
+diag/defaults.o:
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/diag/defaults.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/diag/defaults.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/diag/defaults.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/diag/defaults.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/diag/defaults.o
+
+# target for object file
+diag/dump.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/diag/dump.o
+
+# target for object file
+diag/getnum.o:
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/diag/getnum.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/diag/getnum.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/diag/getnum.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/diag/getnum.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/diag/getnum.o
+
+# target for object file
+diag/isodebug.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/diag/isodebug.o
+
+# target for object file
+diag/isodump.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/diag/isodump.o
+
+# target for object file
+diag/isoinfo.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/diag/isoinfo.o
+
+# target for object file
+diag/isovfy.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/diag/isovfy.o
+
+# target for object file
+diag/modes.o:
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/diag/modes.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/diag/modes.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/diag/modes.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/diag/modes.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/diag/modes.o
+
+# target for object file
+diag/scsi.o:
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/diag/scsi.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/diag/scsi.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/diag/scsi.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/diag/scsi.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/diag/scsi.o
+
+# target for object file
+diag/scsi_cdr.o:
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/devdump.dir/build.make mkisofs/CMakeFiles/devdump.dir/diag/scsi_cdr.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodebug.dir/build.make mkisofs/CMakeFiles/isodebug.dir/diag/scsi_cdr.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isodump.dir/build.make mkisofs/CMakeFiles/isodump.dir/diag/scsi_cdr.o
+	cd /home/ed/debian/dev/talibus && cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isoinfo.dir/build.make mkisofs/CMakeFiles/isoinfo.dir/diag/scsi_cdr.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/isovfy.dir/build.make mkisofs/CMakeFiles/isovfy.dir/diag/scsi_cdr.o
 
 # target for object file
 dvd_file.o:
@@ -239,16 +358,31 @@ help::
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... devdump"
 	@echo "... edit_cache"
 	@echo "... install"
+	@echo "... isodebug"
+	@echo "... isodump"
+	@echo "... isoinfo"
+	@echo "... isovfy"
 	@echo "... mkisofs"
 	@echo "... rebuild_cache"
 	@echo "... apple.o"
-	@echo "... apple_driver.o"
 	@echo "... boot.o"
 	@echo "... cd_misc.o"
 	@echo "... defaults.o"
 	@echo "... desktop.o"
+	@echo "... diag/cd_misc.o"
+	@echo "... diag/defaults.o"
+	@echo "... diag/dump.o"
+	@echo "... diag/getnum.o"
+	@echo "... diag/isodebug.o"
+	@echo "... diag/isodump.o"
+	@echo "... diag/isoinfo.o"
+	@echo "... diag/isovfy.o"
+	@echo "... diag/modes.o"
+	@echo "... diag/scsi.o"
+	@echo "... diag/scsi_cdr.o"
 	@echo "... dvd_file.o"
 	@echo "... dvd_reader.o"
 	@echo "... eltorito.o"
