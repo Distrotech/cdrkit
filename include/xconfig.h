@@ -459,11 +459,7 @@
 #ifdef	USE_LARGEFILES
 
 #define	HAVE_LARGEFILES 1
-
-#ifdef	HAVE_LARGEFILES		/* If we have working largefiles at all	   */
-				/* This is not defined with glibc-2.1.3	   */
-
-/* #undef _FILE_OFFSET_BITS */	/* # of bits in off_t if settable	   */
+#define _FILE_OFFSET_BITS 64
 #define _LARGEFILE_SOURCE 1	/* To make ftello() visible (HP-UX 10.20). */
 /* #undef _LARGE_FILES */		/* Large file defined on AIX-style hosts.  */
 /* #undef _XOPEN_SOURCE */		/* To make ftello() visible (glibc 2.1.3). */
@@ -474,7 +470,6 @@
 /* #undef HAVE_FSEEKO */		/* Do we need this? If HAVE_LARGEFILES is  */
 				/* defined, we have fseeko()		   */
 
-#endif	/* HAVE_LARGEFILES */
 #endif	/* USE_LARGEFILES */
 
 #ifdef USE_ACL			/* Enable/disable ACL support */
