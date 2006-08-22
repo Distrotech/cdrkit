@@ -20,10 +20,10 @@ RM = /usr/bin/cmake -E remove -f
 CMAKE_EDIT_COMMAND = /usr/bin/ccmake
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ed/debian/dev/talibus
+CMAKE_SOURCE_DIR = /home/ed/debian/dev/talibus/btcflash
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ed/debian/dev/talibus
+CMAKE_BINARY_DIR = /home/ed/debian/dev/talibus/btcflash
 
 # Default target executed when no arguments are given to make.
 default_target: all
@@ -31,7 +31,7 @@ default_target: all
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	cd /home/ed/debian/dev/talibus/btcflash && /usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 
 # Special rule for the target edit_cache
 edit_cache/fast: edit_cache
@@ -39,17 +39,17 @@ edit_cache/fast: edit_cache
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	cd /home/ed/debian/dev/talibus/btcflash && /usr/bin/cmake -P cmake_install.cmake
+	/usr/bin/cmake -P cmake_install.cmake
 
 # Special rule for the target install
 install/fast: preinstall/fast
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	cd /home/ed/debian/dev/talibus/btcflash && /usr/bin/cmake -P cmake_install.cmake
+	/usr/bin/cmake -P cmake_install.cmake
 
 # Special rule for the target rebuild_cache
 rebuild_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	cd /home/ed/debian/dev/talibus/btcflash && /usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
@@ -67,28 +67,79 @@ $(VERBOSE).SILENT:
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/ed/debian/dev/talibus && $(CMAKE_COMMAND) -E cmake_progress_start /home/ed/debian/dev/talibus/CMakeFiles $(CMAKE_ALL_PROGRESS)
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 btcflash/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/ed/debian/dev/talibus/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ed/debian/dev/talibus/btcflash/CMakeFiles $(CMAKE_ALL_PROGRESS)
+	$(MAKE) -f CMakeFiles/Makefile2 all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/ed/debian/dev/talibus/btcflash/CMakeFiles 0
 
 # The main clean target
 clean:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 btcflash/clean
+	$(MAKE) -f CMakeFiles/Makefile2 clean
 
 # The main clean target
 clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 btcflash/preinstall
+	$(MAKE) -f CMakeFiles/Makefile2 preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 btcflash/preinstall
+	$(MAKE) -f CMakeFiles/Makefile2 preinstall
 
 # clear depends
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+
+#=============================================================================
+# Target rules for targets named btcflash
+
+# Build rule for target.
+btcflash: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 btcflash
+
+# fast build rule for target.
+btcflash/fast:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/build
+
+# target for object file
+btcflash.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/btcflash.o
+
+# target for object file
+cd_misc.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/cd_misc.o
+
+# target for object file
+defaults.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/defaults.o
+
+# target for object file
+getnum.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/getnum.o
+
+# target for object file
+io.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/io.o
+
+# target for object file
+misc.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/misc.o
+
+# target for object file
+modes.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/modes.o
+
+# target for object file
+scsi_cdr.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/scsi_cdr.o
+
+# target for object file
+scsi_scan.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/scsi_scan.o
+
+# target for object file
+skel.o:
+	$(MAKE) -f CMakeFiles/btcflash.dir/build.make CMakeFiles/btcflash.dir/skel.o
 
 # Help Target
 help::
@@ -96,9 +147,20 @@ help::
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... btcflash"
 	@echo "... edit_cache"
 	@echo "... install"
 	@echo "... rebuild_cache"
+	@echo "... btcflash.o"
+	@echo "... cd_misc.o"
+	@echo "... defaults.o"
+	@echo "... getnum.o"
+	@echo "... io.o"
+	@echo "... misc.o"
+	@echo "... modes.o"
+	@echo "... scsi_cdr.o"
+	@echo "... scsi_scan.o"
+	@echo "... skel.o"
 
 
 
@@ -109,5 +171,5 @@ help::
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/ed/debian/dev/talibus && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 
