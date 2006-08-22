@@ -90,6 +90,149 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 
+# Convenience name for target.
+mkisofs/CMakeFiles/mkisofs.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 mkisofs/CMakeFiles/mkisofs.dir/rule
+
+# Convenience name for target.
+mkisofs: mkisofs/CMakeFiles/mkisofs.dir/rule
+
+# fast build rule for target.
+mkisofs/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/build
+
+# target for object file
+apple.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/apple.o
+
+# target for object file
+apple_driver.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/apple_driver.o
+
+# target for object file
+boot.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/boot.o
+
+# target for object file
+cd_misc.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/cd_misc.o
+
+# target for object file
+defaults.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/defaults.o
+
+# target for object file
+desktop.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/desktop.o
+
+# target for object file
+dvd_file.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/dvd_file.o
+
+# target for object file
+dvd_reader.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/dvd_reader.o
+
+# target for object file
+eltorito.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/eltorito.o
+
+# target for object file
+exclude.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/exclude.o
+
+# target for object file
+files.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/files.o
+
+# target for object file
+fnmatch.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/fnmatch.o
+
+# target for object file
+getnum.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/getnum.o
+
+# target for object file
+getopt.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/getopt.o
+
+# target for object file
+getopt1.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/getopt1.o
+
+# target for object file
+hash.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/hash.o
+
+# target for object file
+ifo_read.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/ifo_read.o
+
+# target for object file
+joliet.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/joliet.o
+
+# target for object file
+mac_label.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/mac_label.o
+
+# target for object file
+match.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/match.o
+
+# target for object file
+mkisofs.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/mkisofs.o
+
+# target for object file
+modes.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/modes.o
+
+# target for object file
+multi.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/multi.o
+
+# target for object file
+name.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/name.o
+
+# target for object file
+rock.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/rock.o
+
+# target for object file
+scsi.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/scsi.o
+
+# target for object file
+scsi_cdr.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/scsi_cdr.o
+
+# target for object file
+stream.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/stream.o
+
+# target for object file
+tree.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/tree.o
+
+# target for object file
+udf.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/udf.o
+
+# target for object file
+vms.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/vms.o
+
+# target for object file
+volume.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/volume.o
+
+# target for object file
+write.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f mkisofs/CMakeFiles/mkisofs.dir/build.make mkisofs/CMakeFiles/mkisofs.dir/write.o
+
 # Help Target
 help::
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -98,7 +241,41 @@ help::
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... install"
+	@echo "... mkisofs"
 	@echo "... rebuild_cache"
+	@echo "... apple.o"
+	@echo "... apple_driver.o"
+	@echo "... boot.o"
+	@echo "... cd_misc.o"
+	@echo "... defaults.o"
+	@echo "... desktop.o"
+	@echo "... dvd_file.o"
+	@echo "... dvd_reader.o"
+	@echo "... eltorito.o"
+	@echo "... exclude.o"
+	@echo "... files.o"
+	@echo "... fnmatch.o"
+	@echo "... getnum.o"
+	@echo "... getopt.o"
+	@echo "... getopt1.o"
+	@echo "... hash.o"
+	@echo "... ifo_read.o"
+	@echo "... joliet.o"
+	@echo "... mac_label.o"
+	@echo "... match.o"
+	@echo "... mkisofs.o"
+	@echo "... modes.o"
+	@echo "... multi.o"
+	@echo "... name.o"
+	@echo "... rock.o"
+	@echo "... scsi.o"
+	@echo "... scsi_cdr.o"
+	@echo "... stream.o"
+	@echo "... tree.o"
+	@echo "... udf.o"
+	@echo "... vms.o"
+	@echo "... volume.o"
+	@echo "... write.o"
 
 
 
