@@ -90,6 +90,45 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 
+# Convenience name for target.
+scgcheck/CMakeFiles/scgcheck.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 scgcheck/CMakeFiles/scgcheck.dir/rule
+
+# Convenience name for target.
+scgcheck: scgcheck/CMakeFiles/scgcheck.dir/rule
+
+# fast build rule for target.
+scgcheck/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/build
+
+# target for object file
+cd_misc.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/cd_misc.o
+
+# target for object file
+dmaresid.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/dmaresid.o
+
+# target for object file
+modes.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/modes.o
+
+# target for object file
+scgcheck.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/scgcheck.o
+
+# target for object file
+scsi_cdr.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/scsi_cdr.o
+
+# target for object file
+scsi_scan.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/scsi_scan.o
+
+# target for object file
+sense.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f scgcheck/CMakeFiles/scgcheck.dir/build.make scgcheck/CMakeFiles/scgcheck.dir/sense.o
+
 # Help Target
 help::
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -99,6 +138,14 @@ help::
 	@echo "... edit_cache"
 	@echo "... install"
 	@echo "... rebuild_cache"
+	@echo "... scgcheck"
+	@echo "... cd_misc.o"
+	@echo "... dmaresid.o"
+	@echo "... modes.o"
+	@echo "... scgcheck.o"
+	@echo "... scsi_cdr.o"
+	@echo "... scsi_scan.o"
+	@echo "... sense.o"
 
 
 

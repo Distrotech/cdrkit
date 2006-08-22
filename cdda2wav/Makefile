@@ -90,15 +90,147 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 
+# Convenience name for target.
+cdda2wav/CMakeFiles/cdda2wav.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 cdda2wav/CMakeFiles/cdda2wav.dir/rule
+
+# Convenience name for target.
+cdda2wav: cdda2wav/CMakeFiles/cdda2wav.dir/rule
+
+# fast build rule for target.
+cdda2wav/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/build
+
+# target for object file
+aifc.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/aifc.o
+
+# target for object file
+aiff.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/aiff.o
+
+# target for object file
+base64.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/base64.o
+
+# target for object file
+cd_misc.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/cd_misc.o
+
+# target for object file
+cdda2wav.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/cdda2wav.o
+
+# target for object file
+defaults.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/defaults.o
+
+# target for object file
+getnum.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/getnum.o
+
+# target for object file
+interface.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/interface.o
+
+# target for object file
+ioctl.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/ioctl.o
+
+# target for object file
+md5c.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/md5c.o
+
+# target for object file
+modes.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/modes.o
+
+# target for object file
+raw.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/raw.o
+
+# target for object file
+resample.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/resample.o
+
+# target for object file
+ringbuff.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/ringbuff.o
+
+# target for object file
+scsi_cdr.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/scsi_cdr.o
+
+# target for object file
+scsi_cmds.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/scsi_cmds.o
+
+# target for object file
+scsi_scan.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/scsi_scan.o
+
+# target for object file
+semshm.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/semshm.o
+
+# target for object file
+setuid.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/setuid.o
+
+# target for object file
+sha_func.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/sha_func.o
+
+# target for object file
+sndconfig.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/sndconfig.o
+
+# target for object file
+sun.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/sun.o
+
+# target for object file
+toc.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/toc.o
+
+# target for object file
+wav.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdda2wav/CMakeFiles/cdda2wav.dir/build.make cdda2wav/CMakeFiles/cdda2wav.dir/wav.o
+
 # Help Target
 help::
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... cdda2wav"
 	@echo "... edit_cache"
 	@echo "... install"
 	@echo "... rebuild_cache"
+	@echo "... aifc.o"
+	@echo "... aiff.o"
+	@echo "... base64.o"
+	@echo "... cd_misc.o"
+	@echo "... cdda2wav.o"
+	@echo "... defaults.o"
+	@echo "... getnum.o"
+	@echo "... interface.o"
+	@echo "... ioctl.o"
+	@echo "... md5c.o"
+	@echo "... modes.o"
+	@echo "... raw.o"
+	@echo "... resample.o"
+	@echo "... ringbuff.o"
+	@echo "... scsi_cdr.o"
+	@echo "... scsi_cmds.o"
+	@echo "... scsi_scan.o"
+	@echo "... semshm.o"
+	@echo "... setuid.o"
+	@echo "... sha_func.o"
+	@echo "... sndconfig.o"
+	@echo "... sun.o"
+	@echo "... toc.o"
+	@echo "... wav.o"
 
 
 

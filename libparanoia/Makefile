@@ -90,6 +90,41 @@ preinstall/fast:
 depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 
+# Convenience name for target.
+libparanoia/CMakeFiles/paranoia.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 libparanoia/CMakeFiles/paranoia.dir/rule
+
+# Convenience name for target.
+paranoia: libparanoia/CMakeFiles/paranoia.dir/rule
+
+# fast build rule for target.
+paranoia/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f libparanoia/CMakeFiles/paranoia.dir/build.make libparanoia/CMakeFiles/paranoia.dir/build
+
+# target for object file
+gap.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f libparanoia/CMakeFiles/paranoia.dir/build.make libparanoia/CMakeFiles/paranoia.dir/gap.o
+
+# target for object file
+isort.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f libparanoia/CMakeFiles/paranoia.dir/build.make libparanoia/CMakeFiles/paranoia.dir/isort.o
+
+# target for object file
+overlap.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f libparanoia/CMakeFiles/paranoia.dir/build.make libparanoia/CMakeFiles/paranoia.dir/overlap.o
+
+# target for object file
+p_block.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f libparanoia/CMakeFiles/paranoia.dir/build.make libparanoia/CMakeFiles/paranoia.dir/p_block.o
+
+# target for object file
+paranoia.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f libparanoia/CMakeFiles/paranoia.dir/build.make libparanoia/CMakeFiles/paranoia.dir/paranoia.o
+
+# target for object file
+pmalloc.o:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f libparanoia/CMakeFiles/paranoia.dir/build.make libparanoia/CMakeFiles/paranoia.dir/pmalloc.o
+
 # Help Target
 help::
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -98,7 +133,14 @@ help::
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... install"
+	@echo "... paranoia"
 	@echo "... rebuild_cache"
+	@echo "... gap.o"
+	@echo "... isort.o"
+	@echo "... overlap.o"
+	@echo "... p_block.o"
+	@echo "... paranoia.o"
+	@echo "... pmalloc.o"
 
 
 

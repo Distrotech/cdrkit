@@ -5,6 +5,7 @@
  *
  * prototypes from cdda2wav.c
  */
+
 #ifdef max
 #undef max
 #endif
