@@ -14,26 +14,34 @@
 
 # specify the sampling program and its options
 # do not specify the track option here!
-CDDA2WAV=cdda2wav
-CDDA2WAV_OPTS='-H -P0 -q'
+CDDA2WAV=${CDDA2WAV:-cdda2wav}
+CDDA2WAV_OPTS=${CDDA2WAV_OPTS:-'-H -P0 -q'}
 
 # for normal use, comment out the next line
 #DEBUG='-d1'
 
 # the post processor is fed through a pipe to avoid space waste
 # specify the post processing program and its options
-MP_CODER=oggenc
-MP_OPTIONS=''
+MP_CODER=${MP_CODER:-oggenc}
+MP_OPTIONS=${MP_OPTIONS:-''}
 
-$MP_CODER -h > /dev/null 2> /dev/null
+$MP_CODER -h >/dev/null 2>&1
 if [ $? != 0 ] ; then
    echo "Oggenc not found. Install vorbis-tools first!"
    exit 1
 fi
 
+if [ "$CDDADEVICE" = "" ]
+then
+  CDDA_DEVICE=/dev/cdrom
+  export CDDA_DEVICE
+fi
+
 FILEPREFIX=${1:-audiotrack}
 
-. /etc/default/cdda2ogg 2>/dev/null || true
+if [ -e /etc/default/cdda2ogg ]; then
+	. /etc/default/cdda2ogg
+fi
 
 TRACK=1
 while :

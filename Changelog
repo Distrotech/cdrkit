@@ -1,3 +1,11 @@
+icewm (2.01.01a08+X.05) UNRELEASED; urgency=low
+
+  * Bits from 03_script.dpatch by Joerg Jaspert <joerg@debian.org> and Eduard
+    Bloch: Linux-friendly device location for cdda scripts and better encoder
+    selection
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:49:56 +0200
+
 icewm (2.01.01a08+X.04) UNRELEASED; urgency=low
 
   * Added bits from 02_paths.dpatch by Joerg Jaspert <joerg@debian.org>:
