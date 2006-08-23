@@ -1,0 +1,2451 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 34_JTE.dpatch by Steve McIntyre <steve@einval.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Jigdo Template Export
+
+@DPATCH@
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-alpha.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-alpha.c
+--- cdrtools-2.01+01a03/mkisofs/boot-alpha.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-alpha.c	2005-12-04 00:27:00.000000000 +0000
+@@ -104,6 +104,7 @@
+ 
+     write_le64(sum, (unsigned char *)&boot_sector[63]);
+ 
++    jtwrite(boot_sector, sizeof(boot_sector), 1, 0, FALSE);
+     xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
+     last_extent_written++;
+ 
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot.c
+--- cdrtools-2.01+01a03/mkisofs/boot.c	2005-12-04 00:26:53.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot.c	2005-12-04 00:27:00.000000000 +0000
+@@ -372,6 +372,7 @@
+ 	 */
+ 	amt = roundup(last_extent_written, (CD_CYLSIZE/SECTOR_SIZE)) - last_extent_written;
+ 	for (n = 0; n < amt; n++) {
++		jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
+ 		xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 		last_extent_written++;
+ 	}
+@@ -402,6 +403,7 @@
+ 			memset(buffer, 0, sizeof (buffer));
+ 			if (read(f, buffer, SECTOR_SIZE) < 0)
+ 				comerr("Read error on '%s'.\n", boot_files[i]);
++			jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
+ 			xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 			last_extent_written++;
+ 		}
+@@ -483,6 +485,7 @@
+ 		memcpy(buffer, &cd_label, 512);
+ 	}
+ 
++	jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 	last_extent_written++;
+ 	return (0);
+@@ -522,6 +525,7 @@
+ 			comerr("Read error on '%s'.\n", genboot_image);
+ 
+ 		if (i != 0 || last_extent_written == session_start) {
++			jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
+ 			xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 			last_extent_written++;
+ 		}
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-hppa.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-hppa.c
+--- cdrtools-2.01+01a03/mkisofs/boot-hppa.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-hppa.c	2005-12-04 00:27:00.000000000 +0000
+@@ -189,6 +189,7 @@
+     write_be32(extent, &boot_sector[240]);
+     write_be32(length, &boot_sector[244]);
+ 
++    jtwrite(boot_sector, sizeof(boot_sector), 1, 0, FALSE);
+     xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
+     last_extent_written++;
+ 
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-mips.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-mips.c
+--- cdrtools-2.01+01a03/mkisofs/boot-mips.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-mips.c	2005-12-04 00:27:00.000000000 +0000
+@@ -318,6 +318,7 @@
+ 	/* Create checksum */
+ 	vh_calc_checksum(&vh);
+ 
++    jtwrite(&vh, sizeof(vh), 1, 0, FALSE);
+     xfwrite(&vh, sizeof(vh), 1, outfile, 0, FALSE);
+     last_extent_written++;
+ 
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-mipsel.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-mipsel.c
+--- cdrtools-2.01+01a03/mkisofs/boot-mipsel.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/boot-mipsel.c	2005-12-04 00:27:00.000000000 +0000
+@@ -231,6 +231,7 @@
+     write_le32((extent * 4) + offset, (unsigned char *)&bb->bootmap[0].start);
+     write_le32(count, (unsigned char *)&bb->bootmap[0].count);
+     
++    jtwrite(sector, sizeof(sector), 1, 0, FALSE);
+     xfwrite(sector, sizeof(sector), 1, outfile, 0, FALSE);
+     last_extent_written++;
+ 
+diff -urNad cdrtools-2.01+01a03/mkisofs/eltorito.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/eltorito.c
+--- cdrtools-2.01+01a03/mkisofs/eltorito.c	2005-12-04 00:26:53.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/eltorito.c	2005-12-04 00:27:00.000000000 +0000
+@@ -696,6 +696,7 @@
+ 	}
+ 	/* Next we write out the boot volume descriptor for the disc */
+ 	get_torito_desc(&gboot_desc);
++	jtwrite(&gboot_desc, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(&gboot_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 	last_extent_written++;
+ 	return (0);
+diff -urNad cdrtools-2.01+01a03/mkisofs/joliet.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/joliet.c
+--- cdrtools-2.01+01a03/mkisofs/joliet.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/joliet.c	2005-12-04 00:27:00.000000000 +0000
+@@ -989,6 +989,7 @@
+ 			dir_index, dpnt->de_name);
+ #endif
+ 	}
++	jtwrite(directory_buffer, total_size, 1, 0, FALSE);
+ 	xfwrite(directory_buffer, total_size, 1, outfile, 0, FALSE);
+ 	last_extent_written += total_size >> 11;
+ 	free(directory_buffer);
+@@ -1393,9 +1394,12 @@
+ 	FILE	*outfile;
+ {
+ 	/* Next we write the path tables */
++	jtwrite(jpath_table_l, jpath_blocks << 11, 1, 0, FALSE);
+ 	xfwrite(jpath_table_l, jpath_blocks << 11, 1, outfile, 0, FALSE);
++	last_extent_written += jpath_blocks;
++	jtwrite(jpath_table_m, jpath_blocks << 11, 1, 0, FALSE);
+ 	xfwrite(jpath_table_m, jpath_blocks << 11, 1, outfile, 0, FALSE);
+-	last_extent_written += 2 * jpath_blocks;
++	last_extent_written += jpath_blocks;
+ 	free(jpath_table_l);
+ 	free(jpath_table_m);
+ 	jpath_table_l = NULL;
+@@ -1448,6 +1452,7 @@
+ 	/* Next we write out the boot volume descriptor for the disc */
+ 	jvol_desc = vol_desc;
+ 	get_joliet_vol_desc(&jvol_desc);
++	jtwrite(&jvol_desc, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(&jvol_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 	last_extent_written++;
+ 	return (0);
+diff -urNad cdrtools-2.01+01a03/mkisofs/jte.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/jte.c
+--- cdrtools-2.01+01a03/mkisofs/jte.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/jte.c	2005-12-04 00:27:00.000000000 +0000
+@@ -0,0 +1,1004 @@
++#undef BZ2_SUPPORT
++
++#include <mconfig.h>
++#include "mkisofs.h"
++#include <timedefs.h>
++#include <fctldefs.h>
++#include <zlib.h>
++#ifdef BZ2_SUPPORT
++#   include <bzlib.h>
++#endif
++#include <regex.h>
++#ifdef SORTING
++#include "match.h"
++#endif /* SORTING */
++#include <errno.h>
++#include <schily.h>
++#ifdef DVD_VIDEO
++#include "dvd_reader.h"
++#include "dvd_file.h"
++#include "ifo_read.h"
++#include "md5.h"
++#include "endian.h"
++#endif
++#ifdef APPLE_HYB
++#include <ctype.h>
++#endif
++
++#ifdef	VMS
++#include "vms.h"
++#endif
++
++/* Different types used in building our state list below */
++#define JTET_FILE_MATCH 1
++#define JTET_NOMATCH    2
++
++#define JTE_VER_MAJOR     0x0001
++#define JTE_VER_MINOR     0x000F
++#define JTE_NAME          "JTE"
++#define JTE_COMMENT       "JTE at http://www.einval.com/~steve/software/JTE/ ; jigdo at http://atterer.net/jigdo/"
++
++#define JIGDO_TEMPLATE_VERSION "1.1"
++
++#ifdef BZ2_SUPPORT
++int use_bz2 = 0;
++#endif
++
++/*	
++	Simple list to hold the results of -jigdo-exclude and
++	-jigdo-force-match command line options. Seems easiest to do this
++	using regexps.
++*/
++struct path_match
++{
++    regex_t  match_pattern;
++    char    *match_rule;
++    struct path_match *next;
++};
++
++/* List of mappings e.g. Debian=/mirror/debian */
++struct path_mapping
++{
++    char                *from;
++    char                *to;
++    struct path_mapping *next;
++};
++
++FILE	*jtjigdo = NULL;       /* File handle used throughout for the jigdo file */
++FILE	*jttemplate = NULL;    /* File handle used throughout for the template file */
++char    *jjigdo_out = NULL;    /* Output name for jigdo .jigdo file; NULL means don't do it */
++char    *jtemplate_out = NULL; /* Output name for jigdo template file; NULL means don't do it */
++char    *jmd5_list = NULL;     /* Name of file to use for MD5 checking */
++int      jte_min_size = MIN_JIGDO_FILE_SIZE;
++struct  path_match *exclude_list = NULL;
++struct  path_match *include_list = NULL;
++struct  path_mapping  *map_list = NULL;
++unsigned long long template_size = 0;
++unsigned long long image_size = 0;
++
++static struct mk_MD5Context iso_context;
++static struct mk_MD5Context template_context;
++
++/* List of files that we've seen, ready to write into the template and
++   jigdo files */
++typedef struct _file_entry
++{
++    unsigned char       md5[16];
++    off_t               file_length;
++    unsigned long long  rsyncsum;
++    char               *filename;
++} file_entry_t;
++
++typedef struct _unmatched_entry
++{
++    off_t uncompressed_length;
++} unmatched_entry_t;    
++
++typedef struct _entry
++{
++    int entry_type; /* JTET_TYPE as above */
++    struct _entry *next;
++    union
++    {
++        file_entry_t      file;
++        unmatched_entry_t chunk;
++    } data;
++} entry_t;
++
++typedef struct _jigdo_file_entry
++{
++    unsigned char type;
++    unsigned char fileLen[6];
++    unsigned char fileRsync[8];
++    unsigned char fileMD5[16];
++} jigdo_file_entry_t;
++
++typedef struct _jigdo_chunk_entry
++{
++    unsigned char type;
++    unsigned char skipLen[6];
++} jigdo_chunk_entry_t;
++
++typedef struct _jigdo_image_entry
++{
++    unsigned char type;
++    unsigned char imageLen[6];
++    unsigned char imageMD5[16];
++    unsigned char blockLen[4];
++} jigdo_image_entry_t;
++
++typedef struct _md5_list_entry
++{
++    struct _md5_list_entry *next;
++    unsigned char       MD5[16];
++    unsigned long long  size;
++    char               *filename;
++} md5_list_entry_t;
++    
++entry_t *entry_list = NULL;
++entry_t *entry_last = NULL;
++FILE    *t_file = NULL;
++FILE    *j_file = NULL;
++int      num_matches = 0;
++int      num_chunks = 0;
++md5_list_entry_t *md5_list = NULL;
++md5_list_entry_t *md5_last = NULL;
++
++/* Grab the file component from a full path */
++static char *file_base_name(char *path)
++{
++    char *endptr = path;
++    char *ptr = path;
++    
++    while (*ptr != '\0')
++    {
++        if ('/' == *ptr)
++            endptr = ++ptr;
++        else
++            ++ptr;
++    }
++    return endptr;
++}
++
++/* Dump a buffer in hex */
++static char *hex_dump(unsigned char *buf, size_t buf_size)
++{
++    unsigned int i;
++    static char output_buffer[2048];
++    char *p = output_buffer;
++
++    memset(output_buffer, 0, sizeof(output_buffer));
++    if (buf_size >= (sizeof(output_buffer) / 2))
++    {
++        fprintf(stderr, "hex_dump: Buffer too small!\n");
++        exit(1);
++    }
++
++    for (i = 0; i < buf_size ; i++)
++        p += sprintf(p, "%2.2x", buf[i]);
++
++    return output_buffer;
++}
++
++/* Build the list of exclusion regexps */
++extern int jte_add_exclude(char *pattern)
++{
++    struct path_match *new = NULL;
++    
++    new = malloc(sizeof *new);
++    if (!new)
++        return ENOMEM;    
++    
++    regcomp(&new->match_pattern, pattern, REG_NEWLINE);
++	new->match_rule = pattern;
++
++    /* Order on the exclude list doesn't matter! */
++    if (NULL != exclude_list)
++        new->next = exclude_list;
++
++    exclude_list = new;
++    return 0;
++}
++
++/* Check if the file should be excluded because of a filename match. 1
++   means exclude, 0 means not */
++static int check_exclude_by_name(char *filename, char **matched)
++{
++    struct path_match *ptr = exclude_list;
++    regmatch_t pmatch[1];
++    int i = 0;
++
++    while (ptr)
++    {
++        if (!regexec(&ptr->match_pattern, filename, 1, pmatch, 0))
++        {
++            *matched = ptr->match_rule;
++            return 1;
++        }
++        ptr = ptr->next;
++    }
++    
++    /* Not matched, so return 0 */
++    return 0;
++}
++
++/* Build the list of required inclusion regexps */
++extern int jte_add_include(char *pattern)
++{
++    struct path_match *new = NULL;
++    
++    new = malloc(sizeof *new);
++    if (!new)
++        return ENOMEM;    
++    
++    regcomp(&new->match_pattern, pattern, REG_NEWLINE);
++	new->match_rule = pattern;
++
++    /* Order on the include list doesn't matter! */
++    if (NULL != include_list)
++        new->next = include_list;
++
++    include_list = new;
++    return 0;
++}
++
++/* Check if a file has to be MD5-matched to be valid. If we get called
++   here, we've failed to match any of the MD5 entries we were
++   given. If the path to the filename matches one of the paths in our
++   list, clearly it must have been corrupted. Abort with an error. */
++static void check_md5_file_match(char *filename)
++{
++    struct path_match *ptr = include_list;
++    regmatch_t pmatch[1];
++    int i = 0;
++
++    while (ptr)
++    {
++        if (!regexec(&ptr->match_pattern, filename, 1, pmatch, 0))
++        {
++#ifdef	USE_LIBSCHILY
++			comerr("File %s should have matched an MD5 entry, but didn't! (Rule '%s')\n", filename, ptr->match_rule);
++#else
++			fprintf(stderr, "File %s should have matched an MD5 entry, but didn't! (Rule '%s')\n", filename, ptr->match_rule);
++			exit(1);
++#endif
++		}
++        ptr = ptr->next;
++    }
++}    
++
++/* Should we list a file separately in the jigdo output, or should we
++   just dump it into the template file as binary data? Three things
++   cases to look for here:
++
++   1. Small files are better simply folded in, as they take less space that way.
++
++   2. Files in /doc (for example) may change in the archive all the
++      time and it's better to not have to fetch snapshot copies if we
++      can avoid it.      
++
++   3. Files living in specified paths *must* match an entry in the
++      md5-list, or they must have been corrupted. If we find a corrupt
++      file, bail out with an error.
++
++*/
++extern int list_file_in_jigdo(char *filename, off_t size, char **realname, unsigned char md5[16])
++{
++    char *matched_rule;
++    md5_list_entry_t *entry = md5_list;
++    int md5sum_done = 0;
++    
++    if (!jtemplate_out)
++        return 0;
++
++    memset(md5, 0, sizeof(md5));
++
++    /* Cheaper to check file size first */
++    if (size < jte_min_size)
++    {
++        if (verbose > 0)
++            fprintf(stderr, "Jigdo-ignoring file %s; it's too small\n", filename);
++        return 0;
++    }
++    
++    /* Now check the excluded list by name */
++    if (check_exclude_by_name(filename, &matched_rule))
++    {
++        if (verbose > 0)
++            fprintf(stderr, "Jigdo-ignoring file %s; it's covered in the exclude list by \"%s\"\n", filename, matched_rule);
++        return 0;
++    }
++
++    /* Check to see if the file is in our md5 list. Check three things:
++       
++       1. the size
++       2. the filename
++       3. (only if the first 2 match) the md5sum
++
++       If we get a match for all three, include the file and return
++       the full path to the file that we have gleaned from the mirror.
++    */
++
++    while (entry)
++    {
++        if (size == entry->size)
++        {
++            if (!strcmp(file_base_name(filename), file_base_name(entry->filename)))
++            {
++                if (!md5sum_done)
++                {
++                    calculate_md5sum(filename, size, md5);
++                    md5sum_done = 1;
++                }
++                if (!memcmp(md5, entry->MD5, sizeof(entry->MD5)))
++                {
++                    *realname = entry->filename;
++                    return 1;
++                }
++            }
++        }
++        entry = entry->next;
++    }
++
++    /* We haven't found an entry in our MD5 list to match this
++     * file. If we should have done, complain and bail out. */
++    check_md5_file_match(filename);
++    return 0;
++}
++
++/* Add a mapping of pathnames (e.g. Debian=/mirror/debian). We should
++   be passed TO=FROM here */
++extern int jte_add_mapping(char *arg)
++{
++    int error = 0;
++    struct path_mapping *new = NULL;
++    struct path_mapping *entry = NULL;
++    char *p = arg;
++    char *from = NULL;
++    char *to = NULL;
++
++    /* Find the "=" in the string passed. Set it to NULL and we can
++       use the string in-place */
++    while (*p)
++    {
++        if ('=' == *p)
++        {
++            *p = 0;
++            p++;
++            to = arg;
++            from = p;
++        }
++        p++;
++    }
++    if (!from || !strlen(from) || !to || !strlen(to))
++        return EINVAL;
++    
++    new = malloc(sizeof(*new));
++    if (!new)
++        return ENOMEM;
++    
++    new->from = from;
++    new->to = to;
++    new->next = NULL;
++
++    if (verbose > 0)
++        fprintf(stderr, "Adding mapping from %s to %s for the jigdo file\n", from, to);
++    if (!map_list)
++        map_list = new;
++    else
++    {
++        /* Order is important; add to the end of the list */
++        entry = map_list;
++        while (NULL != entry->next)
++            entry = entry->next;
++        entry->next = new;
++    }
++    return 0;
++}
++
++/* Check if the filename should be remapped; if so map it, otherwise
++   return the original name. */
++static char *remap_filename(char *filename)
++{
++    char *new_name = filename;
++    struct path_mapping *entry = map_list;
++    
++    while (entry)
++    {
++        if (!strncmp(filename, entry->from, strlen(entry->from)))
++        {
++            new_name = calloc(1, 2 + strlen(filename) + strlen(entry->to) - strlen(entry->from));
++            if (!new_name)
++            {
++                fprintf(stderr, "Failed to malloc new filename; abort!\n");
++                exit(1);
++            }
++            sprintf(new_name, "%s:%s", entry->to, &filename[strlen(entry->from)]);
++            return new_name;
++        }
++        entry = entry->next;
++    }
++
++    /* No mapping in effect */
++    return strdup(filename);
++}    
++
++/* Write data to the template file and update the MD5 sum */
++static size_t template_fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
++{
++    mk_MD5Update(&template_context, ptr, size * nmemb);
++    template_size += (unsigned long long)size * nmemb;
++    return fwrite(ptr, size, nmemb, stream);
++}
++
++/* Create a new template file and initialise it */
++static void write_template_header()
++{
++    char buf[2048];
++    int i = 0;
++    char *p = buf;
++
++    memset(buf, 0, sizeof(buf));
++
++    mk_MD5Init(&template_context);
++    i += sprintf(p, "JigsawDownload template %s %s/%d.%d \r\n",
++                 JIGDO_TEMPLATE_VERSION, JTE_NAME, JTE_VER_MAJOR, JTE_VER_MINOR);
++    p = &buf[i];
++
++    i += sprintf(p, "%s \r\n", JTE_COMMENT);
++    p = &buf[i];
++
++    i += sprintf(p, "\r\n");
++    template_fwrite(buf, i, 1, t_file);
++}
++
++/* Read the MD5 list and build a list in memory for us to use later */
++static void add_md5_entry(unsigned char *md5, unsigned long long size, char *filename)
++{
++    int error = 0;
++    md5_list_entry_t *new = NULL;
++    
++    new = calloc(1, sizeof(md5_list_entry_t));
++    memcpy(new->MD5, md5, sizeof(new->MD5));
++    new->size = size;
++    new->filename = strdup(filename);
++    
++    /* Add to the end of the list */
++    if (NULL == md5_last)
++    {
++        md5_last = new;
++        md5_list = new;
++    }
++    else
++    {
++        md5_last->next = new;
++        md5_last = new;
++    }
++}
++
++/* Parse a 12-digit decimal number */
++static unsigned long long parse_number(unsigned char in[12])
++{
++    unsigned long long size = 0;
++    int i = 0;
++    
++    for (i = 0; i < 12; i++)
++    {
++        size *= 10;
++        if (isdigit(in[i]))
++            size += (in[i] - '0');
++    }
++
++    return size;
++}
++    
++/* Read the MD5 list and build a list in memory for us to use later
++   MD5 list format:
++
++   <---MD5--->  <--Size-->  <--Filename-->
++       32          12          remaining
++*/
++static void parse_md5_list(void)
++{
++    FILE *md5_file = NULL;
++    unsigned char buf[1024];
++    unsigned char md5[16];
++    char *filename = NULL;
++    unsigned char *numbuf = NULL;
++    int num_files = 0;
++    unsigned long long size = 0;
++
++    md5_file = fopen(jmd5_list, "rb");
++    if (!md5_file)
++    {
++#ifdef	USE_LIBSCHILY
++        comerr("cannot read from MD5 list file '%s'\n", jmd5_list);
++#else
++        fprintf(stderr, "cannot read from MD5 list file '%s'\n", jmd5_list);
++        exit(1);
++#endif
++    }
++
++    memset(buf, 0, sizeof(buf));
++    while (fgets(buf, sizeof(buf), md5_file))
++    {
++        numbuf = &buf[34];
++        filename = &buf[48];
++        /* Lose the trailing \n from the fgets() call */
++        if (buf[strlen(buf)-1] == '\n')
++            buf[strlen(buf)-1] = 0;
++
++        if (mk_MD5Parse(buf, md5))
++        {
++#ifdef	USE_LIBSCHILY
++            comerr("cannot parse MD5 file '%s'\n", jmd5_list);
++#else
++            fprintf(stderr, "cannot parse MD5 file '%s'\n", jmd5_list);
++            exit(1);
++#endif
++        }
++        size = parse_number(numbuf);
++        add_md5_entry(md5, size, filename);
++        memset(buf, 0, sizeof(buf));
++        num_files++;
++    }
++    if (verbose > 0)
++        fprintf(stderr, "parse_md5_list: added MD5 checksums for %d files\n", num_files);
++    fclose(md5_file);
++}
++
++/* Initialise state and start the jigdo template file */
++void write_jt_header(FILE *template_file, FILE *jigdo_file)
++{
++    t_file = template_file;
++    j_file = jigdo_file;
++
++    /* Start MD5 work for the image */
++    mk_MD5Init(&iso_context);
++
++    /* Start the template file */
++    write_template_header();
++
++    /* Load up the MD5 list if we've been given one */
++    if (jmd5_list)
++        parse_md5_list();
++}
++
++/* Compress and flush out a buffer full of template data */
++static void flush_gzip_chunk(void *buffer, off_t size)
++{
++    z_stream c_stream; /* compression stream */
++    unsigned char comp_size_out[6];
++    unsigned char uncomp_size_out[6];
++    off_t compressed_size_out = 0;
++    int err = 0;
++    unsigned char *comp_buf = NULL;
++
++    c_stream.zalloc = NULL;
++    c_stream.zfree = NULL;
++    c_stream.opaque = NULL;
++
++    err = deflateInit(&c_stream, Z_BEST_COMPRESSION);
++    comp_buf = malloc(2 * size); /* Worst case */
++    c_stream.next_out = comp_buf;
++    c_stream.avail_out = 2 * size;
++    c_stream.next_in = buffer;
++    c_stream.avail_in = size;
++    
++    err = deflate(&c_stream, Z_NO_FLUSH);
++    err = deflate(&c_stream, Z_FINISH);
++    
++    compressed_size_out = c_stream.total_out + 16;
++    err = deflateEnd(&c_stream);
++
++    template_fwrite("DATA", 4, 1, t_file);
++
++    write_le48(compressed_size_out, &comp_size_out[0]);
++    template_fwrite(comp_size_out, sizeof(comp_size_out), 1, t_file);
++
++    write_le48(size, &uncomp_size_out[0]);
++    template_fwrite(uncomp_size_out, sizeof(uncomp_size_out), 1, t_file);
++    
++    template_fwrite(comp_buf, c_stream.total_out, 1, t_file);
++    free(comp_buf);
++}
++
++#ifdef BZ2_SUPPORT
++/* Compress and flush out a buffer full of template data */
++static void flush_bz2_chunk(void *buffer, off_t size)
++{
++    bz_stream c_stream; /* compression stream */
++    unsigned char comp_size_out[6];
++    unsigned char uncomp_size_out[6];
++    off_t compressed_size_out = 0;
++    int err = 0;
++    unsigned char *comp_buf = NULL;
++
++    c_stream.bzalloc = NULL;
++    c_stream.bzfree = NULL;
++    c_stream.opaque = NULL;
++
++    err = BZ2_bzCompressInit(&c_stream, 9, 0, 0);
++    comp_buf = malloc(2 * size); /* Worst case */
++    c_stream.next_out = comp_buf;
++    c_stream.avail_out = 2 * size;
++    c_stream.next_in = buffer;
++    c_stream.avail_in = size;
++    
++    err = BZ2_bzCompress(&c_stream, BZ_FINISH);
++    
++    compressed_size_out = c_stream.total_out_lo32 + 16;
++    err = BZ2_bzCompressEnd(&c_stream);
++
++    template_fwrite("DATA", 4, 1, t_file);
++
++    write_le48(compressed_size_out, &comp_size_out[0]);
++    template_fwrite(comp_size_out, sizeof(comp_size_out), 1, t_file);
++
++    write_le48(size, &uncomp_size_out[0]);
++    template_fwrite(uncomp_size_out, sizeof(uncomp_size_out), 1, t_file);
++    
++    template_fwrite(comp_buf, c_stream.total_out_lo32, 1, t_file);
++    free(comp_buf);
++}
++#endif
++
++static void flush_compressed_chunk(void *buffer, off_t size)
++{
++#ifdef BZ2_SUPPORT
++    if (use_bz2)
++        flush_bz2_chunk(buffer, size);
++    else
++#endif
++        flush_gzip_chunk(buffer, size);
++}
++
++/* Append to an existing data buffer, and compress/flush it if
++   necessary */
++static void write_compressed_chunk(unsigned char *buffer, size_t size)
++{
++    static unsigned char uncomp_buf[1024 * 1024];
++    static size_t uncomp_buf_used = 0;
++
++    if ((uncomp_buf_used + size) > sizeof(uncomp_buf))
++    {
++        flush_compressed_chunk(uncomp_buf, uncomp_buf_used);
++        uncomp_buf_used = 0;
++    }
++
++    if (!size) /* Signal a flush before we start writing the DESC entry */
++    {
++        flush_compressed_chunk(uncomp_buf, uncomp_buf_used);
++        return;
++    }
++    
++    if (!uncomp_buf_used)
++        memset(uncomp_buf, 0, sizeof(uncomp_buf));
++
++    while (size > sizeof(uncomp_buf))
++    {
++        flush_compressed_chunk(buffer, sizeof(uncomp_buf));
++        buffer += sizeof(uncomp_buf);
++        size -= sizeof(uncomp_buf);
++    }
++    memcpy(&uncomp_buf[uncomp_buf_used], buffer, size);
++    uncomp_buf_used += size;
++}
++
++/* Loop through the list of DESC entries that we've built up and
++   append them to the template file */
++static void write_template_desc_entries(off_t image_len, char *image_md5)
++{
++    entry_t *entry = entry_list;
++    off_t desc_len = 0;
++    unsigned char out_len[6];
++    jigdo_image_entry_t jimage;
++
++    desc_len = 16 /* DESC + length twice */
++        + (sizeof(jigdo_file_entry_t) * num_matches)
++        + (sizeof(jigdo_chunk_entry_t) * num_chunks)
++        + sizeof(jigdo_image_entry_t);
++
++    write_le48(desc_len, &out_len[0]);
++    write_compressed_chunk(NULL, 0);
++    template_fwrite("DESC", 4, 1, t_file);
++    template_fwrite(out_len, sizeof(out_len), 1, t_file);
++    
++    while (entry)
++    {
++        switch (entry->entry_type)
++        {
++            case JTET_FILE_MATCH:
++            {
++                jigdo_file_entry_t jfile;
++                jfile.type = 6; /* Matched file */
++                write_le48(entry->data.file.file_length, &jfile.fileLen[0]);
++                write_le64(entry->data.file.rsyncsum, &jfile.fileRsync[0]);
++                memcpy(jfile.fileMD5, entry->data.file.md5, sizeof(jfile.fileMD5));
++                template_fwrite(&jfile, sizeof(jfile), 1, t_file);
++                break;
++            }
++            case JTET_NOMATCH:
++            {
++                jigdo_chunk_entry_t jchunk;
++#ifdef BZ2_SUPPORT
++                if (use_bz2)
++                    jchunk.type = 8; /* Raw data, bzipped */
++                else
++#endif
++                    jchunk.type = 2; /* Raw data, gzipped */
++                write_le48(entry->data.chunk.uncompressed_length, &jchunk.skipLen[0]);
++                template_fwrite(&jchunk, sizeof(jchunk), 1, t_file);
++                break;
++            }
++        }
++        entry = entry->next;
++    }
++
++    jimage.type = 5;
++    write_le48(image_len, &jimage.imageLen[0]);
++    memcpy(jimage.imageMD5, image_md5, sizeof(jimage.imageMD5));
++    write_le32(MIN_JIGDO_FILE_SIZE, &jimage.blockLen[0]);
++    template_fwrite(&jimage, sizeof(jimage), 1, t_file);    
++    template_fwrite(out_len, sizeof(out_len), 1, t_file);
++}
++
++/* Dump a buffer in jigdo-style "base64" */
++static char *base64_dump(unsigned char *buf, size_t buf_size)
++{
++    const char *b64_enc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
++    int value = 0;
++    unsigned int i;
++    int bits = 0;
++    static char output_buffer[2048];
++    char *p = output_buffer;
++
++    memset(output_buffer, 0, sizeof(output_buffer));
++    if (buf_size >= (sizeof(output_buffer) * 6/8))
++    {
++        fprintf(stderr, "base64_dump: Buffer too small!\n");
++        exit(1);
++    }
++
++    for (i = 0; i < buf_size ; i++)
++    {
++        value = (value << 8) | buf[i];
++        bits += 2;
++        p += sprintf(p, "%c", b64_enc[(value >> bits) & 63U]);
++        if (bits >= 6) {
++            bits -= 6;
++            p += sprintf(p, "%c", b64_enc[(value >> bits) & 63U]);
++        }
++    }
++    if (bits > 0)
++    {
++        value <<= 6 - bits;
++        p += sprintf(p, "%c", b64_enc[value & 63U]);
++    }
++    return output_buffer;
++}
++
++/* Write the .jigdo file to match the .template we've just finished. */
++static void write_jigdo_file(void)
++{
++    unsigned char template_md5sum[16];
++    entry_t *entry = entry_list;
++    struct path_mapping *map = map_list;
++
++    mk_MD5Final(&template_md5sum[0], &template_context);
++
++    fprintf(j_file, "# JigsawDownload\n");
++    fprintf(j_file, "# See <http://atterer.net/jigdo/> for details about jigdo\n");
++    fprintf(j_file, "# See <http://www.einval.com/~steve/software/CD/JTE/> for details about JTE\n\n");
++    
++    fprintf(j_file, "[Jigdo]\n");
++    fprintf(j_file, "Version=%s\n", JIGDO_TEMPLATE_VERSION);
++    fprintf(j_file, "Generator=%s/%d.%d\n\n", JTE_NAME, JTE_VER_MAJOR, JTE_VER_MINOR);
++
++    fprintf(j_file, "[Image]\n");
++    fprintf(j_file, "Filename=%s\n", file_base_name(outfile));
++    fprintf(j_file, "Template=http://localhost/%s\n", jtemplate_out);
++    fprintf(j_file, "Template-MD5Sum=%s \n",
++            base64_dump(&template_md5sum[0], sizeof(template_md5sum)));
++    fprintf(j_file, "# Template Hex MD5sum %s\n",
++            hex_dump(&template_md5sum[0], sizeof(template_md5sum)));
++    fprintf(j_file, "# Template size %lld bytes\n", template_size);
++    fprintf(j_file, "# Image size %lld bytes\n\n", image_size);
++
++    fprintf(j_file, "[Parts]\n");
++    while (entry)
++    {
++        if (JTET_FILE_MATCH == entry->entry_type)
++        {
++            char *new_name = remap_filename(entry->data.file.filename);
++            fprintf(j_file, "%s=%s\n",
++                    base64_dump(&entry->data.file.md5[0], sizeof(entry->data.file.md5)),
++                    new_name);
++            free(new_name);
++        }
++        entry = entry->next;
++    }
++
++    fprintf(j_file, "\n[Servers]\n");
++    fflush(j_file);
++}
++
++/* Finish and flush state; for now:
++   
++   1. Dump the DESC blocks and the footer information in the jigdo template file
++   2. Write the jigdo .jigdo file containing file pointers
++*/
++void write_jt_footer(void)
++{
++    unsigned char md5[16]; /* MD5SUM of the entire image */
++
++    /* Finish calculating the image's checksum */
++    mk_MD5Final(&md5[0], &iso_context);
++
++    /* And calculate the image size */
++    image_size = (unsigned long long)SECTOR_SIZE * last_extent_written;
++
++    write_template_desc_entries(image_size, md5);
++
++    write_jigdo_file();
++}
++
++/* Add a raw data entry to the list of extents; no file to match */
++static void add_unmatched_entry(int uncompressed_length)
++{
++    entry_t *new_entry = NULL;
++
++    /* Can we extend a previous non-match entry? */
++    if (entry_last && (JTET_NOMATCH == entry_last->entry_type))
++    {
++        entry_last->data.chunk.uncompressed_length += uncompressed_length;
++        return;
++    }
++
++    new_entry = calloc(1, sizeof(entry_t));
++    new_entry->entry_type = JTET_NOMATCH;
++    new_entry->next = NULL;
++    new_entry->data.chunk.uncompressed_length = uncompressed_length;
++
++    /* Add to the end of the list */
++    if (NULL == entry_last)
++    {
++        entry_last = new_entry;
++        entry_list = new_entry;
++    }
++    else
++    {
++        entry_last->next = new_entry;
++        entry_last = new_entry;
++    }
++    num_chunks++;
++}
++
++/* Add a file match entry to the list of extents */
++static void add_file_entry(char *filename, off_t size, unsigned char *md5,
++                           unsigned long long rsyncsum)
++{
++    entry_t *new_entry = NULL;
++
++    new_entry = calloc(1, sizeof(entry_t));
++    new_entry->entry_type = JTET_FILE_MATCH;
++    new_entry->next = NULL;
++    memcpy(new_entry->data.file.md5, md5, sizeof(new_entry->data.file.md5));
++    new_entry->data.file.file_length = size;
++    new_entry->data.file.rsyncsum = rsyncsum;
++    new_entry->data.file.filename = strdup(filename);
++
++    /* Add to the end of the list */
++    if (NULL == entry_last)
++    {
++        entry_last = new_entry;
++        entry_list = new_entry;
++    }
++    else
++    {
++        entry_last->next = new_entry;
++        entry_last = new_entry;
++    }
++    num_matches++;
++}    
++
++/* Cope with an unmatched block in the .iso file:
++
++   1. Write a compressed data chunk in the jigdo template file
++   2. Add an entry in our list of unmatched chunks for later */
++void jtwrite(buffer, size, count, submode, islast)
++	void	*buffer;
++	int	size;
++	int	count;
++	int	submode;
++	BOOL	islast;
++{
++#ifdef	JTWRITE_DEBUG
++	if (count != 1 || (size % 2048) != 0)
++		error("Count: %d, size: %d\n", count, size);
++#endif
++
++    if (!jtemplate_out)
++        return;
++
++    /* Update the global image checksum */
++    mk_MD5Update(&iso_context, buffer, size*count);
++
++    /* Write a compressed version of the data to the template file,
++       and add a reference on the state list so we can write that
++       later. */
++    write_compressed_chunk(buffer, size*count);
++    add_unmatched_entry(size*count);
++}
++
++/* Cope with a file entry in the .iso file:
++
++   1. Read the file for the image's md5 checksum
++   2. Add an entry in our list of files to be written into the .jigdo later
++*/
++void write_jt_match_record(char *filename, char *mirror_name, int sector_size, off_t size, unsigned char md5[16])
++{
++    unsigned long long  tmp_size = 0;
++    char                buf[32768];
++    off_t               remain = size;
++	FILE               *infile = NULL;
++	int	                use = 0;
++    unsigned long long  rsync64_sum = 0;
++    int first_block = 1;
++
++    memset(buf, 0, sizeof(buf));
++
++    if ((infile = fopen(filename, "rb")) == NULL) {
++#ifdef	USE_LIBSCHILY
++		comerr("cannot open '%s'\n", filename);
++#else
++#ifndef	HAVE_STRERROR
++		fprintf(stderr, "cannot open '%s': (%d)\n",
++				filename, errno);
++#else
++		fprintf(stderr, "cannot open '%s': %s\n",
++				filename, strerror(errno));
++#endif
++		exit(1);
++#endif
++	}
++
++    while (remain > 0)
++    {
++        use = remain;
++        if (remain > sizeof(buf))
++            use = sizeof(buf);
++		if (fread(buf, 1, use, infile) == 0)
++        {
++#ifdef	USE_LIBSCHILY
++			comerr("cannot read from '%s'\n", filename);
++#else
++			fprintf(stderr, "cannot read from '%s'\n", filename);
++			exit(1);
++#endif
++		}
++        if (first_block)
++            rsync64_sum = rsync64(buf, MIN_JIGDO_FILE_SIZE);
++        mk_MD5Update(&iso_context, buf, use);
++        remain -= use;
++        first_block = 0;
++    }
++
++    fclose(infile);
++    
++    /* Update the image checksum with any necessary padding data */
++    if (size % sector_size)
++    {
++        int pad_size = sector_size - (size % sector_size);
++        memset(buf, 0, pad_size);
++        mk_MD5Update(&iso_context, buf, pad_size);
++    }
++
++    add_file_entry(mirror_name, size, &md5[0], rsync64_sum);
++    if (size % sector_size)
++    {
++        int pad_size = sector_size - (size % sector_size);
++        write_compressed_chunk(buf, pad_size);
++        add_unmatched_entry(pad_size);
++    }        
++}
+diff -urNad cdrtools-2.01+01a03/mkisofs/jte.h /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/jte.h
+--- cdrtools-2.01+01a03/mkisofs/jte.h	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/jte.h	2005-12-04 00:27:00.000000000 +0000
+@@ -0,0 +1,18 @@
++extern char *jtemplate_out;
++extern char *jjigdo_out;
++extern char *jmd5_list;
++extern FILE	*jthelper;
++extern FILE *jtjigdo;
++extern FILE *jttemplate;
++extern int  jte_min_size;
++
++extern void write_jt_header(FILE *template_file, FILE *jigdo_file);
++extern void write_jt_footer(void);
++extern void jtwrite(void *buffer, int size, int count, int submode, BOOL islast);
++extern void write_jt_match_record(char *filename, char *mirror_name, int sector_size, off_t size, unsigned char md5[16]);
++extern int  list_file_in_jigdo(char *filename, off_t size, char **realname, unsigned char md5[16]);
++extern int  jte_add_exclude(char *pattern);
++extern int  jte_add_include(char *pattern);
++extern int  jte_add_mapping(char *arg);
++
++#define MIN_JIGDO_FILE_SIZE 1024
+diff -urNad cdrtools-2.01+01a03/mkisofs/Makefile /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/Makefile
+--- cdrtools-2.01+01a03/mkisofs/Makefile	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/Makefile	2005-12-04 00:27:00.000000000 +0000
+@@ -33,7 +33,7 @@
+ CPPOPTS +=	-DSORTING
+ CPPOPTS +=	-DUSE_ICONV
+ CPPOPTS +=	-I../libhfs_iso/
+-CPPOPTS	+=	-DHAVE_CONFIG_H -DUSE_LIBSCHILY -DUSE_SCG \
++CPPOPTS	+=	-DHAVE_CONFIG_H -DUSE_LIBSCHILY -DUSE_SCG -DJIGDO_TEMPLATE \
+ 		'-DAPPID_DEFAULT="MKISOFS ISO 9660/HFS FILESYSTEM BUILDER & CDRECORD CD-R/DVD CREATOR (C) 1993 E.YOUNGDALE (C) 1997 J.PEARSON/J.SCHILLING"' \
+ 		-I../cdrecord
+ CFILES=		mkisofs.c tree.c write.c hash.c rock.c udf.c multi.c \
+@@ -45,14 +45,14 @@
+ 		apple.c volume.c desktop.c mac_label.c stream.c \
+ 		ifo_read.c dvd_file.c dvd_reader.c \
+ 		defaults.c getnum.c boot-alpha.c boot-hppa.c boot-mips.c \
+-		boot-mipsel.c endian.c
++		boot-mipsel.c endian.c md5.c jte.c rsync.c
+ HFILES=		apple.h bootinfo.h config.h defaults.h diskmbr.h exclude.h \
+ 		fnmatch.h getopt.h iso9660.h mac_label.h mactypes.h match.h \
+ 		mkisofs.h sunlabel.h udf.h udf_fs.h vms.h \
+ 		ifo_read.h dvd_file.h dvd_reader.h bswap.h ifo_types.h \
+-		../cdrecord/defaults.h endian.h
++		../cdrecord/defaults.h endian.h md5.h jte.h
+ 
+-LIBS=		-lhfs -lfile -lunls -lrscg -lscg $(LIB_VOLMGT) -ldeflt -lschily $(SCSILIB) $(LIB_SOCKET)
++LIBS=		-lhfs -lfile -lunls -lrscg -lscg $(LIB_VOLMGT) -ldeflt -lschily $(SCSILIB) $(LIB_SOCKET) -lz #-lbz2
+ XMK_FILE=	Makefile.man hybridman.mk
+ 
+ ###########################################################################
+diff -urNad cdrtools-2.01+01a03/mkisofs/md5.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/md5.c
+--- cdrtools-2.01+01a03/mkisofs/md5.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/md5.c	2005-12-04 00:27:00.000000000 +0000
+@@ -0,0 +1,403 @@
++/*
++ * This code implements the MD5 message-digest algorithm.
++ * The algorithm is due to Ron Rivest.  This code was
++ * written by Colin Plumb in 1993, no copyright is claimed.
++ * This code is in the public domain; do with it what you wish.
++ *
++ * Equivalent code is available from RSA Data Security, Inc.
++ * This code has been tested against that, and is equivalent,
++ * except that you don't need to include two pages of legalese
++ * with every copy.
++ *
++ * To compute the message digest of a chunk of bytes, declare an
++ * MD5Context structure, pass it to MD5Init, call MD5Update as
++ * needed on buffers full of bytes, and then call MD5Final, which
++ * will fill a supplied 16-byte array with the digest.
++ */
++
++/* This code was modified in 1997 by Jim Kingdon of Cyclic Software to
++   not require an integer type which is exactly 32 bits.  This work
++   draws on the changes for the same purpose by Tatu Ylonen
++   <ylo@cs.hut.fi> as part of SSH, but since I didn't actually use
++   that code, there is no copyright issue.  I hereby disclaim
++   copyright in any changes I have made; this code remains in the
++   public domain.  */
++
++/* Note regarding cvs_* namespace: this avoids potential conflicts
++   with libraries such as some versions of Kerberos.  No particular
++   need to worry about whether the system supplies an MD5 library, as
++   this file is only about 3k of object code.  */
++
++/* Steve McIntyre, 2004/05/31: borrowed this code from the CVS
++   library. s/cvs_/mk_/ across the source */
++
++#ifdef HAVE_CONFIG_H
++#include "config.h"
++#endif
++
++#include <string.h>	/* for memcpy() and memset() */
++#include <stdio.h>
++#include <errno.h>
++#include <stdlib.h>
++
++#include "md5.h"
++
++/* Little-endian byte-swapping routines.  Note that these do not
++   depend on the size of datatypes such as mk_uint32, nor do they require
++   us to detect the endianness of the machine we are running on.  It
++   is possible they should be macros for speed, but I would be
++   surprised if they were a performance bottleneck for MD5.  */
++
++static mk_uint32
++getu32 (addr)
++     const unsigned char *addr;
++{
++	return (((((unsigned long)addr[3] << 8) | addr[2]) << 8)
++		| addr[1]) << 8 | addr[0];
++}
++
++static void
++putu32 (data, addr)
++     mk_uint32 data;
++     unsigned char *addr;
++{
++	addr[0] = (unsigned char)data;
++	addr[1] = (unsigned char)(data >> 8);
++	addr[2] = (unsigned char)(data >> 16);
++	addr[3] = (unsigned char)(data >> 24);
++}
++
++/*
++ * Start MD5 accumulation.  Set bit count to 0 and buffer to mysterious
++ * initialization constants.
++ */
++void
++mk_MD5Init (ctx)
++     struct mk_MD5Context *ctx;
++{
++	ctx->buf[0] = 0x67452301;
++	ctx->buf[1] = 0xefcdab89;
++	ctx->buf[2] = 0x98badcfe;
++	ctx->buf[3] = 0x10325476;
++
++	ctx->bits[0] = 0;
++	ctx->bits[1] = 0;
++}
++
++/*
++ * Update context to reflect the concatenation of another buffer full
++ * of bytes.
++ */
++void
++mk_MD5Update (ctx, buf, len)
++     struct mk_MD5Context *ctx;
++     unsigned char const *buf;
++     unsigned len;
++{
++	mk_uint32 t;
++
++	/* Update bitcount */
++
++	t = ctx->bits[0];
++	if ((ctx->bits[0] = (t + ((mk_uint32)len << 3)) & 0xffffffff) < t)
++		ctx->bits[1]++;	/* Carry from low to high */
++	ctx->bits[1] += len >> 29;
++
++	t = (t >> 3) & 0x3f;	/* Bytes already in shsInfo->data */
++
++	/* Handle any leading odd-sized chunks */
++
++	if ( t ) {
++		unsigned char *p = ctx->in + t;
++
++		t = 64-t;
++		if (len < t) {
++			memcpy(p, buf, len);
++			return;
++		}
++		memcpy(p, buf, t);
++		mk_MD5Transform (ctx->buf, ctx->in);
++		buf += t;
++		len -= t;
++	}
++
++	/* Process data in 64-byte chunks */
++
++	while (len >= 64) {
++		memcpy(ctx->in, buf, 64);
++		mk_MD5Transform (ctx->buf, ctx->in);
++		buf += 64;
++		len -= 64;
++	}
++
++	/* Handle any remaining bytes of data. */
++
++	memcpy(ctx->in, buf, len);
++}
++
++/*
++ * Final wrapup - pad to 64-byte boundary with the bit pattern 
++ * 1 0* (64-bit count of bits processed, MSB-first)
++ */
++void
++mk_MD5Final (digest, ctx)
++     unsigned char digest[16];
++     struct mk_MD5Context *ctx;
++{
++	unsigned count;
++	unsigned char *p;
++
++	/* Compute number of bytes mod 64 */
++	count = (ctx->bits[0] >> 3) & 0x3F;
++
++	/* Set the first char of padding to 0x80.  This is safe since there is
++	   always at least one byte free */
++	p = ctx->in + count;
++	*p++ = 0x80;
++
++	/* Bytes of padding needed to make 64 bytes */
++	count = 64 - 1 - count;
++
++	/* Pad out to 56 mod 64 */
++	if (count < 8) {
++		/* Two lots of padding:  Pad the first block to 64 bytes */
++		memset(p, 0, count);
++		mk_MD5Transform (ctx->buf, ctx->in);
++
++		/* Now fill the next block with 56 bytes */
++		memset(ctx->in, 0, 56);
++	} else {
++		/* Pad block to 56 bytes */
++		memset(p, 0, count-8);
++	}
++
++	/* Append length in bits and transform */
++	putu32(ctx->bits[0], ctx->in + 56);
++	putu32(ctx->bits[1], ctx->in + 60);
++
++	mk_MD5Transform (ctx->buf, ctx->in);
++	putu32(ctx->buf[0], digest);
++	putu32(ctx->buf[1], digest + 4);
++	putu32(ctx->buf[2], digest + 8);
++	putu32(ctx->buf[3], digest + 12);
++	memset(ctx, 0, sizeof(ctx));	/* In case it's sensitive */
++}
++
++#ifndef ASM_MD5
++
++/* The four core functions - F1 is optimized somewhat */
++
++/* #define F1(x, y, z) (x & y | ~x & z) */
++#define F1(x, y, z) (z ^ (x & (y ^ z)))
++#define F2(x, y, z) F1(z, x, y)
++#define F3(x, y, z) (x ^ y ^ z)
++#define F4(x, y, z) (y ^ (x | ~z))
++
++/* This is the central step in the MD5 algorithm. */
++#define MD5STEP(f, w, x, y, z, data, s) \
++	( w += f(x, y, z) + data, w &= 0xffffffff, w = w<<s | w>>(32-s), w += x )
++
++/*
++ * The core of the MD5 algorithm, this alters an existing MD5 hash to
++ * reflect the addition of 16 longwords of new data.  MD5Update blocks
++ * the data and converts bytes into longwords for this routine.
++ */
++void
++mk_MD5Transform (buf, inraw)
++     mk_uint32 buf[4];
++     const unsigned char inraw[64];
++{
++	register mk_uint32 a, b, c, d;
++	mk_uint32 in[16];
++	int i;
++
++	for (i = 0; i < 16; ++i)
++		in[i] = getu32 (inraw + 4 * i);
++
++	a = buf[0];
++	b = buf[1];
++	c = buf[2];
++	d = buf[3];
++
++	MD5STEP(F1, a, b, c, d, in[ 0]+0xd76aa478,  7);
++	MD5STEP(F1, d, a, b, c, in[ 1]+0xe8c7b756, 12);
++	MD5STEP(F1, c, d, a, b, in[ 2]+0x242070db, 17);
++	MD5STEP(F1, b, c, d, a, in[ 3]+0xc1bdceee, 22);
++	MD5STEP(F1, a, b, c, d, in[ 4]+0xf57c0faf,  7);
++	MD5STEP(F1, d, a, b, c, in[ 5]+0x4787c62a, 12);
++	MD5STEP(F1, c, d, a, b, in[ 6]+0xa8304613, 17);
++	MD5STEP(F1, b, c, d, a, in[ 7]+0xfd469501, 22);
++	MD5STEP(F1, a, b, c, d, in[ 8]+0x698098d8,  7);
++	MD5STEP(F1, d, a, b, c, in[ 9]+0x8b44f7af, 12);
++	MD5STEP(F1, c, d, a, b, in[10]+0xffff5bb1, 17);
++	MD5STEP(F1, b, c, d, a, in[11]+0x895cd7be, 22);
++	MD5STEP(F1, a, b, c, d, in[12]+0x6b901122,  7);
++	MD5STEP(F1, d, a, b, c, in[13]+0xfd987193, 12);
++	MD5STEP(F1, c, d, a, b, in[14]+0xa679438e, 17);
++	MD5STEP(F1, b, c, d, a, in[15]+0x49b40821, 22);
++
++	MD5STEP(F2, a, b, c, d, in[ 1]+0xf61e2562,  5);
++	MD5STEP(F2, d, a, b, c, in[ 6]+0xc040b340,  9);
++	MD5STEP(F2, c, d, a, b, in[11]+0x265e5a51, 14);
++	MD5STEP(F2, b, c, d, a, in[ 0]+0xe9b6c7aa, 20);
++	MD5STEP(F2, a, b, c, d, in[ 5]+0xd62f105d,  5);
++	MD5STEP(F2, d, a, b, c, in[10]+0x02441453,  9);
++	MD5STEP(F2, c, d, a, b, in[15]+0xd8a1e681, 14);
++	MD5STEP(F2, b, c, d, a, in[ 4]+0xe7d3fbc8, 20);
++	MD5STEP(F2, a, b, c, d, in[ 9]+0x21e1cde6,  5);
++	MD5STEP(F2, d, a, b, c, in[14]+0xc33707d6,  9);
++	MD5STEP(F2, c, d, a, b, in[ 3]+0xf4d50d87, 14);
++	MD5STEP(F2, b, c, d, a, in[ 8]+0x455a14ed, 20);
++	MD5STEP(F2, a, b, c, d, in[13]+0xa9e3e905,  5);
++	MD5STEP(F2, d, a, b, c, in[ 2]+0xfcefa3f8,  9);
++	MD5STEP(F2, c, d, a, b, in[ 7]+0x676f02d9, 14);
++	MD5STEP(F2, b, c, d, a, in[12]+0x8d2a4c8a, 20);
++
++	MD5STEP(F3, a, b, c, d, in[ 5]+0xfffa3942,  4);
++	MD5STEP(F3, d, a, b, c, in[ 8]+0x8771f681, 11);
++	MD5STEP(F3, c, d, a, b, in[11]+0x6d9d6122, 16);
++	MD5STEP(F3, b, c, d, a, in[14]+0xfde5380c, 23);
++	MD5STEP(F3, a, b, c, d, in[ 1]+0xa4beea44,  4);
++	MD5STEP(F3, d, a, b, c, in[ 4]+0x4bdecfa9, 11);
++	MD5STEP(F3, c, d, a, b, in[ 7]+0xf6bb4b60, 16);
++	MD5STEP(F3, b, c, d, a, in[10]+0xbebfbc70, 23);
++	MD5STEP(F3, a, b, c, d, in[13]+0x289b7ec6,  4);
++	MD5STEP(F3, d, a, b, c, in[ 0]+0xeaa127fa, 11);
++	MD5STEP(F3, c, d, a, b, in[ 3]+0xd4ef3085, 16);
++	MD5STEP(F3, b, c, d, a, in[ 6]+0x04881d05, 23);
++	MD5STEP(F3, a, b, c, d, in[ 9]+0xd9d4d039,  4);
++	MD5STEP(F3, d, a, b, c, in[12]+0xe6db99e5, 11);
++	MD5STEP(F3, c, d, a, b, in[15]+0x1fa27cf8, 16);
++	MD5STEP(F3, b, c, d, a, in[ 2]+0xc4ac5665, 23);
++
++	MD5STEP(F4, a, b, c, d, in[ 0]+0xf4292244,  6);
++	MD5STEP(F4, d, a, b, c, in[ 7]+0x432aff97, 10);
++	MD5STEP(F4, c, d, a, b, in[14]+0xab9423a7, 15);
++	MD5STEP(F4, b, c, d, a, in[ 5]+0xfc93a039, 21);
++	MD5STEP(F4, a, b, c, d, in[12]+0x655b59c3,  6);
++	MD5STEP(F4, d, a, b, c, in[ 3]+0x8f0ccc92, 10);
++	MD5STEP(F4, c, d, a, b, in[10]+0xffeff47d, 15);
++	MD5STEP(F4, b, c, d, a, in[ 1]+0x85845dd1, 21);
++	MD5STEP(F4, a, b, c, d, in[ 8]+0x6fa87e4f,  6);
++	MD5STEP(F4, d, a, b, c, in[15]+0xfe2ce6e0, 10);
++	MD5STEP(F4, c, d, a, b, in[ 6]+0xa3014314, 15);
++	MD5STEP(F4, b, c, d, a, in[13]+0x4e0811a1, 21);
++	MD5STEP(F4, a, b, c, d, in[ 4]+0xf7537e82,  6);
++	MD5STEP(F4, d, a, b, c, in[11]+0xbd3af235, 10);
++	MD5STEP(F4, c, d, a, b, in[ 2]+0x2ad7d2bb, 15);
++	MD5STEP(F4, b, c, d, a, in[ 9]+0xeb86d391, 21);
++
++	buf[0] += a;
++	buf[1] += b;
++	buf[2] += c;
++	buf[3] += d;
++}
++#endif
++
++/* Read in a hex-dumped MD5 sum and parse it */
++int mk_MD5Parse(unsigned char in[33], unsigned char out[16])
++{
++    int i = 0;
++
++    for (i = 0; i < 16; i++)
++    {
++        if (in[2*i] >= '0' && in[2*i] <= '9')
++            in[2*i] -= '0';
++        else if (in[2*i] >= 'A' && in[2*i] <= 'F')
++            in[2*i] += 10 - 'A';
++        else if (in[2*i] >= 'a' && in[2*i] <= 'f')
++            in[2*i] += 10 - 'a';
++        else
++            return 1;
++        if (in[1+(2*i)] >= '0' && in[1+(2*i)] <= '9')
++            in[1+(2*i)] -= '0';
++        else if (in[1+(2*i)] >= 'A' && in[1+(2*i)] <= 'F')
++            in[1+(2*i)] += 10 - 'A';
++        else if (in[1+(2*i)] >= 'a' && in[1+(2*i)] <= 'f')
++            in[1+(2*i)] += 10 - 'a';
++        else
++            return 1;
++        out[i] = in[2*i] << 4 | in[1+(2*i)];
++    }
++    return 0;
++}
++
++/* Calculate the MD5sum of the specified file */
++int calculate_md5sum(char *filename, unsigned long long size, unsigned char out[16])
++{
++	char		buffer[32768];
++    int i = 0;
++    FILE *infile = NULL;
++    unsigned long long remain = 0;
++    int	        use;
++    struct mk_MD5Context file_context;
++
++    /* Start MD5 work for the file */
++    mk_MD5Init(&file_context);
++
++    infile = fopen(filename, "rb");
++    if (!infile)
++    {
++#ifndef	HAVE_STRERROR
++		fprintf(stderr, "cannot open '%s': (%d)\n",
++				filename, errno);
++#else
++		fprintf(stderr, "cannot open '%s': %s\n",
++				filename, strerror(errno));
++#endif
++		exit(1);
++	}
++
++    remain = size;
++    while (remain > 0)
++    {
++        use = (remain > sizeof(buffer) ? sizeof(buffer) : remain);
++		if (fread(buffer, 1, use, infile) == 0)
++        {
++			fprintf(stderr, "cannot read from '%s'\n", filename);
++			exit(1);
++		}
++        /* Update the checksum */
++        mk_MD5Update(&file_context, buffer, use);
++        remain -= use;
++    }
++    fclose(infile);
++    mk_MD5Final(&out[0], &file_context);
++
++    return 0;
++}
++
++
++#ifdef TEST
++/* Simple test program.  Can use it to manually run the tests from
++   RFC1321 for example.  */
++#include <stdio.h>
++
++int
++main (int argc, char **argv)
++{
++	struct mk_MD5Context context;
++	unsigned char checksum[16];
++	int i;
++	int j;
++
++	if (argc < 2)
++	{
++		fprintf (stderr, "usage: %s string-to-hash\n", argv[0]);
++		exit (1);
++	}
++	for (j = 1; j < argc; ++j)
++	{
++		printf ("MD5 (\"%s\") = ", argv[j]);
++		mk_MD5Init (&context);
++		mk_MD5Update (&context, argv[j], strlen (argv[j]));
++		mk_MD5Final (checksum, &context);
++		for (i = 0; i < 16; i++)
++		{
++			printf ("%02x", (unsigned int) checksum[i]);
++		}
++		printf ("\n");
++	}
++	return 0;
++}
++#endif /* TEST */
+diff -urNad cdrtools-2.01+01a03/mkisofs/md5.h /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/md5.h
+--- cdrtools-2.01+01a03/mkisofs/md5.h	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/md5.h	2005-12-04 00:27:00.000000000 +0000
+@@ -0,0 +1,29 @@
++/* See md5.c for explanation and copyright information.  */
++
++#ifndef MD5_H
++#define MD5_H
++
++/* Unlike previous versions of this code, uint32 need not be exactly
++   32 bits, merely 32 bits or more.  Choosing a data type which is 32
++   bits instead of 64 is not important; speed is considerably more
++   important.  ANSI guarantees that "unsigned long" will be big enough,
++   and always using it seems to have few disadvantages.  */
++typedef unsigned long mk_uint32;
++
++struct mk_MD5Context {
++	mk_uint32 buf[4];
++	mk_uint32 bits[2];
++	unsigned char in[64];
++};
++
++void mk_MD5Init (struct mk_MD5Context *context);
++void mk_MD5Update (struct mk_MD5Context *context,
++			   unsigned char const *buf, unsigned len);
++void mk_MD5Final (unsigned char digest[16],
++			  struct mk_MD5Context *context);
++void mk_MD5Transform (mk_uint32 buf[4], const unsigned char in[64]);
++int mk_MD5Parse(unsigned char in[33], unsigned char out[16]);
++int calculate_md5sum(char *filename, unsigned long long size, unsigned char out[16]);
++
++
++#endif /* !MD5_H */
+diff -urNad cdrtools-2.01+01a03/mkisofs/mkisofs.8 /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/mkisofs.8
+--- cdrtools-2.01+01a03/mkisofs/mkisofs.8	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/mkisofs.8	2005-12-04 00:27:00.000000000 +0000
+@@ -825,6 +825,46 @@
+ instead.
+ This option will get POSIX.1-2001 semantics with mkisofs-2.02.
+ .TP
++.BI \-jigdo\-jigdo " jigdo_file
++Produce a jigdo .jigdo file as well as the .iso. See the
++.B JIGDO NOTES
++section below for more information.
++.TP
++.BI \-jigdo\-template " template_file
++Produce a jigdo .template file as well as the .iso. See the
++.B JIGDO NOTES
++section below for more information.
++.TP
++.BI \-jigdo\-min\-file\-size " size
++Specify the minimum size for a file to be listed in the .jigdo
++file. Default (and minimum allowed) is 1KB. See the
++.B JIGDO NOTES
++section below for more information.
++.TP
++.BI \-jigdo\-force\-md5 " path
++Specify a file pattern where files MUST be contained in the
++externally-suplied MD5 list as supplied by \-md5\-list. See the
++.B JIGDO NOTES
++section below for more information.
++.TP
++.BI \-jigdo\-exclude " path
++Specify a file pattern where files will not be listed in the .jigdo
++file. See the
++.B JIGDO NOTES
++section below for more information.
++.TP
++.BI \-jigdo\-map " path
++Specify a pattern mapping for the jigdo file
++(e.g. Debian=/mirror/debian). See the
++.B JIGDO NOTES
++section below for more information.
++.TP
++.BI \-md5\-list " md5_file
++Specify a file containing the MD5sums, sizes and pathnames of the
++files to be included in the .jigdo file. See the
++.B JIGDO NOTES
++section below for more information.
++.TP
+ .BI \-log\-file " log_file
+ Redirect all error, warning and informational messages to
+ .I log_file
+@@ -2458,6 +2498,46 @@
+ firmware. Optionally, a ramdisk can be used for the root filesystem
+ using
+ .B \-hppa\-cmdline.
++.SH "JIGDO NOTES"
++Jigdo is a useful tool to help in the distribution of large files like CD and
++DVD images. See Richard Atterer's site for more details. Debian CDs and DVD ISO
++images are published on the web in jigdo format to allow end users to download
++them more efficiently.
++.PP
++To create jigdo and template files alongside the ISO image from
++mkisofs, you must first generate a list of the files that will be
++used, in the following format:
++.sp
++.RS +.2i
++.ta 2.0i 2.0i 5.0i
++.nf
++MD5sum   File size  Path
++32 chars 12 chars   to end of line
++.fi
++.RE
++.sp
++The MD5sum should be written in jigdo's pseudo-base64 format. The file
++size should be in decimal, and the path to the file must be absolute.
++.PP
++Once you have this file, call mkisofs with all of your normal command
++line parameters. Specify the output filenames for the jigdo and
++template files using \-jigdo\-jigdo and \-jigdo\-template, and pass in
++the location of your MD5 list with the \-md5\-list option.
++.PP
++If there are files that you do NOT want to be added into the jigdo
++file (e.g. if they are likely to change often), specify them using
++\-jigdo\-ignore. If you want to verify some of the files as they are
++written into the image, specify them using \-jigdo\-force\-md5. If any
++files don't match, mkisofs will then abort. Both of these options take
++regular expressions as input. It is possible to restrict the set of
++files that will be used further based on size - use the
++\-jigdo\-min\-file\-size option.
++.PP
++Finally, the jigdo code needs to know how to map the files it is given
++onto a mirror-style configuration. Specify how to map paths using the
++\-jigdo\-map option. Using "Debian=/mirror/debian" will cause all
++paths starting with "/mirror/debian" to be mapped to "Debian:<file>"
++in the output jigdo file.
+ .SH CONFIGURATION
+ .B mkisofs
+ looks for the
+diff -urNad cdrtools-2.01+01a03/mkisofs/mkisofs.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/mkisofs.c
+--- cdrtools-2.01+01a03/mkisofs/mkisofs.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/mkisofs.c	2005-12-04 00:27:00.000000000 +0000
+@@ -380,6 +380,16 @@
+ #define	OPTION_ALLOW_LEADING_DOTS	1070
+ #define	OPTION_PUBLISHER		1071
+ 
++#ifdef		JIGDO_TEMPLATE
++#define	OPTION_JTT_OUTPUT		1101
++#define	OPTION_JTJ_OUTPUT		1102
++#define	OPTION_JT_MIN_SIZE		1103
++#define	OPTION_JT_PATH_MAP		1104
++#define	OPTION_JT_MD5_LIST		1105
++#define	OPTION_JT_INCLUDE		1106
++#define	OPTION_JT_EXCLUDE		1107
++#endif
++
+ #define	OPTION_BOOTALPHA		1200
+ 
+ #define	OPTION_HPPA_CMDLINE 		1210
+@@ -638,6 +648,23 @@
+ 	{{"mipsel-boot", required_argument, NULL, OPTION_BOOTMIPSEL},
+ 	'\0', "FILE", "Set mipsel boot image name (relative to image root)", ONE_DASH},
+ 
++#ifdef JIGDO_TEMPLATE
++	{{"jigdo-jigdo", required_argument, NULL, OPTION_JTJ_OUTPUT},
++	'\0', "FILE", "Produce a jigdo .jigdo file as well as the .iso", ONE_DASH },
++	{{"jigdo-template", required_argument, NULL, OPTION_JTT_OUTPUT},
++	'\0', "FILE", "Produce a jigdo .template file as well as the .iso", ONE_DASH },
++	{{"jigdo-min-file-size", required_argument, NULL, OPTION_JT_MIN_SIZE},
++	'\0', "SIZE", "Minimum size for a file to be listed in the jigdo file", ONE_DASH },
++	{{"jigdo-force-md5", required_argument, NULL, OPTION_JT_INCLUDE},
++	'\0', "PATTERN", "Pattern(s) where files MUST match an externally-supplied MD5sum", ONE_DASH },
++	{{"jigdo-exclude", required_argument, NULL, OPTION_JT_EXCLUDE},
++	'\0', "PATTERN", "Pattern(s) to exclude from the jigdo file", ONE_DASH },
++	{{"jigdo-map", required_argument, NULL, OPTION_JT_PATH_MAP},
++	'\0', "PATTERN1=PATTERN2", "Pattern(s) to map paths (e.g. Debian=/mirror/debian)", ONE_DASH },
++	{{"md5-list", required_argument, NULL, OPTION_JT_MD5_LIST},
++	'\0', "FILE", "File containing MD5 sums of the files that should be checked", ONE_DASH },
++#endif
++
+ #ifdef SORTING
+ 	{ {"sort", required_argument, NULL, OPTION_SORT},
+ 	'\0', "FILE", "Sort file content locations according to rules in FILE", ONE_DASH },
+@@ -1007,6 +1034,7 @@
+ 	fprintf(stderr, "\nUse %s -help\n", program_name);
+ 	fprintf(stderr, "to get a list of valid options.\n");
+ 	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
++	fprintf(stderr, "This version of mkisofs includes the unofficial JTE patch\nfrom http://www.einval.com/~steve/software/JTE/\nReport errors to steve-jte@einval.com\n");
+ 
+ 	exit(excode);
+ }
+@@ -1103,6 +1131,7 @@
+ 		}
+ 	}
+ 	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
++	fprintf(stderr, "This version of mkisofs includes the unofficial JTE patch\nfrom http://www.einval.com/~steve/software/JTE/\nReport errors to steve-jte@einval.com\n");
+ 	exit(excode);
+ }
+ 
+@@ -1407,6 +1436,60 @@
+ 		case OPTION_OUTPUT_CHARSET:
+ 			ocharset = optarg;
+ 			break;
++#ifdef JIGDO_TEMPLATE
++		case OPTION_JTT_OUTPUT:
++			jtemplate_out = optarg;
++			break;
++		case OPTION_JTJ_OUTPUT:
++			jjigdo_out = optarg;
++			break;
++		case OPTION_JT_MD5_LIST:
++			jmd5_list = optarg;
++			break;
++		case OPTION_JT_MIN_SIZE:
++			jte_min_size = atoi(optarg);
++			if (jte_min_size < MIN_JIGDO_FILE_SIZE) {
++				fprintf(stderr, "Jigdo min size %d too small; using default %d instead\n", jte_min_size, MIN_JIGDO_FILE_SIZE);
++				jte_min_size = MIN_JIGDO_FILE_SIZE;
++			}
++			break;
++		case OPTION_JT_INCLUDE:
++			if (jte_add_include(optarg)) {
++#ifdef	USE_LIBSCHILY
++				comerrno(EX_BAD,
++				         "Failed to build jigdo-include list\n");
++#else
++				fprintf(stderr,
++				        "Failed to build jigdo-include list\n");
++				exit(1);
++#endif
++			}
++			break;
++		case OPTION_JT_EXCLUDE:
++			if (jte_add_exclude(optarg)) {
++#ifdef	USE_LIBSCHILY
++				comerrno(EX_BAD,
++				         "Failed to build jigdo-exclude list\n");
++#else
++				fprintf(stderr,
++				        "Failed to build jigdo-exclude list\n");
++				exit(1);
++#endif
++			}
++			break;
++		case OPTION_JT_PATH_MAP:
++			if (jte_add_mapping(optarg)) {
++#ifdef	USE_LIBSCHILY
++				comerrno(EX_BAD,
++				         "Failed to build jigdo mapping list\n");
++#else
++				fprintf(stderr,
++				        "Failed to build jigdo mapping list\n");
++				exit(1);
++#endif
++			}
++			break;
++#endif /* JIGDO_TEMPLATE */
+ 		case OPTION_NOBAK:
+ 			all_files = 0;
+ 			break;
+@@ -3296,6 +3379,27 @@
+ 			exit(1);
+ #endif
+ 		}
++		if (jtemplate_out || jjigdo_out) {
++			if (!jtemplate_out || !jjigdo_out || !jmd5_list) {
++#ifdef USE_LIBSCHILY
++				comerr("Bad options - need to specify output names for jigdo and template file, and also the md5-list input file!\n");
++#else
++				fprintf(stderr, "Bad options - need to specify output names for jigdo and template file, and also the md5-list input file!\n");
++				exit(1);
++#endif
++			}
++			jtjigdo = fopen(jjigdo_out, "wb");
++			jttemplate = fopen(jtemplate_out, "wb");
++			if (!jtjigdo || !jttemplate) {
++#ifdef USE_LIBSCHILY
++				comerr("Unable to open jigdo template image file\n");
++#else
++				fprintf(stderr, "Unable to open jigdo template image file\n");
++				exit(1);
++#endif
++			}
++			write_jt_header(jttemplate, jtjigdo);
++		}
+ 	} else {
+ 		discimage = stdout;
+ 
+@@ -3559,6 +3663,13 @@
+ 				last_extent, last_extent_written);
+ 	}
+ 
++	if (jttemplate) {
++		write_jt_footer();
++		fclose(jttemplate);
++	}
++	if (jtjigdo)
++		fclose(jtjigdo);
++
+ 	if (verbose > 0) {
+ #ifdef HAVE_SBRK
+ 		fprintf(stderr, "Max brk space used %x\n",
+diff -urNad cdrtools-2.01+01a03/mkisofs/mkisofs.h /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/mkisofs.h
+--- cdrtools-2.01+01a03/mkisofs/mkisofs.h	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/mkisofs.h	2005-12-04 00:27:00.000000000 +0000
+@@ -35,6 +35,9 @@
+ #include <standard.h>
+ #include <libport.h>
+ #include "scsi.h"
++#ifdef JIGDO_TEMPLATE
++#include "jte.h"
++#endif
+ 
+ #ifdef	DVD_VIDEO
+ #ifndef	UDF
+@@ -362,6 +365,7 @@
+ extern int	split_SL_component;
+ extern int	split_SL_field;
+ extern char	*trans_tbl;
++char		*outfile;
+ 
+ #define	JMAX		64	/* maximum Joliet file name length (spec) */
+ #define	JLONGMAX	103	/* out of spec Joliet file name length */
+@@ -475,6 +479,9 @@
+ /* boot-mipsel.c */
+ extern int add_boot_mipsel_filename  __PR((char *filename));
+ 
++/* rsync.c */
++extern unsigned long long rsync64   __PR((unsigned char *mem, size_t size));
++
+ /* write.c */
+ extern int get_731 __PR((char *));
+ extern int get_732 __PR((char *));
+diff -urNad cdrtools-2.01+01a03/mkisofs/rsync.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/rsync.c
+--- cdrtools-2.01+01a03/mkisofs/rsync.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/rsync.c	2005-12-04 00:27:00.000000000 +0000
+@@ -0,0 +1,100 @@
++#include "mkisofs.h"
++#include "utypes.h"
++#include <ctype.h>
++#include <mconfig.h>
++
++/* Borrowed from jigdo; original notice:
++
++   These are purely random, no patterns or anything... (I hope)
++
++   I do not claim copyright for the actual numbers below, you may use them
++   for a re-implementation of the algorithm under a license of your choice.
++   -- Richard Atterer. */
++static UInt32_t charTable[256] = {
++  0x51d65c0f, 0x083cd94b, 0x77f73dd8, 0xa0187d36,
++  0x29803d07, 0x7ea8ac0e, 0xea4c16c9, 0xfc576443,
++  0x6213df29, 0x1c012392, 0xb38946ae, 0x2e20ca31,
++  0xe4dc532f, 0xcb281c47, 0x8508b6a5, 0xb93c210d,
++  0xef02b5f3, 0x66548c74, 0x9ae2deab, 0x3b59f472,
++  0x4e546447, 0x45232d1f, 0x0ac0a4b1, 0x6c4c264b,
++  0x5d24ce84, 0x0f2752cc, 0xa35c7ac7, 0x3e31af51,
++  0x79675a59, 0x581f0e81, 0x49053122, 0x7339c9d8,
++  0xf9833565, 0xa3dbe5b3, 0xcc06eeb9, 0x92d0671c,
++  0x3eb220a7, 0x64864eae, 0xca100872, 0xc50977a1,
++  0xd90378e1, 0x7a36cab9, 0x15c15f4b, 0x8b9ef749,
++  0xcc1432dc, 0x1ec578ed, 0x27e6e092, 0xbb06db8f,
++  0x67f661ac, 0x8dd1a3db, 0x2a0ca16b, 0xb229ab84,
++  0x127a3337, 0x347d846f, 0xe1ea4b50, 0x008dbb91,
++  0x414c1426, 0xd2be76f0, 0x08789a39, 0xb4d93e30,
++  0x61667760, 0x8871bee9, 0xab7da12d, 0xe3c58620,
++  0xe9fdfbbe, 0x64fb04f7, 0x8cc5bbf0, 0xf5272d30,
++  0x8f161b50, 0x11122b05, 0x7695e72e, 0xa1c5d169,
++  0x1bfd0e20, 0xef7e6169, 0xf652d08e, 0xa9d0f139,
++  0x2f70aa04, 0xae2c7d6d, 0xa3cb9241, 0x3ae7d364,
++  0x348788f8, 0xf483b8f1, 0x55a011da, 0x189719dc,
++  0xb0c5d723, 0x8b344e33, 0x300d46eb, 0xd44fe34f,
++  0x1a2016c1, 0x66ce4cd7, 0xa45ea5e3, 0x55cb708a,
++  0xbce430df, 0xb01ae6e0, 0x3551163b, 0x2c5b157a,
++  0x574c4209, 0x430fd0e4, 0x3387e4a5, 0xee1d7451,
++  0xa9635623, 0x873ab89b, 0xb96bc6aa, 0x59898937,
++  0xe646c6e7, 0xb79f8792, 0x3f3235d8, 0xef1b5acf,
++  0xd975b22b, 0x427acce6, 0xe47a2411, 0x75f8c1e8,
++  0xa63f799d, 0x53886ad8, 0x9b2d6d32, 0xea822016,
++  0xcdee2254, 0xd98bcd98, 0x2933a544, 0x961f379f,
++  0x49219792, 0xc61c360f, 0x77cc0c64, 0x7b872046,
++  0xb91c7c12, 0x7577154b, 0x196573be, 0xf788813f,
++  0x41e2e56a, 0xec3cd244, 0x8c7401f1, 0xc2e805fe,
++  0xe8872fbe, 0x9e2faf7d, 0x6766456b, 0x888e2197,
++  0x28535c6d, 0x2ce45f3f, 0x24261d2a, 0xd6faab8b,
++  0x7a7b42b8, 0x15f0f6fa, 0xfe1711df, 0x7e5685a6,
++  0x00930268, 0x74755331, 0x1998912c, 0x7b60498b,
++  0x501a5786, 0x92ace0f6, 0x1d9752fe, 0x5a731add,
++  0x5b3b44fc, 0x473673f9, 0xa42c0321, 0xd82f9f18,
++  0xb4b225da, 0xfc89ece2, 0x072e1130, 0x5772aae3,
++  0x29010857, 0x542c970c, 0x94f67fe5, 0x71209e9b,
++  0xdb97ea39, 0x2689b41b, 0xae815804, 0xfc5e2651,
++  0xd4521674, 0x48ed979a, 0x2f617da3, 0xc350353d,
++  0xc3accd94, 0xbd8d313a, 0xc61a8e77, 0xf34940a4,
++  0x8d2c6b0f, 0x0f0e7225, 0x39e183db, 0xd19ebba9,
++  0x6a0f37b9, 0xd18922f3, 0x106420c5, 0xaa5a640b,
++  0x7cf0d273, 0xcf3238a7, 0x3b33204f, 0x476be7bb,
++  0x09d23bca, 0xbe84b2f7, 0xb7a3bace, 0x2528cee1,
++  0x3dcaa1dd, 0x900ad31a, 0xf21dea6d, 0x9ce51463,
++  0xf1540bba, 0x0fab1bdd, 0x89cfb79a, 0x01a2a6e6,
++  0x6f85d67c, 0xd1669ec4, 0x355db722, 0x00ebd5c4,
++  0x926eb385, 0x69ead869, 0x0da2b122, 0x402779fe,
++  0xdaed92d0, 0x57e9aabb, 0x3df64854, 0xfcc774b5,
++  0x2e1740ed, 0xa615e024, 0xf7bac938, 0x377dfd1a,
++  0xd0559d66, 0x25499be8, 0x2d8f2006, 0xfaa9e486,
++  0x95e980e7, 0x82aeba67, 0x5a7f2561, 0xbc60dff6,
++  0x6c8739a2, 0x7ec59a8b, 0x9998f265, 0xdfe37e5e,
++  0xb47cee1e, 0x4dd8bc9e, 0x35c57e09, 0x07850b63,
++  0x06eadbcb, 0x6c1f2956, 0x01685c2c, 0xf5725eef,
++  0xf13b98b5, 0xaab739c2, 0x200b1da2, 0xa716b98b,
++  0xd9ee3058, 0x76acf20b, 0x2f259e04, 0xed11658b,
++  0x1532b331, 0x0ab43204, 0xf0beb023, 0xb1685483,
++  0x58cbdc4f, 0x079384d3, 0x049b141c, 0xc38184b9,
++  0xaf551d9a, 0x66222560, 0x059deeca, 0x535f99e2
++};
++
++unsigned long long rsync64(unsigned char *mem, size_t size)
++{
++    UInt32_t a = 0;
++    UInt32_t b = 0;
++    unsigned char *limit = mem + size;
++    unsigned long long result = 0;
++
++    while (mem < limit)
++    {
++        a += charTable[*mem++];
++        b += a;
++    }
++
++    a = a & 0xffffffff; // Just in case uint32 can be 64 bits
++    b = b & 0xffffffff;
++
++    result = ((unsigned long long)b << 32) | a;
++
++    return result;
++}
++
+diff -urNad cdrtools-2.01+01a03/mkisofs/stream.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/stream.c
+--- cdrtools-2.01+01a03/mkisofs/stream.c	2005-12-04 00:26:53.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/stream.c	2005-12-04 00:27:00.000000000 +0000
+@@ -156,6 +156,7 @@
+ 			break;
+ 		}
+ 		idx += count;
++		jtwrite(buf, count, 1, 0, FALSE);
+ 		xfwrite(buf, count, 1, outfile, 0, FALSE);
+ 	}
+ 
+@@ -163,15 +164,23 @@
+ 	iso_blocks = ISO_BLOCKS(idx);
+ 	memset(buf, 0, SECTOR_SIZE);
+ 	if (SECTOR_SIZE * iso_blocks - idx)
++    {
++		jtwrite(buf, SECTOR_SIZE * iso_blocks - idx, 1, 0, FALSE);
+ 		xfwrite(buf, SECTOR_SIZE * iso_blocks - idx, 1, outfile, 0, FALSE);
++    }
+ 	/*
+ 	 * If we didn't fill the available area, pad to directory block
+ 	 */
+ 	for (count = 0; count < (avail_extent - iso_blocks); count++)
++    {
++		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 		xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
+-
++    }
+ 	for (count = 0; count < stream_pad; count++)
++    {
++		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 		xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
++    }
+ 
+ 	last_extent_written += avail_extent + stream_pad;
+ 	return (0);
+@@ -200,7 +209,9 @@
+ 	set_723((char *)s_dir.volume_sequence_number, volume_sequence_number);
+ 	s_dir.name_len[0] = 1;
+ 	s_dir.name[0] = 0;
++	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, 0, FALSE);
+ 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, outfile, 0, FALSE);
++	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, 0, FALSE);
+ 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, outfile, 0, FALSE);
+ 	memset(&s_dir, 0, sizeof (struct iso_directory_record));
+ 	s_dir.length[0] = 34 + strlen(stream_filename);
+@@ -213,6 +224,8 @@
+ 	set_723((char *)s_dir.volume_sequence_number, volume_sequence_number);
+ 	s_dir.name_len[0] = strlen(stream_filename);
+ 	memcpy(s_dir.name, stream_filename, s_dir.name_len[0]);
++	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0])
++		+ s_dir.name_len[0], 1, 0, FALSE);
+ 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0])
+ 		+ s_dir.name_len[0], 1, outfile, 0, FALSE);
+ 
+@@ -221,6 +234,8 @@
+ 	 * with filename length stream_filename + round up for even lenght count
+ 	 */
+ 	to_write = (s_dir.name_len[0] % 2) ? 0 : 1;
++	jtwrite(buf, SECTOR_SIZE - ((3 * 34) + s_dir.name_len[0]) +
++		to_write, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE - ((3 * 34) + s_dir.name_len[0]) +
+ 		to_write, 1, outfile, 0, FALSE);
+ 	free(buf);
+@@ -235,9 +250,12 @@
+ write_str_path(outfile)
+ 	FILE	*outfile;
+ {
++	jtwrite(l_path, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(l_path, SECTOR_SIZE, 1, outfile, 0, FALSE);
++	last_extent_written++;
++	jtwrite(m_path, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(m_path, SECTOR_SIZE, 1, outfile, 0, FALSE);
+-	last_extent_written += 2;
++	last_extent_written++;
+ 	free(l_path);
+ 	free(m_path);
+ 	path_table_l = NULL;
+diff -urNad cdrtools-2.01+01a03/mkisofs/udf.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/udf.c
+--- cdrtools-2.01+01a03/mkisofs/udf.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/udf.c	2005-12-04 00:27:00.000000000 +0000
+@@ -1044,6 +1044,7 @@
+ 		1,	/* is_directory */
+ 		directory_link_count(dpnt),
+ 		(dpnt == root) ? 0 : dpnt->self->udf_file_entry_sector);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 	last_extent_written++;
+ 
+@@ -1061,6 +1062,7 @@
+ 		1,
+ 		parent->self->udf_file_entry_sector - lba_udf_partition_start,
+ 		(parent == root) ? 0 : parent->self->udf_file_entry_sector);
++	jtwrite(buf, ident_size, 1, 0, FALSE);
+ 	xfwrite(buf, ident_size, 1, outfile, 0, FALSE);
+ 	size_in_bytes = ident_size;
+ 
+@@ -1106,6 +1108,7 @@
+ 			!!(de1->isorec.flags[0] & ISO_DIRECTORY),
+ 			de1->udf_file_entry_sector - lba_udf_partition_start,
+ 			de1->udf_file_entry_sector);
++		jtwrite(buf, ident_size, 1, 0, FALSE);
+ 		xfwrite(buf, ident_size, 1, outfile, 0, FALSE);
+ 		size_in_bytes += ident_size;
+ 	}
+@@ -1113,6 +1116,7 @@
+ 	padded_size_in_bytes = PAD(size_in_bytes, SECTOR_SIZE);
+ 	if (size_in_bytes < padded_size_in_bytes) {
+ 		memset(buf, 0, padded_size_in_bytes - size_in_bytes);
++		jtwrite(buf, padded_size_in_bytes - size_in_bytes, 1, 0, FALSE);
+ 		xfwrite(buf, padded_size_in_bytes - size_in_bytes, 1, outfile, 0, FALSE);
+ 	}
+ 
+@@ -1167,6 +1171,7 @@
+ 					0,	/* is_directory */
+ 					1,	/* link_count */
+ 					de->udf_file_entry_sector);
++				jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 				xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 			}
+ 		}
+@@ -1198,6 +1203,7 @@
+ 	set8(&vsd->structure_version, 1);
+ 	for (i = 0; i < 3; ++i) {
+ 		memcpy(vsd->standard_identifier, identifiers[i], 5);
++		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 	}
+ 	last_extent_written += 3;
+@@ -1224,30 +1230,37 @@
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	set_primary_vol_desc(buf, last_extent_written++);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	set_impl_use_vol_desc(buf, last_extent_written++);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	set_partition_desc(buf, last_extent_written++);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	set_logical_vol_desc(buf, last_extent_written++);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	set_unallocated_space_desc(buf, last_extent_written++);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	set_terminating_desc(buf, last_extent_written++);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	for (i = 6; i < UDF_MAIN_SEQ_LENGTH; ++i) {
++        jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 		last_extent_written++;
+ 	}
+@@ -1271,6 +1284,7 @@
+ 						last_extent_written++);
+ 	set_terminating_desc(buf+1*SECTOR_SIZE, last_extent_written++);
+ 
++	jtwrite(buf, SECTOR_SIZE, UDF_INTEG_SEQ_LENGTH, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, UDF_INTEG_SEQ_LENGTH, out, 0, FALSE);
+ 	return (0);
+ }
+@@ -1287,6 +1301,7 @@
+ 
+ 	memset(buf, 0, sizeof (buf));
+ 	set_anchor_volume_desc_pointer(buf, last_extent_written++);
++	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 	return (0);
+ }
+@@ -1308,6 +1323,7 @@
+ 	set_terminating_desc(buf+1*SECTOR_SIZE,
+ 			(last_extent_written++) - lba_udf_partition_start);
+ 
++	jtwrite(buf, SECTOR_SIZE, 2, 0, FALSE);
+ 	xfwrite(buf, SECTOR_SIZE, 2, out, 0, FALSE);
+ 
+ 	return (0);
+@@ -1349,6 +1365,7 @@
+ 	char buf[SECTOR_SIZE];
+ 	memset(buf, 0, sizeof (buf));
+ 	while (last_extent_written < last_extent_to_write) {
++		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 		++last_extent_written;
+ 	}
+@@ -1394,6 +1411,7 @@
+ 	memset(buf, 0, sizeof (buf));
+ 	while (last_extent_written < last_extent_to_write) {
+ 		set_anchor_volume_desc_pointer(buf, last_extent_written++);
++		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
+ 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
+ 	}
+ 	return (0);
+diff -urNad cdrtools-2.01+01a03/mkisofs/write.c /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/write.c
+--- cdrtools-2.01+01a03/mkisofs/write.c	2005-12-04 00:26:55.000000000 +0000
++++ /tmp/dpep.VAmVfh/cdrtools-2.01+01a03/mkisofs/write.c	2005-12-04 00:27:42.000000000 +0000
+@@ -465,6 +465,9 @@
+ 	off_t		remain;
+ 	int	use;
+ 
++	char *mirror_name;
++	unsigned char md5[16];
++	int include_in_jigdo = list_file_in_jigdo(filename, size, &mirror_name, md5);
+ 
+ 	if ((infile = fopen(filename, "rb")) == NULL) {
+ #ifdef	USE_LIBSCHILY
+@@ -485,6 +488,9 @@
+ #endif	/* APPLE_HYB */
+ 	remain = size;
+ 
++	if (include_in_jigdo)
++		write_jt_match_record(filename, mirror_name, SECTOR_SIZE, size, md5);
++
+ 	while (remain > 0) {
+ 		use = (remain > SECTOR_SIZE * NSECT - 1 ?
+ 				NSECT * SECTOR_SIZE : remain);
+@@ -499,6 +505,9 @@
+ 			exit(1);
+ #endif
+ 		}
++		if (!include_in_jigdo)
++			jtwrite(buffer, use, 1,
++			        XA_SUBH_DATA, remain <= (SECTOR_SIZE * NSECT));
+ 		xfwrite(buffer, use, 1, outfile,
+ 				XA_SUBH_DATA, remain <= (SECTOR_SIZE * NSECT));
+ 		last_extent_written += use / SECTOR_SIZE;
+@@ -551,6 +560,7 @@
+ 				(Llong)dwpnt->size, dwpnt->extent);
+ #endif
+ 		if (dwpnt->table) {
++			jtwrite(dwpnt->table, ISO_ROUND_UP(dwpnt->size), 1, XA_SUBH_DATA, TRUE);
+ 			xfwrite(dwpnt->table, ISO_ROUND_UP(dwpnt->size), 1,
+ 							outfile,
+ 							XA_SUBH_DATA, TRUE);
+@@ -594,10 +604,11 @@
+ 			char	blk[SECTOR_SIZE];
+ 			Uint	i;
+ 
+-			for (i = 0; i < dwpnt->pad; i++)
++			for (i = 0; i < dwpnt->pad; i++) {
++				jtwrite(blk, SECTOR_SIZE, 1, 0, FALSE);
+ 				xfwrite(blk, SECTOR_SIZE, 1, outfile, 0, FALSE);
+-
+-			last_extent_written += dwpnt->pad;
++				last_extent_written++;
++			}
+ 		}
+ #endif	/* APPLE_HYB || DVD_VIDEO */
+ 
+@@ -1521,6 +1532,7 @@
+ 			dir_index, dpnt->de_name);
+ #endif
+ 	}
++	jtwrite(directory_buffer, total_size, 1, 0, FALSE);
+ 	xfwrite(directory_buffer, total_size, 1, outfile, 0, FALSE);
+ 	last_extent_written += total_size >> 11;
+ 	free(directory_buffer);
+@@ -1538,6 +1550,7 @@
+ 				ce_index, dpnt->ce_bytes);
+ #endif
+ 		}
++		jtwrite(ce_buffer, ce_size, 1, 0, FALSE);
+ 		xfwrite(ce_buffer, ce_size, 1, outfile, 0, FALSE);
+ 		last_extent_written += ce_size >> 11;
+ 		free(ce_buffer);
+@@ -1771,10 +1784,11 @@
+ 		/*
+ 		 * write out padding to round up to HFS allocation block
+ 		 */
+-		for (i = 0; i < hfs_pad; i++)
++		for (i = 0; i < hfs_pad; i++) {
++			jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
+ 			xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
+-
+-		last_extent_written += hfs_pad;
++			last_extent_written++;
++		}
+ 	}
+ #endif	/* APPLE_HYB */
+ 
+@@ -1811,11 +1825,15 @@
+ 	/* write out extents/catalog/dt file */
+ 	if (apple_hyb) {
+ 
++		jtwrite(hce->hfs_ce, HFS_BLOCKSZ, hce->hfs_tot_size, 0, FALSE);
+ 		xfwrite(hce->hfs_ce, HFS_BLOCKSZ, hce->hfs_tot_size, outfile, 0, FALSE);
+ 
+ 		/* round up to a whole CD block */
+ 		if (HFS_ROUND_UP(hce->hfs_tot_size) -
+ 					hce->hfs_tot_size * HFS_BLOCKSZ) {
++			jtwrite(buffer,
++				HFS_ROUND_UP(hce->hfs_tot_size) -
++				hce->hfs_tot_size * HFS_BLOCKSZ, 1, 0, FALSE);
+ 			xfwrite(buffer,
+ 				HFS_ROUND_UP(hce->hfs_tot_size) -
+ 				hce->hfs_tot_size * HFS_BLOCKSZ, 1, outfile, 0, FALSE);
+@@ -1993,6 +2011,7 @@
+ 	}
+ 
+ 	/* if not a bootable cd do it the old way */
++	jtwrite(&vol_desc, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(&vol_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 	last_extent_written++;
+ 	return (0);
+@@ -2010,6 +2029,7 @@
+ 	vol_desc.file_structure_version[0] = 2;
+ 
+ 	/* if not a bootable cd do it the old way */
++	jtwrite(&vol_desc, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(&vol_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 	last_extent_written++;
+ 	return (0);
+@@ -2032,6 +2052,7 @@
+ 	evol_desc.type[0] = (unsigned char) ISO_VD_END;
+ 	memcpy(evol_desc.id, ISO_STANDARD_ID, sizeof (ISO_STANDARD_ID));
+ 	evol_desc.version[0] = 1;
++	jtwrite(&evol_desc, SECTOR_SIZE, 1, 0, TRUE);
+ 	xfwrite(&evol_desc, SECTOR_SIZE, 1, outfile, 0, TRUE);
+ 	last_extent_written += 1;
+ 	return (0);
+@@ -2086,11 +2107,14 @@
+ 
+ 	cp[SECTOR_SIZE - 1] = '\0';
+  	/* Per default: keep privacy. Blackout the version and arguments. */
+-	if(getenv("ISODEBUG"))
++	if(getenv("ISODEBUG")) {
++		jtwrite(vers, SECTOR_SIZE, 1, 0, TRUE);
+ 		xfwrite(vers, SECTOR_SIZE, 1, outfile, 0, TRUE);
+-	else
++	} else {
++		jtwrite(calloc(SECTOR_SIZE, 1), SECTOR_SIZE, 1, 0, TRUE);
+ 		xfwrite(calloc(SECTOR_SIZE, 1), SECTOR_SIZE, 1, outfile, 0, TRUE);
+-	last_extent_written += 1;
++	}
++    last_extent_written += 1;
+ 	return (0);
+ }
+ 
+@@ -2164,9 +2188,12 @@
+ 	FILE	*outfile;
+ {
+ 	/* Next we write the path tables */
++	jtwrite(path_table_l, path_blocks << 11, 1, 0, FALSE);
+ 	xfwrite(path_table_l, path_blocks << 11, 1, outfile, 0, FALSE);
++	last_extent_written += path_blocks;
++	jtwrite(path_table_m, path_blocks << 11, 1, 0, FALSE);
+ 	xfwrite(path_table_m, path_blocks << 11, 1, outfile, 0, FALSE);
+-	last_extent_written += 2 * path_blocks;
++	last_extent_written += path_blocks;
+ 	free(path_table_l);
+ 	free(path_table_m);
+ 	path_table_l = NULL;
+@@ -2178,6 +2205,7 @@
+ exten_write(outfile)
+ 	FILE	*outfile;
+ {
++	jtwrite(extension_record, SECTOR_SIZE, 1, 0, FALSE);
+ 	xfwrite(extension_record, SECTOR_SIZE, 1, outfile, 0, FALSE);
+ 	last_extent_written++;
+ 	return (0);
+@@ -2370,10 +2398,11 @@
+ 	npad = session_start + 16 - last_extent_written;
+ 
+ 	for (i = 0; i < npad; i++) {
++		jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
+ 		xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
++		last_extent_written++;
+ 	}
+ 
+-	last_extent_written += npad;
+ 	return (0);
+ }
+ 
+@@ -2394,10 +2423,11 @@
+ 		npad += 16 - i;
+ 
+ 	for (i = 0; i < npad; i++) {
++		jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
+ 		xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
++		last_extent_written++;
+ 	}
+ 
+-	last_extent_written += npad;
+ 	return (0);
+ }
+ 
+@@ -2411,10 +2441,11 @@
+ 	memset(buffer, 0, sizeof (buffer));
+ 
+ 	for (i = 0; i < 150; i++) {
++		jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
+ 		xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
++		last_extent_written++;
+ 	}
+ 
+-	last_extent_written += 150;
+ 	return (0);
+ }
+ 
+@@ -2770,10 +2801,12 @@
+ 	r = tot_size % HFS_BLK_CONV;
+ 
+ 	/* write out HFS volume header info */
++	jtwrite(hce->hfs_map, HFS_BLOCKSZ, tot_size, 0, FALSE);
+ 	xfwrite(hce->hfs_map, HFS_BLOCKSZ, tot_size, outfile, 0, FALSE);
+ 
+ 	/* fill up to a complete CD block */
+ 	if (r) {
++		jtwrite(buffer, HFS_BLOCKSZ, HFS_BLK_CONV - r, 0, FALSE);
+ 		xfwrite(buffer, HFS_BLOCKSZ, HFS_BLK_CONV - r, outfile, 0, FALSE);
+ 		n++;
+ 	}

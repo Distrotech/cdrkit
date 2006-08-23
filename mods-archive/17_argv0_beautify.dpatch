@@ -1,0 +1,42 @@
+#!/bin/sh -e
+## 17_argv0_beautify.dpatch by Eduard Bloch <blade@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Remove the Debian specific suffix from the executable filename
+
+if [ $# -lt 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch}"
+
+case "$1" in
+       -patch) patch $patch_opts -p1 < $0;;
+       -unpatch) patch $patch_opts -p1 -R < $0;;
+        *)
+                echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+                exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+diff -urNad /home/inet/debian/tmp/cdrtools-2.0+a25/cdrecord/cdrecord.c cdrtools-2.0+a25/cdrecord/cdrecord.c
+--- /home/inet/debian/tmp/cdrtools-2.0+a25/cdrecord/cdrecord.c	2004-02-05 13:35:05.000000000 +0100
++++ cdrtools-2.0+a25/cdrecord/cdrecord.c	2004-02-05 13:35:37.000000000 +0100
+@@ -269,6 +269,13 @@
+ 	SCSI	*scgp = NULL;
+ 	char	errstr[80];
+ 	BOOL	gracedone = FALSE;
++	char	*suf = '\0';
++
++/* cut the Debian specific suffix from the executable filename */
++	suf = strstr(av[0], ".mmap");
++	if(!suf)
++		suf = strstr(av[0], ".shm");
++	if(suf) *suf = '\0';
+ 
+ #ifdef __EMX__
+ 	/* This gives wildcard expansion with Non-Posix shells with EMX */

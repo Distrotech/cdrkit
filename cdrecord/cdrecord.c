@@ -3961,7 +3961,8 @@ load_media(scgp, dp, doexit)
 	scsi_start_stop_unit(scgp, 1, 0, immed);
 	wait_unit_ready(scgp, 120);
 	scgp->silent++;
-	rezero_unit(scgp);	/* Is this needed? Not supported by some drvives */
+	if(geteuid() == 0) // EB: needed? Not allowed for non-root, that is sure.
+      rezero_unit(scgp);	/* Is this needed? Not supported by some drvives */
 	scgp->silent--;
 	test_unit_ready(scgp);
 	scsi_start_stop_unit(scgp, 1, 0, immed);

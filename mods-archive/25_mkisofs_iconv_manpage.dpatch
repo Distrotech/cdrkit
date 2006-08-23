@@ -1,0 +1,31 @@
+#! /bin/sh -e
+##
+## DP: mkisofs(8): Clarify that charsets supported by iconv, are
+## DP: not printed with --input-charset help.
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+case "$1" in
+       -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+       -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;
+	*)
+		echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+		exit 1;;
+esac
+
+exit 0
+				    
+@DPATCH@
+--- ./mkisofs/mkisofs.8~	2004-08-03 20:21:54.000000000 +0200
++++ ./mkisofs/mkisofs.8	2005-03-04 10:55:29.937705920 +0100
+@@ -1700,6 +1700,8 @@
+ .IR mkisofs .
+ To get a listing, use
+ .B "mkisofs \-input\-charset help.
++This list doesn't include the charset derived from the current locale,
++if mkisofs is built with iconv support.
+ .PP
+ Additional character sets can be read from file for any of the character
+ set options by giving a filename as the argument to the options. The given

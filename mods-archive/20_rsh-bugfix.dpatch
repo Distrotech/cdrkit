@@ -1,0 +1,41 @@
+#! /bin/sh -e
+## 20_rsh-bugfix.dpatch by Joerg Schilling
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix local root compromise CAN-2004-0806.
+
+if [ $# -lt 1 ]; then
+    echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch} ${2:+-d $2}"
+
+case "$1" in
+    -patch) patch -p0 ${patch_opts} < $0;;
+    -unpatch) patch -R -p0 ${patch_opts} < $0;;
+    *)
+        echo "`basename $0`: script expects -patch|-unpatch as argument" >&2
+        exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+--- librscg/scsi-remote.c	2004-01-15 01:25:09.000000000 +0100
++++ librscg/scsi-remote.c	2004-08-24 00:11:42.000000000 +0200
+@@ -1078,6 +1078,13 @@
+ 			_exit(EX_BAD);
+ 			/* NOTREACHED */
+ 		}
++		if (getuid() != geteuid() &&
++		    seteuid(pw->pw_uid) == -1) {
++			errmsg("seteuid(%lld) failed.\n",
++							(Llong)pw->pw_uid);
++			_exit(EX_BAD);
++			/* NOTREACHED */
++		}
+ 
+ 		/*
+ 		 * Fork again to completely detach from parent

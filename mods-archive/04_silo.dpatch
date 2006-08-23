@@ -1,0 +1,833 @@
+#! /bin/sh -e
+## 04_silo.dpatch by Joerg Jaspert <joerg@debian.org>
+## (original made by some of the former maintainers)
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Patch to mkisofs to get silo working.
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+case "$1" in
+	-patch) patch -f --no-backup-if-mismatch -p0 < $0;;
+	-unpatch) patch -f --no-backup-if-mismatch -R -p0 < $0;;
+	*)
+		echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+		exit 1;;
+esac
+
+exit 0
+				    
+@DPATCH@
+--- mkisofs/Makefile	2002-12-07 21:42:32.000000000 +0100
++++ mkisofs/Makefile	2002-12-27 20:24:53.000000000 +0100
+@@ -41,7 +41,7 @@
+ 		getopt.c getopt1.c \
+ 		scsi.c \
+ 		scsi_cdr.c cd_misc.c \
+-		modes.c \
++		modes.c silo.c \
+ 		apple.c volume.c desktop.c mac_label.c \
+ 		ifo_read.c dvd_file.c dvd_reader.c
+ HFILES=		apple.h bootinfo.h config.h defaults.h diskmbr.h exclude.h \
+--- mkisofs/mkisofs.8	2002-12-24 16:39:31.000000000 +0100
++++ mkisofs/mkisofs.8	2002-12-27 20:24:53.000000000 +0100
+@@ -456,6 +456,13 @@
+ .IR gid . 
+ Specifying this option automatically enables Rock Ridge extensions.
+ .TP
++.BI \-F " root_directory
++Follow symbolic links which point outside specified
++.I root_directory 
++when generating the filesystem.  This allows a symlink farm structure,
++where symlinks inside the base directory stay symlinks, but symlinks
++outside the base directory become real files on the CD.
++.TP
+ .B \-gui
+ Switch the behaviour for a GUI. This currently makes the output more verbose
+ but may have other effects in future.
+@@ -919,6 +926,25 @@
+ with SYSI=system_id.
+ If specified in both places, the command line version is used.
+ .TP
++.BI \-s " silo_conf_file
++Specifies the path and filename of the SILO configuration file to be
++used when making a "SILO" bootable CD. The pathname must be relative to the
++source path specified to
++.B mkisofs
++and start with a slash.
++The default is
++.I /etc/silo.conf
++See SILO documentation for the syntax of this file.
++.TP
++.BI \-S " silo_bootblock
++Specifies the path and filename of the SILO first stage boot image to be
++used when making a "SILO" bootable CD. The pathname must be relative to the
++source path specified to
++.B mkisofs.
++The default is
++.I boot/cd.b
++The boot image must come from SILO 0.8.7 and higher.
++.TP
+ .B \-T
+ Generate a file TRANS.TBL in each directory on the CDROM, which can be used
+ on non-Rock Ridge capable systems to help establish the correct file names.
+--- mkisofs/mkisofs.c	2002-12-07 20:59:41.000000000 +0100
++++ mkisofs/mkisofs.c	2002-12-27 20:24:53.000000000 +0100
+@@ -94,12 +94,14 @@
+ int	use_genboot = 0;
+ int	use_RockRidge = 0;
+ int	use_Joliet = 0;
++int	use_silo = 0;
+ int	jlen = JMAX;	/* maximum Joliet file name length */
+ int	verbose = 1;
+ int	debug = 0;
+ int	gui = 0;
+ int	all_files = 1;	/* New default is to include all files */
+ int	follow_links = 0;
++int	follow_links_sensible = 0;
+ #ifdef	IS_CYGWIN
+ int	cache_inodes = 0;/* Do not cache inodes on Cygwin by default */
+ #else
+@@ -133,6 +135,10 @@
+ char	*boot_catalog = BOOT_CATALOG_DEFAULT;
+ char	*boot_image = BOOT_IMAGE_DEFAULT;
+ char	*genboot_image = BOOT_IMAGE_DEFAULT;
++char    *silo_boot_image = SILO_BOOT_IMAGE_DEFAULT;
++char    *silo_bootblock = SILO_BOOTBLOCK_DEFAULT;
++char    *silo_conf_file = SILO_CONF_FILE_DEFAULT;
++char	follow_links_base[PATH_MAX];
+ int	ucs_level = 3;		/* We now have Unicode tables so use level 3 */
+ int	volume_set_size = 1;
+ int	volume_sequence_number = 1;
+@@ -403,6 +409,8 @@
+ 
+ #endif	/* APPLE_HYB */
+ 
++#define OPTION_SILO_BOOT		2200
++
+ static int	save_pname = 0;
+ 
+ static const struct ld_option ld_options[] =
+@@ -435,6 +443,8 @@
+ 	'\0', NULL, "Start specifying alternative El Torito boot parameters", ONE_DASH},
+ 	{{"sparc-boot", required_argument, NULL, 'B'},
+ 	'B', "FILES", "Set sparc boot image names", ONE_DASH},
++	{{"silo-boot", required_argument, NULL, OPTION_SILO_BOOT},
++	'\0', "FILE", "Set SILO second stage boot image name" , ONE_DASH },
+ 	{{"generic-boot", required_argument, NULL, 'G'},
+ 	'G', "FILE", "Set generic boot image name", ONE_DASH},
+ 	{{"sparc-label", required_argument, NULL, OPTION_SPARCLABEL},
+@@ -453,6 +463,8 @@
+ 	 '\0', "mode", "Make the mode of all plain files this mode.", ONE_DASH},
+ 	{{"follow-links", no_argument, NULL, 'f'},
+ 	'f', NULL, "Follow symbolic links", ONE_DASH},
++	{{"follow-outside-links", required_argument, NULL, 'F'},
++	    'F', NULL, "Follow symbolic links which point outside the CD base directory", ONE_DASH },
+ 	{{"gid", required_argument, NULL, OPTION_GID},
+ 	 '\0', "gid", "Make the group owner of all files this gid.",
+ 	 ONE_DASH},
+@@ -544,6 +556,11 @@
+ 	'\0', "FILE", "Sort file content locations according to rules in FILE" , ONE_DASH },
+ #endif /* SORTING */
+ 
++	{ {"silo-conf-file", required_argument, NULL, 's'},
++	's', "FILE", "Set name of SILO configuration file on the CD", ONE_DASH },
++	{ {"silo-bootblock", required_argument, NULL, 'S'},
++	'S', "FILE", "Set SILO first stage bootblock image name", ONE_DASH },
++
+ 	{{"split-output", no_argument, NULL, OPTION_SPLIT_OUTPUT},
+ 	'\0', NULL, "Split output into files of approx. 1GB size", ONE_DASH},
+ 	{{"sysid", required_argument, NULL, OPTION_SYSID},
+@@ -1150,7 +1167,7 @@
+ 	int		hfs_ct = 0;
+ 	char		*root_info = 0;
+ #endif	/* APPLE_HYB */
+-
++	char		old_dir[PATH_MAX];
+ 
+ #ifdef __EMX__
+ 	/* This gives wildcard expansion with Non-Posix shells with EMX */
+@@ -1352,6 +1369,34 @@
+ #endif
+ 			}
+ 			break;
++		case OPTION_SILO_BOOT:
++			use_silo++;
++			silo_boot_image = optarg;  /* pathname of the boot image on cd */
++			if (silo_boot_image == NULL) {
++				fprintf(stderr,"Required boot image pathname missing\n");
++				exit(1);
++			}
++			break;
++		case 'S':
++			use_silo++;
++			silo_bootblock = optarg;  /* pathname of the boot image on cd */
++			if (silo_bootblock == NULL) {
++				fprintf(stderr,"Required bootblock pathname missing\n");
++				exit(1);
++			}
++			break;
++		case 's':
++			use_silo++;
++			silo_conf_file = optarg;  /* pathname of the boot image on cd */
++			if (silo_conf_file == NULL) {
++				fprintf(stderr,"Required SILO config file pathname missing\n");
++				exit(1);
++			}
++			if (*silo_conf_file != '/') {
++				fprintf(stderr,"SILO config file pathname must start with /\n");
++				exit(1);
++			}
++			break;
+ 		case OPTION_ABSTRACT:
+ 			abstract = optarg;
+ 			if (strlen(abstract) > 37) {
+@@ -1446,6 +1491,20 @@
+ 			"Warning: -follow-links does not always work correctly; be careful.\n");
+ #endif
+ 			break;
++		case 'F':
++			follow_links_sensible++;
++			if(getcwd (old_dir, PATH_MAX)) {
++				chdir (optarg);
++				if(!getcwd (follow_links_base, PATH_MAX)) {
++					perror("getcwd");
++					exit(1);
++				}
++				chdir (old_dir);
++			} else {
++				perror("getcwd");
++				exit(1);
++			}
++			break;
+ 		case 'l':
+ 			full_iso9660_filenames++;
+ 			break;
+@@ -2967,7 +3026,10 @@
+ 		outputlist_insert(&sunlabel_desc);
+ 	if (use_genboot)
+ 		outputlist_insert(&genboot_desc);
+-	outputlist_insert(&padblock_desc);
++	if (use_silo)
++		outputlist_insert(&silo_desc);
++	else
++		outputlist_insert(&padblock_desc);
+ 
+ 	/* PVD for disc. */
+ 	outputlist_insert(&voldesc_desc);
+--- mkisofs/mkisofs.h	2002-12-07 20:59:42.000000000 +0100
++++ mkisofs/mkisofs.h	2002-12-27 20:24:53.000000000 +0100
+@@ -169,6 +169,7 @@
+ extern struct output_fragment *out_tail;
+ 
+ extern struct output_fragment padblock_desc;
++extern struct output_fragment silo_desc;
+ extern struct output_fragment voldesc_desc;
+ extern struct output_fragment joliet_desc;
+ extern struct output_fragment torito_desc;
+@@ -265,8 +266,15 @@
+ 	struct directory_entry *s_entry;
+ 	unsigned int    pad;
+ 	off_t		off;
++#ifdef __STDC__
++	int		(*filter)(char *, int, int);
++#else
++	int		(*filter)();
++#endif
+ };
+ 
++extern struct deferred_write * dw_head, * dw_tail;
++
+ struct eltorito_boot_entry_info {
+ 	struct eltorito_boot_entry_info *next; 
+ 	char		*boot_image;
+@@ -323,6 +331,8 @@
+ extern int      dirmode_to_use;
+ extern int      new_dir_mode;
+ extern int      follow_links;
++extern int	follow_links_sensible;
++extern char	follow_links_base[];
+ extern int	cache_inodes;
+ extern int      verbose;
+ extern int      debug;
+@@ -619,6 +629,9 @@
+ extern char    *boot_catalog;
+ extern char    *boot_image;
+ extern char    *genboot_image;
++extern char    *silo_boot_image;
++extern char    *silo_bootblock;
++extern char    *silo_conf_file;
+ extern int	ucs_level;
+ extern int      volume_set_size;
+ extern int      volume_sequence_number;
+--- mkisofs/silo.c	1970-01-01 01:00:00.000000000 +0100
++++ mkisofs/silo.c	2002-12-27 20:24:53.000000000 +0100
+@@ -0,0 +1,255 @@
++/*
++ * Program silo.c - Handle SILO bootable iso9660 CD-ROMs.
++ *
++
++   Copyright (C) 1999 Jakub Jelinek <jakub@redhat.com>.
++
++   This program is free software; you can redistribute it and/or modify
++   it under the terms of the GNU General Public License as published by
++   the Free Software Foundation; either version 2, or (at your option)
++   any later version.
++
++   This program is distributed in the hope that it will be useful,
++   but WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++   GNU General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.   */
++
++
++static char rcsid[] ="$Id:$";
++
++#include <mconfig.h>
++#include <stdio.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++#include <fcntl.h>
++#include <stdlib.h>
++
++#include "mkisofs.h"
++#include "iso9660.h"
++#include <schily.h>
++
++/* used by Win32 for opening binary file - not used by Unix */
++#ifndef O_BINARY
++#define O_BINARY 0
++#endif /* O_BINARY */
++
++struct sun_disklabel {
++    char       info[128];      /* Informative text string */
++    char       spare0[14];
++    struct sun_info {
++       char    spare1;
++       char    id;
++       char    spare2;
++       char    flags;
++    } infos[8];
++    char       spare1[246];    /* Boot information etc. */
++    char       rspeed[2];      /* 722 - Disk rotational speed */
++    char       pcylcount[2];   /* 722 - Physical cylinder count */
++    char       sparecyl[2];    /* 722 - extra sects per cylinder */
++    char       spare2[4];      /* More magic... */
++    char       ilfact[2];      /* 722 - Interleave factor */
++    char       ncyl[2];        /* 722 - Data cylinder count */
++    char       nacyl[2];       /* 722 - Alt. cylinder count */
++    char       ntrks[2];       /* 722 - Tracks per cylinder */
++    char       nsect[2];       /* 722 - Sectors per track */
++    char       spare3[4];      /* Even more magic... */
++    struct sun_partition {
++        char start_cylinder[4];        /* 732 */
++       char num_sectors[4];    /* 732 */
++    } partitions[8];
++    char       magic[2];       /* 722 - Magic number */
++    char       csum[2];        /* 722 - Label xor'd checksum */
++    struct bootblock_header {
++       char    magic[4];       /* 732 */
++       char    aout[20];
++       char    siloid[8];
++       char    insn[16];
++       char    extent[4];      /* 732 */
++       char    size[4];        /* 732 */
++       char    text[2048-512-56];
++    } bootblock;
++};
++
++static struct {
++    char id;
++    char conf_part;
++    char part;
++    char pad;
++    char conf_file[256];
++} silo_info;
++
++static int silo_size(int starting_extent)
++{
++    last_extent += 16;
++    return 0;
++}
++
++static int silo_filter(char * buffer, int size, int offset)
++{
++    if (offset < 0x808 + sizeof(silo_info)
++       && offset + size > 0x808)
++    {
++       int i;
++       if (offset < 0x808)
++       {
++           offset = 0x808 - offset;
++           size -= offset;
++           buffer += offset;
++           offset = 0;
++       }
++       else
++           offset -= 0x808;
++       i = sizeof(silo_info) - offset;
++       if (i > size) i = size;
++       memcpy (buffer, ((char *)&silo_info) + offset, i);
++    }
++    return 0;
++}
++
++static int silo_write(FILE * outfile)
++{
++    struct directory_entry      * de;
++    struct directory_entry      * de2;
++    struct deferred_write      * dwpnt;
++    int bootblock, i, should_write;
++    struct sun_disklabel       silo_bb;
++   
++    memset (&silo_bb, 0, sizeof (silo_bb));
++   
++    if (*silo_bootblock == '/') silo_bootblock++;
++    if (*silo_boot_image == '/') silo_boot_image++;
++
++    /*
++     * search from root of iso fs to find boot catalog
++     */
++    de2 = search_tree_file(root, silo_bootblock);
++    if (!de2)
++    {
++       fprintf(stderr,"Uh oh, I cant find the SILO bootblock!\n");
++       exit(1);
++    }
++
++    /*
++     * now read it from disk
++     */
++    bootblock = open(de2->whole_name, O_RDWR | O_BINARY);
++    if (bootblock == -1)
++    {
++       fprintf(stderr,"Error opening SILO bootblock for reading.\n");
++       perror("");
++       exit(1);
++    }
++   
++    if (read (bootblock, (char *)&silo_bb.bootblock, 1024) != 1024)
++    {
++       fprintf(stderr,"Error reading SILO bootblock.\n");
++       perror("");
++       exit(1);
++    }
++
++    close (bootblock);
++
++    if (get_732 (silo_bb.bootblock.magic) != 0x01030107
++       || strncmp (silo_bb.bootblock.siloid, "SILO", 4)
++       || silo_bb.bootblock.siloid[5] != '.'
++       || silo_bb.bootblock.siloid[4] < '0'
++       || silo_bb.bootblock.siloid[4] > '9'
++       || silo_bb.bootblock.siloid[6] < '0'
++       || silo_bb.bootblock.siloid[6] > '9'
++       || silo_bb.bootblock.siloid[7] < '0'
++       || silo_bb.bootblock.siloid[7] > '9')
++    {
++       fprintf(stderr,"Error: the file %s is not a valid SILO bootblock.\n", silo_bootblock);
++       perror("");
++       exit(1);
++    }
++   
++    /* Check version number. Only SILO 0.87 and up is valid. */
++    if (silo_bb.bootblock.siloid[4] == '0'
++       && (silo_bb.bootblock.siloid[6] < '8'
++           || (silo_bb.bootblock.siloid[6] == '8'
++               && silo_bb.bootblock.siloid[7] <= '6')))
++    {
++       fprintf(stderr,"Error: SILO bootblock is too old. Must be at least 0.8.7.\n");
++       perror("");
++       exit(1);
++    }
++
++    /*
++     * search from root of iso fs to find boot catalog
++     */
++    de = search_tree_file(root, silo_boot_image);
++    if (!de)
++    {
++       fprintf(stderr,"Uh oh, I cant find the SILO boot image!\n");
++       exit(1);
++    }
++
++    /*
++     * need to filter second.b, so that we can seed
++     * silo.conf location and other stuff.
++     * We could write it into the de->whole_name file,
++     * but I prefer filtering it like this because
++     * then the tree can be e.g. read only NFS mounted.
++     */
++    for (dwpnt = dw_head; dwpnt; dwpnt = dwpnt->next)
++    {
++       if (!dwpnt->name) continue;
++       if (!strcmp (dwpnt->name, de->whole_name))
++           dwpnt->filter = silo_filter;
++    }
++
++    set_732 (silo_bb.bootblock.extent, de->starting_block);
++    set_732 (silo_bb.bootblock.size, de->size);
++
++    strcpy (silo_bb.info, "SPARC bootable CD-ROM: ");
++    strcat (silo_bb.info, volume_id);
++
++    should_write = (last_extent - session_start) << 2;
++
++    /* Now some magic */
++    silo_bb.spare0[3] = 1;
++    silo_bb.spare0[13] = 8;
++    for (i = 0; i < 8; i++) {
++       silo_bb.infos[i].id = 0x83;
++       silo_bb.infos[i].flags = 0x18;
++    }
++    set_732 (silo_bb.spare1 + 14, 0x600ddeee);
++    set_722 (silo_bb.rspeed, 0x15e);
++    set_722 (silo_bb.pcylcount, (should_write + 639) / 640);
++    set_722 (silo_bb.ilfact, 1);
++    set_722 (silo_bb.ncyl, (should_write + 639) / 640);
++    set_722 (silo_bb.ntrks, 1);
++    set_722 (silo_bb.nsect, 640);
++    set_732 (silo_bb.partitions[0].num_sectors, should_write);
++    set_722 (silo_bb.magic, 0xdabe);
++    for (i = 0; i < 510; i+=2) {
++       silo_bb.csum[0] ^= silo_bb.info[i];
++       silo_bb.csum[1] ^= silo_bb.info[i+1];
++    }
++
++    xfwrite(&silo_bb, 1, sizeof(silo_bb), outfile);
++    memset (&silo_bb, 0, sizeof(silo_bb));
++
++    for(i=1; i<16; i++)
++    {
++       xfwrite(&silo_bb, 1, sizeof(silo_bb), outfile);
++    }
++
++    memset (&silo_info, 0, sizeof(silo_info));
++    silo_info.id = 'L';
++    silo_info.conf_part = 1;
++    strncpy (silo_info.conf_file, silo_conf_file, 256);
++    silo_info.conf_file[259] = '\0';
++
++    last_extent_written += 16;
++   
++    return 0;
++}
++
++struct output_fragment silo_desc  = {NULL, silo_size, NULL,     silo_write};
+--- mkisofs/tree.c	2002-12-07 21:40:47.000000000 +0100
++++ mkisofs/tree.c	2002-12-27 20:24:53.000000000 +0100
+@@ -84,6 +84,7 @@
+ 	int	scan_directory_tree	__PR((struct directory *this_dir,
+ 						char *path,
+ 						struct directory_entry *de));
++static	int	check_dirlevel		__PR((char *name));
+ #ifdef APPLE_HYB
+ 	int	insert_file_entry	__PR((struct directory *this_dir,
+ 						char *whole_path,
+@@ -1322,6 +1323,34 @@
+ 	return 1;
+ }
+ 
++/* check_dirlevel: returns 1 if
++ * name is below the tree of follow_links_base */
++static int
++check_dirlevel(name)
++	char *name;
++{
++	char old[256] = {0,}, buf[256] = {0,}, b2[256], *c;
++  
++	strcpy (b2, name);
++	c = strrchr (b2, '/');
++	if (c) {
++		*c = '\0';
++		getcwd (old, 256);
++		chdir (b2);
++		getcwd (buf, 256);
++		chdir (old);
++       
++		if (!strncmp (buf, follow_links_base,
++			      strlen (follow_links_base))) {
++			return 1;
++		} else {
++			return 0;
++		}
++	}
++
++	return 1;
++}
++ 
+ 
+ /*
+  * Function:		insert_file_entry
+@@ -1366,6 +1395,8 @@
+ 	int		htype = TYPE_NONE;
+ 
+ #endif	/* APPLE_HYB */
++	char		link_buf[256];
++	int		do_follow_links = 0;
+ 
+ 	status = stat_filter(whole_path, &statbuf);
+ 
+@@ -1401,7 +1432,35 @@
+ 		 * is in use, it is easy, we let RR describe the file.  If
+ 		 * not, then we punt the file.
+ 		 */
+-		if ((status || !follow_links)) {
++		/* First check for the sensible follow_links option */
++		if (follow_links_sensible) {
++			/* Where does the link point to? */
++			memset (link_buf, 0, 256);
++			readlink (whole_path, link_buf, 255);
++			if (check_dirlevel (link_buf)) {
++				/* Treat it as a symlink */
++				if (!use_RockRidge) {
++					fprintf(stderr, "Ignoring symlink %s (which wouldn't be followed)\n",
++						whole_path);
++				} else {
++					do_follow_links = 0;
++					if (status) {
++						status = 0;
++						statbuf.st_size = 0;
++						STAT_INODE(statbuf) = UNCACHED_INODE;
++						statbuf.st_dev = (dev_t) UNCACHED_DEVICE;
++						statbuf.st_mode = (statbuf.st_mode & ~S_IFMT) | S_IFREG;
++					}
++				}
++			} else {
++				/* Follow the link */
++				do_follow_links = 1;
++			}
++		}
++		else if (!follow_links_sensible)
++			do_follow_links = follow_links;
++		
++		if((status || !do_follow_links)) {
+ 			if (use_RockRidge) {
+ 				status = 0;
+ 				statbuf.st_size = (off_t)0;
+@@ -1410,7 +1469,7 @@
+ 				statbuf.st_mode =
+ 					(statbuf.st_mode & ~S_IFMT) | S_IFREG;
+ 			} else {
+-				if (follow_links) {
++				if (do_follow_links) {
+ #ifdef	USE_LIBSCHILY
+ 					/* XXX errno may be wrong! */
+ 					errmsg("Unable to stat file %s - ignoring and continuing.\n",
+@@ -1443,7 +1502,7 @@
+ 		 * time we have seen this, then make this seem as if there was
+ 		 * no symlink there in the first place
+ 		 */
+-		if (follow_links
++		if (do_follow_links
+ 			&& S_ISDIR(statbuf.st_mode)) {
+ 			if (strcmp(short_name, ".")
+ 				&& strcmp(short_name, "..")) {
+@@ -1478,7 +1537,7 @@
+ 		 * For non-directories, we just copy the stat information over
+ 		 * so we correctly include this file.
+ 		 */
+-		if (follow_links
++		if (do_follow_links
+ 			&& !S_ISDIR(statbuf.st_mode)) {
+ 			lstatbuf = statbuf;
+ 		}
+@@ -1487,7 +1546,7 @@
+ 	 * Add directories to the cache so that we don't waste space even if
+ 	 * we are supposed to be following symlinks.
+ 	 */
+-	if (follow_links
++	if (do_follow_links
+ 		&& strcmp(short_name, ".")
+ 		&& strcmp(short_name, "..")
+ 		&& S_ISDIR(statbuf.st_mode)) {
+@@ -1537,7 +1596,7 @@
+ 	 * Add this so that we can detect directory loops with hard links.
+ 	 * If we are set up to follow symlinks, then we skip this checking.
+ 	 */
+-	if (!follow_links
++	if (!do_follow_links
+ 		&& S_ISDIR(lstatbuf.st_mode)
+ 		&& strcmp(short_name, ".")
+ 		&& strcmp(short_name, "..")) {
+--- mkisofs/vms.c	2000-12-05 15:25:10.000000000 +0100
++++ mkisofs/vms.c	2002-12-27 20:24:53.000000000 +0100
+@@ -288,7 +288,7 @@
+ extern unsigned int last_extent_written;
+ 
+ int
+-vms_write_one_file(char *filename, int size, FILE * outfile)
++vms_write_one_file(struct deferred_write * dwpnt, FILE * outfile)
+ {
+ 	int		status,
+ 			i;
+@@ -296,10 +296,11 @@
+ 	int		count;
+ 	int		use;
+ 	int		remain;
++	int		offset = 0;
+ 
+-	open_file(filename);
++	open_file(dwpnt->name);
+ 
+-	remain = size;
++	remain = dwpnt->size;
+ 
+ 	while (remain > 0) {
+ 		use = (remain > SECTOR_SIZE * NSECT - 1 ? NSECT * SECTOR_SIZE : remain);
+@@ -308,11 +309,14 @@
+ 		rab->rab$l_ubf = buffer;
+ 		rab->rab$w_usz = sizeof(buffer);
+ 		status = sys$read(rab);
++		if (dwpnt->filter)
++			(* dwpnt->filter)(buffer, use, offset);
+ 		fwrite(buffer, 1, use, outfile);
+ 		last_extent_written += use / SECTOR_SIZE;
+ 		if ((last_extent_written % 1000) < use / SECTOR_SIZE)
+ 			fprintf(stderr, "%d..", last_extent_written);
+ 		remain -= use;
++		offset += use;
+ 	};
+ 
+ 	close_file(rab);
+--- mkisofs/write.c	2002-12-23 15:16:45.000000000 +0100
++++ mkisofs/write.c	2002-12-27 20:24:53.000000000 +0100
+@@ -86,10 +86,10 @@
+ 						FILE *file));
+ static	int	assign_directory_addresses __PR((struct directory *node));
+ #ifdef APPLE_HYB
+-static	void	write_one_file	__PR((char *filename, unsigned int size,
++static	void	write_one_file	__PR((struct deferred_write *dwpnt,
+ 					FILE *outfile, off_t off));
+ #else
+-static	void	write_one_file	__PR((char *filename, unsigned int size,
++static	void	write_one_file	__PR((struct deferred_write *dwpnt,
+ 					FILE *outfile));
+ #endif
+ static	void	write_files	__PR((FILE *outfile));
+@@ -303,8 +303,8 @@
+ static struct deferred_write mac_boot;
+ 
+ #endif	/* APPLE_HYB */
+-static struct deferred_write	*dw_head = NULL,
+-				*dw_tail = NULL;
++struct deferred_write	*dw_head = NULL,
++			*dw_tail = NULL;
+ 
+ unsigned int	last_extent_written = 0;
+ static Uint	path_table_index;
+@@ -360,16 +360,14 @@
+ 
+ #ifdef APPLE_HYB
+ static void
+-write_one_file(filename, size, outfile, off)
+-	char		*filename;
+-	unsigned int	size;
++write_one_file(dwpnt, outfile, off)
++	struct deferred_write *dwpnt;
+ 	FILE		*outfile;
+ 	off_t		off;
+ #else
+ static void
+-write_one_file(filename, size, outfile)
+-	char		*filename;
+-	unsigned int	size;
++write_one_file(dwpnt, outfile)
++	struct deferred_write *dwpnt;
+ 	FILE		*outfile;
+ #endif	/* APPLE_HYB */
+ {
+@@ -385,18 +383,18 @@
+ 	FILE		*infile;
+ 	int		remain;
+ 	int	use;
++   int offset;
+ 
+-
+-	if ((infile = fopen(filename, "rb")) == NULL) {
++   if ((infile = fopen(dwpnt->name, "rb")) == NULL) {
+ #ifdef	USE_LIBSCHILY
+-		comerr("cannot open '%s'\n", filename);
++		comerr("cannot open '%s'\n", dwpnt->name);
+ #else
+ #ifndef	HAVE_STRERROR
+ 		fprintf(stderr, "cannot open '%s': (%d)\n",
+-				filename, errno);
++				dwpnt->name, errno);
+ #else
+ 		fprintf(stderr, "cannot open '%s': %s\n",
+-				filename, strerror(errno));
++				dwpnt->name, strerror(errno));
+ #endif
+ 		exit(1);
+ #endif
+@@ -404,7 +402,8 @@
+ #ifdef APPLE_HYB
+ 	fseek(infile, off, SEEK_SET);
+ #endif	/* APPLE_HYB */
+-	remain = size;
++	remain = dwpnt->size;
++	offset = 0;
+ 
+ 	while (remain > 0) {
+ 		use = (remain > SECTOR_SIZE * NSECT - 1 ?
+@@ -414,13 +413,16 @@
+ 		memset(buffer, 0, use);
+ 		if (fread(buffer, 1, use, infile) == 0) {
+ #ifdef	USE_LIBSCHILY
+-			comerr("cannot read from '%s'\n", filename);
++			comerr("cannot read from '%s'\n", dwpnt->name);
+ #else
+-			fprintf(stderr, "cannot read from '%s'\n", filename);
++			fprintf(stderr, "cannot read from '%s'\n", dwpnt->name);
+ 			exit(1);
+ #endif
+ 		}
++ 		if (dwpnt->filter)
++         (* dwpnt->filter)(buffer, use, offset);
+ 		xfwrite(buffer, 1, use, outfile);
++      offset += use;
+ 		last_extent_written += use / SECTOR_SIZE;
+ #if 0
+ 		if ((last_extent_written % 1000) < use / SECTOR_SIZE) {
+@@ -480,13 +482,13 @@
+ 		} else {
+ 
+ #ifdef VMS
+-			vms_write_one_file(dwpnt->name, dwpnt->size, outfile);
++			vms_write_one_file(dwpnt, outfile);
+ #else
+ #ifdef APPLE_HYB
+-			write_one_file(dwpnt->name, dwpnt->size, outfile,
++			write_one_file(dwpnt, outfile,
+ 								dwpnt->off);
+ #else
+-			write_one_file(dwpnt->name, dwpnt->size, outfile);
++			write_one_file(dwpnt, outfile);
+ #endif	/* APPLE_HYB */
+ #endif
+ 			free(dwpnt->name);
+@@ -1151,6 +1153,7 @@
+ 				dwpnt->next = NULL;
+ 				dwpnt->size = s_entry->size;
+ 				dwpnt->extent = last_extent;
++				dwpnt->filter = NULL;
+ 				set_733((char *) s_entry->isorec.extent,
+ 								last_extent);
+ 				s_entry->starting_block = last_extent;
+@@ -1722,8 +1725,7 @@
+ 
+ 		/* write out HFS boot block */
+ 		if (mac_boot.name)
+-			write_one_file(mac_boot.name, mac_boot.size, outfile,
+-								mac_boot.off);
++			write_one_file(&mac_boot, outfile, mac_boot.off);
+ 	}
+ #endif	/* APPLE_HYB */
+ 

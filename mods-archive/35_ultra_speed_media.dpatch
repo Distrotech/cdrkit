@@ -1,0 +1,32 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 35_ultra_speed_media.dpatch by Steve McIntyre <steve@einval.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Simple bug fix for ultra high speed RW media detection
+
+@DPATCH@
+diff -urNad cdrtools-2.01.01~/cdrecord/cdrecord.c cdrtools-2.01.01/cdrecord/cdrecord.c
+--- cdrtools-2.01.01~/cdrecord/cdrecord.c	2006-03-19 21:50:57.663554688 +0100
++++ cdrtools-2.01.01/cdrecord/cdrecord.c	2006-03-19 21:50:58.147481120 +0100
+@@ -1173,8 +1173,8 @@
+ 			}
+ 		}
+ 
+-		if (((dp->cdr_dstat->ds_flags & DSF_ULTRASPP_ERA) != 0 &&
+-		    speed < 16) || (dp->cdr_cdrw_support & CDR_CDRW_ULTRAP) == 0) {
++		if ((dp->cdr_dstat->ds_flags & DSF_ULTRASPP_ERA) != 0 &&
++		    (speed < 16 || (dp->cdr_cdrw_support & CDR_CDRW_ULTRAP) == 0)) {
+ 			if ((dp->cdr_cdrw_support & CDR_CDRW_ULTRAP) == 0) {
+ 				comerrno(EX_BAD,
+ 				"Trying to use ultra high speed+ medium on a writer which is not\ncompatible with ultra high speed+ media.\n");
+@@ -1182,8 +1182,8 @@
+ 				comerrno(EX_BAD,
+ 				"Probably trying to use ultra high speed+ medium on improper writer.\n");
+ 			}
+-		} else if (((dp->cdr_dstat->ds_flags & DSF_ULTRASP_ERA) != 0 &&
+-		    speed < 16) || (dp->cdr_cdrw_support & CDR_CDRW_ULTRA) == 0) {
++		} else if ((dp->cdr_dstat->ds_flags & DSF_ULTRASP_ERA) != 0 &&
++		    (speed < 16 || (dp->cdr_cdrw_support & CDR_CDRW_ULTRA) == 0)) {
+ 			if ((dp->cdr_cdrw_support & CDR_CDRW_ULTRA) == 0) {
+ 				comerrno(EX_BAD,
+ 				"Trying to use ultra high speed medium on a writer which is not\ncompatible with ultra high speed media.\n");

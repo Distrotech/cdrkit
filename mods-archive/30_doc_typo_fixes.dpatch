@@ -1,0 +1,149 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 30_doc_typo_fixes.dpatch by Steve McIntyre <steve@einval.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Documentation typo fixes
+## Several bugs and associated patches from A Costa
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+case "$1" in
+    -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+    -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;
+    *)
+        echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+        exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+diff -urNad cdrtools-2.01.01~/cdda2wav/cdda2ogg.1 cdrtools-2.01.01/cdda2wav/cdda2ogg.1
+--- cdrtools-2.01.01~/cdda2wav/cdda2ogg.1	2006-03-21 01:11:51.000000000 +0100
++++ cdrtools-2.01.01/cdda2wav/cdda2ogg.1	2006-03-21 01:28:19.789699856 +0100
+@@ -45,7 +45,7 @@
+ Defines the command to run the cdda2wav program
+ 
+ .IP "CDDA2WAV_OPTS" 10
+-Miscelaneous options passed to 
++Miscellaneous options passed to 
+ .IR $CDDA2WAV .
+ 
+ .IP "MP_CODER" 10
+diff -urNad cdrtools-2.01.01~/cdda2wav/cdda2wav.1 cdrtools-2.01.01/cdda2wav/cdda2wav.1
+--- cdrtools-2.01.01~/cdda2wav/cdda2wav.1	2006-03-21 01:11:51.000000000 +0100
++++ cdrtools-2.01.01/cdda2wav/cdda2wav.1	2006-03-21 01:28:19.790699704 +0100
+@@ -232,13 +232,13 @@
+ sets the time for whole track.
+ .TP
+ .B \-B " --bulk --alltracks"
+-copies each track into a seperate file.
++copies each track into a separate file.
+ .TP
+ .B \-w " --wait"
+ waits for signal, then start recording.
+ .TP
+ .B \-F " --find-extremes"
+-finds extrem amplitudes in samples.
++finds extreme amplitudes in samples.
+ .TP
+ .B \-G " --find-mono"
+ finds if input samples are in mono.
+@@ -256,7 +256,7 @@
+ .B \-v " itemlist  --verbose-level"
+ prints verbose information about the CD.
+ .B Level
+-is a list of comma seperated suboptions. Each suboption controls the type of information to be reported.
++is a list of comma separated suboptions. Each suboption controls the type of information to be reported.
+ .TS H
+ center box;
+ r | l.
+@@ -387,7 +387,7 @@
+ login shell.
+ .SH "RETURN VALUES"
+ .B cdda2wav
+-uses the following exit codes to indicate various degress of success:
++uses the following exit codes to indicate various degrees of success:
+ .TS H
+ center box;
+ r | l.
+@@ -566,7 +566,7 @@
+ higher frequencies. Standard sector size of an audio CD (ignoring
+ additional information) is 2352 Bytes. In order to finish summing
+ for an output sample at sector boundaries the rates above have to be
+-choosen.  Arbitrary sampling rates in high quality would require some
++chosen.  Arbitrary sampling rates in high quality would require some
+ interpolation scheme, which needs much more sophisticated programming.
+ .IP "List a table of all sampling rates"
+ .BI \-R
+@@ -615,9 +615,9 @@
+ option (see below). Notice that recording time will be shortened, unless
+ enough disk space exists. Recording can be aborted at anytime by
+ pressing the break character (signal SIGQUIT).
+-.IP "Record all tracks of a complete audio CD in seperate files"
++   .IP "Record all tracks of a complete audio CD in separate files"
+ .B \-B
+-copies each track into a seperate file. A base name can be given. File names
++copies each track into a separate file. A base name can be given. File names
+ have an appended track number and an extension corresponding to the audio
+ format. To record all audio tracks of a CD, use a sufficient high duration
+ (i.e. -d99999).
+@@ -640,7 +640,7 @@
+ .B cdda2wav
+ will watch for any signal in the output signal and switches on writing
+ to file.
+-.IP "Find extrem samples"
++.IP "Find extreme samples"
+ .B \-F
+ Turning on this option will display the most negative and the most positive
+ sample value found during recording for both channels. This can be useful
+@@ -690,7 +690,7 @@
+ the cdr aka raw format. It is done per default in msb,lsb byte order to satisfy
+ the order wanted by most cd writers. Since there is no header information in this
+ format, the sample parameters can only be identified by playing the samples
+-on a soundcard or similiar. The default filename extension is '.cdr' or '.raw'.
++on a soundcard or similar. The default filename extension is '.cdr' or '.raw'.
+ .IP "Select cdrom drive reading speed"
+ .B \-S " speed"
+ allows to switch the cdrom drive to a certain level of speed in order to
+@@ -775,7 +775,7 @@
+ .B "sectors"
+ displays track start positions in absolute sector notation
+ .sp
+-To combine several requests just list the suboptions seperated with commas.
++To combine several requests just list the suboptions separated with commas.
+ .IP "The table of contents"
+ The display will show the table of contents with number of tracks and
+ total time (displayed in
+diff -urNad cdrtools-2.01.01~/cdrecord/cdrecord.1 cdrtools-2.01.01/cdrecord/cdrecord.1
+--- cdrtools-2.01.01~/cdrecord/cdrecord.1	2006-03-21 01:28:18.795850944 +0100
++++ cdrtools-2.01.01/cdrecord/cdrecord.1	2006-03-21 01:31:01.286148664 +0100
+@@ -826,7 +826,7 @@
+ Use this option with extreme care. If a wrong driver is used for a
+ device, the possibility of creating corrupted disks is high.
+ The minimum problem related to a wrong driver is that the 
+-.B \-speed
++.B \speed=
+ or 
+ .B \-dummy
+ will not work.
+@@ -1974,7 +1974,7 @@
+ .TP
+ .B CDR_SPEED
+ Sets the default speed value for writing (see also 
+-.B \-speed
++.B speed=
+ option).
+ .TP
+ .B CDR_FIFOSIZE
+@@ -2048,7 +2048,7 @@
+ .TP
+ CDR_SPEED
+ Sets the default speed value for writing (see also 
+-.B \-speed
++.B speed=
+ option).
+ .TP
+ CDR_FIFOSIZE

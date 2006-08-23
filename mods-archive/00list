@@ -1,0 +1,11 @@
+
+# Those are the remaining patches, not applied yet
+
+01_conffiles
+05_zisofs
+12_zisofs
+13_zisofs.191367
+16_debian_email
+17_argv0_beautify
+27_scsi_buffer_size
+37_clean_dvdsup

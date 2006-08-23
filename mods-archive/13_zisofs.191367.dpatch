@@ -1,0 +1,38 @@
+#!/bin/sh -e
+## 13_zisofs.191367.dpatch by Andreas Metzler <ametzler@logic.univie.ac.at>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: mkzftree(8) is incorrect - the option s called "--crib-tree" and not
+## DP: --crib-path. Bug #191367
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+
+[ -f debian/patches/00patch-opts ] && . debian/patches/00patch-opts
+patch_opts="${patch_opts:--f --no-backup-if-mismatch}"
+
+case "$1" in
+       -patch) patch $patch_opts -p1 < $0;;
+       -unpatch) patch $patch_opts -p1 -R < $0;;
+        *)
+                echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+                exit 1;;
+esac
+
+exit 0
+
+@DPATCH@
+diff -urNad /tmp/cdrtools-2.01/zisofs_tools/mkzftree.8 cdrtools-2.01/zisofs_tools/mkzftree.8
+--- /tmp/cdrtools-2.01/zisofs_tools/mkzftree.8	Fri May  9 15:01:45 2003
++++ cdrtools-2.01/zisofs_tools/mkzftree.8	Fri May  9 15:03:02 2003
+@@ -50,7 +50,7 @@
+ Do not cross filesystem boundaries, and do not create directory stubs
+ at mount points.
+ .TP
+-\fB\-C\fP \fIpath\fP, \fB\-\-crib-path\fP \fIpath\fP
++\fB\-C\fP \fIpath\fP, \fB\-\-crib-tree\fP \fIpath\fP
+ Steal ("crib") files from another directory if it looks (based on
+ name, size, type and modification time) like they match entries in the
+ new filesystem.  The "crib tree" is usually the compressed version of

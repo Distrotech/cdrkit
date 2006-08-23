@@ -1,3 +1,11 @@
+icewm (2.01.01a08+X.14) UNRELEASED; urgency=low
+
+  * 39_nonroot_skips_rezero_unit (don't try to run rezero_unit when not beeing
+    root)
+  * 40_stop_setuid_games (dont't try to cheat the kernel with delayed seteuid)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:44:53 +0200
+
 icewm (2.01.01a08+X.13) UNRELEASED; urgency=low
 
   * 34_JTE (Jigdo Template Extraction, by Steve)

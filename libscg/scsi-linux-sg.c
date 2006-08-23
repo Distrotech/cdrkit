@@ -65,19 +65,6 @@ static	char __sccsid[] =
 #if LINUX_VERSION_CODE >= 0x01031a /* <linux/scsi.h> introduced in 1.3.26 */
 #if LINUX_VERSION_CODE >= 0x020000 /* <scsi/scsi.h> introduced somewhere. */
 /* Need to fine tune the ifdef so we get the transition point right. */
-
-#if	defined(HAVE_BROKEN_SCSI_SCSI_H) || \
-	defined(HAVE_BROKEN_SRC_SCSI_SCSI_H)
-/*
- * Be very careful in case that the Linux Kernel maintainers
- * unexpectedly fix the bugs in the Linux Lernel include files.
- * Only introduce the attempt for a workaround in case the include
- * files are broken anyway.
- */
-#define	__KERNEL__
-#include <asm/types.h>
-#undef	__KERNEL__
-#endif
 #include <scsi/scsi.h>
 #else
 #include <linux/scsi.h>
@@ -1258,7 +1245,6 @@ scgo_send(scgp)
 	int		ret;
 	sg_io_hdr_t	sg_io;
 	struct timeval	to;
-static	uid_t		cureuid = 0;	/* XXX Hack until we have uid management */
 
 	if (scgp->fd < 0) {
 		sp->error = SCG_FATAL;
@@ -1291,19 +1277,7 @@ static	uid_t		cureuid = 0;	/* XXX Hack until we have uid management */
 	sg_io.timeout = sp->timeout*1000;
 	sg_io.flags |= SG_FLAG_DIRECT_IO;
 
-	if (cureuid != 0)
-		seteuid(0);
-again:
-	errno = 0;
 	ret = ioctl(scgp->fd, SG_IO, &sg_io);
-	if (ret < 0 && geterrno() == EPERM) {	/* XXX Hack until we have uid management */
-		cureuid = geteuid();
-		if (seteuid(0) >= 0)
-			goto again;
-	}
-	if (cureuid != 0)
-		seteuid(cureuid);
-
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
 				"ioctl ret: %d\n", ret);
@@ -1322,7 +1296,7 @@ again:
 			scglocal(scgp)->isold = 1;
 			return (sg_rwsend(scgp));
 		}
-		if (sp->ux_errno == ENXIO || sp->ux_errno == EPERM ||
+		if (sp->ux_errno == ENXIO ||
 		    sp->ux_errno == EINVAL || sp->ux_errno == EACCES) {
 			return (-1);
 		}

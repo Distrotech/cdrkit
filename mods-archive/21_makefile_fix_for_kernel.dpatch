@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 21_makefile_fix_for_kernel.dpatch by Joerg Jaspert <joerg@debian.org>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fix problems with kernel include doing wrong things.
+
+@DPATCH@
+diff -urNad cdrtools-2.01+01a01/DEFAULTS/Defaults.linux /home/joerg/tmp/dpep.kr4U5j/cdrtools-2.01+01a01/DEFAULTS/Defaults.linux
+--- cdrtools-2.01+01a01/DEFAULTS/Defaults.linux	2003-02-16 01:01:48.000000000 +0100
++++ /home/joerg/tmp/dpep.kr4U5j/cdrtools-2.01+01a01/DEFAULTS/Defaults.linux	2005-01-09 17:44:24.780540881 +0100
+@@ -18,7 +18,7 @@
+ ###########################################################################
+ CWARNOPTS=
+ 
+-DEFINCDIRS=	$(SRCROOT)/include /usr/src/linux/include
++DEFINCDIRS=	$(SRCROOT)/include
+ LDPATH=		-L/opt/schily/lib
+ RUNPATH=	-R $(INS_BASE)/lib -R /opt/schily/lib -R $(OLIBSDIR)
+ 

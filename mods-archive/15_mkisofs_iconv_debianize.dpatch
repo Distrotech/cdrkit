@@ -1,0 +1,65 @@
+#! /bin/sh -e
+##
+## DP: These are the changes to the 14_mkisofs_iconv.dpatch compared to the original
+## DP: mkisofs-iconv-X patch. If you upgrade 14_mkisofs_iconv with the new
+## DP: mkisovs-iconv patch, make sure that this post-patch still works.
+
+if [ $# -ne 1 ]; then
+    echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+    exit 1
+fi
+case "$1" in
+       -patch) patch -f --no-backup-if-mismatch -p1 < $0;;
+       -unpatch) patch -f --no-backup-if-mismatch -R -p1 < $0;;
+	*)
+		echo >&2 "`basename $0`: script expects -patch|-unpatch as argument"
+		exit 1;;
+esac
+
+exit 0
+				    
+@DPATCH@
+diff -urNad cdrtools-2.01.01~/mkisofs/mkisofs.c cdrtools-2.01.01/mkisofs/mkisofs.c
+--- cdrtools-2.01.01~/mkisofs/mkisofs.c	2006-03-19 21:11:09.643588904 +0100
++++ cdrtools-2.01.01/mkisofs/mkisofs.c	2006-03-19 21:11:50.263413752 +0100
+@@ -67,7 +67,7 @@
+ struct directory *root = NULL;
+ int		path_ind;
+ 
+-char	version_string[] = "mkisofs 2.01.01a05";
++char	version_string[] = "mkisofs 2.01.01a05-unofficial-iconv";
+ 
+ char		*outfile;
+ FILE		*discimage;
+@@ -970,6 +970,7 @@
+ 	fprintf(stderr, "Usage: %s [options] file...\n", program_name);
+ 	fprintf(stderr, "\nUse %s -help\n", program_name);
+ 	fprintf(stderr, "to get a list of valid options.\n");
++	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
+ 
+ 	exit(excode);
+ }
+@@ -1065,6 +1066,7 @@
+ 			fprintf(stderr, "%s\n", ld_options[i].doc);
+ 		}
+ 	}
++	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
+ 	exit(excode);
+ }
+ 
+@@ -2407,10 +2409,11 @@
+ 		fprintf(stderr, "Unknown charset\nKnown charsets are:\n");
+ 		list_unls();	/* List all known charset names */
+ #ifdef USE_ICONV
+-        if(!iconv_possible)
+-            fprintf(stderr, "Iconv charsets cannot be used with "
+-                    "Apple extension, HFS, ISO9660 version 2 or\n"
+-                    "Rock Ridge.\n");
++        fprintf(stderr, "\nAdditional input charsets are available for Joliet through the iconv support."
++                "\nRun \"iconv -l\" to display them. Iconv charsets cannot be used with HFS, Apple"
++                "\nextension, ISO9660 version 2 or Rock Ridge.\n"
++                "\nIMPORTANT: never report problems with charset support directly"
++                "\nto Joerg Schilling! Report them to cdrtools@packages.debian.org first.\n");
+ #endif
+ 		exit(1);
+ 	}

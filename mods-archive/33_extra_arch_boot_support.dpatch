@@ -1,0 +1,1572 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 33_extra_arch_boot_support.dpatch by Steve McIntyre <steve@einval.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Add support for creating ISO images bootable on more machine types.
+
+@DPATCH@
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-alpha.c /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-alpha.c
+--- cdrtools-2.01+01a03/mkisofs/boot-alpha.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-alpha.c	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,113 @@
++/*
++ * Program boot-alpha.c - Handle Linux alpha boot extensions to iso9660.
++ *
++ * Written by Steve McIntyre <steve@einval.com> June 2004
++ *
++ * Heavily inspired by isomarkboot by David Mosberger in 1996.
++ *
++ * Copyright 2004 Steve McIntyre
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2, or (at your option)
++ * any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <mconfig.h>
++#include "mkisofs.h"
++#include <fctldefs.h>
++#include <utypes.h>
++#include <intcvt.h>
++#include "match.h"
++#include "diskmbr.h"
++#include "bootinfo.h"
++#include <schily.h>
++#include "endian.h"
++
++        int     add_boot_alpha_filename   __PR((char *filename));
++static  int     boot_alpha_write          __PR((FILE *outfile));
++static  char   *boot_file_name = NULL;
++
++#define BOOT_STRING "Linux/Alpha aboot for ISO filesystem."
++
++/* Simple function: store the filename to be used later when we need
++   to find the boot file */
++extern int add_boot_alpha_filename(filename)
++    char *filename;
++{
++    boot_file_name = filename;
++    return 0;
++}
++
++static int boot_alpha_write(outfile)
++    FILE *outfile;
++{
++    unsigned long long boot_sector[256]; /* One (ISO) sector */
++    unsigned long long sum = 0;
++	struct directory_entry	*boot_file;	/* Boot file we need to search for */
++    unsigned long length = 0;
++    unsigned long extent = 0;
++    int i = 0;
++
++    memset(boot_sector, 0, sizeof(boot_sector));    
++
++    /* Write the text header into the boot sector */
++    strcpy((char *)boot_sector, BOOT_STRING);
++
++    /* Find the dir entry for the boot file by walking our file list */
++    boot_file = search_tree_file(root, boot_file_name);
++    if (!boot_file) {
++#ifdef	USE_LIBSCHILY
++		comerrno(EX_BAD, "Uh oh, I cant find the Alpha boot file '%s'!\n",
++							boot_file_name);
++#else
++		fprintf(stderr, "Uh oh, I cant find the Alpha boot file '%s'!\n",
++							boot_file_name);
++		exit(1);
++#endif
++    }
++
++    /* Grab the ISO start sector and length from the dir entry. ISO
++       uses 2048-byte sectors, but we convert to 512-byte sectors here
++       for the sake of the firmware */
++    extent = get_733(boot_file->isorec.extent);
++    extent *= 4;
++    
++    length = get_733(boot_file->isorec.size);
++    length /= 512; /* I'm sure we should take account of any overlap
++                      here, but I'm copying what isomarkboot
++                      does. Maybe the boot files are specified to be
++                      exact multiples of 512 bytes? */
++
++    fprintf(stderr, "Found alpha boot image %s: using extent %lu, #blocks %lu\n",
++            boot_file_name, extent, length);
++
++    /* Now write those values into the appropriate area of the boot
++       sector in LITTLE ENDIAN format. */
++    write_le64(length, (unsigned char *)(unsigned long long *)&boot_sector[60]);
++    write_le64(extent, (unsigned char *)&boot_sector[61]);
++
++    /* Now generate a checksum of the first 504 bytes of the boot
++       sector and place it in boot_sector[63]. Isomarkboot currently
++       gets this wrong and will not work on big-endian systems! */
++    for (i = 0; i < 63; i++)
++        sum += read_le64((unsigned char *)&boot_sector[i]);
++
++    write_le64(sum, (unsigned char *)&boot_sector[63]);
++
++    xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
++    last_extent_written++;
++
++    return 0;
++}
++
++struct output_fragment alphaboot_desc = {NULL, oneblock_size, NULL, boot_alpha_write, "alpha boot block"};
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-hppa.c /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-hppa.c
+--- cdrtools-2.01+01a03/mkisofs/boot-hppa.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-hppa.c	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,202 @@
++/*
++ * Program boot-hppa.c - Handle HPPA boot extensions to iso9660.
++ *
++ * Written by Steve McIntyre <steve@einval.com> June 2004.
++ *
++ * Heavily inspired by palo:
++ *
++ ****************************************************************************
++ * This file is subject to the terms and conditions of the GNU General Public
++ * License.  See the file "COPYING" in the main directory of this archive
++ * for more details.
++ *
++ * Copyright (C) Hewlett-Packard (Paul Bame) paul_bame@hp.com
++ *
++ ****************************************************************************
++ * Copyright 2004 Steve McIntyre
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2, or (at your option)
++ * any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ */
++
++#include <mconfig.h>
++#include "mkisofs.h"
++#include <fctldefs.h>
++#include <utypes.h>
++#include <intcvt.h>
++#include "match.h"
++#include "diskmbr.h"
++#include "bootinfo.h"
++#include <schily.h>
++#include "endian.h"
++
++int     add_boot_hppa_cmdline     __PR((char *cmdline));
++int     add_boot_hppa_kernel_32   __PR((char *filename));
++int     add_boot_hppa_kernel_64   __PR((char *filename));
++int     add_boot_hppa_bootloader  __PR((char *filename));
++int     add_boot_hppa_ramdisk     __PR((char *filename));
++
++static  int     boot_hppa_write   __PR((FILE *outfile));
++
++static  char   *hppa_cmdline = NULL;
++static  char   *hppa_kernel_32 = NULL;
++static  char   *hppa_kernel_64 = NULL;
++static  char   *hppa_bootloader = NULL;
++static  char   *hppa_ramdisk = NULL;
++
++/* Simple function: store the filename to be used later when we need
++   to find the boot file */
++extern int add_boot_hppa_cmdline(cmdline)
++    char *cmdline;
++{
++    char *ptr = NULL;
++    hppa_cmdline = strdup(cmdline);
++    ptr = hppa_cmdline;
++    while (*ptr)
++    {
++        if (',' == *ptr)
++            *ptr = ' ';
++        ptr++;
++    }    
++    return 0;
++}
++
++/* Simple function: store the filename to be used later when we need
++   to find the boot file */
++extern int add_boot_hppa_kernel_32(filename)
++    char *filename;
++{
++    hppa_kernel_32 = filename;
++    return 0;
++}
++
++/* Simple function: store the filename to be used later when we need
++   to find the boot file */
++extern int add_boot_hppa_kernel_64(filename)
++    char *filename;
++{
++    hppa_kernel_64 = filename;
++    return 0;
++}
++
++/* Simple function: store the filename to be used later when we need
++   to find the boot file */
++extern int add_boot_hppa_bootloader(filename)
++    char *filename;
++{
++    hppa_bootloader = filename;
++    return 0;
++}
++
++/* Simple function: store the filename to be used later when we need
++   to find the boot file */
++extern int add_boot_hppa_ramdisk(filename)
++    char *filename;
++{
++    hppa_ramdisk = filename;
++    return 0;
++}
++
++static void exit_fatal(type, filename)
++    char *type;
++    char *filename;
++{
++#ifdef	USE_LIBSCHILY
++    comerrno(EX_BAD, "Uh oh, I can't find the %s '%s'!\n",
++             type, filename);
++#else
++    fprintf(stderr, "Uh oh, I can't find the %s '%s'!\n",
++             type, filename);
++    exit(1);
++#endif
++}
++
++static int boot_hppa_write(outfile)
++    FILE *outfile;
++{
++    unsigned char boot_sector[2048]; /* One (ISO) sector */
++	struct directory_entry	*boot_file;	/* Boot file we need to search for */
++    unsigned long length = 0;
++    unsigned long extent = 0;
++    int i = 0;
++
++    memset(boot_sector, 0, sizeof(boot_sector));    
++
++    boot_sector[0] = 0x80;  /* magic */
++    boot_sector[1] = 0x00;  /* magic */
++    boot_sector[2] = 'P';
++    boot_sector[3] = 'A';
++    boot_sector[4] = 'L';
++    boot_sector[5] = 'O';
++    boot_sector[6] = 0x00;
++    boot_sector[7] = 0x04;  /* version */
++
++    /* Find the dir entry for the 32-bit kernel by walking our file list */
++    boot_file = search_tree_file(root, hppa_kernel_32);
++    if (!boot_file)
++        exit_fatal("HPPA 32-bit kernel", hppa_kernel_32);
++    extent = 2048 * get_733(boot_file->isorec.extent);
++    length = get_733(boot_file->isorec.size);
++    fprintf(stderr, "Found hppa 32-bit kernel %s: using extent %lu (0x%lX), size %lu (0x%lX)\n",
++            hppa_kernel_32, extent, extent, length, length);
++    write_be32(extent, &boot_sector[8]);
++    write_be32(length, &boot_sector[12]);
++
++    /* Find the dir entry for the ramdisk by walking our file list */
++    boot_file = search_tree_file(root, hppa_ramdisk);
++    if (!boot_file)
++        exit_fatal("HPPA ramdisk", hppa_ramdisk);
++    extent = 2048 * get_733(boot_file->isorec.extent);
++    length = get_733(boot_file->isorec.size);
++    fprintf(stderr, "Found hppa ramdisk %s: using extent %lu (0x%lX), size %lu (0x%lX)\n",
++            hppa_ramdisk, extent, extent, length, length);
++    write_be32(extent, &boot_sector[16]);
++    write_be32(length, &boot_sector[20]);
++
++    /* Now the commandline */
++    snprintf(&boot_sector[24], 127, "%s", hppa_cmdline);
++
++    /* Find the dir entry for the 64-bit kernel by walking our file list */
++    boot_file = search_tree_file(root, hppa_kernel_64);
++    if (!boot_file)
++        exit_fatal("HPPA 64-bit kernel", hppa_kernel_64);
++    extent = 2048 * get_733(boot_file->isorec.extent);
++    length = get_733(boot_file->isorec.size);
++    fprintf(stderr, "Found hppa 64-bit kernel %s: using extent %lu (0x%lX), size %lu (0x%lX)\n",
++            hppa_kernel_64, extent, extent, length, length);
++    write_be32(extent, &boot_sector[232]);
++    write_be32(length, &boot_sector[236]);
++
++    /* Find the dir entry for the IPL by walking our file list */
++    boot_file = search_tree_file(root, hppa_bootloader);
++    if (!boot_file)
++        exit_fatal("HPPA bootloader", hppa_bootloader);
++    extent = 2048 * get_733(boot_file->isorec.extent);
++    length = get_733(boot_file->isorec.size);
++    fprintf(stderr, "Found hppa bootloader %s: using extent %lu (0x%lX), size %lu (0x%lX)\n",
++            hppa_bootloader, extent, extent, length, length);
++    write_be32(extent, &boot_sector[240]);
++    write_be32(length, &boot_sector[244]);
++
++    xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
++    last_extent_written++;
++
++    return 0;
++}
++
++struct output_fragment hppaboot_desc = {NULL, oneblock_size, NULL, boot_hppa_write, "hppa boot block"};
++
++
++
++
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-mips.c /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-mips.c
+--- cdrtools-2.01+01a03/mkisofs/boot-mips.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-mips.c	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,327 @@
++/*
++ * Program boot-mips.c - Handle big-endian boot extensions to iso9660.
++ *
++ * Written by Steve McIntyre <steve@einval.com> June 2004
++ *
++ * Heavily inspired by / borrowed from genisovh:
++ *
++ * Copyright: (C) 2002 by Florian Lohoff <flo@rfc822.org>
++ *            (C) 2004 by Thiemo Seufer <seufer@csv.ica.uni-stuttgart.de>
++ *
++ * This program is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU General Public License, Version 2, as published by the
++ * Free Software Foundation.
++ *
++ * Format for volume header information
++ *
++ * The volume header is a block located at the beginning of all disk
++ * media (sector 0).  It contains information pertaining to physical
++ * device parameters and logical partition information.
++ *
++ * The volume header is manipulated by disk formatters/verifiers,
++ * partition builders (e.g. fx, dvhtool, and mkfs), and disk drivers.
++ *
++ * Previous versions of IRIX wrote a copy of the volume header is
++ * located at sector 0 of each track of cylinder 0.  These copies were
++ * never used, and reduced the capacity of the volume header to hold large
++ * files, so this practice was discontinued.
++ * The volume header is constrained to be less than or equal to 512
++ * bytes long.  A particular copy is assumed valid if no drive errors
++ * are detected, the magic number is correct, and the 32 bit 2's complement
++ * of the volume header is correct.  The checksum is calculated by initially
++ * zeroing vh_csum, summing the entire structure and then storing the
++ * 2's complement of the sum.  Thus a checksum to verify the volume header
++ * should be 0.
++ *
++ * The error summary table, bad sector replacement table, and boot blocks are
++ * located by searching the volume directory within the volume header.
++ *
++ * Tables are sized simply by the integral number of table records that
++ * will fit in the space indicated by the directory entry.
++ *
++ * The amount of space allocated to the volume header, replacement blocks,
++ * and other tables is user defined when the device is formatted.
++ */
++
++#include <stdint.h>
++
++/*
++ * device parameters are in the volume header to determine mapping
++ * from logical block numbers to physical device addresses
++ *
++ * Linux doesn't care ...
++ */
++struct device_parameters {
++	uint8_t dp_skew;	/* spiral addressing skew */
++	uint8_t dp_gap1;	/* words of 0 before header */
++	uint8_t dp_gap2;	/* words of 0 between hdr and data */
++	uint8_t dp_spares_cyl;	/* This is for drives (such as SCSI
++		that support zone oriented sparing, where the zone is larger
++		than one track.  It gets subracteded from the cylinder size
++		( dp_trks0 * dp_sec) when doing partition size calculations */
++	uint16_t dp_cyls;	/* number of usable cylinders (i.e.,
++		doesn't include cylinders reserved by the drive for badblocks,
++		etc.). For drives with variable geometry, this number may be
++		decreased so that:
++		dp_cyls * ((dp_heads * dp_trks0) - dp_spares_cyl) <= actualcapacity
++		This happens on SCSI drives such as the Wren IV and Toshiba 156
++		Also see dp_cylshi below */
++	uint16_t dp_shd0;	/* starting head vol 0 */
++	uint16_t dp_trks0;	/* number of tracks / cylinder vol 0*/
++	uint8_t dp_ctq_depth;	/* Depth of CTQ queue */
++	uint8_t dp_cylshi;	/* high byte of 24 bits of cylinder count */
++	uint16_t dp_unused;	/* not used */
++	uint16_t dp_secs;	/* number of sectors/track */
++	uint16_t dp_secbytes;	/* length of sector in bytes */
++	uint16_t dp_interleave;	/* sector interleave */
++	int32_t dp_flags;		/* controller characteristics */
++	int32_t dp_datarate;		/* bytes/sec for kernel stats */
++	int32_t dp_nretries;		/* max num retries on data error */
++	int32_t dp_mspw;		/* ms per word to xfer, for iostat */
++	uint16_t dp_xgap1;	/* Gap 1 for xylogics controllers */
++	uint16_t dp_xsync;    /* sync delay for xylogics controllers */
++	uint16_t dp_xrdly;    /* read delay for xylogics controllers */
++	uint16_t dp_xgap2;    /* gap 2 for xylogics controllers */
++	uint16_t dp_xrgate;   /* read gate for xylogics controllers */
++	uint16_t dp_xwcont;   /* write continuation for xylogics */
++};
++
++/*
++ * Device characterization flags
++ * (dp_flags)
++ */
++#define	DP_SECTSLIP	0x00000001	/* sector slip to spare sector */
++#define	DP_SECTFWD	0x00000002	/* forward to replacement sector */
++#define	DP_TRKFWD	0x00000004	/* forward to replacement track */
++#define	DP_MULTIVOL	0x00000008	/* multiple volumes per spindle */
++#define	DP_IGNOREERRORS	0x00000010	/* transfer data regardless of errors */
++#define DP_RESEEK	0x00000020	/* recalibrate as last resort */
++#define	DP_CTQ_EN	0x00000040	/* enable command tag queueing */
++
++/*
++ * Boot blocks, bad sector tables, and the error summary table, are located
++ * via the volume_directory.
++ */
++#define VDNAMESIZE	8
++
++struct volume_directory {
++	int8_t  vd_name[VDNAMESIZE];	/* name */
++	int32_t vd_lbn;			/* logical block number */
++	int32_t vd_nbytes;		/* file length in bytes */
++};
++
++/*
++ * partition table describes logical device partitions
++ * (device drivers examine this to determine mapping from logical units
++ * to cylinder groups, device formatters/verifiers examine this to determine
++ * location of replacement tracks/sectors, etc)
++ *
++ * NOTE: pt_firstlbn SHOULD BE CYLINDER ALIGNED
++ */
++struct partition_table {		/* one per logical partition */
++	int32_t pt_nblks;		/* # of logical blks in partition */
++	int32_t pt_firstlbn;		/* first lbn of partition */
++	int32_t pt_type;		/* use of partition */
++};
++
++#define	PTYPE_VOLHDR	0		/* partition is volume header */
++#define	PTYPE_TRKREPL	1		/* partition is used for repl trks */
++#define	PTYPE_SECREPL	2		/* partition is used for repl secs */
++#define	PTYPE_RAW	3		/* partition is used for data */
++#define	PTYPE_BSD42	4		/* partition is 4.2BSD file system */
++#define	PTYPE_BSD	4		/* partition is 4.2BSD file system */
++#define	PTYPE_SYSV	5		/* partition is SysV file system */
++#define	PTYPE_VOLUME	6		/* partition is entire volume */
++#define	PTYPE_EFS	7		/* partition is sgi EFS */
++#define	PTYPE_LVOL	8		/* partition is part of a logical vol */
++#define	PTYPE_RLVOL	9		/* part of a "raw" logical vol */
++#define	PTYPE_XFS	10		/* partition is sgi XFS */
++#define	PTYPE_XFSLOG	11		/* partition is sgi XFS log */
++#define	PTYPE_XLV	12		/* partition is part of an XLV vol */
++#define	PTYPE_XVM	13		/* partition is sgi XVM */
++#define	PTYPE_LSWAP	0x82		/* partition is Linux swap */
++#define	PTYPE_LINUX	0x83		/* partition is Linux native */
++#define NPTYPES		16
++
++#define	VHMAGIC		0xbe5a941	/* randomly chosen value */
++#define	NPARTAB		16		/* 16 unix partitions */
++#define	NVDIR		15		/* max of 15 directory entries */
++#define BFNAMESIZE	16		/* max 16 chars in boot file name */
++
++/* Partition types for ARCS */
++#define NOT_USED        0       /* Not used 				*/
++#define FAT_SHORT       1       /* FAT filesystem, 12-bit FAT entries 	*/
++#define FAT_LONG        4       /* FAT filesystem, 16-bit FAT entries 	*/
++#define EXTENDED        5       /* extended partition 			*/
++#define HUGE            6       /* huge partition- MS/DOS 4.0 and later */
++
++/* Active flags for ARCS */
++#define BOOTABLE        0x00;
++#define NOT_BOOTABLE    0x80;
++
++struct volume_header {
++	int32_t vh_magic; /* identifies volume header */
++	int16_t vh_rootpt; /* root partition number */
++	int16_t vh_swappt; /* swap partition number */
++	int8_t vh_bootfile[BFNAMESIZE]; /* name of file to boot */
++	struct device_parameters vh_dp; /* device parameters */
++	struct volume_directory vh_vd[NVDIR]; /* other vol hdr contents */
++	struct partition_table vh_pt[NPARTAB]; /* device partition layout */
++	int32_t vh_csum; /* volume header checksum */
++	int32_t vh_fill; /* fill out to 512 bytes */
++    char pad[1536];  /* pad out to 2048 */
++};
++
++#include <mconfig.h>
++#include "mkisofs.h"
++#include <fctldefs.h>
++#include <utypes.h>
++#include <intcvt.h>
++#include "match.h"
++#include "diskmbr.h"
++#include "bootinfo.h"
++#include <schily.h>
++#include "endian.h"
++
++int     add_boot_mips_filename    __PR((char *filename));
++
++static  int     boot_mips_write   __PR((FILE *outfile));
++
++#define MAX_NAMES 15
++static char *boot_mips_filename[MAX_NAMES] =
++{
++    NULL, NULL, NULL,
++    NULL, NULL, NULL,
++    NULL, NULL, NULL,
++    NULL, NULL, NULL,
++    NULL, NULL, NULL
++};
++
++static int boot_mips_num_files = 0;
++
++#define SECTORS_PER_TRACK	32
++#define BYTES_PER_SECTOR	512
++
++int add_boot_mips_filename(filename)
++    char *filename;
++{
++    if (boot_mips_num_files < MAX_NAMES)
++    {
++        boot_mips_filename[boot_mips_num_files] = filename;
++        boot_mips_num_files++;
++    }
++
++    else
++    {
++#ifdef	USE_LIBSCHILY
++        comerrno(EX_BAD, "Too many MIPS boot files!\n");
++#else
++        fprintf(stderr, "Too many MIPS boot files!\n");
++        exit(1);
++#endif
++    }
++    return 0;
++}
++
++static void vh_calc_checksum(struct volume_header *vh)
++{
++	uint32_t newsum = 0;
++	unsigned char *buffer = (unsigned char *)vh;
++	unsigned int i;
++
++	vh->vh_csum = 0;
++
++	for(i = 0; i < sizeof(struct volume_header); i += 4)
++        newsum -= read_be32(&buffer[i]);
++
++    write_be32(newsum, (unsigned char *)&vh->vh_csum);
++}
++
++static char *file_base_name(char *path)
++{
++    char *endptr = path;
++    char *ptr = path;
++    
++    while (*ptr != '\0')
++    {
++        if ('/' == *ptr)
++            endptr = ++ptr;
++        else
++            ++ptr;
++    }
++    return endptr;
++}
++
++static int boot_mips_write(outfile)
++    FILE *outfile;
++{
++	struct directory_entry	*boot_file;	/* Boot file we need to search for */
++    unsigned long length = 0;
++    unsigned long extent = 0;
++	int i;
++	struct volume_header vh;
++    unsigned long long iso_size = 0;
++    char *filename = NULL;
++
++	memset(&vh, 0, sizeof(vh));
++
++    iso_size = last_extent * 2048;
++
++    write_be32(VHMAGIC, (unsigned char *)&vh.vh_magic);
++
++	/* Values from an IRIX cd */
++    write_be16(BYTES_PER_SECTOR, (unsigned char *)&vh.vh_dp.dp_secbytes);
++    write_be16(SECTORS_PER_TRACK, (unsigned char *)&vh.vh_dp.dp_secs);
++    write_be32(DP_RESEEK|DP_IGNOREERRORS|DP_TRKFWD, (unsigned char *)&vh.vh_dp.dp_flags);
++    write_be16(1, (unsigned char *)&vh.vh_dp.dp_trks0);
++
++    write_be16((iso_size + BYTES_PER_SECTOR - 1) / (SECTORS_PER_TRACK * BYTES_PER_SECTOR),
++               (unsigned char *)&vh.vh_dp.dp_cyls);
++
++	for(i = 0; i < boot_mips_num_files; i++)
++    {
++        boot_file = search_tree_file(root, boot_mips_filename[i]);
++        
++        if (!boot_file) {
++#ifdef	USE_LIBSCHILY
++            comerrno(EX_BAD, "Uh oh, I cant find the MIPS boot file '%s'!\n",
++                     boot_mips_filename[i]);
++#else
++            fprintf(stderr, "Uh oh, I cant find the MIPS boot file '%s'!\n",
++                    boot_mips_filename[i]);
++            exit(1);
++#endif
++        }
++
++        extent = get_733(boot_file->isorec.extent) * 4;
++        length = ((get_733(boot_file->isorec.size) + 2047) / 2048) * 2048;
++        filename = file_base_name(boot_mips_filename[i]);
++
++        strncpy(vh.vh_vd[i].vd_name, filename, MIN(VDNAMESIZE, strlen(filename)));
++        write_be32(extent, (unsigned char *)&vh.vh_vd[i].vd_lbn);
++        write_be32(length, (unsigned char *)&vh.vh_vd[i].vd_nbytes);
++        
++        fprintf(stderr, "Found mips boot image %s, using extent %lu (0x%lX), #blocks %lu (0x%lX)\n",
++                filename, extent, extent, length, length);
++	}
++
++	/* Create volume partition on whole cd iso */
++    write_be32((iso_size + (BYTES_PER_SECTOR - 1))/ BYTES_PER_SECTOR, (unsigned char *)&vh.vh_pt[10].pt_nblks);
++    write_be32(0, (unsigned char *)&vh.vh_pt[10].pt_firstlbn);
++    write_be32(PTYPE_VOLUME, (unsigned char *)&vh.vh_pt[10].pt_type);
++
++	/* Create volume header partition, also on WHOLE cd iso */
++    write_be32((iso_size + (BYTES_PER_SECTOR - 1))/ BYTES_PER_SECTOR, (unsigned char *)&vh.vh_pt[8].pt_nblks);
++    write_be32(0, (unsigned char *)&vh.vh_pt[8].pt_firstlbn);
++    write_be32(PTYPE_VOLHDR, (unsigned char *)&vh.vh_pt[8].pt_type);
++
++	/* Create checksum */
++	vh_calc_checksum(&vh);
++
++    xfwrite(&vh, sizeof(vh), 1, outfile, 0, FALSE);
++    last_extent_written++;
++
++	return 0;
++}
++
++struct output_fragment mipsboot_desc = {NULL, oneblock_size, NULL, boot_mips_write, "MIPS boot block"};
+diff -urNad cdrtools-2.01+01a03/mkisofs/boot-mipsel.c /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-mipsel.c
+--- cdrtools-2.01+01a03/mkisofs/boot-mipsel.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/boot-mipsel.c	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,241 @@
++/*
++ * Program boot-mipsel.c - Handle Mipsel boot extensions to iso9660.
++ *
++ *  Written by Steve McIntyre <steve@einval.com> (2004).
++ *
++ * Heavily inspired by / borrowed from delo:
++ *
++ * Copyright: (C) 2002 by Florian Lohoff <flo@rfc822.org>
++ *            (C) 2004 by Thiemo Seufer <seufer@csv.ica.uni-stuttgart.de>
++ *
++ * This program is free software; you can redistribute it and/or modify it under
++ * the terms of the GNU General Public License, Version 2, as published by the
++ * Free Software Foundation.
++ *
++ * Format for volume header information
++ *
++ * The volume header is a block located at the beginning of all disk
++ * media (sector 0).  It contains information pertaining to physical
++ * device parameters and logical partition information.
++ *
++ * The volume header is manipulated by disk formatters/verifiers,
++ * partition builders (e.g. fx, dvhtool, and mkfs), and disk drivers.
++ *
++ * Previous versions of IRIX wrote a copy of the volume header is
++ * located at sector 0 of each track of cylinder 0.  These copies were
++ * never used, and reduced the capacity of the volume header to hold large
++ * files, so this practice was discontinued.
++ * The volume header is constrained to be less than or equal to 512
++ * bytes long.  A particular copy is assumed valid if no drive errors
++ * are detected, the magic number is correct, and the 32 bit 2's complement
++ * of the volume header is correct.  The checksum is calculated by initially
++ * zeroing vh_csum, summing the entire structure and then storing the
++ * 2's complement of the sum.  Thus a checksum to verify the volume header
++ * should be 0.
++ *
++ * The error summary table, bad sector replacement table, and boot blocks are
++ * located by searching the volume directory within the volume header.
++ *
++ * Tables are sized simply by the integral number of table records that
++ * will fit in the space indicated by the directory entry.
++ *
++ * The amount of space allocated to the volume header, replacement blocks,
++ * and other tables is user defined when the device is formatted.
++ */
++
++#include <mconfig.h>
++#include "mkisofs.h"
++#include <fctldefs.h>
++#include <utypes.h>
++#include <intcvt.h>
++#include "match.h"
++#include "diskmbr.h"
++#include "bootinfo.h"
++#include <schily.h>
++#include "endian.h"
++#include <errno.h>
++#include <elf.h>
++
++int             add_boot_mipsel_filename  __PR((char *filename));
++static  int     boot_mipsel_write         __PR((FILE *outfile));
++
++static  char   *boot_file_name = NULL;
++
++#define MAX_MAPS        51
++#define DEC_BOOT_MAGIC  0x02757a
++#define HD_SECTOR_SIZE  512
++
++/* Those were stolen from linux kernel headers. */
++
++struct extent {
++    uint32_t count;
++    uint32_t start;
++} __attribute__((packed));
++
++struct dec_bootblock {
++    int8_t pad[8];
++    int32_t magic;          /* We are a DEC BootBlock */
++    int32_t mode;           /* 0: Single extent, 1: Multi extent boot */
++    int32_t loadAddr;       /* Load below kernel */
++    int32_t execAddr;       /* And exec there */
++    struct extent bootmap[MAX_MAPS];
++} __attribute__((packed));
++
++static void swap_in_elf32_ehdr(Elf32_Ehdr *ehdr)
++{
++    ehdr->e_type = read_le16((unsigned char *)&ehdr->e_type);
++    ehdr->e_machine = read_le16((unsigned char *)&ehdr->e_machine);
++    ehdr->e_version = read_le32((unsigned char *)&ehdr->e_version);
++    ehdr->e_entry = read_le32((unsigned char *)&ehdr->e_entry);
++    ehdr->e_phoff = read_le32((unsigned char *)&ehdr->e_phoff);
++    ehdr->e_shoff = read_le32((unsigned char *)&ehdr->e_shoff);
++    ehdr->e_flags = read_le32((unsigned char *)&ehdr->e_flags);
++    ehdr->e_ehsize = read_le16((unsigned char *)&ehdr->e_ehsize);
++    ehdr->e_phentsize = read_le16((unsigned char *)&ehdr->e_phentsize);
++    ehdr->e_phnum = read_le16((unsigned char *)&ehdr->e_phnum);
++    ehdr->e_shentsize = read_le16((unsigned char *)&ehdr->e_shentsize);
++    ehdr->e_shnum = read_le16((unsigned char *)&ehdr->e_shnum);
++    ehdr->e_shstrndx = read_le16((unsigned char *)&ehdr->e_shstrndx);
++}
++
++static void swap_in_elf32_phdr(Elf32_Phdr *phdr)
++{
++    phdr->p_type = read_le32((unsigned char *)&phdr->p_type);
++    phdr->p_offset = read_le32((unsigned char *)&phdr->p_offset);
++    phdr->p_vaddr = read_le32((unsigned char *)&phdr->p_vaddr);
++    phdr->p_paddr = read_le32((unsigned char *)&phdr->p_paddr);
++    phdr->p_filesz = read_le32((unsigned char *)&phdr->p_filesz);
++    phdr->p_memsz = read_le32((unsigned char *)&phdr->p_memsz);
++    phdr->p_flags = read_le32((unsigned char *)&phdr->p_flags);
++    phdr->p_align = read_le32((unsigned char *)&phdr->p_align);
++}
++
++/* Simple function: store the filename to be used later when we need
++   to find the boot file */
++extern int add_boot_mipsel_filename(filename)
++    char *filename;
++{
++    boot_file_name = filename;
++    return 0;
++}
++
++/* Parse the ELF header of the boot loaded to work out the load
++   address and exec address */
++static int parse_boot_file(char *filename, int32_t *loadaddr, int32_t *execaddr, int32_t *offset, int32_t *count)
++{
++    int error = 0;
++    FILE *loader = NULL;
++    Elf32_Ehdr ehdr;
++    Elf32_Phdr phdr;
++    
++    loader = fopen(filename, "rb");
++    if (!loader)
++        return errno;
++    
++    error = fread(&ehdr, sizeof(ehdr), 1, loader);
++    if (1 != error)
++        return EIO;
++
++    swap_in_elf32_ehdr(&ehdr);
++    if (!(ehdr.e_ident[EI_MAG0] == ELFMAG0
++          && ehdr.e_ident[EI_MAG1] == ELFMAG1
++          && ehdr.e_ident[EI_MAG2] == ELFMAG2
++          && ehdr.e_ident[EI_MAG3] == ELFMAG3
++          && ehdr.e_ident[EI_CLASS] == ELFCLASS32
++          && ehdr.e_ident[EI_DATA] == ELFDATA2LSB
++          && ehdr.e_ident[EI_VERSION] == EV_CURRENT
++          && ehdr.e_type == ET_EXEC
++          && ehdr.e_machine == EM_MIPS
++          && ehdr.e_version == EV_CURRENT))
++    {
++        fprintf(stderr, "Sorry, %s is not a MIPS ELF32 little endian file", filename);        
++        return EINVAL;
++    }
++    if (ehdr.e_phnum != 1)
++    {
++        fprintf(stderr, "Sorry, %s has more than one ELF segment", filename);
++        return EINVAL;
++    }
++    fseek(loader, ehdr.e_phoff, SEEK_SET);
++    error = fread(&phdr, sizeof(phdr), 1, loader);
++    if (1 != error)
++        return EIO;
++
++    *loadaddr = phdr.p_vaddr;
++    *execaddr = ehdr.e_entry;
++	*offset = (phdr.p_offset + HD_SECTOR_SIZE - 1) / HD_SECTOR_SIZE;
++	*count = (phdr.p_filesz + HD_SECTOR_SIZE - 1) / HD_SECTOR_SIZE;
++
++    fprintf(stderr, "Parsed mipsel boot image %s: using loadaddr 0x%X, execaddr 0x%X, offset 0x%X, count 0x%X\n",
++            filename, *loadaddr, *execaddr, *offset, *count);
++
++    fclose(loader);
++    return 0;
++}
++
++static int boot_mipsel_write(outfile)
++    FILE *outfile;
++{
++    char sector[2048];
++    struct dec_bootblock *bb = (struct dec_bootblock *)sector;
++    int error = 0;
++    int offset = 0;
++    int count = 0;
++    struct directory_entry	*boot_file;	/* Boot file we need to search for in the image */
++    unsigned long length = 0;
++    unsigned long extent = 0;
++    int loadaddr = 0;
++    int execaddr = 0;
++
++    memset(sector, 0, sizeof(sector));
++
++    /* Fill in our values we care on */
++    write_le32(DEC_BOOT_MAGIC, (unsigned char *)&bb->magic);
++    write_le32(1, (unsigned char *)&bb->mode);
++
++    /* Find the file entry in the CD image */
++    boot_file = search_tree_file(root, boot_file_name);
++    if (!boot_file)
++    {
++#ifdef	USE_LIBSCHILY
++		comerrno(EX_BAD, "Uh oh, unable to find the mipsel boot file '%s'!\n",
++                 boot_file_name);
++#else
++		fprintf(stderr, "Uh oh, unable to find the mipsel boot file '%s'!\n",
++                boot_file_name);
++		exit(1);
++#endif
++    }
++
++    extent = get_733(boot_file->isorec.extent);
++    length = get_733(boot_file->isorec.size);
++    fprintf(stderr, "Found mipsel boot loader %s: using extent %lu, #blocks %lu\n",
++            boot_file_name, extent, length);
++
++    /* Parse the ELF headers on the boot file */
++    error = parse_boot_file(boot_file->whole_name, &loadaddr, &execaddr, &offset, &count);
++    if (error)
++    {
++#ifdef	USE_LIBSCHILY
++		comerrno(EX_BAD, "Uh oh, unable to parse the mipsel boot file '%s'!\n",
++                 boot_file->whole_name);
++#else
++		fprintf(stderr, "Uh oh, unable to parse the mipsel boot file '%s'!\n",
++                boot_file->whole_name);
++		exit(1);
++#endif
++    }
++
++    write_le32(loadaddr, (unsigned char *)&bb->loadAddr);
++    write_le32(execaddr, (unsigned char *)&bb->execAddr);
++    write_le32((extent * 4) + offset, (unsigned char *)&bb->bootmap[0].start);
++    write_le32(count, (unsigned char *)&bb->bootmap[0].count);
++    
++    xfwrite(sector, sizeof(sector), 1, outfile, 0, FALSE);
++    last_extent_written++;
++
++    return 0;
++}
++
++struct output_fragment mipselboot_desc = {NULL, oneblock_size, NULL, boot_mipsel_write, "mipsel boot block"};
++
+diff -urNad cdrtools-2.01+01a03/mkisofs/endian.c /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/endian.c
+--- cdrtools-2.01+01a03/mkisofs/endian.c	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/endian.c	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,188 @@
++#include <mconfig.h>
++#include "endian.h"
++
++/* Write a 64-bit quantity out into memory in BIG ENDIAN order */
++void write_be64(in, out)
++    unsigned long long in;
++    unsigned char *out;
++{
++    out[0] = (in >> 56) & 0xFF;
++    out[1] = (in >> 48) & 0xFF;
++    out[2] = (in >> 40) & 0xFF;
++    out[3] = (in >> 32) & 0xFF;
++    out[4] = (in >> 24) & 0xFF;
++    out[5] = (in >> 16) & 0xFF;
++    out[6] = (in >> 8) & 0xFF;
++    out[7] = in & 0xFF;
++}
++
++/* Read in a 64-bit BIG ENDIAN quantity */
++unsigned long long read_be64(in)
++    unsigned char *in;
++{
++    unsigned long long result = 0;
++
++    result |= (unsigned long long)in[0] << 56;
++    result |= (unsigned long long)in[1] << 48;
++    result |= (unsigned long long)in[2] << 40;
++    result |= (unsigned long long)in[3] << 32;
++    result |= (unsigned long long)in[4] << 24;
++    result |= (unsigned long long)in[5] << 16;
++    result |= (unsigned long long)in[6] << 8;
++    result |= (unsigned long long)in[7];
++    
++    return result;
++}
++
++/* Write a 64-bit quantity out into memory in LITTLE ENDIAN order */
++void write_le64(in, out)
++    unsigned long long in;
++    unsigned char *out;
++{
++    out[0] = in & 0xFF;
++    out[1] = (in >> 8) & 0xFF;
++    out[2] = (in >> 16) & 0xFF;
++    out[3] = (in >> 24) & 0xFF;
++    out[4] = (in >> 32) & 0xFF;
++    out[5] = (in >> 40) & 0xFF;
++    out[6] = (in >> 48) & 0xFF;
++    out[7] = (in >> 56) & 0xFF;
++}
++
++/* Read in a 64-bit LITTLE ENDIAN quantity */
++unsigned long long read_le64(in)
++    unsigned char *in;
++{
++    unsigned long long result = 0;
++
++    result |= (unsigned long long)in[0];
++    result |= (unsigned long long)in[1] << 8;
++    result |= (unsigned long long)in[2] << 16;
++    result |= (unsigned long long)in[3] << 24;
++    result |= (unsigned long long)in[4] << 32;
++    result |= (unsigned long long)in[5] << 40;
++    result |= (unsigned long long)in[6] << 48;
++    result |= (unsigned long long)in[7] << 56;
++    
++    return result;
++}
++
++/* Write a 48-bit quantity out into memory in LITTLE ENDIAN order */
++void write_le48(in, out)
++    unsigned long long in;
++    unsigned char *out;
++{
++    out[0] = in & 0xFF;
++    out[1] = (in >> 8) & 0xFF;
++    out[2] = (in >> 16) & 0xFF;
++    out[3] = (in >> 24) & 0xFF;
++    out[4] = (in >> 32) & 0xFF;
++    out[5] = (in >> 40) & 0xFF;
++}
++
++/* Read in a 48-bit LITTLE ENDIAN quantity */
++unsigned long long read_le48(in)
++    unsigned char *in;
++{
++    unsigned long long result = 0;
++
++    result |= (unsigned long long)in[0];
++    result |= (unsigned long long)in[1] << 8;
++    result |= (unsigned long long)in[2] << 16;
++    result |= (unsigned long long)in[3] << 24;
++    result |= (unsigned long long)in[4] << 32;
++    result |= (unsigned long long)in[5] << 40;
++    
++    return result;
++}
++
++/* Write a 32-bit quantity out into memory in BIG ENDIAN order */
++void write_be32(in, out)
++    unsigned long in;
++    unsigned char *out;
++{
++    out[0] = (in >> 24) & 0xFF;
++    out[1] = (in >> 16) & 0xFF;
++    out[2] = (in >> 8) & 0xFF;
++    out[3] = in & 0xFF;
++}
++
++/* Read in a 32-bit BIG ENDIAN quantity */
++unsigned long read_be32(in)
++    unsigned char *in;
++{
++    unsigned long result = 0;
++
++    result |= (unsigned long)in[0] << 24;
++    result |= (unsigned long)in[1] << 16;
++    result |= (unsigned long)in[2] << 8;
++    result |= (unsigned long)in[3];
++    
++    return result;
++}
++
++/* Write a 32-bit quantity out into memory in LITTLE ENDIAN order */
++void write_le32(in, out)
++    unsigned long in;
++    unsigned char *out;
++{
++    out[0] = in & 0xFF;
++    out[1] = (in >> 8) & 0xFF;
++    out[2] = (in >> 16) & 0xFF;
++    out[3] = (in >> 24) & 0xFF;
++}
++
++/* Read in a 32-bit LITTLE ENDIAN quantity */
++unsigned long read_le32(in)
++    unsigned char *in;
++{
++    unsigned long result = 0;
++
++    result |= (unsigned long)in[0];
++    result |= (unsigned long)in[1] << 8;
++    result |= (unsigned long)in[2] << 16;
++    result |= (unsigned long)in[3] << 24;
++    
++    return result;
++}
++
++/* Write a 16-bit quantity out into memory in BIG ENDIAN order */
++void write_be16(in, out)
++    unsigned short in;
++    unsigned char *out;
++{
++    out[0] = (in >> 8) & 0xFF;
++    out[1] = in & 0xFF;
++}
++    
++/* Read in a 16-bit BIG ENDIAN quantity */
++unsigned short read_be16(in)
++    unsigned char *in;
++{
++    unsigned short result = 0;
++    
++    result |= (unsigned short)in[0] << 8;
++    result |= (unsigned short)in[1];
++    return result;
++}
++
++/* Write a 16-bit quantity out into memory in LITTLE ENDIAN order */
++void write_le16(in, out)
++    unsigned short in;
++    unsigned char *out;
++{
++    out[0] = in & 0xFF;
++    out[1] = in & 0xFF >> 8;
++}
++    
++/* Read in a 16-bit LITTLE ENDIAN quantity */
++unsigned short read_le16(in)
++    unsigned char *in;
++{
++    unsigned short result = 0;
++    
++    result |= (unsigned short)in[0];
++    result |= (unsigned short)in[1] << 8;
++    return result;
++}
++
+diff -urNad cdrtools-2.01+01a03/mkisofs/endian.h /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/endian.h
+--- cdrtools-2.01+01a03/mkisofs/endian.h	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/endian.h	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,17 @@
++void                  write_be64  __PR((unsigned long long in, unsigned char *out));
++unsigned long long    read_be64   __PR((unsigned char *in));
++void                  write_le64  __PR((unsigned long long in, unsigned char *out));
++unsigned long long    read_le64   __PR((unsigned char *in));
++
++void                  write_le48  __PR((unsigned long long in, unsigned char *out));
++unsigned long long    read_le48   __PR((unsigned char *in));
++
++void                  write_be32  __PR((unsigned long in, unsigned char *out));
++unsigned long         read_be32   __PR((unsigned char *in));
++void                  write_le32  __PR((unsigned long in, unsigned char *out));
++unsigned long         read_le32   __PR((unsigned char *in));
++
++void                  write_be16  __PR((unsigned short in, unsigned char *out));
++unsigned short        read_be16   __PR((unsigned char *in));
++void                  write_le16  __PR((unsigned short in, unsigned char *out));
++unsigned short        read_le16   __PR((unsigned char *in));
+diff -urNad cdrtools-2.01+01a03/mkisofs/Makefile /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/Makefile
+--- cdrtools-2.01+01a03/mkisofs/Makefile	2005-12-02 00:15:39.000000000 +0000
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/Makefile	2005-12-02 00:15:40.000000000 +0000
+@@ -44,12 +44,13 @@
+ 		modes.c \
+ 		apple.c volume.c desktop.c mac_label.c stream.c \
+ 		ifo_read.c dvd_file.c dvd_reader.c \
+-		defaults.c getnum.c
++		defaults.c getnum.c boot-alpha.c boot-hppa.c boot-mips.c \
++		boot-mipsel.c endian.c
+ HFILES=		apple.h bootinfo.h config.h defaults.h diskmbr.h exclude.h \
+ 		fnmatch.h getopt.h iso9660.h mac_label.h mactypes.h match.h \
+ 		mkisofs.h sunlabel.h udf.h udf_fs.h vms.h \
+ 		ifo_read.h dvd_file.h dvd_reader.h bswap.h ifo_types.h \
+-		../cdrecord/defaults.h
++		../cdrecord/defaults.h endian.h
+ 
+ LIBS=		-lhfs -lfile -lunls -lrscg -lscg $(LIB_VOLMGT) -ldeflt -lschily $(SCSILIB) $(LIB_SOCKET)
+ XMK_FILE=	Makefile.man hybridman.mk
+diff -urNad cdrtools-2.01+01a03/mkisofs/mkisofs.8 /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/mkisofs.8
+--- cdrtools-2.01+01a03/mkisofs/mkisofs.8	2005-12-02 00:15:39.000000000 +0000
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/mkisofs.8	2005-12-02 00:15:40.000000000 +0000
+@@ -254,6 +254,120 @@
+ cannot detect hardlinks anymore and the resulting CD image may be larger
+ than expected.
+ .TP
++.BI \-alpha\-boot " alpha_boot_image
++Specifies the path and filename of the boot image to be used when
++making an Alpha/SRM bootable CD. The pathname must be relative to the
++source path specified to
++.B mkisofs.
++.TP
++.BI \-hppa\-bootloader " hppa_bootloader_image
++Specifies the path and filename of the boot image to be used when
++making an HPPA bootable CD. The pathname must be relative to the
++source path specified to
++.B mkisofs.
++Other options are required, at the very least a kernel file name and
++the boot command line. See the
++.B HPPA NOTES
++section below for more information.
++.TP
++.BI \-hppa\-cmdline " hppa_boot_command_line
++Specifies the command line to be passed to the hppa boot loader when
++making a bootable CD. Separate the parameters with spaces or
++commas. More options must be passed to
++.B mkisofs,
++at the very least a kernel file name and the boot loader file
++name. See the
++.B HPPA NOTES
++section below for more information.
++.TP
++.BI \-hppa\-kernel\-32 " hppa_kernel_32
++Specifies the path and filename of the 32-bit kernel image to be used
++when making an HPPA bootable CD. The pathname must be relative to the
++source path specified to
++.B mkisofs.
++Other options are required, at the very least the boot loader file
++name and the boot command line. See the
++.B HPPA NOTES
++section below for more information.
++.TP
++.BI \-hppa\-kernel\-64 " hppa_kernel_64
++Specifies the path and filename of the 64-bit kernel image to be used
++when making an HPPA bootable CD. The pathname must be relative to the
++source path specified to
++.B mkisofs.
++Other options are required, at the very least the boot loader file
++name and the boot command line. See the
++.B HPPA NOTES
++section below for more information.
++.TP
++.BI \-hppa\-ramdisk " hppa_ramdisk_image
++Specifies the path and filename of the ramdisk image to be used when
++making an HPPA bootable CD. The pathname must be relative to the
++source path specified to
++.B mkisofs.
++This parameter is
++.B optional.
++Other options are required, at the very
++least a kernel file name and the boot command line. See the
++.B HPPA NOTES
++section below for more information.
++.TP
++.BI \-mips\-boot " mips_boot_image
++Specifies the path and filename of the boot image to be used when
++making an SGI/big-endian MIPS bootable CD. The pathname must be
++relative to the source path specified to
++.B mkisofs.
++This option may be specified several times to allow the addition of
++multiple boot images, up to a maximum of 15.
++.TP
++.BI \-mipsel\-boot " mipsel_boot_image
++Specifies the path and filename of the boot image to be used when
++making an DEC/little-endian MIPS bootable CD. The pathname must be
++relative to the source path specified to
++.B mkisofs.
++.TP
++.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
++Specifies a comma separated list of boot images that are needed to make
++a bootable CD for sparc systems.
++Partition 0 is used for the ISO-9660 image, the first image file is mapped
++to partition 1.
++There may be empty fields in the comma separated list.
++The maximum number of possible partitions is 8 so it is impossible to specify
++more than 7 partition images.
++This option is required to make a bootable CD for Sun sparc systems.
++If the
++.B \-B
++or
++.B \-sparc\-boot
++option has been specified, the first sector of the resulting image will
++contain a Sun disk label. This disk label specifies slice 0 for the
++iso9660 image and slice 1 .\|.\|. slice 7 for the boot images that
++have been specified with this option. Byte offset 512 .\|.\|. 8191
++within each of the additional boot images must contain a primary boot
++that works for the appropriate sparc architecture. The rest of each
++of the images usually contains an ufs filesystem that is used primary
++kernel boot stage.
++.sp
++The implemented boot method is the boot method found with SunOS 4.x and SunOS 5.x.
++However, it does not depend on SunOS internals but only on properties of
++the Open Boot prom. For this reason, it should be usable for any OS
++that boots off a sparc system.
++.sp
++For more information also see the 
++.B NOTES
++section below.
++.sp
++If the special filename
++.B "..."
++is used, the actual and all following boot partitions are mapped to the
++previous partition. If
++.B mkisofs
++is called with
++.BI "\-G " image " \-B " ...
++all boot partitions are mapped to the partition that contains the iso9660
++filesystem image and the generic boot image that is located in the first
++16 sectors of the disk is used for all architectures.
++.TP
+ .BI \-b " eltorito_boot_image
+ Specifies the path and filename of the boot image to be used when making
+ an "El Torito" bootable CD. The pathname must be relative to the source
+@@ -2333,6 +2447,17 @@
+ The 32-bit checksum is the sum of all the 32-bit words in the boot
+ file starting at byte offset 64.  All linear block addresses (LBAs)
+ are given in CD sectors (normally 2048 bytes).
++.SH "HPPA NOTES"
++To make a bootable CD for HPPA, at the very least a boot loader file (
++.B \-hppa\-bootloader
++), a kernel image file (32- or 64-bit or both, depending on hardware)
++and a boot command line (
++.B \-hppa\-cmdline
++) must be specified. Some systems can boot either a 32- or a 64-bit
++kernel, and the choice of which one to use will be made by the
++firmware. Optionally, a ramdisk can be used for the root filesystem
++using
++.B \-hppa\-cmdline.
+ .SH CONFIGURATION
+ .B mkisofs
+ looks for the
+diff -urNad cdrtools-2.01+01a03/mkisofs/mkisofs.c /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/mkisofs.c
+--- cdrtools-2.01+01a03/mkisofs/mkisofs.c	2005-12-02 00:15:39.000000000 +0000
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/mkisofs.c	2005-12-02 00:15:40.000000000 +0000
+@@ -100,7 +100,11 @@
+ int	load_addr = 0;
+ int	load_size = 0;
+ int	boot_info_table = 0;
++int	use_alphaboot = 0;
+ int	use_sparcboot = 0;
++int	use_hppaboot = 0;
++int	use_mipsboot = 0;
++int	use_mipselboot = 0;
+ int	use_sunx86boot = 0;
+ int	use_genboot = 0;
+ int	use_RockRidge = 0;
+@@ -376,6 +380,18 @@
+ #define	OPTION_ALLOW_LEADING_DOTS	1070
+ #define	OPTION_PUBLISHER		1071
+ 
++#define	OPTION_BOOTALPHA		1200
++
++#define	OPTION_HPPA_CMDLINE 		1210
++#define	OPTION_HPPA_KERNEL_32   	1211
++#define	OPTION_HPPA_KERNEL_64   	1212
++#define	OPTION_HPPA_BOOTLOADER  	1213
++#define	OPTION_HPPA_RAMDISK     	1214
++
++#define	OPTION_BOOTMIPS     		1220
++
++#define	OPTION_BOOTMIPSEL   		1230
++
+ #ifdef UDF
+ #define	OPTION_UDF			1500
+ #endif
+@@ -602,6 +618,26 @@
+ 	{{"sectype", required_argument, NULL, 's'},
+ 	's', "TYPE", "Set output sector type to e.g. data/xa1/raw", ONE_DASH},
+ 
++	{{"alpha-boot", required_argument, NULL, OPTION_BOOTALPHA},
++	'\0', "FILE", "Set alpha boot image name (relative to image root)", ONE_DASH},
++
++	{{"hppa-cmdline", required_argument, NULL, OPTION_HPPA_CMDLINE},
++	'\0', "CMDLINE", "Set hppa boot command line (relative to image root)", ONE_DASH},
++	{{"hppa-kernel-32", required_argument, NULL, OPTION_HPPA_KERNEL_32},
++	'\0', "FILE", "Set hppa 32-bit image name (relative to image root)", ONE_DASH},
++	{{"hppa-kernel-64", required_argument, NULL, OPTION_HPPA_KERNEL_64},
++	'\0', "FILE", "Set hppa 64-bit image name (relative to image root)", ONE_DASH},
++	{{"hppa-bootloader", required_argument, NULL, OPTION_HPPA_BOOTLOADER},
++	'\0', "FILE", "Set hppa boot loader file name (relative to image root)", ONE_DASH},
++	{{"hppa-ramdisk", required_argument, NULL, OPTION_HPPA_RAMDISK},
++	'\0', "FILE", "Set hppa ramdisk file name (relative to image root)", ONE_DASH},
++
++	{{"mips-boot", required_argument, NULL, OPTION_BOOTMIPS},
++	'\0', "FILE", "Set mips boot image name (relative to image root)", ONE_DASH},
++
++	{{"mipsel-boot", required_argument, NULL, OPTION_BOOTMIPSEL},
++	'\0', "FILE", "Set mipsel boot image name (relative to image root)", ONE_DASH},
++
+ #ifdef SORTING
+ 	{ {"sort", required_argument, NULL, OPTION_SORT},
+ 	'\0', "FILE", "Sort file content locations according to rules in FILE", ONE_DASH },
+@@ -1398,6 +1434,41 @@
+ 			 */
+ 			new_boot_entry();
+ 			break;
++		case OPTION_BOOTALPHA:
++			use_alphaboot++;
++			/* list of pathnames of boot images */
++			add_boot_alpha_filename(optarg);
++			break;
++		case OPTION_HPPA_CMDLINE:
++			use_hppaboot++;
++			add_boot_hppa_cmdline(optarg);
++			break;
++		case OPTION_HPPA_KERNEL_32:
++			use_hppaboot++;
++			add_boot_hppa_kernel_32(optarg);
++			break;
++		case OPTION_HPPA_KERNEL_64:
++			use_hppaboot++;
++			add_boot_hppa_kernel_64(optarg);
++			break;
++		case OPTION_HPPA_BOOTLOADER:
++			use_hppaboot++;
++			add_boot_hppa_bootloader(optarg);
++			break;
++		case OPTION_HPPA_RAMDISK:
++			use_hppaboot++;
++			/* list of pathnames of boot images */
++			add_boot_hppa_ramdisk(optarg);
++			break;
++		case OPTION_BOOTMIPS:
++			use_mipsboot++;
++			/* list of pathnames of boot images */
++			add_boot_mips_filename(optarg);
++			break;
++		case OPTION_BOOTMIPSEL:
++			use_mipselboot++;
++			add_boot_mipsel_filename(optarg);
++			break;
+ 		case 'B':
+ 			if (use_sunx86boot)
+ 				comerrno(EX_BAD,
+@@ -3257,6 +3328,14 @@
+ #endif	/* APPLE_HYB */
+ 	if (use_sparcboot || use_sunx86boot)
+ 		outputlist_insert(&sunlabel_desc);
++	if (use_alphaboot)
++		outputlist_insert(&alphaboot_desc);
++	if (use_hppaboot)
++		outputlist_insert(&hppaboot_desc);
++	if (use_mipsboot)
++		outputlist_insert(&mipsboot_desc);
++	if (use_mipselboot)
++		outputlist_insert(&mipselboot_desc);
+ 	if (use_genboot)
+ 		outputlist_insert(&genboot_desc);
+ 	outputlist_insert(&startpad_desc);
+diff -urNad cdrtools-2.01+01a03/mkisofs/mkisofs.h /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/mkisofs.h
+--- cdrtools-2.01+01a03/mkisofs/mkisofs.h	2005-12-02 00:15:39.000000000 +0000
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/mkisofs.h	2005-12-02 00:15:40.000000000 +0000
+@@ -190,6 +190,10 @@
+ extern struct output_fragment strfile_desc;
+ extern struct output_fragment strdir_desc;
+ extern struct output_fragment strpath_desc;
++extern struct output_fragment alphaboot_desc;
++extern struct output_fragment hppaboot_desc;
++extern struct output_fragment mipsboot_desc;
++extern struct output_fragment mipselboot_desc;
+ 
+ #ifdef APPLE_HYB
+ extern struct output_fragment hfs_desc;
+@@ -455,6 +459,22 @@
+ extern int make_sun_label __PR((void));
+ extern int make_sunx86_label __PR((void));
+ 
++/* boot-alpha.c */
++extern int add_boot_alpha_filename __PR((char *filename));
++
++/* boot-hppa.c */
++extern int add_boot_hppa_cmdline    __PR((char *cmdline));
++extern int add_boot_hppa_kernel_32  __PR((char *filename));
++extern int add_boot_hppa_kernel_64  __PR((char *filename));
++extern int add_boot_hppa_bootloader __PR((char *filename));
++extern int add_boot_hppa_ramdisk    __PR((char *filename));
++
++/* boot-mips.c */
++extern int add_boot_mips_filename __PR((char *filename));
++
++/* boot-mipsel.c */
++extern int add_boot_mipsel_filename  __PR((char *filename));
++
+ /* write.c */
+ extern int get_731 __PR((char *));
+ extern int get_732 __PR((char *));
+diff -urNad cdrtools-2.01+01a03/mkisofs/README.alphaboot /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.alphaboot
+--- cdrtools-2.01+01a03/mkisofs/README.alphaboot	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.alphaboot	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,28 @@
++# README.alphaboot    Steve McIntyre <steve@einval.com> 2004/07/19
++
++The alpha boot support allows you to create a bootable CD which will
++work with DEC/Compaq/HP Alpha machines, for example bootable
++installation media.
++
++The method used for this is the same as in aboot, the bootloader for
++Linux on Alpha, and works with SRM firmware. See the SRM Firmware
++HOWTO at http://www.alphalinux.org/faq/SRM-HOWTO/ for more details
++about SRM.
++
++In common with many Unix systems, the SRM code reads the first
++512-byte "sector" off a disk and parses information in that
++sector. The information in question is the location (start "sector")
++and length of the first stage boot loader. On a Linux system, this
++file will normally be called bootlx.
++
++SRM will load and execute the first stage boot loader, and from that
++point the system should be able to find the normal OS kernel and start
++up fully.
++
++To use the Alpha boot support code in mkisofs, simply specify the
++location of the first stage boot loader (relative to the CD root)
++using the -alpha-boot command line switch:
++
++mkisofs ... -alpha-boot boot/bootlx -o alpha.iso files
++
++
+diff -urNad cdrtools-2.01+01a03/mkisofs/README.hppaboot /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.hppaboot
+--- cdrtools-2.01+01a03/mkisofs/README.hppaboot	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.hppaboot	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,38 @@
++# README.hppaboot    Steve McIntyre <steve@einval.com> 2004/07/19
++
++The hppa boot support allows you to create a bootable CD which will
++work with HP PA/RISC machines, for example bootable installation
++media.
++
++The method used for this is the same as in palo, the bootloader for
++Linux on hppa. See the palo README for more details about supported
++hardware etc.
++
++The HPPA firmware reads the first 2048-byte sector off a disk and
++parses information in that sector. The information in question is the
++location (start sector) and length of various files:
++
++ * a 32-bit kernel image
++ * a 64-bit kernel image
++ * first stage bootloader (iplboot)
++ * (optional) ramdisk
++
++and also the system command line to use, e.g.
++
++ "5/vmlinux HOME=/ TERM=linux console=tty"
++
++The firmware will load and execute the first stage boot loader, and
++that should be able to find the (32- or 64-bit) kernel and boot
++normally. Whether you need a 32- or 64-bit kernel depends on your
++hardware; some will even support both.
++
++To use the hppa boot support code in mkisofs, simply specify the boot
++command line and file locations (relative to the CD root) as follows:
++
++mkisofs ... -hppa-cmdline    <cmdline, elements separated by spaces or commas> \ 
++            -hppa-kernel-32  <32-bit kernel> \
++            -hppa-kernel-64  <64-bit kernel> \
++            -hppa-bootloader <bootloader> \
++            -hppa-ramdisk    <ramdisk file> \
++            -o hppa.iso hppa-files
++
+diff -urNad cdrtools-2.01+01a03/mkisofs/README.mipsboot /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.mipsboot
+--- cdrtools-2.01+01a03/mkisofs/README.mipsboot	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.mipsboot	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,26 @@
++# README.mipsboot    Steve McIntyre <steve@einval.com> 2004/07/19
++
++The mips/SGI boot support allows you to create a bootable CD which
++will work with big-endian mips SGI machines, for example bootable
++installation media.
++
++The method used for this is the same as in genisovh, a tool to make
++CDs bootable for Linux on SGI.
++
++The SGI firmware reads the first 512-byte "sector" off a disk and
++parses information from a volume descriptor header in that sector. The
++information in question is the location (start sector) and length of
++bootable kernel images; up to 15 are supported.
++
++The firmware will load and execute kernels listed. (I'm not sure what
++it will do if more than one kernel is listed - it may display a boot
++menu).
++
++To use the SGI boot support code in mkisofs, simply specify the kernel
++file locations (relative to the CD root) as follows:
++
++mkisofs ... -mips-boot <kernel file #1> \
++            ... 
++            -mips-boot <kernel file #n> \
++            -o mips.iso mips-files
++
+diff -urNad cdrtools-2.01+01a03/mkisofs/README.mipselboot /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.mipselboot
+--- cdrtools-2.01+01a03/mkisofs/README.mipselboot	1970-01-01 01:00:00.000000000 +0100
++++ /tmp/dpep.PFx38Z/cdrtools-2.01+01a03/mkisofs/README.mipselboot	2005-12-02 00:15:40.000000000 +0000
+@@ -0,0 +1,29 @@
++# README.mipselboot    Steve McIntyre <steve@einval.com> 2004/07/19
++
++The mips/DEC boot support allows you to create a bootable CD which
++will work with little-endian mips DEC machines (e.g. older
++DECstations), for example bootable installation media.
++
++The method used for this is the same as in delo, the Linux-on-mipsel
++bootloader. See the delo README for more information about how to
++configure the DECstation's firmware to find and boot the CDROM.
++
++The DEC firmware reads the first 512-byte "sector" off a disk and
++parses information from that sector. The information in question is
++the location (start sector) and length of the first stage boot
++loader.
++
++(On Linux, this boot loader is in ELF format and the firmware does not
++know how to deal with ELF directly, we have to parse the ELF headers
++and find the raw binary data needed inside it. Pointers to the start
++and length of that raw binary are what is stored in the boot sector.)
++
++The firmware will load and execute the first stage boot loader, and
++from that point the system should be able to find the normal OS kernel
++and start up fully.
++
++To use the DEC boot support code in mkisofs, simply specify the kernel
++file location (relative to the CD root) as follows:
++
++mkisofs ... -mipsel-boot <kernel file> -o mipsel.iso mipsel-files
++
