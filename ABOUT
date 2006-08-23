@@ -1,19 +1,30 @@
+
+GENERAL NOTE: This package is heavily based on cdrtools (by
+Jörg Schilling, see below), however this person is not
+affiliated to the debburn development project creating this
+package. Jört Schilling is not responsible for problems
+caused by the use or distribution of this software. Please
+avoid bothering him with issues that are out of his control.
+
 This package contains the following software:
 
 -	cdda2wav (an digital CD audio extraction program)
 	By Heiko Eißfeldt <heiko@hexco.de>
 
--	cdrecord (a CD recording program)
-	By Jörg Schilling <schilling@fokus.fhg.de>
+- wodim (a CD recording program). Originaly based on
+  cdrecord by Jörg Schilling <schilling@fokus.fhg.de> but
+  developed independently now.
 
 -	mkisofs (an ISO-9660 filesystem image creator)
-	By Jörg Schilling schilling@fokus.fhg.de and
-	by James Pearson <jcpearso@ge.ucl.ac.uk>
+	By Eric Youngdale <eric@andante.org>, Jörg Schilling
+  <schilling@fokus.fhg.de>, James Pearson
+  <jcpearso@ge.ucl.ac.uk> and other contributors.
 
 -	mkhybrid (an ISO-9660/HFS filesystem image creator)
 	Link to mkisofs
 
--	several diagnostic programs for ISO-9660
+-	several diagnostic programs for ISO-9660, originaly from
+  cdrtools (by Jört Schilling, 
 
 	-	devdump dump a device or file in hex
 
@@ -34,4 +45,4 @@ This package contains the following software:
 	code of the underlying OS).
 
 -	libscg (a highly portable SCSI transport library)
-	By Jörg Schilling schilling@fokus.fhg.de and
+	By Jörg Schilling schilling@fokus.fhg.de
