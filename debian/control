@@ -1,0 +1,63 @@
+Source: talibus
+Priority: optional
+Section: otherosfs
+Maintainer: Joerg Jaspert <joerg@debian.org>
+Uploaders: Eduard Bloch <blade@debian.org>, Steve McIntyre <93sam@debian.org>
+Build-Depends: debhelper (>=4.1.16), autotools-dev, smake, zlib1g-dev, cmake, libcap-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libcam-dev [kfreebsd-i386 kfreebsd-amd64]
+Standards-Version: 3.6.2.1
+
+Package: wodim
+Architecture: any
+Depends: ${shlibs:Depends}, debconf | debconf-2.0, makedev (>= 2.3.1-24)
+Recommends: mkisofs
+Replaces: cdrtools-doc, cdrecord
+Suggests: xcdroast, talibus-doc
+Conflicts: xcdroast (<< 0.98+0alpha14-5), cdrecord
+Description: command line CD writing tool
+ wodim allows you to create CDs on a CD recorder.
+ It supports writing data, audio, mixed, multi-session, and CD+
+ discs, on just about every type of CD recorder out there.
+ .
+ Please install talibus-doc if you want most of the documentation and
+ Readme-files.
+
+Package: mkisofs
+Architecture: any
+Depends: ${shlibs:Depends}
+Suggests: wodim, talibus-doc
+Conflicts: mkhybrid, xcdroast (<< 0.98+0alpha11)
+Description: Creates ISO-9660 CD-ROM filesystem images
+ mkisofs is a pre-mastering program for creating ISO-9660 CD-ROM 
+ filesystem images, which can then be written to a CD-ROM (or DVD-ROM) using
+ the wodim program. mkisofs now includes support for making bootable 
+ "El Torito" CD-ROMs, as well as CD-ROMs with support for the
+ Macintosh HFS filesystem.
+ .
+ The package also includes tools needed to create compressed isofs images
+ (mkzftree from zisofs_tools source).
+ .
+ Please install talibus-doc if you want most of the documentation and
+ Readme-files.
+
+Package: cdda2wav
+Architecture: any
+Suggests: vorbis-tools, talibus-doc
+Depends: ${shlibs:Depends}
+Conflicts: xcdroast (<< 0.98+0alpha11)
+Section: sound
+Description: Creates WAV files from audio CDs
+ cdda2wav lets you digitally copy audio tracks from a CD-ROM, avoiding
+ the distortion that is introduced when recording via a sound card. Data 
+ can be dumped into raw (cdr), wav or sun format sound files. Options control
+ the recording format (stereo/mono; 8/16 bits; sampling rate, etc).
+ .
+ Please install talibus-doc if you want most of the documentation and
+ Readme-files.
+
+Package: talibus-doc
+Architecture: all
+Section: doc
+Suggests: wodim, mkisofs, cdda2wav
+Description: Documentation for the talibus package-suite
+ This is the documentation for the talibus package-suite, namely
+ wodim, mkisofs and cdda2wav.
