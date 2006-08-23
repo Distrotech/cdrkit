@@ -231,6 +231,7 @@ static int boot_mipsel_write(outfile)
     write_le32((extent * 4) + offset, (unsigned char *)&bb->bootmap[0].start);
     write_le32(count, (unsigned char *)&bb->bootmap[0].count);
     
+    jtwrite(sector, sizeof(sector), 1, 0, FALSE);
     xfwrite(sector, sizeof(sector), 1, outfile, 0, FALSE);
     last_extent_written++;
 

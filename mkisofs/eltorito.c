@@ -696,6 +696,7 @@ tvd_write(outfile)
 	}
 	/* Next we write out the boot volume descriptor for the disc */
 	get_torito_desc(&gboot_desc);
+	jtwrite(&gboot_desc, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(&gboot_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
 	last_extent_written++;
 	return (0);

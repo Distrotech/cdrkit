@@ -825,6 +825,46 @@ Outdated option reserved by POSIX.1-2001, use
 instead.
 This option will get POSIX.1-2001 semantics with mkisofs-2.02.
 .TP
+.BI \-jigdo\-jigdo " jigdo_file
+Produce a jigdo .jigdo file as well as the .iso. See the
+.B JIGDO NOTES
+section below for more information.
+.TP
+.BI \-jigdo\-template " template_file
+Produce a jigdo .template file as well as the .iso. See the
+.B JIGDO NOTES
+section below for more information.
+.TP
+.BI \-jigdo\-min\-file\-size " size
+Specify the minimum size for a file to be listed in the .jigdo
+file. Default (and minimum allowed) is 1KB. See the
+.B JIGDO NOTES
+section below for more information.
+.TP
+.BI \-jigdo\-force\-md5 " path
+Specify a file pattern where files MUST be contained in the
+externally-suplied MD5 list as supplied by \-md5\-list. See the
+.B JIGDO NOTES
+section below for more information.
+.TP
+.BI \-jigdo\-exclude " path
+Specify a file pattern where files will not be listed in the .jigdo
+file. See the
+.B JIGDO NOTES
+section below for more information.
+.TP
+.BI \-jigdo\-map " path
+Specify a pattern mapping for the jigdo file
+(e.g. Debian=/mirror/debian). See the
+.B JIGDO NOTES
+section below for more information.
+.TP
+.BI \-md5\-list " md5_file
+Specify a file containing the MD5sums, sizes and pathnames of the
+files to be included in the .jigdo file. See the
+.B JIGDO NOTES
+section below for more information.
+.TP
 .BI \-log\-file " log_file
 Redirect all error, warning and informational messages to
 .I log_file
@@ -2458,6 +2498,46 @@ kernel, and the choice of which one to use will be made by the
 firmware. Optionally, a ramdisk can be used for the root filesystem
 using
 .B \-hppa\-cmdline.
+.SH "JIGDO NOTES"
+Jigdo is a useful tool to help in the distribution of large files like CD and
+DVD images. See Richard Atterer's site for more details. Debian CDs and DVD ISO
+images are published on the web in jigdo format to allow end users to download
+them more efficiently.
+.PP
+To create jigdo and template files alongside the ISO image from
+mkisofs, you must first generate a list of the files that will be
+used, in the following format:
+.sp
+.RS +.2i
+.ta 2.0i 2.0i 5.0i
+.nf
+MD5sum   File size  Path
+32 chars 12 chars   to end of line
+.fi
+.RE
+.sp
+The MD5sum should be written in jigdo's pseudo-base64 format. The file
+size should be in decimal, and the path to the file must be absolute.
+.PP
+Once you have this file, call mkisofs with all of your normal command
+line parameters. Specify the output filenames for the jigdo and
+template files using \-jigdo\-jigdo and \-jigdo\-template, and pass in
+the location of your MD5 list with the \-md5\-list option.
+.PP
+If there are files that you do NOT want to be added into the jigdo
+file (e.g. if they are likely to change often), specify them using
+\-jigdo\-ignore. If you want to verify some of the files as they are
+written into the image, specify them using \-jigdo\-force\-md5. If any
+files don't match, mkisofs will then abort. Both of these options take
+regular expressions as input. It is possible to restrict the set of
+files that will be used further based on size - use the
+\-jigdo\-min\-file\-size option.
+.PP
+Finally, the jigdo code needs to know how to map the files it is given
+onto a mirror-style configuration. Specify how to map paths using the
+\-jigdo\-map option. Using "Debian=/mirror/debian" will cause all
+paths starting with "/mirror/debian" to be mapped to "Debian:<file>"
+in the output jigdo file.
 .SH CONFIGURATION
 .B mkisofs
 looks for the

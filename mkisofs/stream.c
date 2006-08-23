@@ -156,6 +156,7 @@ write_str_file(outfile)
 			break;
 		}
 		idx += count;
+		jtwrite(buf, count, 1, 0, FALSE);
 		xfwrite(buf, count, 1, outfile, 0, FALSE);
 	}
 
@@ -163,15 +164,23 @@ write_str_file(outfile)
 	iso_blocks = ISO_BLOCKS(idx);
 	memset(buf, 0, SECTOR_SIZE);
 	if (SECTOR_SIZE * iso_blocks - idx)
+    {
+		jtwrite(buf, SECTOR_SIZE * iso_blocks - idx, 1, 0, FALSE);
 		xfwrite(buf, SECTOR_SIZE * iso_blocks - idx, 1, outfile, 0, FALSE);
+    }
 	/*
 	 * If we didn't fill the available area, pad to directory block
 	 */
 	for (count = 0; count < (avail_extent - iso_blocks); count++)
+    {
+		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 		xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
-
+    }
 	for (count = 0; count < stream_pad; count++)
+    {
+		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 		xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
+    }
 
 	last_extent_written += avail_extent + stream_pad;
 	return (0);
@@ -200,7 +209,9 @@ write_str_dir(outfile)
 	set_723((char *)s_dir.volume_sequence_number, volume_sequence_number);
 	s_dir.name_len[0] = 1;
 	s_dir.name[0] = 0;
+	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, 0, FALSE);
 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, outfile, 0, FALSE);
+	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, 0, FALSE);
 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, outfile, 0, FALSE);
 	memset(&s_dir, 0, sizeof (struct iso_directory_record));
 	s_dir.length[0] = 34 + strlen(stream_filename);
@@ -213,6 +224,8 @@ write_str_dir(outfile)
 	set_723((char *)s_dir.volume_sequence_number, volume_sequence_number);
 	s_dir.name_len[0] = strlen(stream_filename);
 	memcpy(s_dir.name, stream_filename, s_dir.name_len[0]);
+	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0])
+		+ s_dir.name_len[0], 1, 0, FALSE);
 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0])
 		+ s_dir.name_len[0], 1, outfile, 0, FALSE);
 
@@ -221,6 +234,8 @@ write_str_dir(outfile)
 	 * with filename length stream_filename + round up for even lenght count
 	 */
 	to_write = (s_dir.name_len[0] % 2) ? 0 : 1;
+	jtwrite(buf, SECTOR_SIZE - ((3 * 34) + s_dir.name_len[0]) +
+		to_write, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE - ((3 * 34) + s_dir.name_len[0]) +
 		to_write, 1, outfile, 0, FALSE);
 	free(buf);
@@ -235,9 +250,12 @@ LOCAL int
 write_str_path(outfile)
 	FILE	*outfile;
 {
+	jtwrite(l_path, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(l_path, SECTOR_SIZE, 1, outfile, 0, FALSE);
+	last_extent_written++;
+	jtwrite(m_path, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(m_path, SECTOR_SIZE, 1, outfile, 0, FALSE);
-	last_extent_written += 2;
+	last_extent_written++;
 	free(l_path);
 	free(m_path);
 	path_table_l = NULL;

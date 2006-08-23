@@ -243,21 +243,23 @@ LOCAL	long	sg_raisedma	__PR((SCSI *scgp, long newmax));
 #endif
 LOCAL	void	sg_settimeout	__PR((int f, int timeout));
 
-int    sg_open_excl    __PR((char *device, int mode));
+int    sg_open_excl    __PR((char *device, int mode, int quickAndQuiet));
 
 int
-sg_open_excl(device, mode)
+sg_open_excl(device, mode, quickAndQuiet)
        char    *device;
        int     mode;
+       int quickAndQuiet;
 {
        int f;
        int i;
-               f = open(device, mode|O_EXCL);
-       for (i = 0; (i < 10) && (f == -1 && (errno == EACCES || errno == EBUSY)); i++) {
-           fprintf(stderr, "Error trying to open %s exclusively (%s)... retrying in 1 second.\n", device, strerror(errno));
-           usleep(1000000 + 100000.0 * rand()/(RAND_MAX+1.0));
-           f = open(device, mode|O_EXCL);
-       }
+       f = open(device, mode|O_EXCL);
+       if(!quickAndQuiet)
+          for (i = 0; (i < 10) && (f == -1 && (errno == EACCES || errno == EBUSY)); i++) {
+             fprintf(stderr, "Error trying to open %s exclusively (%s)... retrying in 1 second.\n", device, strerror(errno));
+             usleep(1000000 + 100000.0 * rand()/(RAND_MAX+1.0));
+             f = open(device, mode|O_EXCL);
+          }
        if (f == -1 && errno != EACCES && errno != EBUSY) {
            f = open(device, mode);
        }
@@ -445,7 +447,7 @@ scanopen:
 	if (use_ata) for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
 					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, 1);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -458,7 +460,8 @@ scanopen:
 				if (scgp->errstr)
 					js_snprintf(scgp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '%s'", devname);
-				return (0);
+				/* return (0); */
+            continue;
 			}
 		} else {
 			int	iparm;
@@ -485,7 +488,7 @@ scanopen:
 	if (nopen == 0) for (i = 0; i < 32; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/sg%d", i);
 					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, 0);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -514,7 +517,7 @@ scanopen:
 	if (nopen == 0) for (i = 0; i <= 25; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
 					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, 0);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -562,7 +565,7 @@ openbydev:
 			"Warning: Open by 'devname' is unintentional and not supported.\n");
 		}
 					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(device, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(device, O_RDWR | O_NONBLOCK, 0);
 /*		if (f < 0 && errno == ENOENT)*/
 /*			goto openpg;*/
 

@@ -318,6 +318,7 @@ static int boot_mips_write(outfile)
 	/* Create checksum */
 	vh_calc_checksum(&vh);
 
+    jtwrite(&vh, sizeof(vh), 1, 0, FALSE);
     xfwrite(&vh, sizeof(vh), 1, outfile, 0, FALSE);
     last_extent_written++;
 

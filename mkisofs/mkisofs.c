@@ -380,6 +380,16 @@ struct ld_option {
 #define	OPTION_ALLOW_LEADING_DOTS	1070
 #define	OPTION_PUBLISHER		1071
 
+#ifdef		JIGDO_TEMPLATE
+#define	OPTION_JTT_OUTPUT		1101
+#define	OPTION_JTJ_OUTPUT		1102
+#define	OPTION_JT_MIN_SIZE		1103
+#define	OPTION_JT_PATH_MAP		1104
+#define	OPTION_JT_MD5_LIST		1105
+#define	OPTION_JT_INCLUDE		1106
+#define	OPTION_JT_EXCLUDE		1107
+#endif
+
 #define	OPTION_BOOTALPHA		1200
 
 #define	OPTION_HPPA_CMDLINE 		1210
@@ -637,6 +647,23 @@ LOCAL const struct ld_option ld_options[] =
 
 	{{"mipsel-boot", required_argument, NULL, OPTION_BOOTMIPSEL},
 	'\0', "FILE", "Set mipsel boot image name (relative to image root)", ONE_DASH},
+
+#ifdef JIGDO_TEMPLATE
+	{{"jigdo-jigdo", required_argument, NULL, OPTION_JTJ_OUTPUT},
+	'\0', "FILE", "Produce a jigdo .jigdo file as well as the .iso", ONE_DASH },
+	{{"jigdo-template", required_argument, NULL, OPTION_JTT_OUTPUT},
+	'\0', "FILE", "Produce a jigdo .template file as well as the .iso", ONE_DASH },
+	{{"jigdo-min-file-size", required_argument, NULL, OPTION_JT_MIN_SIZE},
+	'\0', "SIZE", "Minimum size for a file to be listed in the jigdo file", ONE_DASH },
+	{{"jigdo-force-md5", required_argument, NULL, OPTION_JT_INCLUDE},
+	'\0', "PATTERN", "Pattern(s) where files MUST match an externally-supplied MD5sum", ONE_DASH },
+	{{"jigdo-exclude", required_argument, NULL, OPTION_JT_EXCLUDE},
+	'\0', "PATTERN", "Pattern(s) to exclude from the jigdo file", ONE_DASH },
+	{{"jigdo-map", required_argument, NULL, OPTION_JT_PATH_MAP},
+	'\0', "PATTERN1=PATTERN2", "Pattern(s) to map paths (e.g. Debian=/mirror/debian)", ONE_DASH },
+	{{"md5-list", required_argument, NULL, OPTION_JT_MD5_LIST},
+	'\0', "FILE", "File containing MD5 sums of the files that should be checked", ONE_DASH },
+#endif
 
 #ifdef SORTING
 	{ {"sort", required_argument, NULL, OPTION_SORT},
@@ -1007,6 +1034,7 @@ susage(excode)
 	fprintf(stderr, "\nUse %s -help\n", program_name);
 	fprintf(stderr, "to get a list of valid options.\n");
 	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
+	fprintf(stderr, "This version of mkisofs includes the unofficial JTE patch\nfrom http://www.einval.com/~steve/software/JTE/\nReport errors to steve-jte@einval.com\n");
 
 	exit(excode);
 }
@@ -1103,6 +1131,7 @@ usage(excode)
 		}
 	}
 	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
+	fprintf(stderr, "This version of mkisofs includes the unofficial JTE patch\nfrom http://www.einval.com/~steve/software/JTE/\nReport errors to steve-jte@einval.com\n");
 	exit(excode);
 }
 
@@ -1407,6 +1436,60 @@ main(argc, argv)
 		case OPTION_OUTPUT_CHARSET:
 			ocharset = optarg;
 			break;
+#ifdef JIGDO_TEMPLATE
+		case OPTION_JTT_OUTPUT:
+			jtemplate_out = optarg;
+			break;
+		case OPTION_JTJ_OUTPUT:
+			jjigdo_out = optarg;
+			break;
+		case OPTION_JT_MD5_LIST:
+			jmd5_list = optarg;
+			break;
+		case OPTION_JT_MIN_SIZE:
+			jte_min_size = atoi(optarg);
+			if (jte_min_size < MIN_JIGDO_FILE_SIZE) {
+				fprintf(stderr, "Jigdo min size %d too small; using default %d instead\n", jte_min_size, MIN_JIGDO_FILE_SIZE);
+				jte_min_size = MIN_JIGDO_FILE_SIZE;
+			}
+			break;
+		case OPTION_JT_INCLUDE:
+			if (jte_add_include(optarg)) {
+#ifdef	USE_LIBSCHILY
+				comerrno(EX_BAD,
+				         "Failed to build jigdo-include list\n");
+#else
+				fprintf(stderr,
+				        "Failed to build jigdo-include list\n");
+				exit(1);
+#endif
+			}
+			break;
+		case OPTION_JT_EXCLUDE:
+			if (jte_add_exclude(optarg)) {
+#ifdef	USE_LIBSCHILY
+				comerrno(EX_BAD,
+				         "Failed to build jigdo-exclude list\n");
+#else
+				fprintf(stderr,
+				        "Failed to build jigdo-exclude list\n");
+				exit(1);
+#endif
+			}
+			break;
+		case OPTION_JT_PATH_MAP:
+			if (jte_add_mapping(optarg)) {
+#ifdef	USE_LIBSCHILY
+				comerrno(EX_BAD,
+				         "Failed to build jigdo mapping list\n");
+#else
+				fprintf(stderr,
+				        "Failed to build jigdo mapping list\n");
+				exit(1);
+#endif
+			}
+			break;
+#endif /* JIGDO_TEMPLATE */
 		case OPTION_NOBAK:
 			all_files = 0;
 			break;
@@ -3296,6 +3379,27 @@ if (check_session == 0)
 			exit(1);
 #endif
 		}
+		if (jtemplate_out || jjigdo_out) {
+			if (!jtemplate_out || !jjigdo_out || !jmd5_list) {
+#ifdef USE_LIBSCHILY
+				comerr("Bad options - need to specify output names for jigdo and template file, and also the md5-list input file!\n");
+#else
+				fprintf(stderr, "Bad options - need to specify output names for jigdo and template file, and also the md5-list input file!\n");
+				exit(1);
+#endif
+			}
+			jtjigdo = fopen(jjigdo_out, "wb");
+			jttemplate = fopen(jtemplate_out, "wb");
+			if (!jtjigdo || !jttemplate) {
+#ifdef USE_LIBSCHILY
+				comerr("Unable to open jigdo template image file\n");
+#else
+				fprintf(stderr, "Unable to open jigdo template image file\n");
+				exit(1);
+#endif
+			}
+			write_jt_header(jttemplate, jtjigdo);
+		}
 	} else {
 		discimage = stdout;
 
@@ -3558,6 +3662,13 @@ if (check_session == 0)
 		"Implementation botch: FS should end at %u but ends at %u.\n",
 				last_extent, last_extent_written);
 	}
+
+	if (jttemplate) {
+		write_jt_footer();
+		fclose(jttemplate);
+	}
+	if (jtjigdo)
+		fclose(jtjigdo);
 
 	if (verbose > 0) {
 #ifdef HAVE_SBRK

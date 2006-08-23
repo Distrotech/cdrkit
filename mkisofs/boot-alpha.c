@@ -104,6 +104,7 @@ static int boot_alpha_write(outfile)
 
     write_le64(sum, (unsigned char *)&boot_sector[63]);
 
+    jtwrite(boot_sector, sizeof(boot_sector), 1, 0, FALSE);
     xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
     last_extent_written++;
 

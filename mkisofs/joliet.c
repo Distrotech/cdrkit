@@ -989,6 +989,7 @@ generate_one_joliet_directory(dpnt, outfile)
 			dir_index, dpnt->de_name);
 #endif
 	}
+	jtwrite(directory_buffer, total_size, 1, 0, FALSE);
 	xfwrite(directory_buffer, total_size, 1, outfile, 0, FALSE);
 	last_extent_written += total_size >> 11;
 	free(directory_buffer);
@@ -1393,9 +1394,12 @@ jpathtab_write(outfile)
 	FILE	*outfile;
 {
 	/* Next we write the path tables */
+	jtwrite(jpath_table_l, jpath_blocks << 11, 1, 0, FALSE);
 	xfwrite(jpath_table_l, jpath_blocks << 11, 1, outfile, 0, FALSE);
+	last_extent_written += jpath_blocks;
+	jtwrite(jpath_table_m, jpath_blocks << 11, 1, 0, FALSE);
 	xfwrite(jpath_table_m, jpath_blocks << 11, 1, outfile, 0, FALSE);
-	last_extent_written += 2 * jpath_blocks;
+	last_extent_written += jpath_blocks;
 	free(jpath_table_l);
 	free(jpath_table_m);
 	jpath_table_l = NULL;
@@ -1448,6 +1452,7 @@ jvd_write(outfile)
 	/* Next we write out the boot volume descriptor for the disc */
 	jvol_desc = vol_desc;
 	get_joliet_vol_desc(&jvol_desc);
+	jtwrite(&jvol_desc, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(&jvol_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
 	last_extent_written++;
 	return (0);

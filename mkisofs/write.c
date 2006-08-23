@@ -465,6 +465,9 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 	off_t		remain;
 	int	use;
 
+	char *mirror_name;
+	unsigned char md5[16];
+	int include_in_jigdo = list_file_in_jigdo(filename, size, &mirror_name, md5);
 
 	if ((infile = fopen(filename, "rb")) == NULL) {
 #ifdef	USE_LIBSCHILY
@@ -484,6 +487,9 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 	fseek(infile, off, SEEK_SET);
 #endif	/* APPLE_HYB */
 	remain = size;
+
+	if (include_in_jigdo)
+		write_jt_match_record(filename, mirror_name, SECTOR_SIZE, size, md5);
 
 	while (remain > 0) {
 		int	amt;
@@ -524,6 +530,9 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 			exit(1);
 #endif
 		}
+		if (!include_in_jigdo)
+			jtwrite(buffer, use, 1,
+			        XA_SUBH_DATA, remain <= (SECTOR_SIZE * NSECT));
 		xfwrite(buffer, use, 1, outfile,
 				XA_SUBH_DATA, remain <= (SECTOR_SIZE * NSECT));
 		last_extent_written += use / SECTOR_SIZE;
@@ -576,6 +585,7 @@ write_files(outfile)
 				(Llong)dwpnt->size, dwpnt->extent);
 #endif
 		if (dwpnt->table) {
+			jtwrite(dwpnt->table, ISO_ROUND_UP(dwpnt->size), 1, XA_SUBH_DATA, TRUE);
 			xfwrite(dwpnt->table, ISO_ROUND_UP(dwpnt->size), 1,
 							outfile,
 							XA_SUBH_DATA, TRUE);
@@ -619,10 +629,11 @@ write_files(outfile)
 			char	blk[SECTOR_SIZE];
 			Uint	i;
 
-			for (i = 0; i < dwpnt->pad; i++)
+			for (i = 0; i < dwpnt->pad; i++) {
+				jtwrite(blk, SECTOR_SIZE, 1, 0, FALSE);
 				xfwrite(blk, SECTOR_SIZE, 1, outfile, 0, FALSE);
-
-			last_extent_written += dwpnt->pad;
+				last_extent_written++;
+			}
 		}
 #endif	/* APPLE_HYB || DVD_VIDEO */
 
@@ -1548,6 +1559,7 @@ generate_one_directory(dpnt, outfile)
 			dir_index, dpnt->de_name);
 #endif
 	}
+	jtwrite(directory_buffer, total_size, 1, 0, FALSE);
 	xfwrite(directory_buffer, total_size, 1, outfile, 0, FALSE);
 	last_extent_written += total_size >> 11;
 	free(directory_buffer);
@@ -1565,6 +1577,7 @@ generate_one_directory(dpnt, outfile)
 				ce_index, dpnt->ce_bytes);
 #endif
 		}
+		jtwrite(ce_buffer, ce_size, 1, 0, FALSE);
 		xfwrite(ce_buffer, ce_size, 1, outfile, 0, FALSE);
 		last_extent_written += ce_size >> 11;
 		free(ce_buffer);
@@ -1798,10 +1811,11 @@ file_write(outfile)
 		/*
 		 * write out padding to round up to HFS allocation block
 		 */
-		for (i = 0; i < hfs_pad; i++)
+		for (i = 0; i < hfs_pad; i++) {
+			jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
 			xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
-
-		last_extent_written += hfs_pad;
+			last_extent_written++;
+		}
 	}
 #endif	/* APPLE_HYB */
 
@@ -1838,11 +1852,15 @@ file_write(outfile)
 	/* write out extents/catalog/dt file */
 	if (apple_hyb) {
 
+		jtwrite(hce->hfs_ce, HFS_BLOCKSZ, hce->hfs_tot_size, 0, FALSE);
 		xfwrite(hce->hfs_ce, HFS_BLOCKSZ, hce->hfs_tot_size, outfile, 0, FALSE);
 
 		/* round up to a whole CD block */
 		if (HFS_ROUND_UP(hce->hfs_tot_size) -
 					hce->hfs_tot_size * HFS_BLOCKSZ) {
+			jtwrite(buffer,
+				HFS_ROUND_UP(hce->hfs_tot_size) -
+				hce->hfs_tot_size * HFS_BLOCKSZ, 1, 0, FALSE);
 			xfwrite(buffer,
 				HFS_ROUND_UP(hce->hfs_tot_size) -
 				hce->hfs_tot_size * HFS_BLOCKSZ, 1, outfile, 0, FALSE);
@@ -2020,6 +2038,7 @@ pvd_write(outfile)
 	}
 
 	/* if not a bootable cd do it the old way */
+	jtwrite(&vol_desc, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(&vol_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
 	last_extent_written++;
 	return (0);
@@ -2037,6 +2056,7 @@ xpvd_write(outfile)
 	vol_desc.file_structure_version[0] = 2;
 
 	/* if not a bootable cd do it the old way */
+	jtwrite(&vol_desc, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(&vol_desc, SECTOR_SIZE, 1, outfile, 0, FALSE);
 	last_extent_written++;
 	return (0);
@@ -2059,6 +2079,7 @@ evd_write(outfile)
 	evol_desc.type[0] = (unsigned char) ISO_VD_END;
 	memcpy(evol_desc.id, ISO_STANDARD_ID, sizeof (ISO_STANDARD_ID));
 	evol_desc.version[0] = 1;
+	jtwrite(&evol_desc, SECTOR_SIZE, 1, 0, TRUE);
 	xfwrite(&evol_desc, SECTOR_SIZE, 1, outfile, 0, TRUE);
 	last_extent_written += 1;
 	return (0);
@@ -2113,11 +2134,14 @@ vers_write(outfile)
 
 	cp[SECTOR_SIZE - 1] = '\0';
  	/* Per default: keep privacy. Blackout the version and arguments. */
-	if(getenv("ISODEBUG"))
+	if(getenv("ISODEBUG")) {
+		jtwrite(vers, SECTOR_SIZE, 1, 0, TRUE);
 		xfwrite(vers, SECTOR_SIZE, 1, outfile, 0, TRUE);
-	else
+	} else {
+		jtwrite(calloc(SECTOR_SIZE, 1), SECTOR_SIZE, 1, 0, TRUE);
 		xfwrite(calloc(SECTOR_SIZE, 1), SECTOR_SIZE, 1, outfile, 0, TRUE);
-	last_extent_written += 1;
+	}
+    last_extent_written += 1;
 	return (0);
 }
 
@@ -2191,9 +2215,12 @@ pathtab_write(outfile)
 	FILE	*outfile;
 {
 	/* Next we write the path tables */
+	jtwrite(path_table_l, path_blocks << 11, 1, 0, FALSE);
 	xfwrite(path_table_l, path_blocks << 11, 1, outfile, 0, FALSE);
+	last_extent_written += path_blocks;
+	jtwrite(path_table_m, path_blocks << 11, 1, 0, FALSE);
 	xfwrite(path_table_m, path_blocks << 11, 1, outfile, 0, FALSE);
-	last_extent_written += 2 * path_blocks;
+	last_extent_written += path_blocks;
 	free(path_table_l);
 	free(path_table_m);
 	path_table_l = NULL;
@@ -2205,6 +2232,7 @@ LOCAL int
 exten_write(outfile)
 	FILE	*outfile;
 {
+	jtwrite(extension_record, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(extension_record, SECTOR_SIZE, 1, outfile, 0, FALSE);
 	last_extent_written++;
 	return (0);
@@ -2397,10 +2425,11 @@ startpad_write(outfile)
 	npad = session_start + 16 - last_extent_written;
 
 	for (i = 0; i < npad; i++) {
+		jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
 		xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
+		last_extent_written++;
 	}
 
-	last_extent_written += npad;
 	return (0);
 }
 
@@ -2421,10 +2450,11 @@ interpad_write(outfile)
 		npad += 16 - i;
 
 	for (i = 0; i < npad; i++) {
+		jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
 		xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
+		last_extent_written++;
 	}
 
-	last_extent_written += npad;
 	return (0);
 }
 
@@ -2438,10 +2468,11 @@ endpad_write(outfile)
 	memset(buffer, 0, sizeof (buffer));
 
 	for (i = 0; i < 150; i++) {
+		jtwrite(buffer, sizeof (buffer), 1, 0, FALSE);
 		xfwrite(buffer, sizeof (buffer), 1, outfile, 0, FALSE);
+		last_extent_written++;
 	}
 
-	last_extent_written += 150;
 	return (0);
 }
 
@@ -2797,10 +2828,12 @@ hfs_hce_write(outfile)
 	r = tot_size % HFS_BLK_CONV;
 
 	/* write out HFS volume header info */
+	jtwrite(hce->hfs_map, HFS_BLOCKSZ, tot_size, 0, FALSE);
 	xfwrite(hce->hfs_map, HFS_BLOCKSZ, tot_size, outfile, 0, FALSE);
 
 	/* fill up to a complete CD block */
 	if (r) {
+		jtwrite(buffer, HFS_BLOCKSZ, HFS_BLK_CONV - r, 0, FALSE);
 		xfwrite(buffer, HFS_BLOCKSZ, HFS_BLK_CONV - r, outfile, 0, FALSE);
 		n++;
 	}

@@ -1,3 +1,10 @@
+icewm (2.01.01a08+X.13) UNRELEASED; urgency=low
+
+  * 34_JTE (Jigdo Template Extraction, by Steve)
+  * 36_ATA_scanbus_ignore_locked (skip busy devices when scaning, by myself)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:35:30 +0200
+
 icewm (2.01.01a08+X.12) UNRELEASED; urgency=low
 
   * 31_gnu-kfreebsd.dpatch with minor adoptions (needs testing!)

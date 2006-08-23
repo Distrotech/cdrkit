@@ -372,6 +372,7 @@ sunboot_write(outfile)
 	 */
 	amt = roundup(last_extent_written, (CD_CYLSIZE/SECTOR_SIZE)) - last_extent_written;
 	for (n = 0; n < amt; n++) {
+		jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
 		xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
 		last_extent_written++;
 	}
@@ -402,6 +403,7 @@ sunboot_write(outfile)
 			memset(buffer, 0, sizeof (buffer));
 			if (read(f, buffer, SECTOR_SIZE) < 0)
 				comerr("Read error on '%s'.\n", boot_files[i]);
+			jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
 			xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
 			last_extent_written++;
 		}
@@ -483,6 +485,7 @@ sunlabel_write(outfile)
 		memcpy(buffer, &cd_label, 512);
 	}
 
+	jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
 	last_extent_written++;
 	return (0);
@@ -522,6 +525,7 @@ genboot_write(outfile)
 			comerr("Read error on '%s'.\n", genboot_image);
 
 		if (i != 0 || last_extent_written == session_start) {
+			jtwrite(buffer, SECTOR_SIZE, 1, 0, FALSE);
 			xfwrite(buffer, SECTOR_SIZE, 1, outfile, 0, FALSE);
 			last_extent_written++;
 		}

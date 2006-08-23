@@ -38,6 +38,9 @@
 #include <standard.h>
 #include <libport.h>
 #include "scsi.h"
+#ifdef JIGDO_TEMPLATE
+#include "jte.h"
+#endif
 
 #ifdef	DVD_VIDEO
 #ifndef	UDF
@@ -365,6 +368,7 @@ extern int	use_fileversion;
 extern int	split_SL_component;
 extern int	split_SL_field;
 extern char	*trans_tbl;
+char		*outfile;
 
 #define	JMAX		64	/* maximum Joliet file name length (spec) */
 #define	JLONGMAX	103	/* out of spec Joliet file name length */
@@ -477,6 +481,9 @@ extern int add_boot_mips_filename __PR((char *filename));
 
 /* boot-mipsel.c */
 extern int add_boot_mipsel_filename  __PR((char *filename));
+
+/* rsync.c */
+extern unsigned long long rsync64   __PR((unsigned char *mem, size_t size));
 
 /* write.c */
 extern int get_731 __PR((char *));

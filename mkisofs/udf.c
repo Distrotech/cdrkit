@@ -1044,6 +1044,7 @@ write_one_udf_directory(dpnt, outfile)
 		1,	/* is_directory */
 		directory_link_count(dpnt),
 		(dpnt == root) ? 0 : dpnt->self->udf_file_entry_sector);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
 	last_extent_written++;
 
@@ -1061,6 +1062,7 @@ write_one_udf_directory(dpnt, outfile)
 		1,
 		parent->self->udf_file_entry_sector - lba_udf_partition_start,
 		(parent == root) ? 0 : parent->self->udf_file_entry_sector);
+	jtwrite(buf, ident_size, 1, 0, FALSE);
 	xfwrite(buf, ident_size, 1, outfile, 0, FALSE);
 	size_in_bytes = ident_size;
 
@@ -1106,6 +1108,7 @@ write_one_udf_directory(dpnt, outfile)
 			!!(de1->isorec.flags[0] & ISO_DIRECTORY),
 			de1->udf_file_entry_sector - lba_udf_partition_start,
 			de1->udf_file_entry_sector);
+		jtwrite(buf, ident_size, 1, 0, FALSE);
 		xfwrite(buf, ident_size, 1, outfile, 0, FALSE);
 		size_in_bytes += ident_size;
 	}
@@ -1113,6 +1116,7 @@ write_one_udf_directory(dpnt, outfile)
 	padded_size_in_bytes = PAD(size_in_bytes, SECTOR_SIZE);
 	if (size_in_bytes < padded_size_in_bytes) {
 		memset(buf, 0, padded_size_in_bytes - size_in_bytes);
+		jtwrite(buf, padded_size_in_bytes - size_in_bytes, 1, 0, FALSE);
 		xfwrite(buf, padded_size_in_bytes - size_in_bytes, 1, outfile, 0, FALSE);
 	}
 
@@ -1167,6 +1171,7 @@ write_udf_file_entries(dpnt, outfile)
 					0,	/* is_directory */
 					1,	/* link_count */
 					de->udf_file_entry_sector);
+				jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 				xfwrite(buf, SECTOR_SIZE, 1, outfile, 0, FALSE);
 			}
 		}
@@ -1198,6 +1203,7 @@ udf_vol_recognition_area_write(out)
 	set8(&vsd->structure_version, 1);
 	for (i = 0; i < 3; ++i) {
 		memcpy(vsd->standard_identifier, identifiers[i], 5);
+		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 	}
 	last_extent_written += 3;
@@ -1224,30 +1230,37 @@ udf_main_seq_write(out)
 
 	memset(buf, 0, sizeof (buf));
 	set_primary_vol_desc(buf, last_extent_written++);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 
 	memset(buf, 0, sizeof (buf));
 	set_impl_use_vol_desc(buf, last_extent_written++);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 
 	memset(buf, 0, sizeof (buf));
 	set_partition_desc(buf, last_extent_written++);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 
 	memset(buf, 0, sizeof (buf));
 	set_logical_vol_desc(buf, last_extent_written++);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 
 	memset(buf, 0, sizeof (buf));
 	set_unallocated_space_desc(buf, last_extent_written++);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 
 	memset(buf, 0, sizeof (buf));
 	set_terminating_desc(buf, last_extent_written++);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 
 	memset(buf, 0, sizeof (buf));
 	for (i = 6; i < UDF_MAIN_SEQ_LENGTH; ++i) {
+        jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 		last_extent_written++;
 	}
@@ -1271,6 +1284,7 @@ udf_integ_seq_write(out)
 						last_extent_written++);
 	set_terminating_desc(buf+1*SECTOR_SIZE, last_extent_written++);
 
+	jtwrite(buf, SECTOR_SIZE, UDF_INTEG_SEQ_LENGTH, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, UDF_INTEG_SEQ_LENGTH, out, 0, FALSE);
 	return (0);
 }
@@ -1287,6 +1301,7 @@ udf_anchor_vol_desc_write(out)
 
 	memset(buf, 0, sizeof (buf));
 	set_anchor_volume_desc_pointer(buf, last_extent_written++);
+	jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 	return (0);
 }
@@ -1308,6 +1323,7 @@ udf_file_set_desc_write(out)
 	set_terminating_desc(buf+1*SECTOR_SIZE,
 			(last_extent_written++) - lba_udf_partition_start);
 
+	jtwrite(buf, SECTOR_SIZE, 2, 0, FALSE);
 	xfwrite(buf, SECTOR_SIZE, 2, out, 0, FALSE);
 
 	return (0);
@@ -1349,6 +1365,7 @@ pad_to(last_extent_to_write, out)
 	char buf[SECTOR_SIZE];
 	memset(buf, 0, sizeof (buf));
 	while (last_extent_written < last_extent_to_write) {
+		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 		++last_extent_written;
 	}
@@ -1394,6 +1411,7 @@ udf_padend_avdp_write(out)
 	memset(buf, 0, sizeof (buf));
 	while (last_extent_written < last_extent_to_write) {
 		set_anchor_volume_desc_pointer(buf, last_extent_written++);
+		jtwrite(buf, SECTOR_SIZE, 1, 0, FALSE);
 		xfwrite(buf, SECTOR_SIZE, 1, out, 0, FALSE);
 	}
 	return (0);

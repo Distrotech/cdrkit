@@ -189,6 +189,7 @@ static int boot_hppa_write(outfile)
     write_be32(extent, &boot_sector[240]);
     write_be32(length, &boot_sector[244]);
 
+    jtwrite(boot_sector, sizeof(boot_sector), 1, 0, FALSE);
     xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
     last_extent_written++;
 
