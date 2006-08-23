@@ -1,0 +1,226 @@
+This package was first debianized by Erik Andersen andersee@debian.org. The
+current debian maintainer is Joerg Jaspert <joerg@debian.org>
+
+Co-Maintainers: Eduard Bloch <blade@debian.org>, Steve McIntyre <93sam@debian.org>
+
+It is available as free download on https://alioth.debian.org/projects/debburn/.
+
+Upstream maintainers:
+
+Debian maintainers, see above
+
+Other authors:
+Joerg Schilling <js@cs.tu-berlin.de>, Eric Youngdale and many others.
+
+This package is distributed under the terms of the GNU General Public License
+as available in the file /usr/share/common-licenses/GPL on a Debian system.
+
+Names of relevant binary program(s) and copyright info has been adapted to
+avoid the violation of the GPL license (as offered by Joerg Schilling) and the
+obligations created by German laws.
+
+Copyright:
+----------------------------------------------------------------------------
+* cdrecord -- Record data on a CD-Recorder
+  Copyright (c) 1995-2004 J. Schilling
+  License: GPLv2 with the following additional requirement:
+-       You may not modify certain copyright messages in cdrecord.c
+        See cdrecord.c for further information.
+
+-       You may (with a few exceptions) not modify the location of the
+        configuration file /etc/default/cdrecord.
+        See defaults.c for further information.
+
+cdrecord.c says (but see below):
+------------------------------------------
+|   Warning: you are not allowed to modify or to remove the
+|   Copyright and version printing code below!
+|   See also GPL § 2 subclause c)
+|  
+|   If you modify cdrecord you need to include additional version
+|   printing code that:
+|  
+|  	-	Clearly states that the current version is an
+|  		inofficial (modified) version and thus may have bugs
+|  		that are not present in the original.
+|  
+|  	-	Print your support e-mail address and tell people that
+|  		you will do complete support for this version of
+|  		cdrecord.
+|  
+|  		Or clearly state that there is absolutely no support
+|  		for the modified version you did create.
+|  
+|  	-	Tell the users not to ask the original author for
+|  		help.
+|  
+|   This limitation definitely also applies when you use any other
+|   cdrecord release together with libscg-0.6 or later, or when you
+|   use any amount of code from cdrecord-1.11a17 or later.
+|   In fact, it applies to any version of cdrecord, see also
+|   GPL Preamble, subsection 6.
+|  
+|   I am sorry for the inconvenience but I am forced to do this because
+|   some people create inofficial branches. These branches create
+|   problems but the initiators do not give support and thus cause the
+|   development of the official cdrecord versions to slow down because
+|   I am loaded with unneeded work.
+|  
+|   Please note that this is a memorandum on how I interpret the GPL.
+|   If you use/modify/redistribute cdrecord, you need to accept it
+|   this way.
+|   
+|  
+|   The above statement is void if there has been neither a new version
+|   of cdrecord nor a new version of star from the original author
+|   within more then a year.
+------------------------------------------
+
+For that Andreas Metzler had a mail conversation with Joerg, the last
+and important mail is included below, except an unrelated part I
+removed. It's in German, translation follows after the original mail.
+------------------------------------------------------------
+From: Joerg Schilling <schilling@fokus.fraunhofer.de>
+Subject: Re: Geaendertes Copyright in a36
+To: ametzler@logic.univie.ac.at
+Date: Thu, 19 Aug 2004 18:10:31 +0200
+
+>From ametzler@logic.univie.ac.at  Thu Aug 19 18:04:42 2004
+
+[...]
+>und im Rahmen des Zulaessigen[1].
+
+>Darf ich nochmal nachbohren: linuxcheck() faellt auch nicht unter
+>"you are not allowed to modify or to remove the Copyright and version
+>printing code below!"?
+
+Darf geaendert werden. und ich habe auch absichtlich ein "Loch" gelassen, so
+dasz jemand den uname() Test mit einem automatischen Patch versehen kann.
+
+Jörg
+
+-- 
+ EMail:joerg@schily.isdn.cs.tu-berlin.de (home) Jörg Schilling D-13353 Berlin
+       js@cs.tu-berlin.de		(uni)  If you don't have iso-8859-1
+       schilling@fokus.fraunhofer.de	(work) chars I am J"org Schilling
+ URL:  http://www.fokus.fraunhofer.de/usr/schilling ftp://ftp.berlios.de/pub/schily
+------------------------------------------------------------
+
+And now the English translation of the mail above. Only content:
+------------------------------------------------------------
+Andreas asks:
+Let me ask again: linuxcheck() is not restricted with
+"you are not allowed to modify or to remove the Copyright and version
+printing code below!"?
+
+Jörg answers:
+It is allowed to change this and I have a "gap" there intentionally, so
+one can change the uname() check with an automated patch.
+------------------------------------------------------------
+
+Thats not a Debian-specific license and it only leaves the version
+printing stuff in cdrecord.c. Which is allowed from GPL.
+
+defaults.c says:
+------------------------------------------
+ | WARNING you are only allowed to change this filename if you also
+ | change the documentation and add a statement that makes clear
+ | where the official location of the file is why you did choose a
+ | nonstandard location and that the nonstandard location only refers
+ | to unofficial cdrecord versions.
+ |
+ | I was forced to add this because some people change cdrecord without
+ | rational reason and then publish the result. As those people
+ | don't contribute work and don't give support, they are causing extra
+ | work for me and this way slow down the cdrecord development.
+------------------------------------------
+* cdda2wav 
+  Copyright 1998-2003 Heiko Eissfeldt
+  parts    (C) Peter Widow
+  parts    (C) Thomas Niederreiter
+  parts    (C) RSA Data Security, Inc.
+  License: GPLv2
+ 
+* mkisofs
+  Written by Eric Youngdale (1993).
+  Copyright 1993 Yggdrasil Computing, Incorporated
+  Copyright (c) 1999,2000-2004 J. Schilling
+  APPLE_HYB James Pearson j.pearson@ge.ucl.ac.uk 22/2/2000
+  License: GPLv2
+
+* libedc compact disc reed-solomon routines
+ (c) 1998-2002 by Heiko Eissfeldt, heiko@colossus.escape.de
+ (c) 2002 by Joerg Schilling
+  License: GPLv2
+
+libfile - code from file(1)
+ (c) Ian F. Darwin, 1987
+ License
+ | This software is not subject to any license of the American Telephone
+ | and Telegraph Company or of the Regents of the University of California.
+ |
+ | Permission is granted to anyone to use this software for any purpose on
+ | any computer system, and to alter it and redistribute it freely, subject
+ | to the following restrictions:
+ |
+ | 1. The author is not responsible for the consequences of use of this
+ |    software, no matter how awful, even if they arise from flaws in it.
+ |
+ | 2. The origin of this software must not be misrepresented, either by
+ |    explicit claim or by omission.  Since few users ever read sources,
+ |    credits must appear in the documentation.
+ |
+ | 3. Altered versions must be plainly marked as such, and must not be
+ |    misrepresented as being the original software.  Since few users
+ |    ever read sources, credits must appear in the documentation.
+ |
+ | 4. This notice may not be removed or altered.
+
+libhfs_iso - Modified version of libhfs (v2.0) to work with mkhybrid.
+ (C) 1996, 1997 Robert Leslie
+  License: GPLv2
+
+libcdparanoia
+ (C) by Monty (xiphmont@mit.edu)
+ Modifications to make the code portable Copyright (c) 2002 J. Schilling
+  License: GPLv2
+
+readcd
+  Copyright (c) 1987, 1995-2003 J. Schilling
+  License: GPLv2
+
+*
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with
+ * this program; see the file COPYING.  If not, write to the Free Software
+ * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+
+---
+
+Copyright of zisofs-tools:
+Copyright 2001 H. Peter Anvin - All Rights Reserved
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation, Inc., 675 Mass Ave, Cambridge MA 02139,
+ *   USA; either version 2 of the License, or (at your option) any later
+ *   version; incorporated herein by reference.
+
+=====================================================================
+=====================================================================
+Note that the complete text of the GNU General Public License is available in
+/usr/share/common-licenses/GPL on a Debian system.
+
+The package contains also parts of zisofs-tools, downloaded from
+ftp://ftp.kernel.org/pub/linux/utils/fs/zisofs/.
+Upstream Author: H. Peter Anvin <hpa@zytor.com>

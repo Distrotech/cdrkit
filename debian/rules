@@ -1,0 +1,238 @@
+#!/usr/bin/make -f
+#
+# debian/rules file for talibus.  GPL2
+# Original from Erik Andersen <andersee@debian.org>
+#
+
+PACKAGE = talibus
+
+COPTX = -g
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+COPTX += -O0
+else
+COPTX += -O2
+endif
+
+include /usr/share/dpatch/dpatch.make
+
+i=$(shell pwd)/debian/tmp/usr
+b=$(shell pwd)/debian/build
+iso=mkisofs
+cdd=cdda2wav
+cdr=cdrecord
+ziso_VERSION = $(shell cat zisofs_tools/version)
+source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
+
+#ifeq ($(dvd),yes)
+#dvdclean=unapplydvd
+#dvdbuild=applydvd-stamp
+#endif
+
+#applydvd-stamp:
+#	@if test -e debian/patched/06_dautipps.dpatch ; then \
+#	debian/patches/06_dautipps.dpatch -unpatch && \
+#	rm -f debian/patched/06_dautipps.dpatch; \
+#	fi
+#	@if test -e debian/patched/07_noadvertising.dpatch ; then \
+#	debian/patches/07_noadvertising.dpatch -unpatch && \
+#	rm -f debian/patched/07_noadvertising.dpatch; \
+#	fi
+#	@if test -e debian/patched/17_argv0_beautify.dpatch ; then \
+#	debian/patches/17_argv0_beautify.dpatch -unpatch && \
+#	rm -f debian/patched/17_argv0_beautify.dpatch; \
+#	fi
+#	@chmod +x debian/patches/07_dvdsup.dpatch && \
+#	debian/patches/07_dvdsup.dpatch -patch && \
+#	touch applydvd-stamp
+#
+#unapplydvd:
+#	@if test -e applydvd-stamp ; then \
+#	chmod +x debian/patches/07_dvdsup.dpatch ; \
+#	debian/patches/07_dvdsup.dpatch -unpatch ; \
+#	rm -f applydvd-stamp ; \
+#	fi
+
+build: patch $(dvdbuild) build-debstamp
+build-debstamp: cdrecord.mmap
+	@if test -f ../talibus_$(source_VERSION).tar.gz ; then \
+		echo "You should not create native packages! Remove ../talibus_$(source_VERSION).tar.gz and copy upstream source to .orig.tar.gz" ; \
+		exit 1 ; \
+	fi
+	@echo "--- Compiling"
+	dh_testdir
+	cp /usr/share/misc/config.sub /usr/share/misc/config.guess conf
+	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > zisofs_tools/version.h
+
+	smake COPTX='-DUSE_USGSHM $(COPTX)' INS_BASE=/usr
+	touch build-debstamp
+
+cdrecord.mmap:
+	@echo "--- Compiling cdrecord mmap variant"
+	dh_testdir
+	cp /usr/share/misc/config.sub /usr/share/misc/config.guess conf
+	smake COPTX='$(COPTX)' INS_BASE=/usr
+	mv `find cdrecord/OBJ/ -name cdrecord -type f` cdrecord.mmap
+	smake COPTX='$(COPTX)' INS_BASE=/usr clean
+
+clean: unpatch $(dvdclean)
+	@echo "--- Cleaning"
+	dh_testdir
+	dh_testroot
+	-rm -rf debian/patched
+	-rm -rf cdrecord-1.8.1_de-doc_0.1
+	-./.clean
+	rm -f build-debstamp install-debstamp conf/config.sub conf/config.guess
+	dh_clean -k
+	 # clean up the stuff dh_clean leaves behind
+	-rm -rf debian/build debian/files
+	-rm -f `find . -type d | grep OBJ`
+	-rm -f `find . -type d | grep CVS`
+	-rm -f `find . -name "*~"`
+	-rm -rf `find . -name "\.deps"`
+	-rm -rf `find . -name "\.libs"`
+	-rm -rf `find . -name "*\.rej"`
+	-rm -rf zisofs_tools
+	-rm -f cdrecord.mmap
+
+install: build install-debstamp
+install-debstamp:
+	@echo "--- Installing"
+	dh_testdir
+	dh_testroot
+	dh_clean
+	rm -rf $(b)
+	smake install INS_BASE=$(i) MANDIR=share/man
+
+	mv $(i)/bin/cdrecord $(i)/bin/cdrecord.shm
+	install -m 755 cdrecord.mmap $(i)/bin/
+	install -m 755 debian/cdrecord.wrapper $(i)/bin/cdrecord
+
+	install -m 755 cdda2wav/cdda2ogg $(i)/bin/
+	install -m 755 cdda2wav/cdda2mp3 $(i)/bin/
+	install -m 755 cdda2wav/readmult $(i)/bin/
+	install -m 755 cdda2wav/pitchplay $(i)/bin/
+	touch install-debstamp
+
+install-save: install
+	rm -rf $(i).saved
+	cp -a $(i) $(i).saved
+
+install-saved:
+	rm -rf $(i)
+	cp -a $(i).saved $(i)
+	rm -rf $(b)
+	touch install-debstamp
+
+binary-indep: build install talibus-doc
+
+binary-arch: build install \
+	cdrecord \
+	mkisofs \
+	cdda2wav
+
+#
+# cdrecord
+#
+
+cdrecord: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	cp -a cdrecord/cdrecord.dfl $(b)/$@/etc/default/cdrecord
+	cp -a rscsi/rscsi.dfl $(b)/$@/etc/default/rscsi
+	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/cdrecord/presubj
+#ifeq ($(dvd),yes)
+	install -m755 debian/dvd.reportbug $(b)/$@/usr/share/bug/cdrecord/script
+#endif
+	dh_link              -p$@ -P$(b)/$@ 
+	dh_installdocs       -p$@ -P$(b)/$@
+	dh_installchangelogs -p$@ -P$(b)/$@ Changelog
+	dh_install			 -p$@ -P$(b)/$@
+	dh_strip             -p$@ -P$(b)/$@
+	dh_installexamples   -p$@ -P$(b)/$@ rscsi/rscsi.dfl cdrecord/cdrecord.dfl
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_shlibdeps         -p$@ -P$(b)/$@
+	dh_installdebconf    -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+
+#
+# mkisofs
+#
+
+mkisofs: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_installdocs       -p$@ -P$(b)/$@
+	dh_installchangelogs -p$@ -P$(b)/$@ $(iso)/ChangeLog zisofs_tools/CHANGES
+	dh_install           -p$@ -P$(b)/$@
+	dh_installman        -p$@ -P$(b)/$@ debian/dirsplit.1
+	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/mkisofs/presubj
+	rm -f $(b)/$@/usr/bin/mkhybrid $(b)/$@/usr/share/man/man8/mkhybrid*
+	dh_link              -p$@ -P$(b)/$@
+	dh_strip             -p$@ -P$(b)/$@
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_shlibdeps         -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+
+#
+# cdda2wav
+#
+
+cdda2wav: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_installdocs       -p$@ -P$(b)/$@ 
+	dh_installchangelogs -p$@ -P$(b)/$@ 
+	dh_install           -p$@ -P$(b)/$@
+	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/cdda2wav/presubj
+	dh_strip             -p$@ -P$(b)/$@
+	chmod 755 $(b)/$@/usr/bin/cdda2*
+	dh_link              -p$@ -P$(b)/$@
+	chmod 755 $(b)/$@/usr/bin/readmult
+	chmod 755 $(b)/$@/usr/bin/pitchplay
+	dh_installman        -p$@ -P$(b)/$@
+	# cludge, integrate into the official BS later
+	dh_installman        -p$@ -P$(b)/$@ doc/readmult.man doc/pitchplay.man doc/list_audio_tracks.man
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_shlibdeps         -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+
+#
+# talibus-doc
+#
+
+talibus-doc: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_installdocs       -p$@ -P$(b)/$@
+	dh_installchangelogs -p$@ -P$(b)/$@
+	dh_install           -p$@ -P$(b)/$@
+	dh_link              -p$@ -P$(b)/$@
+	dh_strip             -p$@ -P$(b)/$@
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_shlibdeps         -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+binary: binary-indep binary-arch
+.PHONY: binary clean binary-indep binary-arch build install install-save install-saved patch unpatch unapplydvd

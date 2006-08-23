@@ -1,0 +1,8 @@
+debian/tmp/usr/bin/cdrecord*
+debian/tmp/usr/bin/readcd
+debian/tmp/usr/sbin/rscsi
+debian/tmp/usr/share/man/man1/readcd.1
+debian/tmp/usr/share/man/man1/cdrecord.1
+debian/README.DVD.Debian usr/share/doc/cdrecord/
+debian/README.ATAPI.setup usr/share/doc/cdrecord/
+

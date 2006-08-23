@@ -1,0 +1,12 @@
+#!/bin/sh
+# Debian cdrecord package post-remove script
+# Copyright 2000 Erik Andersen.
+# Copyright 2001 Colin Walters <walters@debian.org>
+# Licensed under the GNU GPL.
+
+if [ "$1" = "purge" ] && [ -e /usr/share/debconf/confmodule ]; then
+      . /usr/share/debconf/confmodule
+      db_purge
+fi
+
+#DEBHELPER#

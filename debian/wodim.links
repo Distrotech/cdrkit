@@ -1,0 +1,4 @@
+etc/default/cdrecord etc/cdrecord/cdrecord
+etc/default/rscsi etc/cdrecord/rscsi
+usr/share/man/man1/cdrecord.1.gz usr/share/man/man1/cdrecord.shm.1.gz
+usr/share/man/man1/cdrecord.1.gz usr/share/man/man1/cdrecord.mmap.1.gz
