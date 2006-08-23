@@ -2,6 +2,8 @@ icewm (2.01.01a08+X.13) UNRELEASED; urgency=low
 
   * 34_JTE (Jigdo Template Extraction, by Steve)
   * 36_ATA_scanbus_ignore_locked (skip busy devices when scaning, by myself)
+  * 38_script_manpages: added as readmult.1 and pitchplay.1, currently no
+    list_audio_tracks script there so moved to scrips/
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:35:30 +0200
 
