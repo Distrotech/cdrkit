@@ -1,3 +1,10 @@
+icewm (2.01.01a08+X.04) UNRELEASED; urgency=low
+
+  * Added bits from 02_paths.dpatch by Joerg Jaspert <joerg@debian.org>:
+    /var/log directory location and SILO relevant paths
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:46:55 +0200
+
 icewm (2.01.01a08+X.03) UNRELEASED; urgency=low
 
   * adapted cdrecord/cdrecord.dfl for modern Linux system, based on bits from

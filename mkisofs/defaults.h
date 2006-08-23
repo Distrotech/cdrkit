@@ -22,6 +22,9 @@
 #define	VOLUME_ID_DEFAULT	"CDROM"
 #define	BOOT_CATALOG_DEFAULT	"boot.catalog"
 #define	BOOT_IMAGE_DEFAULT	NULL
+#define  SILO_BOOT_IMAGE_DEFAULT "boot/second.b"
+#define  SILO_BOOTBLOCK_DEFAULT        "boot/cd.b"
+#define  SILO_CONF_FILE_DEFAULT        "/etc/silo.conf"
 #ifdef	APPLE_HYB
 #define	APPLE_TYPE_DEFAULT	"TEXT"
 #define	APPLE_CREATOR_DEFAULT	"unix"
