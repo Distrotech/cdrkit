@@ -1709,6 +1709,8 @@ There are a number of character sets built in to
 .IR mkisofs .
 To get a listing, use
 .B "mkisofs \-input\-charset help.
+This list doesn't include the charset derived from the current locale,
+if mkisofs is built with iconv support.
 .PP
 Additional character sets can be read from file for any of the character
 set options by giving a filename as the argument to the options. The given

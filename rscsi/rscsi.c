@@ -169,8 +169,18 @@ main(argc, argv)
 	 * XXX and for this reason a possible security risk would have been
 	 * XXX introduced by the administrator.
 	 */
-	if (debug_name != NULL)
-		debug_file = fopen(debug_name, "w");
+    if (debug_name != NULL) {
+        /* Try to be careful when opening debug files, might be
+         * created in an unsafe location 
+         * */
+        int fd = open(debug_name, O_CREAT | O_EXCL | O_TRUNC | O_RDWR, 0600);
+        if (fd > -1) 
+            debug_file = fdopen(fd, "w");
+        else {
+            rscsirespond(-1, geterrno());
+            exit(EX_BAD);
+        }
+    } 
 		
 	if (argc > 0) {
 		if (debug_file == 0) {

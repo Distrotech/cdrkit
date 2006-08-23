@@ -9,17 +9,15 @@
 
 # 
 # The file where debug info should go to.
-# If you don't like debugging (e.g. for speed) comment out
-# the this line.
+# This is commented out by default to speed up the program.
+# If you enable it make sure you substitute SAFE_DIR to a safe directory
+# to debug to.
 #
 # Note that rscsi runs as root and thus may be able to overwrite any file.
 # Be sure not to allow other people to replace the debug file by a symlink
-# to e.g. /etc/passwd. If your system supports append only directories, this
-# may be done by "chmod +t /tmp". If you are not sure, do never use /tmp
-# but a different directory that is safe against modifications by non root
-# users.
+# to e.g. /etc/passwd. 
 #
-#DEBUG=/tmp/RSCSI
+#DEBUG=SAFE_DIR/rscsi.dbg
 
 #
 # Each USER= entry adds the listed user to the users who may run rscsi

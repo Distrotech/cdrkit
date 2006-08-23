@@ -51,8 +51,8 @@ static	char sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_version[]		= "0.8";	/* The global libscg version	*/
-LOCAL	char	_scg_auth_schily[]	= "schily";	/* The author for this module	*/
+LOCAL	char	_scg_version[]		= "0.8ubuntu1";	/* The global libscg version	*/
+LOCAL	char	_scg_auth_ubuntu[]	= "ubuntu";	/* The author for this module	*/
 
 #define	DEFTIMEOUT	20	/* Default timeout for SCSI command transport */
 
@@ -136,7 +136,7 @@ scg_version(scgp, what)
 		 * return "schily" for the SCG_AUTHOR request.
 		 */
 		case SCG_AUTHOR:
-			return (_scg_auth_schily);
+			return (_scg_auth_ubuntu);
 		case SCG_SCCS_ID:
 			return (sccsid);
 		default:

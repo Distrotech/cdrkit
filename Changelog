@@ -1,3 +1,11 @@
+icewm (2.01.01a08+X.10) UNRELEASED; urgency=low
+
+  * Applied 23_o_excl (exclusive device opening)
+  * Applied 24_debug_tmpfile (more safe/secure log file location)
+  * 25_mkisofs_iconv_manpage (hints about extra charsets)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:20:05 +0200
+
 icewm (2.01.01a08+X.09) UNRELEASED; urgency=low
 
   * Applied 18_donotopen_hda.dpatch - don't insist on opening unrelated IDE

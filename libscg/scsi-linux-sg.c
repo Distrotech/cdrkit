@@ -243,6 +243,28 @@ LOCAL	long	sg_raisedma	__PR((SCSI *scgp, long newmax));
 #endif
 LOCAL	void	sg_settimeout	__PR((int f, int timeout));
 
+int    sg_open_excl    __PR((char *device, int mode));
+
+int
+sg_open_excl(device, mode)
+       char    *device;
+       int     mode;
+{
+       int f;
+       int i;
+               f = open(device, mode|O_EXCL);
+       for (i = 0; (i < 10) && (f == -1 && (errno == EACCES || errno == EBUSY)); i++) {
+           fprintf(stderr, "Error trying to open %s exclusively (%s)... retrying in 1 second.\n", device, strerror(errno));
+           usleep(1000000 + 100000.0 * rand()/(RAND_MAX+1.0));
+           f = open(device, mode|O_EXCL);
+       }
+       if (f == -1 && errno != EACCES && errno != EBUSY) {
+           f = open(device, mode);
+       }
+       return f;
+}
+
+
 /*
  * Return version information for the low level SCSI transport code.
  * This has been introduced to make it easier to trace down problems
@@ -423,7 +445,7 @@ scanopen:
 	if (use_ata) for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
 					/* O_NONBLOCK is dangerous */
-		f = open(devname, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -463,7 +485,7 @@ scanopen:
 	if (nopen == 0) for (i = 0; i < 32; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/sg%d", i);
 					/* O_NONBLOCK is dangerous */
-		f = open(devname, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -492,7 +514,7 @@ scanopen:
 	if (nopen == 0) for (i = 0; i <= 25; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
 					/* O_NONBLOCK is dangerous */
-		f = open(devname, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -540,7 +562,7 @@ openbydev:
 			"Warning: Open by 'devname' is unintentional and not supported.\n");
 		}
 					/* O_NONBLOCK is dangerous */
-		f = open(device, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(device, O_RDWR | O_NONBLOCK);
 /*		if (f < 0 && errno == ENOENT)*/
 /*			goto openpg;*/
 

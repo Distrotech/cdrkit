@@ -206,7 +206,7 @@ scgo_open(scgp, device)
 			return (0);
 #endif
 		js_snprintf(devname, sizeof (devname), "/dev/pg%d", tgt);
-		f = open(devname, O_RDWR | O_NONBLOCK);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			if (scgp->errstr)
 				js_snprintf(scgp->errstr, SCSI_ERRSTR_SIZE,
@@ -219,7 +219,7 @@ scgo_open(scgp, device)
 		tlun = 0;
 		for (tgt = 0; tgt < MAX_TGT; tgt++) {
 			js_snprintf(devname, sizeof (devname), "/dev/pg%d", tgt);
-			f = open(devname, O_RDWR | O_NONBLOCK);
+			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 			if (f < 0) {
 				/*
 				 * Set up error string but let us clear it later

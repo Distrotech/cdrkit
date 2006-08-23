@@ -266,7 +266,7 @@ openbydev:
 			starget,
 			slun;
 
-		f = open(device, O_RDONLY | O_NONBLOCK);
+		f = sg_open_excl(device, O_RDONLY | O_NONBLOCK);
 
 		if (f < 0) {
 			if (scgp->errstr)
