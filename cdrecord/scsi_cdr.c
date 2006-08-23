@@ -99,7 +99,6 @@ EXPORT	int	read_track_info	__PR((SCSI *scgp, caddr_t, int type, int addr, int cn
 EXPORT	int	read_rzone_info	__PR((SCSI *scgp, caddr_t bp, int cnt));
 EXPORT	int	reserve_tr_rzone __PR((SCSI *scgp, long size));
 EXPORT	int	read_dvd_structure __PR((SCSI *scgp, caddr_t bp, int cnt, int addr, int layer, int fmt));
-EXPORT	int	send_dvd_structure __PR((SCSI *scgp, caddr_t bp, int cnt, int layer, int fmt));
 EXPORT	int	send_opc	__PR((SCSI *scgp, caddr_t, int cnt, int doopc));
 EXPORT	int	read_track_info_philips	__PR((SCSI *scgp, caddr_t, int, int));
 EXPORT	int	scsi_close_tr_session __PR((SCSI *scgp, int type, int track, BOOL immed));
@@ -107,8 +106,6 @@ EXPORT	int	read_master_cue	__PR((SCSI *scgp, caddr_t bp, int sheet, int cnt));
 EXPORT	int	send_cue_sheet	__PR((SCSI *scgp, caddr_t bp, long size));
 EXPORT	int	read_buff_cap	__PR((SCSI *scgp, long *, long *));
 EXPORT	int	scsi_blank	__PR((SCSI *scgp, long addr, int blanktype, BOOL immed));
-EXPORT	int	scsi_format	__PR((SCSI *scgp, caddr_t addr, int size, BOOL background));
-EXPORT	int	scsi_set_streaming	__PR((SCSI *scgp, caddr_t addr, int size));
 EXPORT	BOOL	allow_atapi	__PR((SCSI *scgp, BOOL new));
 EXPORT	int	mode_select	__PR((SCSI *scgp, Uchar *, int, int, int));
 EXPORT	int	mode_sense	__PR((SCSI *scgp, Uchar *dp, int cnt, int page, int pcf));
@@ -520,32 +517,6 @@ scsi_start_stop_unit(scgp, flg, loej, immed)
 	return (scg_cmd(scgp));
 }
 
-EXPORT int
-scsi_set_streaming(scgp, perf_desc, size)
-	SCSI	*scgp;
-	caddr_t	perf_desc;
-	int	size;
-{
-	register struct	scg_cmd	*scmd = scgp->scmd;
-
-	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
-	scmd->addr = perf_desc;
-	scmd->size = size;
-	scmd->flags = SCG_DISRE_ENA;
-	scmd->cdb_len = SC_G5_CDBLEN;
-	scmd->sense_len = CCS_SENSE_LEN;
-	scmd->cdb.g5_cdb.cmd = 0xB6;
-	scmd->cdb.cmd_cdb[11] = 0;
-	scmd->cdb.cmd_cdb[10] = size;
-
-	scgp->cmdname = "set streaming";
-
-	printf("scsi_set_streaming\n");
-	if (scg_cmd(scgp) < 0)
-		return (-1);
-	return (0);
-}
-    
 EXPORT int
 scsi_set_speed(scgp, readspeed, writespeed, rotctl)
 	SCSI	*scgp;
@@ -1071,31 +1042,6 @@ read_track_info(scgp, bp, type, addr, cnt)
 }
 
 EXPORT int
-reserve_track(scgp, size)
-	SCSI	*scgp;
-	Ulong	size;
-
-{
-	register struct	scg_cmd	*scmd = scgp->scmd;
-
-	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
-	scmd->flags = SCG_DISRE_ENA;
-	scmd->cdb_len = SC_G1_CDBLEN;
-	scmd->sense_len = CCS_SENSE_LEN;
-	scmd->cdb.g1_cdb.cmd = 0x53;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
-	i_to_4_byte(&scmd->cdb.g1_cdb.addr[3], size);
-
-	scgp->cmdname = "reserve track";
-
-	if (scg_cmd(scgp) < 0) 
-		return (-1);
-
-	return (0);
-
-}
-
-EXPORT int
 read_rzone_info(scgp, bp, cnt)
 	SCSI	*scgp;
 	caddr_t	bp;
@@ -1155,36 +1101,6 @@ read_dvd_structure(scgp, bp, cnt, addr, layer, fmt)
 	scmd->cdb.g5_cdb.count[1] = fmt;
 
 	scgp->cmdname = "read dvd structure";
-
-	if (scg_cmd(scgp) < 0)
-		return (-1);
-	return (0);
-}
-
-EXPORT int
-send_dvd_structure(scgp, bp, cnt, layer, fmt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	int	cnt;
-	int	layer;
-	int	fmt;
-{
-	register struct	scg_cmd	*scmd = scgp->scmd;
-
-	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
-	scmd->addr = bp;
-	scmd->size = cnt;
-	scmd->flags = SCG_DISRE_ENA;
-	scmd->cdb_len = SC_G5_CDBLEN;
-	scmd->sense_len = CCS_SENSE_LEN;
-	scmd->timeout = 4 * 60;		/* Needs up to 2 minutes ??? */
-	scmd->cdb.g5_cdb.cmd = 0xBF;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
-	g5_cdblen(&scmd->cdb.g5_cdb, cnt);
-
-	scmd->cdb.cmd_cdb[7] = fmt;
-
-	scgp->cmdname = "send dvd structure";
 
 	if (scg_cmd(scgp) < 0)
 		return (-1);
@@ -1404,69 +1320,6 @@ scsi_blank(scgp, addr, blanktype, immed)
 	scgp->cmdname = "blank unit";
 
 	return (scg_cmd(scgp));
-}
-
-EXPORT int
-scsi_format(scgp, addr, size, background)
-	SCSI	*scgp;
-	caddr_t	addr;
-	int 	size;
-	BOOL 	background;
-{
-	register struct	scg_cmd	*scmd = scgp->scmd;
-	int progress=0, ret=-1, pid=-1;
-	unsigned char sense_table[18];
-	int i;
-	
-	printf("scsi_format: preparing\n");
-
-	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
-	scmd->addr = addr;
-	scmd->size = size;
-	scmd->flags = SCG_DISRE_ENA;
-	scmd->cdb_len = SC_G5_CDBLEN;
-	scmd->sense_len = CCS_SENSE_LEN;
-	scmd->timeout = 160 * 60;     /* Do not know what to set */
-	scmd->cdb.g5_cdb.cmd = 0x04;   /* Format Unit */
-	scmd->cdb.cmd_cdb[1] = 0x11;  /* "FmtData" and "Format Code" */
-	scmd->cdb.cmd_cdb[5] = 0;
-
-	scgp->cmdname = "format unit";
-
-	printf("scsi_format: running\n");
-	ret = (scg_cmd(scgp));
-	printf("scsi_format: post processing %d\n", ret);
-	if (ret == -1) return ret;
-	if (background) {
-		if ((pid=fork()) == (pid_t)-1)
-			perror ("- [unable to fork()]");
-		else {
-			if (!pid) {
-			    while (1) {
-				if (test_unit_ready(scgp) >= 0)
-				    break;
-				sleep(1);
-			    }
-			    return ret;
-			}
-		}
-	}
-	printf("Formating in progress: 0.00 %% done.");
-	sleep(20);
-	while (progress < 0xfff0) {
-		test_unit_ready(scgp);
-		request_sense_b(scgp, (caddr_t)sense_table, 18);
-		progress = sense_table[16]<<8|sense_table[17];
-		printf("\rFormating in progress: %.2f %% done [%d].                           ", (float)(progress*100)/0x10000,progress);
-		usleep(10000);
-		/*for (i=0; i < 18; i++) {
-		    printf("%d ", sense_table[i]);
-		}*/
-	}
-	sleep(10);
-	printf("\rFormating in progress: 100.00 %% done.        \n");
-	if (pid) exit (0);
-	return ret;
 }
 
 /*

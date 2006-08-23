@@ -107,7 +107,6 @@ EXPORT	int	scg_cmd_status	__PR((SCSI *scgp));
 EXPORT	int	scg_sense_key	__PR((SCSI *scgp));
 EXPORT	int	scg_sense_code	__PR((SCSI *scgp));
 EXPORT	int	scg_sense_qual	__PR((SCSI *scgp));
-EXPORT	unsigned char *scg_sense_table	__PR((SCSI *scgp));
 EXPORT	void	scg_fprintdev	__PR((FILE *, struct scsi_inquiry *));
 EXPORT	void	scg_printdev	__PR((struct scsi_inquiry *));
 EXPORT	int	scg_printf	__PR((SCSI *scgp, const char *form, ...));
@@ -1238,23 +1237,6 @@ scg_sense_key(scgp)
 		key = ((struct scsi_ext_sense *)&(cp->sense))->key;
 	return (key);
 }
-
-/*
- * Return all the SCSI sense table last command.
- */
-EXPORT unsigned char *
-scg_sense_table(scgp)
-	SCSI	*scgp;
-{
-	register struct scg_cmd *cp = scgp->scmd;
-
-	if(!scg_cmd_err(scgp))
-		return (0);
-
-	if (cp->sense.code >= 0x70)
-	return &(cp->sense);
-}
-
 
 /*
  * Return the SCSI sense code for last command.

@@ -83,11 +83,8 @@ EXPORT	void	mmc_opthelp		__PR((cdr_t *dp, int excode));
 EXPORT	char	*hasdrvopt		__PR((char *optstr, char *optname));
 LOCAL	cdr_t	*identify_mmc		__PR((SCSI *scgp, cdr_t *, struct scsi_inquiry *));
 LOCAL	int	attach_mmc		__PR((SCSI *scgp, cdr_t *));
-LOCAL   int     attach_mdvd             __PR((SCSI *scgp, cdr_t *));
 EXPORT	int	check_writemodes_mmc	__PR((SCSI *scgp, cdr_t *dp));
-EXPORT  int     check_writemodes_mdvd   __PR((SCSI *scgp, cdr_t *dp));
 LOCAL	int	deflt_writemodes_mmc	__PR((SCSI *scgp, BOOL reset_dummy));
-LOCAL   int     deflt_writemodes_mdvd   __PR((SCSI *scgp, BOOL reset_dummy));
 LOCAL	int	get_diskinfo		__PR((SCSI *scgp, struct disk_info *dip));
 LOCAL	void	di_to_dstat		__PR((struct disk_info *dip, dstat_t *dsp));
 LOCAL	int	get_atip		__PR((SCSI *scgp, struct atipinfo *atp));
@@ -96,27 +93,18 @@ LOCAL	int	get_pma			__PR((SCSI *scgp));
 #endif
 LOCAL	int	init_mmc		__PR((SCSI *scgp, cdr_t *dp));
 LOCAL	int	getdisktype_mmc		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL   int     getdisktype_mdvd        __PR((SCSI *scgp, cdr_t *dp));
 LOCAL	int	speed_select_mmc	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL   int     speed_select_mdvd       __PR((SCSI *scgp, cdr_t *dp, int *speedp));
 LOCAL	int	mmc_set_speed		__PR((SCSI *scgp, int readspeed, int writespeed, int rotctl));
 LOCAL	int	next_wr_addr_mmc	__PR((SCSI *scgp, track_t *trackp, long *ap));
-LOCAL   int     next_wr_addr_mdvd       __PR((SCSI *scgp, track_t *trackp, long *ap));
 LOCAL	int	write_leadin_mmc	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
 LOCAL	int	open_track_mmc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL   int     open_track_mdvd         __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
 LOCAL	int	close_track_mmc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL   int     close_track_mdvd        __PR((SCSI *scgp, cdr_t *dp, track_t *trackp)); 
 LOCAL	int	open_session_mmc	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL   int     open_session_mdvd       __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
 LOCAL	int	waitfix_mmc		__PR((SCSI *scgp, int secs));
 LOCAL	int	fixate_mmc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL   int     fixate_mdvd             __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
 LOCAL	int	blank_mmc		__PR((SCSI *scgp, cdr_t *dp, long addr, int blanktype));
-LOCAL	int	format_mdvd		__PR((SCSI *scgp, cdr_t *dp, int formattype));
 LOCAL	int	send_opc_mmc		__PR((SCSI *scgp, caddr_t, int cnt, int doopc));
 LOCAL	int	opt1_mmc		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	opt1_mdvd		__PR((SCSI *scgp, cdr_t *dp));
 LOCAL	int	opt2_mmc		__PR((SCSI *scgp, cdr_t *dp));
 LOCAL	int	scsi_sony_write		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
 LOCAL	int	gen_cue_mmc		__PR((track_t *trackp, void *vcuep, BOOL needgap));
@@ -150,7 +138,6 @@ LOCAL BOOL	get_tattoo_yamaha	__PR((SCSI *scgp, BOOL print, Int32_t *irp, Int32_t
 LOCAL int	do_tattoo_yamaha	__PR((SCSI *scgp, FILE *f));
 LOCAL int	yamaha_write_buffer	__PR((SCSI *scgp, int mode, int bufferid, long offset,
 							long parlen, void *buffer, long buflen));
-LOCAL	int	dvd_dual_layer_split	__PR((SCSI *scgp, cdr_t *dp, long tsize));
 
 #ifdef	__needed__
 LOCAL int
@@ -212,48 +199,6 @@ cdr_t	cdr_mmc = {
 	send_opc_mmc,
 	opt1_mmc,
 	opt2_mmc,
-};
-
-cdr_t   cdr_mdvd = {
-	0, 0,
-	CDR_SWABAUDIO,
-	CDR_CDRW_ALL,
-	370,370,
-	"mmc_mdvd",
-	"generic SCSI-3/mmc DVD-R(W) driver",
-	0,
-	(dstat_t *)0,
-	identify_mmc,
-	attach_mdvd,
-	init_mmc,
-	getdisktype_mdvd,
-	scsi_load,
-	scsi_unload,
-	read_buff_cap,
-	cmd_dummy,                              /* recovery_needed      */
-	(int(*)__PR((SCSI *, int)))cmd_dummy,   /* recover              */
-	speed_select_mdvd,
-	select_secsize,
-	next_wr_addr_mdvd,
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,   /* reserve_track        */
-	scsi_cdr_write,
-	(int(*)__PR((SCSI *scgp, int, track_t *)))cmd_dummy, /* gen_cue */
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
-	write_leadin_mmc,
-	open_track_mdvd,
-	close_track_mdvd,
-	open_session_mdvd,
-	cmd_dummy,
-	cmd_dummy,					/* abort	*/
-	read_session_offset,
-	fixate_mdvd,
-	stats_mmc,
-	blank_mmc,
-	format_mdvd,
-	send_opc_mmc,
-	opt1_mdvd,
-	opt2_mmc,
-	dvd_dual_layer_split,
 };
 
 /*
@@ -623,22 +568,7 @@ identify_mmc(scgp, dp, ip)
 	if (profile >= 0) {
 		if (lverbose)
 			print_profiles(scgp);
-		if (profile == 0 || profile >= 0x10 && profile <= 0x15 || profile > 0x19) {
-		    /*
-		     * 10h DVD-ROM
-		     * 11h DVD-R
-		     * 12h DVD-RAM
-		     * 13h DVD-RW (Restricted overwrite)
-		     * 14h DVD-RW (Sequential recording)
-		     * 1Ah DVD+RW
-		     * 1Bh DVD+R
-		     * 2Bh DVD+R DL
-		     * 
-		     */
-		    if (profile == 0x11 || profile == 0x13 || profile == 0x14 || profile == 0x1A || profile == 0x1B || profile == 0x2B) {
-			is_dvd = TRUE;
-			dp = &cdr_mdvd;
-		    } else {
+		if (profile == 0 || profile == 0x12 || profile > 0x19) {
 			is_dvd = FALSE;
 			dp = &cdr_cd;
 
@@ -660,8 +590,23 @@ identify_mmc(scgp, dp, ip)
 				errmsgno(EX_BAD,
 				"Found unsupported DVD-RAM media.\n");
 				return (dp);
+			} else {			/* DVD+RW DVD+R */
+				errmsgno(EX_BAD,
+				"Found DVD+ media but DVD+R/DVD+RW support code is missing.\n");
+				errmsgno(EX_BAD,
+				"If you need DVD+R/DVD+RW support, ask the Author for cdrecord-ProDVD.\n");
+				errmsgno(EX_BAD,
+				"Free test versions and free keys for personal use are at ftp://ftp.berlios.de/pub/cdrecord/ProDVD/\n");
+				return (dp);
 			}
-		    }
+		} else if (profile >= 0x10 && profile < 0x18) {
+			errmsgno(EX_BAD,
+			"Found DVD media but DVD-R/DVD-RW support code is missing.\n");
+			errmsgno(EX_BAD,
+			"If you need DVD-R/DVD-RW support, ask the Author for cdrecord-ProDVD.\n");
+			errmsgno(EX_BAD,
+			"Free test versions and free keys for personal use are at ftp://ftp.berlios.de/pub/cdrecord/ProDVD/\n");
+			return (dp);
 		}
 	} else {
 		if (xdebug)
@@ -728,12 +673,13 @@ identify_mmc(scgp, dp, ip)
 #endif
 	}
 	if (is_dvd) {
- 	        errmsgno(EX_BAD, 
-                 "Found DVD media: using cdr_mdvd.\n");  
-                 dp = &cdr_mdvd; 
+		errmsgno(EX_BAD,
+		"Found DVD media but DVD-R/DVD-RW support code is missing.\n");
+		errmsgno(EX_BAD,
+		"If you need DVD-R/DVD-RW support, ask the Author for cdrecord-ProDVD.\n");
+		errmsgno(EX_BAD,
+		"Free test versions and free keys for personal use are at ftp://ftp.berlios.de/pub/cdrecord/ProDVD/\n");
 	}
-	dp->profile = profile;
-	dp->is_dvd = is_dvd;
 	return (dp);
 }
 
@@ -939,42 +885,6 @@ attach_mmc(scgp, dp)
 	return (0);
 }
 
-LOCAL int
-attach_mdvd(scgp, dp)
-        SCSI    *scgp;
-        cdr_t                   *dp;
-{
-        struct  cd_mode_page_2A *mp;
-	
-
-        allow_atapi(scgp, TRUE);/* Try to switch to 10 byte mode cmds */
-
-        scgp->silent++;
-        mp = mmc_cap(scgp, NULL);/* Get MMC capabilities in allocated mp */
-        scgp->silent--;
-        if (mp == NULL)
-                return (-1);    /* Pre SCSI-3/mmc drive         */
-
-        dp->cdr_cdcap = mp;     /* Store MMC cap pointer        */
-
-        if (mp->loading_type == LT_TRAY)
-                dp->cdr_flags |= CDR_TRAYLOAD;
-        else if (mp->loading_type == LT_CADDY)
-                dp->cdr_flags |= CDR_CADDYLOAD;
-
-        if (mp->BUF != 0)
-                dp->cdr_flags |= CDR_BURNFREE;
-
-        check_writemodes_mdvd(scgp, dp);
-
-        if (driveropts != NULL) {
-                if (strcmp(driveropts, "help") == 0) {
-                        mmc_opthelp(dp, 0);
-                }
-        }
-
-        return (0);
-}
 
 EXPORT int
 check_writemodes_mmc(scgp, dp)
@@ -1046,6 +956,8 @@ check_writemodes_mmc(scgp, dp)
 	mp->fp = 0;
 	i_to_4_byte(mp->packet_size, 0);
 	mp->track_mode = TM_DATA;
+
+
 	mp->write_type = WT_SAO;
 
 	if (set_mode_params(scgp, "CD write parameter", mode, len, 0, -1)) {
@@ -1123,77 +1035,6 @@ check_writemodes_mmc(scgp, dp)
 	return (0);
 }
 
-EXPORT int
-check_writemodes_mdvd(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-{
-	Uchar	mode[0x100];
-	int	len;
-	struct	cd_mode_page_05 *mp;
-
-	if (xdebug)
-		printf("Checking possible write modes: ");
-
-	deflt_writemodes_mdvd(scgp, FALSE);
-
-	fillbytes((caddr_t)mode, sizeof(mode), '\0');
-
-	scgp->silent++;
-	if (!get_mode_params(scgp, 0x05, "DVD write parameter",
-			mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
-		scgp->silent--;
-		return (-1);
-	}
-	if (len == 0) {
-		scgp->silent--;
-		return (-1);
-	}
-
-	mp = (struct cd_mode_page_05 *)
-		(mode + sizeof(struct scsi_mode_header) +
-		((struct scsi_mode_header *)mode)->blockdesc_len);
-
-	mp->test_write = 0;
-
-	/*We only check for PACKET and SAO since these are the only supported modes for DVD */
-	/*XXX these checks are irrelevant because they are not medium sensitive. ie the device returns 
-	  error only when it does not support a given mode for ALL mediums. It should check using 
-	  GET CONFIGURATION command.*/
-
-	mp->write_type = WT_PACKET;
-	mp->fp = 0;
-	i_to_4_byte(mp->packet_size, 0);
-
-	if (set_mode_params(scgp, "DVD write parameter", mode, len, 0, -1)) {
-		dp->cdr_flags |= CDR_PACKET;
-		if (xdebug)
-		  printf("PACKET ");
-	} else
-	  dp->cdr_flags &= ~CDR_PACKET;
-	mp->fp = 0;
-	i_to_4_byte(mp->packet_size, 0);
-	mp->track_mode = TM_DATA; 
-
-
-	mp->write_type = WT_SAO;
-
-	if (set_mode_params(scgp, "CD write parameter", mode, len, 0, -1)) {
-		dp->cdr_flags |= CDR_SAO;
-		if (xdebug)
-			printf("SAO ");
-	} else
-		dp->cdr_flags &= ~CDR_SAO;
-
-
-	if (xdebug)
-		printf("\n");
-
-	deflt_writemodes_mdvd(scgp, TRUE);
-	scgp->silent--;
-	return (0);
-}
-
 LOCAL int
 deflt_writemodes_mmc(scgp, reset_dummy)
 	SCSI	*scgp;
@@ -1268,61 +1109,6 @@ deflt_writemodes_mmc(scgp, reset_dummy)
 	return (0);
 }
 
-LOCAL int
-deflt_writemodes_mdvd(scgp, reset_dummy)
-	SCSI	*scgp;
-	BOOL	reset_dummy;
-{
-	Uchar	mode[0x100];
-	int	len;
-	struct	cd_mode_page_05 *mp;
-
-	fillbytes((caddr_t)mode, sizeof(mode), '\0');
-
-	scgp->silent++;
-	if (!get_mode_params(scgp, 0x05, "DVD write parameter",
-			mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
-		scgp->silent--;
-		return (-1);
-	}
-	if (len == 0) {
-		scgp->silent--;
-		return (-1);
-	}
-
-	mp = (struct cd_mode_page_05 *)
-		(mode + sizeof(struct scsi_mode_header) +
-		((struct scsi_mode_header *)mode)->blockdesc_len);
-
-	mp->test_write = 0;
-	/*
-	 * This is the only place where we reset mp->test_write (-dummy)
-	 */
-	if (reset_dummy)
-		mp->test_write = 0;
-
-
-	/*
-	 * Set default values:
-	 * Write type = 02 (session at once)
-	 *
-	 * XXX Note:	the same code appears in check_writemodes_mmc() and
-	 * XXX		in speed_select_mmc().
-	 */
-	mp->write_type = WT_SAO;
-	mp->track_mode = TM_DATA; 
-	mp->dbtype = DB_ROM_MODE1;
-	mp->session_format = SES_DA_ROM;
-
-
-	if (set_mode_params(scgp, "DVD write parameter", mode, len, 0, -1) < 0) {
-		scgp->silent--;
-		return (-1);
-	}
-	scgp->silent--;
-	return (0);
-}
-
 #ifdef	PRINT_ATIP
 LOCAL	void	print_di		__PR((struct disk_info *dip));
 LOCAL	void	atip_printspeed		__PR((char *fmt, int speedindex, char speedtab[]));
@@ -1392,9 +1178,6 @@ di_to_dstat(dip, dsp)
 
 	if (dsp->ds_last_leadout == 0 && dsp->ds_maxblocks >= 0)
 		dsp->ds_last_leadout = dsp->ds_maxblocks;
-	dsp->ds_trfirst=dip->first_track; 
-	dsp->ds_trlast=dip->last_track_ls;
-	dsp->ds_trfirst_ls=dip->first_track_ls;
 }
 
 LOCAL int
@@ -1505,30 +1288,6 @@ init_mmc(scgp, dp)
 }
 
 LOCAL int
-getdisktype_mdvd(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-{
-       int ret = 0;
-       dstat_t	*dsp = dp->cdr_dstat;
-
-       struct track_info track_info;
-       if(getdisktype_mmc(scgp, dp)<0)
-	 return -1;
-
-       /* read rzone info to get the space left on disk */
-       /*ds_trlast is the last rzone on disk, can be invisible */
-       if(read_rzone_info(scgp, (caddr_t)&track_info, sizeof(track_info))>=0)
-	  dsp->ds_maxblocks=a_to_u_4_byte(track_info.free_blocks)+a_to_4_byte(track_info.next_writable_addr);
-       
-       dsp->ds_disktype&= ~DT_CD;
-       dsp->ds_disktype|= DT_DVD;
-	
-       return (ret);
-  
-}
-
-LOCAL int
 getdisktype_mmc(scgp, dp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -1540,7 +1299,6 @@ extern	char	*buf;
 	msf_t	msf;
 	BOOL	did_atip = FALSE;
 	BOOL	did_dummy = FALSE;
-	int 	rplus;
 
 	msf.msf_min = msf.msf_sec = msf.msf_frame = 0;
 
@@ -1608,13 +1366,8 @@ again:
 	/*
 	 * Check for non writable disk first.
 	 */
-	
-	/* DVD+RW does not need to be blanked */
-	rplus = dsp->ds_cdrflags;
-	if (dp->profile == 0x1A) rplus = RF_BLANK;
-	
 	if (dip->disk_status == DS_COMPLETE &&
-			(rplus & dsp->ds_cdrflags & (RF_WRITE|RF_BLANK)) == RF_WRITE) {
+			(dsp->ds_cdrflags & (RF_WRITE|RF_BLANK)) == RF_WRITE) {
 		if (!did_dummy) {
 			int	xspeed = 0xFFFF;
 			int	oflags = dp->cdr_cmdflags;
@@ -1978,7 +1731,6 @@ speed_select_mmc(scgp, dp, speedp)
 
 	if (scsi_get_speed(scgp, 0, &val) >= 0) {
 		if (val > 0) {
-		        printf("Speed set to %d KB/s\n", val); 
 			curspeed = val / 176;
 			*speedp = curspeed;
 		}
@@ -2038,68 +1790,6 @@ mmc_set_speed(scgp, readspeed, writespeed, rotctl)
 	scgp->silent--;
 
 	return (ret);
-}
-
-LOCAL int
-speed_select_mdvd(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t   *dp;
-	int	*speedp;
-{
-  int retcode;
-  unsigned char perf_desc[28];
-  int write_speed = *speedp * 1385;
-  int val = 0, val2 = 0;
-  int i;
-   
-  /* For the moment we just divide the CD speed by 7*/
-
-  if(speedp!=NULL)
-     (*speedp)=(*speedp)*8;
-  
-  memset(perf_desc, 0, sizeof(perf_desc));
-
-  /* Write Rotation Control = ROTCTL_CLV 
-   * | Restore Logical Unit Defaults = 0 
-   * | Exact = 0 
-   * | Random Access = 0) 
-   */
-  perf_desc[0]= ROTCTL_CLV << 3 | 0 << 2 | 0 << 1 | 0; 
-  /* Start LBA to 0 */
-  perf_desc[4] = 0;
-  perf_desc[5] = 0;
-  perf_desc[6] = 0;
-  perf_desc[7] = 0;
-  /* End LBA set to 0 (setting to 0xffffffff failed on my LG burner
-   */
-  perf_desc[8] = 0;
-  perf_desc[9] = 0;
-  perf_desc[10] = 0;
-  perf_desc[11] = 0;
-  /* Read Speed = 0xFFFF */
-  perf_desc[12] = 0;
-  perf_desc[13] = 0;
-  perf_desc[14] = 0xFF;
-  perf_desc[15] = 0xFF;
-  /* Read Time = 1s */
-  perf_desc[18] = 1000 >> 8;
-  perf_desc[19] = 1000 & 0xFF;   
-  /* Write Speed */
-  perf_desc[20] = write_speed >> 24;
-  perf_desc[21] = write_speed >> 16 & 0xFF;
-  perf_desc[22] = write_speed >> 8 & 0xFF;
-  perf_desc[23] = write_speed & 0xFF;
-  /* Write Time = 1s */
-  perf_desc[26] = 1000 >> 8;
-  perf_desc[27] = 1000 & 0xFF;  
-  
-  //retcode = scsi_set_streaming(scgp, NULL, 0);
-  retcode = scsi_set_streaming(scgp, &perf_desc, sizeof(perf_desc));
-  if (retcode == -1) return retcode;
-  retcode = speed_select_mmc(scgp, dp, speedp);
-  if(speedp!=NULL)
-     (*speedp)=(*speedp)/7;
-   return retcode;
 }
 
 LOCAL int
@@ -2165,29 +1855,8 @@ write_leadin_mmc(scgp, dp, trackp)
 			errmsgno(EX_BAD, "Cannot send CUE sheet.\n");
 			return (-1);
 		}
-	/*
-	 * cdr_next_wr_address() is only  applicable for TAO / Packet
-	 * writemode. So Make a check if the writemode is not in SAO/DOA.
-	 * This is only needed in practice for the current DVD writing
-	 * functionality inside cdrecord. It prevents the following error
-	 * message when a DVD-R is burned with -dao :
-	 * 
-	 *	cdrecord: Success. read track info: scsi sendcmd: no error
-	 *	CDB:  52 02 00 00 00 FF 00 00 1C 00
-	 *	status: 0x2 (CHECK CONDITION)
-	 *	Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 24 00 00 C0
-	 *	Sense Key: 0x5 Illegal Request, Segment 0
-	 *	Sense Code: 0x24 Qual 0x00 (invalid field in cdb) Fru 0x0
-	 *	Sense flags: Blk 0 (not valid) error refers to command part,
-	 *		bit ptr 0 (not valid) field ptr 0
-	 *	resid: 28
-	 *	cmd finished after 0.209s timeout 240s
-	 *
-	 * IMHO (*dp->cdr_next_wr_address)(scgp, &trackp[0], &startsec); 
-	 * should not be here in this section.
-	 */
-		if (wm_base(dp->cdr_dstat->ds_wrmode) != WM_SAO)
-			(*dp->cdr_next_wr_address)(scgp, &trackp[0], &startsec);
+
+		(*dp->cdr_next_wr_address)(scgp, &trackp[0], &startsec);
 		if (trackp[0].flags & TI_TEXT) {
 			startsec = dp->cdr_dstat->ds_first_leadin;
 			printf("SAO startsec: %ld\n", startsec);
@@ -2258,49 +1927,6 @@ int	st2mode[] = {
 	0,		/* 6			*/
 	0,		/* 7			*/
 };
-
-LOCAL int
-next_wr_addr_mdvd(scgp, trackp, ap)
-	SCSI	*scgp;
-	track_t	*trackp;
-	long	*ap;
-{
-	int     track=0;
-	struct	track_info	track_info;
-	long	next_addr;
-	int	result = -1;
-	struct  disk_info disk_info;
-	if (trackp){
-	    track = trackp->trackno;
-	}
-
-	if (trackp != 0 && track > 0 && is_packet(trackp)) {
-		scgp->silent++;
-		result = read_track_info(scgp, (caddr_t)&track_info, TI_TYPE_SESS, track, sizeof(track_info));
-		scgp->silent--;
-		if (scsi_in_progress(scgp)){
-		  return -1;
-		}
-		
-	}
-
-	if (result < 0) {
-	  /* Get the last rzone*/
-	        if(read_disk_info(scgp,(caddr_t)&disk_info,8)<0)
-		  return (-1);
-	     
-		if (read_track_info(scgp, (caddr_t)&track_info, TI_TYPE_SESS, 0xFF, sizeof(track_info)) < 0)
-		    if (read_rzone_info(scgp, (caddr_t)&track_info, sizeof(track_info)) < 0)
-			return (-1);
-	}
-	if (scgp->verbose)
-		scg_prbytes("track info:", (Uchar *)&track_info,
-				sizeof(track_info)-scg_getresid(scgp));
-	next_addr = a_to_4_byte(track_info.next_writable_addr);
-	if (ap)
-		*ap = next_addr;
-	return (0);
-}
 
 LOCAL int
 open_track_mmc(scgp, dp, trackp)
@@ -2383,45 +2009,6 @@ open_track_mmc(scgp, dp, trackp)
 }
 
 LOCAL int
-open_track_mdvd(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t *trackp;
-{
-	Uchar	mode[0x100];
-	int	len;
-	struct	cd_mode_page_05 *mp;
-
-	if (is_packet(trackp)) {
-	       fillbytes((caddr_t)mode, sizeof(mode), '\0');
-	  
-	       if (!get_mode_params(scgp, 0x05, "DVD write parameter",
-			mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len))
-	              return (-1);
-	       if (len == 0)
-		      return (-1);
-
-	        mp = (struct cd_mode_page_05 *)
-	              (mode + sizeof(struct scsi_mode_header) +
-		      ((struct scsi_mode_header *)mode)->blockdesc_len);
-
-		mp->write_type = WT_PACKET;
-		mp->LS_V = 1;
-		/*For now we set the link size to 0x10(32k) because Pioneer-A03 only support this */
-		mp->link_size=0x10;
-		mp->fp = 1;
-		i_to_4_byte(mp->packet_size, trackp->pktsize);
-	} else {
-	     return 0;
-	}
- 
-	if (!set_mode_params(scgp, "CD write parameter", mode, len, 0, trackp->secsize))
-		return (-1);
-
-	return (0);
-}
-
-LOCAL int
 close_track_mmc(scgp, dp, trackp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -2441,30 +2028,6 @@ close_track_mmc(scgp, dp, trackp)
 			/* close the incomplete track */
 		ret = scsi_close_tr_session(scgp, CL_TYPE_TRACK, 0xFF,
 				(dp->cdr_cmdflags&F_IMMED) != 0);
-		wait_unit_ready(scgp, 300);	/* XXX Wait for ATAPI */
-		return (ret);
-	}
-	return (0);
-}
-
-LOCAL int
-close_track_mdvd(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
-{
-	int	ret;
-	if (!is_packet(trackp))
-	     return (0);
-
-	if (scsi_flush_cache(scgp, (dp->cdr_cmdflags&F_IMMED) != 0) < 0) {
-		printf("Trouble flushing the cache\n");
-		return -1;
-	}
-	wait_unit_ready(scgp, 300);		/* XXX Wait for ATAPI */
-	if (is_packet(trackp) && !is_noclose(trackp)) {
-			/* close the incomplete track */
-		ret = scsi_close_tr_session(scgp, 1, 0xFF, (dp->cdr_cmdflags&F_IMMED) != 0);
 		wait_unit_ready(scgp, 300);	/* XXX Wait for ATAPI */
 		return (ret);
 	}
@@ -2550,84 +2113,6 @@ open_session_mmc(scgp, dp, trackp)
 	if (!set_mode_params(scgp, "CD write parameter", mode, len, 0, -1))
 		return (-1);
 
-	return (0);
-}
-
-LOCAL int
-open_session_mdvd(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
-{
-	Uchar	mode[0x100];
-	int	tracks = trackp->tracks;
-
-	int	len;
-	struct	cd_mode_page_05 *mp;
-	Ulong totalsize;
-	int i;
-	struct	track_info	track_info;
-	int profile;
-
-	fillbytes((caddr_t)mode, sizeof(mode), '\0');
-
-	if (!get_mode_params(scgp, 0x05, "DVD write parameter",
-			mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len))
-		return (-1);
-	if (len == 0)
-		return (-1);
-
-	mp = (struct cd_mode_page_05 *)
-		(mode + sizeof(struct scsi_mode_header) +
-		((struct scsi_mode_header *)mode)->blockdesc_len);
-	if(is_packet(trackp)){
-	  mp->write_type=WT_PACKET;
-	  mp->fp=0;
-	  mp->BUFE=1;
-	  mp->track_mode=1;
-	}else{
-	  mp->write_type = WT_SAO; 
-	}
-
-	mp->multi_session = (track_base(trackp)->tracktype & TOCF_MULTI) ?
-				MS_MULTI : MS_NONE;
-	mp->session_format = toc2sess[track_base(trackp)->tracktype & TOC_MASK];
-	
-	if (lverbose && dp->cdr_cdcap->BUF != 0)
-		printf("BURN-Free is %s.\n", mp->BUFE?"ON":"OFF");
-	if (driveropts != NULL) {
-		if ((strcmp(driveropts, "burnproof") == 0 ||
-		    strcmp(driveropts, "burnfree") == 0) && dp->cdr_cdcap->BUF != 0) {
-			errmsgno(EX_BAD, "Turning BURN-Free on\n");
-			mp->BUFE = 1;
-		} else if ((strcmp(driveropts, "noburnproof") == 0 ||
-			   strcmp(driveropts, "noburnfree") == 0)) {
-			errmsgno(EX_BAD, "Turning BURN-Free off\n");
-			mp->BUFE = 0;
-		} else if (strcmp(driveropts, "help") == 0) {
-			mmc_opthelp(dp, 0);
-		} else {
-			errmsgno(EX_BAD, "Bad driver opts '%s'.\n", driveropts);
-			mmc_opthelp(dp, EX_BAD);
-		}
-	}
-
-
-	if (!set_mode_params(scgp, "DVD write parameter", mode, len, 0, -1))
-		return (-1);
-
-		
-	totalsize=0;
-	for(i=1;i<=tracks;i++) {
-	  totalsize+=trackp[i].tracksecs;
-	}
-       
-	profile = get_curprofile(scgp);
-	if(!is_packet(trackp) && profile != 0x1A){
-	  /* in DAO mode we need to reserve space for the track*/
-	  if(reserve_track(scgp, totalsize)<0)
-	    return (-1);
-	  }
 	return (0);
 }
 
@@ -2761,50 +2246,6 @@ fixate_mmc(scgp, dp, trackp)
 	return (ret);
 }
 
-LOCAL int
-fixate_mdvd(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t   *dp;
-	track_t	*trackp;
-{
-      /*set a really BIG timeout and call fixate_mmc
-	 The BIG timeout is needed in case there was a very short rzone to write at the 
-	 beginning of the disk, because lead-out needs to be at some distance.
-      */
-      scg_settimeout(scgp, 1000);
-      if(is_packet(trackp)){
-	  scsi_close_tr_session(scgp, CL_TYPE_SESSION, 0, FALSE);
-      }
-      fixate_mmc(scgp, dp, trackp);
-      if (dp->profile == 0x2B) {
-	  scsi_close_tr_session(scgp, CL_TYPE_OPEN_SESSION, 0, FALSE);
-	/* 
-	 * The command below sofar has always failed on DVD+R DL media,
-	 * hence with dp->profile == 0x2B. 
-	 *
-	 *  #define CL_TYPE_FINALISE_MINRAD 5   Finalize the Disc with
-	 *					a Minimum Recorded Radius
-	 * It results in the following error message :
-	 *
-	 *	cdrecord: Success. close track/session: scsi sendcmd: no error
-	 *	CDB:  5B 00 05 00 00 00 00 00 00 00
-	 *	status: 0x2 (CHECK CONDITION)
-	 *	Sense Bytes: 70 00 05 00 00 00 00 0E 00 00 00 00 30 05 00 00
-	 *	Sense Key: 0x5 Illegal Request, Segment 0
-	 *	Sense Code: 0x30 Qual 0x05 (cannot write medium - incompatible
-	 *				 format) Fru 0x0
-	 *	Sense flags: Blk 0 (not valid)
-	 *	cmd finished after 0.005s timeout 1000s
-	 *
-	 */
-#if 0
-	  scsi_close_tr_session(scgp, CL_TYPE_FINALISE_MINRAD, 0, FALSE);
-#endif
-      }
-      scg_settimeout(scgp, 200);
-      
-}
-
 char	*blank_types[] = {
 	"entire disk",
 	"PMA, TOC, pregap",
@@ -2814,12 +2255,6 @@ char	*blank_types[] = {
 	"closing of last session",
 	"last session",
 	"reserved blanking type",
-};
-
-char	*format_types[] = {
-	"full format",
-	"background format",
-	"forced format",
 };
 
 LOCAL int
@@ -2834,96 +2269,17 @@ blank_mmc(scgp, dp, addr, blanktype)
 	BOOL	cdrrw	 = FALSE;	/* Read CD-RW	*/
 	BOOL	cdwrw	 = FALSE;	/* Write CD-RW	*/
 	int	ret;
-	int 	profile;
 
 	mmc_check(scgp, &cdrr, &cdwr, &cdrrw, &cdwrw, NULL, NULL);
 	if (!cdwrw)
 		return (blank_dummy(scgp, dp, addr, blanktype));
 
-	if (dp->profile == 0x1A) {
-		printf("Error: this media does not support blanking, ignoring.\n");
-		return (blank_dummy(scgp, dp, addr, blanktype));
-	}
 	if (lverbose) {
 		printf("Blanking %s\n", blank_types[blanktype & 0x07]);
 		flush();
 	}
 
 	ret = scsi_blank(scgp, addr, blanktype, (dp->cdr_cmdflags&F_IMMED) != 0);
-	if (ret < 0)
-		return (ret);
-
-	wait_unit_ready(scgp, 90*60/curspeed);	/* XXX Wait for ATAPI */
-	waitfix_mmc(scgp, 90*60/curspeed);	/* XXX Wait for ATAPI */
-	return (ret);
-}
-
-LOCAL int
-format_mdvd(scgp, dp, formattype)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	formattype;
-{
-extern	char	*buf;
-	BOOL	dvdwr	 = FALSE;	/* Write DVD	*/
-	int	ret;
-	int 	profile;
-	char	addr[12];
-	struct disk_info *dip;
-
-	printf("format_mdvd\n");
-	mmc_check(scgp, NULL, NULL, NULL, NULL, NULL, &dvdwr);
-	if (!dvdwr)
-		return (format_dummy(scgp, dp, formattype));
-
-	printf("format_mdvd: drive is a dvd burner.\n");
-	profile = get_curprofile(scgp);
-	if (profile != 0x1A) {
-		printf("Error: only support DVD+RW formating, ignoring.\n");
-	        return (format_dummy(scgp, dp, formattype));
-	}
-	printf("format_mdvd: media is a DVD+RW.\n");
-	dip = (struct disk_info *)buf;
-	if (get_diskinfo(scgp, dip) < 0)
-		return ret;
-	
-	if (dip->disk_status & 3 && formattype != FORCE_FORMAT) {
-		printf("Error: disk already formated, ignoring.\n");
-	        return ret;
-        }
-	addr[0] = 0;           // "Reserved"
-	addr[1] = 2;           // "IMMED" flag
-	addr[2] = 0;           // "Descriptor Length" (MSB)
-	addr[3] = 8;           // "Descriptor Length" (LSB)
-	addr[4+0] = 0xff;
-	addr[4+1] = 0xff;
-	addr[4+2] = 0xff;
-	addr[4+3] = 0xff;
-	addr[4+4] = 0x26<<2;
-	addr[4+5] = 0;
-	addr[4+6] = 0;
-	addr[4+7] = 0;
-	if (formattype == FORCE_FORMAT) {
-	    printf("format_mdvd: forcing reformat.\n"); 
-	    formattype = FULL_FORMAT;
-	    addr[4+0] = 0;
-	    addr[4+1] = 0;
-	    addr[4+2] = 0;
-	    addr[4+3] = 0;
-	    addr[4+7] = 1;
-	} else {
-	    printf("format_mdvd: media is unformated.\n"); 
-	}
-
-	if (lverbose) {
-		printf("Formating %s\n", format_types[formattype & 0x07]);
-		flush();
-	}
-	if (formattype == FULL_FORMAT) {
-	    ret = scsi_format(scgp, &addr, sizeof(addr), FALSE);
-	} else {
-	    ret = scsi_format(scgp, &addr, sizeof(addr), TRUE);
-	}
 	if (ret < 0)
 		return (ret);
 
@@ -3158,43 +2514,6 @@ opt2_mmc(scgp, dp)
 		do_varirec_plextor(scgp);
 	}
 
-	return (0);
-}
-
-LOCAL int
-opt1_mdvd(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-{
-	int	oflags = dp->cdr_dstat->ds_cdrflags;
-
-	if ((dp->cdr_dstat->ds_cdrflags & RF_AUDIOMASTER) != 0) {
-		printf("Turning Audio Master Q. R. on\n");
-		if (set_audiomaster_yamaha(scgp, dp, TRUE) < 0)
-			return (-1);
-		if (!debug && lverbose <= 1)
-			dp->cdr_dstat->ds_cdrflags &= ~RF_PRATIP;
-		if (getdisktype_mdvd(scgp, dp) < 0) {
-			dp->cdr_dstat->ds_cdrflags = oflags;
-			return (-1);
-		}
-		dp->cdr_dstat->ds_cdrflags = oflags;
-		if (oflags & RF_PRATIP) {
-			msf_t   msf;
-			lba_to_msf(dp->cdr_dstat->ds_first_leadin, &msf);
-			printf("New start of lead in: %ld (%02d:%02d/%02d)\n",
-				(long)dp->cdr_dstat->ds_first_leadin,
-		                msf.msf_min,
-        		        msf.msf_sec,
-                		msf.msf_frame);
-			lba_to_msf(dp->cdr_dstat->ds_maxblocks, &msf);
-			printf("New start of lead out: %ld (%02d:%02d/%02d)\n",
-				(long)dp->cdr_dstat->ds_maxblocks,
-		                msf.msf_min,
-        		        msf.msf_sec,
-                		msf.msf_frame);
-		}
-	}
 	return (0);
 }
 
@@ -4461,48 +3780,3 @@ yamaha_write_buffer(scgp, mode, bufferid, offset, parlen, buffer, buflen)
 		return (1);
 	return (0);
 }
-
-LOCAL int
-dvd_dual_layer_split(scgp, dp, tsize)
-	SCSI	*scgp;
-	cdr_t 	*dp;
-	long 	tsize;
-{
-    unsigned char	xb[12];
-    int		i;
-    long 	l0_size;
-    
-    /* Get the Layer 0 defined data zone*/
-    if (read_dvd_structure(scgp, (caddr_t)xb, 12, 0, 0, 0x20) >= 0) {
-	if ((xb[1] | xb[0] << 8) < 13) {
-	    error("dvd_dual_layer_split: read_dvd_structure returns invalid data\n");
-	    return 1;
-	}
-	if (xb[4] & 0x80) {
-	    printf("L0 zone size already set\n");
-	    return 1;
-	}
-	l0_size = xb[11] | xb[10] << 8 | xb[9] << 16 | xb[8] << 24;
-	if (tsize < l0_size) {
-	    error("track size smaller than one layer, use --force to force burning.");
-	    return 0;
-	}
-	printf("L0 size: %l (track size %l)\n", l0_size, tsize);
-	l0_size = tsize / 2;
-	l0_size = l0_size - 1 + 16 - (l0_size - 1) % 16;
-	printf("New L0 size: %l\n", l0_size);
-
-	memset (xb, 0, sizeof(xb));
-	xb[1]  = sizeof(xb) - 2;
-	xb[8]  = l0_size >> 24;
-	xb[9]  = l0_size >> 16;
-	xb[10] = l0_size >> 8;
-	xb[11] = l0_size;
-	if (send_dvd_structure(scgp, (caddr_t)xb, 12, 0, 0x20)) {
-	    error("dvd_dual_layer_split: send_dvd_structure failed, could not set middle zone location.\n");
-	    return 0;
-	}
-    }
-   return 1;
-}
-

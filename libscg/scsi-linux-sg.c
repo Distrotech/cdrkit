@@ -352,18 +352,6 @@ scgo_open(scgp, device)
 	if (device != NULL && *device != '\0') {
 #ifdef	USE_ATA
 		if (strncmp(device, "ATAPI", 5) == 0) {
-			if (scgp->overbose) {
-				/*
-				 * I strongly encourage people who believe that
-				 * they need to patch this message away to read
-				 * the messages in the Solaris USCSI libscg
-				 * layer instead of wetting their tissues while
-				 * being unwilling to look besides their
-				 * own belly button.
-				 */
-				js_fprintf((FILE *)scgp->errfile,
-				"#########################################################################################\n#\n#  Warning: Using ATAPI via /dev/hd* interface. Use dev=ATA:X,Y,Z or dev=/dev/hdX\n\#\n#########################################################################################\n");
-			}
 			scgp->ops = &ata_ops;
 			return (SCGO_OPEN(scgp, device));
 		}
@@ -385,6 +373,18 @@ scgo_open(scgp, device)
 			 */
 			use_ata = TRUE;
 			device = NULL;
+			if (scgp->overbose) {
+				/*
+				 * I strongly encourage people who believe that
+				 * they need to patch this message away to read
+				 * the messages in the Solaris USCSI libscg
+				 * layer instead of wetting their tissues while
+				 * being unwilling to look besides their
+				 * own belly button.
+				 */
+				js_fprintf((FILE *)scgp->errfile,
+				"Warning: Using badly designed ATAPI via /dev/hd* interface.\n");
+			}
 		}
 	}
 

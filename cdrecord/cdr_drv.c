@@ -41,7 +41,6 @@ extern	int	xdebug;
 extern	cdr_t	cdr_oldcd;
 extern	cdr_t	cdr_cd;
 extern	cdr_t	cdr_mmc;
-extern  cdr_t   cdr_mdvd;
 extern	cdr_t	cdr_mmc_sony;
 extern	cdr_t	cdr_cd_dvd;
 extern	cdr_t	cdr_philips_cdd521O;
@@ -80,7 +79,6 @@ EXPORT	cdr_t	*get_cdrcmds		__PR((SCSI *scgp));
 cdr_t	*drivers[] = {
 	&cdr_cd_dvd,
 	&cdr_mmc,
-        &cdr_mdvd,
 	&cdr_mmc_sony,
 	&cdr_cd,
 	&cdr_oldcd,

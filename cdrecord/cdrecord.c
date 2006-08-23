@@ -185,7 +185,6 @@ LOCAL	void	cdrstats	__PR((cdr_t *dp));
 LOCAL	void	susage		__PR((int));
 LOCAL	void	usage		__PR((int));
 LOCAL	void	blusage		__PR((int));
-LOCAL	void	formattypeusage	__PR((int));
 LOCAL	void	intr		__PR((int sig));
 LOCAL	void	catchsig	__PR((int sig));
 LOCAL	int	scsi_cb		__PR((void *arg));
@@ -223,9 +222,9 @@ LOCAL	BOOL	checkdsize	__PR((SCSI *scgp, cdr_t *dp,
 					long tsize, int flags));
 LOCAL	void	raise_fdlim	__PR((void));
 LOCAL	void	raise_memlock	__PR((void));
-LOCAL	int	gargs		__PR((int, char **, int *, track_t *, char **,
+LOCAL	void	gargs		__PR((int, char **, int *, track_t *, char **,
 					int *, cdr_t **,
-					int *, long *, int *, int *));
+					int *, long *, int *));
 LOCAL	void	set_trsizes	__PR((cdr_t *, int, track_t *));
 EXPORT	void	load_media	__PR((SCSI *scgp, cdr_t *, BOOL));
 EXPORT	void	unload_media	__PR((SCSI *scgp, cdr_t *, int));
@@ -245,7 +244,6 @@ EXPORT	void	raisepri	__PR((int));
 LOCAL	void	wait_input	__PR((void));
 LOCAL	void	checkgui	__PR((void));
 LOCAL	int	getbltype	__PR((char *optstr, long *typep));
-LOCAL	int	getformattype	__PR((char *optstr, long *typep));
 LOCAL	void	print_drflags	__PR((cdr_t *dp));
 LOCAL	void	print_wrmodes	__PR((cdr_t *dp));
 LOCAL	BOOL	check_wrmode	__PR((cdr_t *dp, int wmode, int tflags));
@@ -274,7 +272,6 @@ main(ac, av)
 	int	speed = -1;
 	long	flags = 0L;
 	int	blanktype = 0;
-	int	formattype = 0;
 	int	i;
 	int	tracks = 0;
 	int	trackno;
@@ -286,9 +283,6 @@ main(ac, av)
 	SCSI	*scgp = NULL;
 	char	errstr[80];
 	BOOL	gracedone = FALSE;
-	int     ispacket;
-	BOOL	is_cdwr = FALSE;
-	BOOL	is_dvdwr = FALSE;
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
@@ -297,13 +291,14 @@ main(ac, av)
 	save_args(ac, av);
 	oeuid = geteuid();		/* Remember saved set uid	*/
 
+
 	fillbytes(track, sizeof (track), '\0');
 	for (i = 0; i < MAX_TRACK+2; i++)
 		track[i].track = track[i].trackno = i;
 	track[0].tracktype = TOC_MASK;
 	raise_fdlim();
-	ispacket = gargs(ac, av, &tracks, track, &dev, &timeout, &dp, &speed, &flags,
-							&blanktype, &formattype);
+	gargs(ac, av, &tracks, track, &dev, &timeout, &dp, &speed, &flags,
+							&blanktype);
 	if ((track[0].tracktype & TOC_MASK) == TOC_MASK)
 		comerrno(EX_BAD, "Internal error: Bad TOC type.\n");
 
@@ -369,10 +364,6 @@ main(ac, av)
 								CLONE_TITLE,
 								cdr_version,
 								HOST_CPU, HOST_VENDOR, HOST_OS);
-		 printf("NOTE: this is OSS DVD extensions for cdrtools and thus may have bugs\n");
-		 printf("   related to DVD issues that are not present in the original cdrtools. For\n");
-		 printf("   more information see http://crashrecovery.org/oss-dvd.html. The original\n");
-		 printf("   cdrtools author should not be bothered with problems in this version.\n");
 
 #if	defined(SOURCE_MODIFIED) || !defined(IS_SCHILY_XCONFIG)
 #define	INSERT_YOUR_EMAIL_ADDRESS_HERE
@@ -498,25 +489,19 @@ main(ac, av)
 		scg_help(stderr);
 		exit(0);
 	}
-
 	/*
 	 * XXX scg_open() needs root privilleges.
 	 */
 	if ((scgp = scg_open(dev, errstr, sizeof (errstr),
 				debug, (flags & F_MSINFO) == 0 || lverbose)) == (SCSI *)0) {
-     if (dev != NULL || (flags & F_SCANBUS) == 0 || (scgp = scg_open("ATA", errstr, sizeof (errstr),
-                 debug, (flags & F_MSINFO) == 0 || lverbose)) == (SCSI *)0) {
-        errmsg("%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
-        errmsgno(EX_BAD, "For possible targets try 'cdrecord -scanbus'.%s\n",
-              geteuid() ? " Make sure you are root.":"");
-        errmsgno(EX_BAD, "For possible transport specifiers try 'cdrecord dev=help'.\n");
-        errmsgno(EX_BAD, "\n");
-        errmsgno(EX_BAD, "For more information, install the cdrtools-doc\n");
-        errmsgno(EX_BAD, "package and read /usr/share/doc/cdrecord/README.ATAPI.setup .\n");
-        exit(EX_BAD);
-     } else {
-        dev = "ATA";
-     }
+			errmsg("%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
+			errmsgno(EX_BAD, "For possible targets try 'cdrecord -scanbus'.%s\n",
+						geteuid() ? " Make sure you are root.":"");
+			errmsgno(EX_BAD, "For possible transport specifiers try 'cdrecord dev=help'.\n");
+			errmsgno(EX_BAD, "\n");
+			errmsgno(EX_BAD, "For more information, install the cdrtools-doc\n");
+			errmsgno(EX_BAD, "package and read /usr/share/doc/cdrecord/README.ATAPI.setup .\n");
+			exit(EX_BAD);
 	}
 #ifdef	HAVE_PRIV_SET
 #ifdef	PRIV_DEBUG
@@ -640,7 +625,6 @@ main(ac, av)
 			comerr("Cannot reset target.\n");
 		exit(0);
 	}
-
 	/*
 	 * First try to check which type of SCSI device we
 	 * have.
@@ -681,46 +665,6 @@ if (lverbose > 2)
 	} else if (!is_unknown_dev(scgp) && dp != get_cdrcmds(scgp)) {
 		errmsgno(EX_BAD, "WARNING: Trying to use other driver on known device.\n");
 	}
-        is_mmc(scgp, &is_cdwr, &is_dvdwr);
-        if (ispacket) {
-	    if (is_dvdwr) {
-		track[0].flags |= TI_PACKET; 
-		/*XXX put here to only affect DVD writing, should be in gargs.
-		 * however if set in args for all mode, packet writing is then
-		 * broken for all disc as cdrecord assume that PACKET imply TAO which  
-		 * is not true at all???? */ 
-		track[0].flags &= ~TI_TAO;
-	    }
-	}
-	/* DVD does not support TAO */
-	if (dp->is_dvd) {
-	        printf("Using Session At Once (SAO) for DVD mode.\n");
-		dp->cdr_flags |= F_SAO;
-		for (i = 0; i <= MAX_TRACK; i++) {
-		    track[i].flags &= ~TI_TAO;
-		    track[i].flags |= TI_SAO;
-		}
-	}
-        is_mmc(scgp, &is_cdwr, &is_dvdwr);
-        if (ispacket) {
-	    if (is_dvdwr) {
-		track[0].flags |= TI_PACKET; 
-		/*XXX put here to only affect DVD writing, should be in gargs.
-		 * however if set in args for all mode, packet writing is then
-		 * broken for all disc as cdrecord assume that PACKET imply TAO which  
-		 * is not true at all???? */ 
-		track[0].flags &= ~TI_TAO;
-	    }
-	}
-	/* DVD does not support TAO */
-	if (dp->is_dvd) {
-	        printf("Using Session At Once (SAO) for DVD mode.\n");
-		dp->cdr_flags |= F_SAO;
-		for (i = 0; i <= MAX_TRACK; i++) {
-		    track[i].flags &= ~TI_TAO;
-		    track[i].flags |= TI_SAO;
-		}
-	}
 
 	if (!is_cddrive(scgp))
 		comerrno(EX_BAD, "Sorry, no CD/DVD-Drive found on this target.\n");
@@ -746,31 +690,13 @@ if (lverbose > 2)
 		dsp->ds_minbuf = 0xFFFF;
 		dp->cdr_dstat = dsp;
 	}
-        is_mmc(scgp, &is_cdwr, &is_dvdwr);
-        if (ispacket) {
-	    if (is_dvdwr) {
-		track[0].flags |= TI_PACKET; 
-		/*XXX put here to only affect DVD writing, should be in gargs.
-		 * however if set in args for all mode, packet writing is then
-		 * broken for all disc as cdrecord assume that PACKET imply TAO which  
-		 * is not true at all???? */ 
-		track[0].flags &= ~TI_TAO;
-	    }
-	}
-	/* DVD does not support TAO */
-	if (dp->is_dvd) {
-	        printf("Using Session At Once (SAO) for DVD mode.\n");
-		dp->cdr_flags |= F_SAO;
-		for (i = 0; i <= MAX_TRACK; i++) {
-		    track[i].flags &= ~TI_TAO;
-		    track[i].flags |= TI_SAO;
-		}
-	}
 
 	if ((flags & (F_MSINFO|F_TOC|F_LOAD|F_DLCK|F_EJECT)) == 0 ||
 	    tracks > 0 ||
 	    cuefilename != NULL) {
 
+		BOOL	is_cdwr = FALSE;
+		BOOL	is_dvdwr = FALSE;
 
 		if ((dp->cdr_flags & CDR_ISREADER) != 0) {
 			errmsgno(EX_BAD,
@@ -780,7 +706,7 @@ if (lverbose > 2)
 		if (!is_mmc(scgp, &is_cdwr, &is_dvdwr))
 			is_cdwr = TRUE;			/* If it is not MMC, it must be a CD writer */
 
-		if (is_dvdwr && !set_cdrcmds("mmc_mdvd", (cdr_t **)NULL)) {
+		if (is_dvdwr && !set_cdrcmds("mmc_dvd", (cdr_t **)NULL)) {
 			errmsgno(EX_BAD,
 			"This version of cdrecord does not include DVD-R/DVD-RW support code.\n");
 			errmsgno(EX_BAD,
@@ -1083,6 +1009,11 @@ if (lverbose > 2)
 		print_toc(scgp, dp);
 		comexit(0);
 	}
+	if ((flags & F_FORMAT) != 0) {
+		errmsgno(EX_BAD, "Format option not implemented in this version.\n");
+		comexit(EX_BAD);
+	}
+
 #ifdef	XXX
 	if ((*dp->cdr_check_session)() < 0) {
 		comexit(EX_BAD);
@@ -1126,7 +1057,6 @@ if (lverbose > 2)
 			if (setreuid(-1, oeuid) < 0)
 				errmsg("Could set back effective uid.\n");
 		}
-
 #endif
 		/*
 		 * fork() here to start the extra process needed for
@@ -1293,15 +1223,6 @@ if (lverbose > 2)
 		errs++;
 		goto restore_it;
 	}
- 	
- 	if (dp->profile == 0x2B && flags & F_SAO && tsize > 0) {
- 	    printf("Preparing middle zone location for this DVD+R dual layer disc\n");
- 	    if (!dp->cdr_layer_split(scgp, dp, tsize)) {
- 		errmsgno(EX_BAD, "Cannot send structure for middle zone location.\n");
- 		comexit(EX_BAD);
- 	    }
- 	}
-
 	if (tracks > 0 && fs > 0l) {
 		/*
 		 * Wait for the read-buffer to become full.
@@ -1322,40 +1243,6 @@ if (lverbose > 2)
 	fixtime.tv_sec = 0;
 	if (gettimeofday(&starttime, (struct timezone *)0) < 0)
 		errmsg("Cannot get start time\n");
-
-      
- 	if (flags & F_FORMAT) {
- 	    	printf("cdrecord: media format asked\n");
- 		/*
- 		 * Do not abort if OPC failes. Just give it a chance
- 		 * for better laser power calibration than without OPC.
- 		 *
- 		 * Ricoh drives return with a vendor unique sense code.
- 		 * This is most likely because they refuse to do OPC
- 		 * on a non blank media.
- 		 */
- 		scgp->silent++;
- 		do_opc(scgp, dp, flags);
- 		scgp->silent--;
- 		wait_unit_ready(scgp, 120);
- 		if (gettimeofday(&starttime, (struct timezone *)0) < 0)
- 			errmsg("Cannot get start time\n");
- 
- 		if ((*dp->cdr_format)(scgp, dp, formattype) < 0) {
- 			errmsgno(EX_BAD, "Cannot format disk, aborting.\n");
- 			comexit(EX_BAD);
- 		}
- 		if (gettimeofday(&fixtime, (struct timezone *)0) < 0)
- 			errmsg("Cannot get format time\n");
- 		if (lverbose)
- 			prtimediff("Formatting time: ", &starttime, &fixtime);
- 
- 		if (!wait_unit_ready(scgp, 240) || tracks == 0) {
- 			comexit(0);
- 		}
- 		if (gettimeofday(&starttime, (struct timezone *)0) < 0)
- 			errmsg("Cannot get start time\n");
- 	}	
 
 	/*
 	 * Blank the media if we were requested to do so
@@ -1414,16 +1301,6 @@ if (lverbose > 2)
 		trackno = 0;
 	}
 	scgp->silent--;
-
- 	
- 	/* If it is DVD, the information in TOC is fabricated :)
- 	 The real information is from read disk info command*/
- 	if((dp->cdr_dstat->ds_disktype&DT_DVD) && (dp->cdr_dstat->ds_trlast>0)){
- 	    trackno=dp->cdr_dstat->ds_trlast-1;
- 	    printf("trackno=%d\n",trackno);
- 	}
- 
-
 	if ((tracks + trackno) > MAX_TRACK) {
 		/*
 		 * XXX How many tracks are allowed on a DVD?
@@ -1608,8 +1485,8 @@ gracewait(dp, didgracep)
 	if (gracetime > 999)
 		gracetime = 999;
 
- 	printf("Starting to write CD/DVD at speed %5.1f in %s%s %s mode for %s session.\n",
- 		(float)dp->cdr_dstat->ds_wspeed,
+	printf("Starting to write CD/DVD at speed %d in %s%s %s mode for %s session.\n",
+		(int)dp->cdr_dstat->ds_wspeed,
 		(dp->cdr_cmdflags & F_DUMMY) ? "dummy" : "real",
 		(dp->cdr_cmdflags & F_FORCE) ? " force" : "",
 		wm2name[dp->cdr_dstat->ds_wrmode],
@@ -1779,7 +1656,7 @@ usage(excode)
 	error("\t-checkdrive	check if a driver for the drive is present\n");
 	error("\t-prcap		print drive capabilities for MMC compliant drives\n");
 	error("\t-inq		do an inquiry for the drive and exit\n");
-	error("\t-scanbus	scan the SCSI and IDE buses and exit\n");
+	error("\t-scanbus	scan the SCSI bus and exit\n");
 	error("\t-reset		reset the SCSI bus with the cdrecorder (if possible)\n");
 	error("\t-abort		send an abort sequence to the drive (may help if hung)\n");
 	error("\t-overburn	allow to write more than the official size of a medium\n");
@@ -1787,8 +1664,7 @@ usage(excode)
 	error("\t-useinfo	use *.inf files to overwrite audio options.\n");
 	error("\tspeed=#		set speed of drive\n");
 	error("\tblank=type	blank a CD-RW disc (see blank=help)\n");
-	error("\tformat		format a CD-RW/DVD-RW/DVD+RW disc\n");
- 	error("\tformattype=#	select the format method for DVD+RW disc\n");
+	error("\t-format		format a CD-RW/DVD-RW/DVD+RW disc\n");
 #ifdef	FIFO
 	error("\tfs=#		Set fifo size to # (0 to disable, default is %ld MB)\n",
 							DEFAULT_FIFOSIZE/(1024L*1024L));
@@ -1869,19 +1745,6 @@ blusage(ret)
 	error("\ttrtail\t\tblank a track tail\n");
 	error("\tunclose\t\tunclose last session\n");
 	error("\tsession\t\tblank last session\n");
-
-	exit(ret);
-	/* NOTREACHED */
-}
-
-LOCAL void
-formattypeusage(ret)
-	int	ret;
-{
-	error("Formating options:\n");
-	error("\tfull\t\tstandard formating\n");
-	error("\tbackground\t\tbackground formating\n");
-	error("\tforce\t\tforce reformat\n");
 
 	exit(ret);
 	/* NOTREACHED */
@@ -2393,7 +2256,6 @@ int oper = -1;
 			oper = per;
 			flush();
 		}
-
 #endif
 	} while (tracksize < 0 || bytes_read < tracksize);
 
@@ -3090,29 +2952,9 @@ checkdsize(scgp, dp, tsize, flags)
 	long	startsec = 0L;
 	long	endsec = 0L;
 	dstat_t	*dsp = dp->cdr_dstat;
-	int	profile;
 
 	scgp->silent++;
-	/*
-	 * cdr_next_wr_address() is only applicable for TAO / Packet
-	 * writemode. So Make a check if the writemode is not in SAO/DOA.
-	 * This is only needed in practice for the current DVD writing
-	 * functionality inside cdrecord. It prevents the following error
-	 * message when not the commandline option -dao is given :
-	 * 
-	 *	cdrecord: Success. read track info: scsi sendcmd: no error
-	 *	CDB:  52 02 00 00 00 FF 00 00 1C 00
-	 *	status: 0x2 (CHECK CONDITION)
-	 *	Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 24 00 00 C0
-	 *	Sense Key: 0x5 Illegal Request, Segment 0
-	 *	Sense Code: 0x24 Qual 0x00 (invalid field in cdb) Fru 0x0
-	 *	Sense flags: Blk 0 (not valid) error refers to command part,
-	 *		bit ptr 0 (not valid) field ptr 0
-	 *	resid: 28
-	 *	cmd finished after 0.209s timeout 240s
-	 */
-	if (wm_base(dp->cdr_dstat->ds_wrmode) != WM_SAO)
-		(*dp->cdr_next_wr_address)(scgp, (track_t *)0, &startsec);
+	(*dp->cdr_next_wr_address)(scgp, (track_t *)0, &startsec);
 	scgp->silent--;
 
 	/*
@@ -3210,23 +3052,13 @@ checkdsize(scgp, dp, tsize, flags)
 		/*
 		 * dsp->ds_maxblocks == 0 (disk capacity is unknown).
 		 */
-	        profile = dp->profile;
-	        if (endsec >= (4200000)) {
-		        errmsgno(EX_BAD,
-			"ERROR: Could not manage to find medium size, and more than 8.0 GB of data.\n");
-  		        goto toolarge;  
-		} else if (profile != 0x2B) { 
-		    if (endsec >= (2300000)) {
+		if (endsec >= (405000-300)) {			/*<90 min disk*/
 			errmsgno(EX_BAD,
-				"ERROR: Could not manage to find medium size, and more than 4.3 GB of data for a non dual layer disc.\n");
+				"Data will not fit on any disk.\n");
 			goto toolarge;
-		    } else if (endsec >= (405000-300)) {            /*<90 min disk or DVD*/
+		} else if (endsec >= (333000-150)) {		/* 74 min disk*/
 			errmsgno(EX_BAD,
-				"WARNING: Could not manage to find medium size, and more than 90 mins of data.\n");
-		    } else if (endsec >= (333000-150)) {		/* 74 min disk*/
-			errmsgno(EX_BAD,
-				"WARNING: Data may not fit on standard 74min disk.\n");
-		    }
+			"WARNING: Data may not fit on standard 74min disk.\n");
 		}
 	}
 	if (dsp->ds_maxblocks <= 0 || endsec <= dsp->ds_maxblocks)
@@ -3310,7 +3142,7 @@ raise_memlock()
 }
 
 char	*opts =
-"help,version,checkdrive,prcap,inq,scanbus,reset,abort,overburn,ignsize,useinfo,dev*,timeout#,driver*,driveropts*,setdropts,tsize&,padsize&,pregap&,defpregap&,speed#,load,lock,eject,dummy,msinfo,toc,atip,multi,fix,nofix,waiti,immed,debug#,d+,kdebug#,kd#,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,audio,data,mode2,xa,xa1,xa2,xamix,cdi,isosize,nopreemp,preemp,nocopy,copy,nopad,pad,swab,fs&,ts&,blank&,format,formattype&,pktsize#,packet,noclose,force,tao,dao,sao,raw,raw96r,raw96p,raw16,clone,scms,isrc*,mcn*,index*,cuefile*,textfile*,text,shorttrack,noshorttrack,gracetime#,minbuf#";
+"help,version,checkdrive,prcap,inq,scanbus,reset,abort,overburn,ignsize,useinfo,dev*,timeout#,driver*,driveropts*,setdropts,tsize&,padsize&,pregap&,defpregap&,speed#,load,lock,eject,dummy,msinfo,toc,atip,multi,fix,nofix,waiti,immed,debug#,d+,kdebug#,kd#,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,audio,data,mode2,xa,xa1,xa2,xamix,cdi,isosize,nopreemp,preemp,nocopy,copy,nopad,pad,swab,fs&,ts&,blank&,format,pktsize#,packet,noclose,force,tao,dao,sao,raw,raw96r,raw96p,raw16,clone,scms,isrc*,mcn*,index*,cuefile*,textfile*,text,shorttrack,noshorttrack,gracetime#,minbuf#";
 
 /*
  * Defines used to find whether a write mode has been specified.
@@ -3320,8 +3152,8 @@ char	*opts =
 #define	M_RAW		4	/* Raw mode */
 #define	M_PACKET	8	/* Packed mode */
 
-LOCAL int
-gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, formatp)
+LOCAL void
+gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp)
 	int	ac;
 	char	**av;
 	int	*tracksp;
@@ -3332,7 +3164,6 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 	int	*speedp;
 	long	*flagsp;
 	int	*blankp;
-	int	*formatp;
 {
 	int	cac;
 	char	* const*cav;
@@ -3345,7 +3176,6 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 	char	*textfile = NULL;
 	long	bltype = -1;
 	int	doformat = 0;
-	int	formattype = -1;
 	Llong	tracksize;
 	Llong	padsize;
 	long	pregapsize;
@@ -3461,7 +3291,7 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 				&nopreemp, &preemp,
 				&nocopy, &copy,
 				&nopad, &pad, &bswab, getnum, &fs, getnum, &bufsize,
-				getbltype, &bltype, &doformat, getformattype, &formattype, &pktsize,
+				getbltype, &bltype, &doformat, &pktsize,
 				&ispacket, &noclose, &force,
 				&tao, &dao, &dao, &raw, &raw96r, &raw96p, &raw16,
 				&clone,
@@ -3542,14 +3372,8 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 				*flagsp |= F_BLANK;
 				*blankp = bltype;
 			}
- 			if (doformat > 0) {
- 				*flagsp |= F_FORMAT;
- 				*formatp |= FULL_FORMAT;
- 			}
- 			if (formattype >= 0) {
- 				*flagsp |= F_FORMAT;
- 				*formatp |= formattype;
- 			}
+			if (doformat)
+				*flagsp |= F_FORMAT;
 			if (ispacket)
 				wm |= M_PACKET;
 			if (tao)
@@ -3994,14 +3818,14 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 	    ((strncmp(*devp, "HELP", 4) == 0) ||
 	    (strncmp(*devp, "help", 4) == 0))) {
 		*flagsp |= F_CHECKDRIVE; /* Set this for not calling mlockall() */
-		return ispacket;
+		return;
 	}
 	if (*flagsp & (F_LOAD|F_DLCK|F_SETDROPTS|F_MSINFO|F_TOC|F_PRATIP|F_FIX|F_VERSION|F_CHECKDRIVE|F_PRCAP|F_INQUIRY|F_SCANBUS|F_RESET|F_ABORT)) {
 		if (tracks != 0) {
 			errmsgno(EX_BAD, "No tracks allowed with this option\n");
 			susage(EX_BAD);
 		}
-		return ispacket;
+		return;
 	}
 	*tracksp = tracks;
 	if (*flagsp & F_SAO) {
@@ -4030,13 +3854,12 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 			susage(EX_BAD);
 		}
 		cuefilename = cuefile;
-		return ispacket;
+		return;
 	}
 	if (tracks == 0 && (*flagsp & (F_LOAD|F_DLCK|F_EJECT|F_BLANK|F_FORMAT)) == 0) {
 		errmsgno(EX_BAD, "No tracks specified. Need at least one.\n");
 		susage(EX_BAD);
 	}
-	return ispacket;
 }
 
 LOCAL void
@@ -4510,11 +4333,9 @@ rt_raisepri(pri)
 	/*
 	 * Verify that scheduling is available
 	 */
-	seteuid ( 0 );
 #ifdef	_SC_PRIORITY_SCHEDULING
 	if (sysconf(_SC_PRIORITY_SCHEDULING) == -1) {
 		errmsg("WARNING: RR-scheduler not available, disabling.\n");
-		seteuid ( getuid() );
 		return (-1);
 	}
 #endif
@@ -4522,10 +4343,8 @@ rt_raisepri(pri)
 	scp.sched_priority = sched_get_priority_max(SCHED_RR) - pri;
 	if (sched_setscheduler(0, SCHED_RR, &scp) < 0) {
 		errmsg("WARNING: Cannot set RR-scheduler\n");
-		seteuid ( getuid() );
 		return (-1);
 	}
-	seteuid ( getuid() );
 	return (0);
 }
 
@@ -4713,26 +4532,6 @@ getbltype(optstr, typep)
 	return (TRUE);
 }
 
-LOCAL int
-getformattype(optstr, typep)
-	char	*optstr;
-	long	*typep;
-{
-	if (streql(optstr, "full")) {
-		*typep = FULL_FORMAT;
-	} else if (streql(optstr, "background")) {
-		*typep = BACKGROUND_FORMAT;
-	} else if (streql(optstr, "force")) {
-		*typep = FORCE_FORMAT;
-	} else if (streql(optstr, "help")) {
-		formattypeusage(0);
-	} else {
-		error("Illegal blanking type '%s'.\n", optstr);
-		formattypeusage(EX_BAD);
-		return (-1);
-	}
-	return (TRUE);
-}
 LOCAL void
 print_drflags(dp)
 	cdr_t	*dp;
@@ -4900,7 +4699,6 @@ set_wrmode(dp, wmode, tflags)
 	int	tflags;
 {
 	dstat_t	*dsp = dp->cdr_dstat;
-	int	profile;
 
 	if ((tflags & TI_PACKET) != 0) {
 		dsp->ds_wrmode = WM_PACKET;
