@@ -6,5 +6,5 @@ SET(CDRECORD_SRCS audiosize.c auinfo.c cd_misc.c cdr_drv.c cdrecord.c cdtext.c c
 
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt ../libfile)
 
-ADD_EXECUTABLE (cdrecord ${CDRECORD_SRCS})
-TARGET_LINK_LIBRARIES(cdrecord  scg schily deflt file)
+ADD_EXECUTABLE (wodim ${CDRECORD_SRCS})
+TARGET_LINK_LIBRARIES(wodim scg schily deflt file)

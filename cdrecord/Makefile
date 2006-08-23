@@ -91,151 +91,151 @@ depend:
 	$(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 
 # Convenience name for target.
-cdrecord/CMakeFiles/cdrecord.dir/rule:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 cdrecord/CMakeFiles/cdrecord.dir/rule
+cdrecord/CMakeFiles/wodim.dir/rule:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f CMakeFiles/Makefile2 cdrecord/CMakeFiles/wodim.dir/rule
 
 # Convenience name for target.
-cdrecord: cdrecord/CMakeFiles/cdrecord.dir/rule
+wodim: cdrecord/CMakeFiles/wodim.dir/rule
 
 # fast build rule for target.
-cdrecord/fast:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/build
+wodim/fast:
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/build
 
 # target for object file
 audiosize.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/audiosize.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/audiosize.o
 
 # target for object file
 auinfo.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/auinfo.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/auinfo.o
 
 # target for object file
 cd_misc.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/cd_misc.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/cd_misc.o
 
 # target for object file
 cdr_drv.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/cdr_drv.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/cdr_drv.o
 
 # target for object file
 cdrecord.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/cdrecord.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/cdrecord.o
 
 # target for object file
 cdtext.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/cdtext.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/cdtext.o
 
 # target for object file
 clone.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/clone.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/clone.o
 
 # target for object file
 crc16.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/crc16.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/crc16.o
 
 # target for object file
 cue.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/cue.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/cue.o
 
 # target for object file
 defaults.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/defaults.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/defaults.o
 
 # target for object file
 diskid.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/diskid.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/diskid.o
 
 # target for object file
 drv_7501.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/drv_7501.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/drv_7501.o
 
 # target for object file
 drv_jvc.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/drv_jvc.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/drv_jvc.o
 
 # target for object file
 drv_mmc.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/drv_mmc.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/drv_mmc.o
 
 # target for object file
 drv_philips.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/drv_philips.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/drv_philips.o
 
 # target for object file
 drv_simul.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/drv_simul.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/drv_simul.o
 
 # target for object file
 drv_sony.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/drv_sony.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/drv_sony.o
 
 # target for object file
 fifo.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/fifo.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/fifo.o
 
 # target for object file
 getnum.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/getnum.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/getnum.o
 
 # target for object file
 isosize.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/isosize.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/isosize.o
 
 # target for object file
 misc.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/misc.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/misc.o
 
 # target for object file
 modes.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/modes.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/modes.o
 
 # target for object file
 movesect.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/movesect.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/movesect.o
 
 # target for object file
 scsi_cdr.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/scsi_cdr.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/scsi_cdr.o
 
 # target for object file
 scsi_cdr_mmc4.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/scsi_cdr_mmc4.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/scsi_cdr_mmc4.o
 
 # target for object file
 scsi_mmc.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/scsi_mmc.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/scsi_mmc.o
 
 # target for object file
 scsi_mmc4.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/scsi_mmc4.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/scsi_mmc4.o
 
 # target for object file
 scsi_scan.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/scsi_scan.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/scsi_scan.o
 
 # target for object file
 sector.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/sector.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/sector.o
 
 # target for object file
 subchan.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/subchan.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/subchan.o
 
 # target for object file
 wm_packet.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/wm_packet.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/wm_packet.o
 
 # target for object file
 wm_session.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/wm_session.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/wm_session.o
 
 # target for object file
 wm_track.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/wm_track.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/wm_track.o
 
 # target for object file
 xio.o:
-	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/cdrecord.dir/build.make cdrecord/CMakeFiles/cdrecord.dir/xio.o
+	cd /home/ed/debian/dev/talibus && $(MAKE) -f cdrecord/CMakeFiles/wodim.dir/build.make cdrecord/CMakeFiles/wodim.dir/xio.o
 
 # Help Target
 help::
@@ -243,10 +243,10 @@ help::
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
-	@echo "... cdrecord"
 	@echo "... edit_cache"
 	@echo "... install"
 	@echo "... rebuild_cache"
+	@echo "... wodim"
 	@echo "... audiosize.o"
 	@echo "... auinfo.o"
 	@echo "... cd_misc.o"
