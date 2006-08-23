@@ -3143,9 +3143,9 @@ if (check_session == 0)
 	}
 	if (goof) {
 #ifdef	USE_LIBSCHILY
-		comerrno(EX_BAD, "Joliet tree sort failed.\n");
+		comerrno(EX_BAD, "Joliet tree sort failed. The -joliet-long switch may help you.\n");
 #else
-		fprintf(stderr, "Joliet tree sort failed.\n");
+		fprintf(stderr, "Joliet tree sort failed. The -joliet-long switch may help you.\n");
 		exit(1);
 #endif
 	}

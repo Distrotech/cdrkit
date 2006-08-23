@@ -1,3 +1,10 @@
+icewm (2.01.01a08+X.06) UNRELEASED; urgency=low
+
+  * Applied 06_dautipps - better hints about ATAPI usage howto and
+    -joliet-long workaround
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:52:50 +0200
+
 icewm (2.01.01a08+X.05) UNRELEASED; urgency=low
 
   * Bits from 03_script.dpatch by Joerg Jaspert <joerg@debian.org> and Eduard

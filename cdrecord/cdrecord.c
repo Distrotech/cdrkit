@@ -491,6 +491,9 @@ main(ac, av)
 			errmsgno(EX_BAD, "For possible targets try 'cdrecord -scanbus'.%s\n",
 						geteuid() ? " Make sure you are root.":"");
 			errmsgno(EX_BAD, "For possible transport specifiers try 'cdrecord dev=help'.\n");
+			errmsgno(EX_BAD, "\n");
+			errmsgno(EX_BAD, "For more information, install the cdrtools-doc\n");
+			errmsgno(EX_BAD, "package and read /usr/share/doc/cdrecord/README.ATAPI.setup .\n");
 			exit(EX_BAD);
 	}
 #ifdef	HAVE_PRIV_SET
