@@ -8,5 +8,5 @@
  - some cdda2wav defined moved from the ueber-long command line to lconfig.h , make them configurable
  - is there really no distclean rule? Check that and maybe remove the cludge in GNUmakefile
  - find and eliminate remaining ".mk" ".mk*" files
- - add detection for libcap or Linux fs. KFreeBSD
+ - add better detection for various functions. Eg. correct checks for have_soundcard, have_mlockall and have_wait_h for cygwin.
 

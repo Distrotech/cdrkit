@@ -1,0 +1,32 @@
+talibus for Debian
+------------------
+
+Talibus is The Alternative Burning Suite, a collection of applications related
+to creation of optical disk media on unixoid plattforms. It is heavily based on
+the cdrtools package (partially developed and maintained by Joerg Schilling
+<schilling@fokus.gmd.de> before), however it is maintained independently now.
+
+The Debian packaging was initally done by Erik Andersen <andersee@debian.org>.
+
+If you want to report Bugs please read the following:
+
+Please use only the recent version of talibus for bug-reports, it
+may be found on: http://alioth.debian.org/projects/debburn/.
+
+Please always include the following information in your bug-report:
+
+# The version number of the program that caused the bug.
+# The command line that was used for the failing command.
+# The complete output (including error messages) from (use -v switches)
+# The OS name, release and hardware (processor)
+# Special conditions of your environment (libc vers. SCSI transport ...)
+# Sufficient information on the media used. This is at least the ATIP
+  data, a note to CD-R/CD-RW and information on the state and the case
+  history of this media.
+
+A message in the form: "Sorry, no CD/DVD-Recorder or unsupported
+CD/DVD-Recorder found" is inaceptable as error report because we cannot see any
+reason why this message has been printed. For this reason we would need the
+complete inquiry output to understand why this message was printed.
+
+Eduard Bloch <blade@debian.org>, Wed, 23 Aug 2006 21:47:08 +0200
