@@ -464,6 +464,20 @@ extern	char	*db2name[];	/* Convert data block type to name	  */
 #define	BLANK_SESSION	0x06	/* Erase the last session		  */
 
 /*
+ * Defines for formating DVD (custom values)
+ */
+#define	FULL_FORMAT       0x00    /* Interactive format  */
+#define	BACKGROUND_FORMAT 0x01    /* Background format   */
+#define	FORCE_FORMAT      0x02    /* Force reformat      */
+
+/*
+ * Defines for formating DVD (custom values)
+ */
+#define	FULL_FORMAT       0x00    /* Interactive format  */
+#define	BACKGROUND_FORMAT 0x01    /* Background format   */
+#define	FORCE_FORMAT      0x02    /* Force reformat      */
+
+/*
  * Useful definitions for audio tracks
  */
 #define	msample		(44100 * 2)		/* one 16bit audio sample */
@@ -576,6 +590,18 @@ typedef struct msf {
 #define	DSF_DVD_PLUS_R	0x0200	/* Disk is a DVD+R			*/
 #define	DSF_DVD_PLUS_RW	0x0400	/* Disk is a DVD+RW			*/
 #define	DSF_NEED_FORMAT	0x0800	/* Disk needs to be formatted		*/
+
+/*
+ * Definitions for disktype flags
+ */
+#define DT_CD           0x001  /*is a CD                                */
+#define DT_DVD          0x002  /*is a DVD                               */
+
+/*
+ * Definitions for disktype flags
+ */
+#define DT_CD           0x001  /*is a CD                                */
+#define DT_DVD          0x002  /*is a DVD                               */
 
 /*
  * Definitions for disk_status disk type
@@ -719,6 +745,9 @@ struct cdr_cmd {
 	int	(*cdr_opc)		__PR((SCSI *scgp, caddr_t bp, int cnt, int doopc));	/* Do OPC */
 	int	(*cdr_opt1)		__PR((SCSI *scgp, cdr_t *));			/* do early option processing*/
 	int	(*cdr_opt2)		__PR((SCSI *scgp, cdr_t *));			/* do late option processing */
+	int	(*cdr_layer_split)	__PR((SCSI *scgp, cdr_t *, long tsize));	/* calculate optimale split */
+	int	profile;
+	BOOL	is_dvd;
 };
 #endif
 
@@ -913,12 +942,16 @@ extern	int	read_track_info	__PR((SCSI *scgp, caddr_t, int type, int addr, int cn
 extern	int	read_rzone_info	__PR((SCSI *scgp, caddr_t bp, int cnt));
 extern	int	reserve_tr_rzone __PR((SCSI *scgp, long size));
 extern	int	read_dvd_structure __PR((SCSI *scgp, caddr_t bp, int cnt, int addr, int layer, int fmt));
+extern	int	send_dvd_structure __PR((SCSI *scgp, caddr_t bp, int cnt, int layer, int fmt));
 extern	int	send_opc	__PR((SCSI *scgp, caddr_t, int cnt, int doopc));
 
 #define	CL_TYPE_STOP_DEICE	0	/* Stop De-icing a DVD+RW Media */
 #define	CL_TYPE_TRACK		1	/* Close Track # */
 #define	CL_TYPE_SESSION		2	/* Close Session/Border / Stop backgrnd. format */
 #define	CL_TYPE_INTER_BORDER	3	/* Close intermediate Border */
+#define	CL_TYPE_OPEN_SESSION	4	/* Close the Open Session and Record an Extended lead-out */
+#define	CL_TYPE_FINALISE_MINRAD	5	/* Finalize the Disc with a Minimum Recorded Radius */
+#define	CL_TYPE_FINALISE	6	/* Finalize the disc */
 extern	int	scsi_close_tr_session __PR((SCSI *scgp, int type, int track, BOOL immed));
 extern	int	read_master_cue	__PR((SCSI *scgp, caddr_t bp, int sheet, int cnt));
 extern	int	send_cue_sheet	__PR((SCSI *scgp, caddr_t bp, long size));

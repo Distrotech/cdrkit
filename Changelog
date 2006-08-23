@@ -1,3 +1,10 @@
+icewm (2.01.01a08+X.15) UNRELEASED; urgency=low
+
+  * Applied cdrtools-2.01.01a05-ossdvd.patch.bz2 slightly adapted to work with
+    a08.
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 15:03:46 +0200
+
 icewm (2.01.01a08+X.14) UNRELEASED; urgency=low
 
   * 39_nonroot_skips_rezero_unit (don't try to run rezero_unit when not beeing
