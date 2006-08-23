@@ -383,7 +383,7 @@ scgo_open(scgp, device)
 				 * own belly button.
 				 */
 				js_fprintf((FILE *)scgp->errfile,
-				"Warning: Using badly designed ATAPI via /dev/hd* interface.\n");
+				"#########################################################################################\n#\n#  Warning: Using ATAPI via /dev/hd* interface. Use dev=ATA:X,Y,Z or dev=/dev/hdX\n\#\n#########################################################################################\n");
 			}
 		}
 	}

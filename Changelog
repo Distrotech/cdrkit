@@ -1,5 +1,12 @@
 icewm (2.01.01a08+X.15) UNRELEASED; urgency=low
 
+  * Removed cdrtools-2.01.01a05-ossdvd.patch.bz2 again (throw bogus error
+    messages in TAO mode), used 37_clean_dvdsup.dpatch (from Warly/Mandriva)
+    instead
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 15:03:46 +0200
+icewm (2.01.01a08+X.15) UNRELEASED; urgency=low
+
   * Applied cdrtools-2.01.01a05-ossdvd.patch.bz2 slightly adapted to work with
     a08.
 
