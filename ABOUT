@@ -1,22 +1,28 @@
 
-GENERAL NOTE: This package is heavily based on cdrtools (by
-Jörg Schilling, see below), however this person is not
-affiliated to the debburn development project creating this
-package. Jört Schilling is not responsible for problems
-caused by the use or distribution of this software. Please
-avoid bothering him with issues that are out of his control.
+GENERAL NOTE:
+
+This package is heavily based on cdrtools (by JÃ¶rg
+Schilling, see below), however this person is not affiliated
+to the debburn development project creating this package.
+
+JÃ¶rg Schilling is not responsible for problems caused by the
+use or distribution of this software. Please avoid bothering
+him with issues that are out of his control.
+
+Kudos to the original authors, especially to JÃ¶rg Schilling,
+god bless them and let us maintain our own fork.
 
 This package contains the following software:
 
 -	cdda2wav (an digital CD audio extraction program)
-	By Heiko Eißfeldt <heiko@hexco.de>
+	By Heiko EiÃŸfeldt <heiko@hexco.de>
 
 - wodim (a CD recording program). Originaly based on
-  cdrecord by Jörg Schilling <schilling@fokus.fhg.de> but
+  cdrecord by JÃ¶rg Schilling <schilling@fokus.fhg.de> but
   developed independently now.
 
 -	mkisofs (an ISO-9660 filesystem image creator)
-	By Eric Youngdale <eric@andante.org>, Jörg Schilling
+	By Eric Youngdale <eric@andante.org>, JÃ¶rg Schilling
   <schilling@fokus.fhg.de>, James Pearson
   <jcpearso@ge.ucl.ac.uk> and other contributors.
 
@@ -24,7 +30,7 @@ This package contains the following software:
 	Link to mkisofs
 
 -	several diagnostic programs for ISO-9660, originaly from
-  cdrtools (by Jört Schilling, 
+  cdrtools (by JÃ¶rt Schilling, 
 
 	-	devdump dump a device or file in hex
 
@@ -35,14 +41,14 @@ This package contains the following software:
 	-	isovfy verify an ISO-9660 image
 
 -	readcd (a stripped down version of scgskeleton)
-	By Jörg Schilling schilling@fokus.fhg.de and
+	By JÃ¶rg Schilling schilling@fokus.fhg.de and
 	may be used to read data CD's, to write to DVD-RAM
 	and to copy Solaris boot CD's
 
 -	scgcheck (a program to validate the correct behavior
-	By Jörg Schilling schilling@fokus.fhg.de and
+	By JÃ¶rg Schilling schilling@fokus.fhg.de and
 	of the low level libscg code and the SCSI transport
 	code of the underlying OS).
 
 -	libscg (a highly portable SCSI transport library)
-	By Jörg Schilling schilling@fokus.fhg.de
+	By JÃ¶rg Schilling schilling@fokus.fhg.de
