@@ -441,7 +441,7 @@ set_ostaunicode(dst, dst_size, src)
 	int i;
 	int expanded_length;
 
-	expanded_length = joliet_strlen(src);
+	expanded_length = joliet_strlen(src, in_nls);
 	if (expanded_length > 1024)
 		expanded_length = 1024;
 	if (expanded_length > (dst_size-1)*2)

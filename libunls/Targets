@@ -39,4 +39,5 @@ CFILES=	nls_base.c \
 	nls_cp10029.c \
 	nls_cp10079.c \
 	nls_cp10081.c \
-	nls_file.c
+	nls_file.c \
+	nls_iconv.c

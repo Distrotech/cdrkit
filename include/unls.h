@@ -29,6 +29,10 @@
 #include <prototyp.h>
 #endif
 
+#ifdef USE_ICONV
+#include <iconv.h>
+#endif
+
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -43,6 +47,9 @@ struct unls_table {
 	unsigned char 	**unls_uni2cs;		/* Unicode -> Charset	*/
 	struct unls_unicode *unls_cs2uni;	/* Charset -> Unicode	*/
 	struct unls_table *unls_next;		/* Next table		*/
+#ifdef USE_ICONV
+    iconv_t iconv_d;
+#endif
 };
 
 extern int		init_unls		__PR((void));
@@ -54,6 +61,10 @@ extern struct unls_table *load_unls		__PR((char *));
 extern void 		unload_unls		__PR((struct unls_table *));
 extern struct unls_table *load_unls_default	__PR((void));
 extern int		init_unls_file		__PR((char * name));
+
+#ifdef USE_ICONV
+extern int             init_nls_iconv          __PR((char * name));
+#endif
 
 #ifdef	__cplusplus
 }

@@ -90,6 +90,11 @@ static	char sccsid[] =
 #include <unls.h>	/* For UNICODE translation */
 #include <schily.h>
 
+#ifdef USE_ICONV
+#include <iconv.h>
+#include <errno.h>
+#endif
+
 static Uint	jpath_table_index;
 static struct directory **jpathlist;
 static int	next_jpath_index = 1;
@@ -103,13 +108,23 @@ static	char	ucs_codes[] = {
 };
 
 #ifdef	UDF
-	void	convert_to_unicode	__PR((unsigned char *buffer,
+#     ifdef USE_ICONV
+       size_t
+#     else
+       void
+#     endif
+		convert_to_unicode	__PR((unsigned char *buffer,
 		int size, char *source, struct unls_table *inls));
-	int	joliet_strlen		__PR((const char *string));
+	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
 #else
-static void	convert_to_unicode	__PR((unsigned char *buffer,
+#     ifdef USE_ICONV
+       static size_t
+#     else
+       static void
+#endif
+       convert_to_unicode	__PR((unsigned char *buffer,
 		int size, char *source, struct unls_table *inls));
-static int	joliet_strlen		__PR((const char *string));
+static int	joliet_strlen		__PR((const char *string, struct nls_table *inls));
 #endif
 static void	get_joliet_vol_desc	__PR((struct iso_primary_descriptor *jvol_desc));
 static void	assign_joliet_directory_addresses __PR((struct directory *node));
@@ -161,6 +176,20 @@ conv_charset(c, inls, onls)
 	if (inls == onls)
 		return (c);
 
+#ifdef USE_ICONV
+	if(inls->unls_cs2uni == NULL || onls->unls_uni2cs == NULL) {
+		/*
+		 * This shouldn't be reached
+		 */
+		static BOOL iconv_warned = FALSE;
+		if(!iconv_warned) {
+			error("Warning: Iconv conversion not supported in conv_charset.\n");
+			iconv_warned = TRUE;
+		}
+		return (c);
+	}
+#endif
+
 	/* get high and low UNICODE bytes */
 	uh = inls->unls_cs2uni[c].unls_high;
 	ul = inls->unls_cs2uni[c].unls_low;
@@ -186,10 +215,18 @@ conv_charset(c, inls, onls)
  *
  * Notes:
  */
-#ifdef	UDF
-void
+#ifdef USE_ICONV
+#	if	UDF
+size_t
+#	else
+static size_t
+#	endif
 #else
+#	if	UDF
+void
+#	else
 static void
+#	endif
 #endif
 convert_to_unicode(buffer, size, source, inls)
 	unsigned char	*buffer;
@@ -215,6 +252,51 @@ convert_to_unicode(buffer, size, source, inls)
 	} else {
 		tmpbuf = (Uchar *) source;
 	}
+
+#ifdef USE_ICONV
+	if (inls->iconv_d && inls->unls_cs2uni==NULL &&
+			inls->unls_uni2cs==NULL) {
+		char *inptr = tmpbuf;
+		char *outptr = buffer;
+		size_t inleft = strlen(tmpbuf);
+		size_t inlen = inleft;
+		size_t outleft = size;
+
+		iconv(inls->iconv_d, NULL, NULL, NULL, NULL);
+		if(iconv(inls->iconv_d, &inptr, &inleft, &outptr, &outleft) ==
+				(size_t)-1 && errno == EILSEQ) {
+			fprintf(stderr, "Incorrectly encoded string (%s) "
+				"encountered.\nPossibly creating an invalid "
+				"Joliet extension. Aborting.\n", source);
+			exit(1);
+		}
+
+	  	for (i = 0; (i + 1) < size - outleft; i += 2) {	/* Size may be odd!!!*/
+			if (buffer[i]=='\0') {
+				switch (buffer[i+1]) {   /* Invalid characters for Joliet */
+					case '*':
+					case '/':
+					case ':':
+					case ';':
+					case '?':
+					case '\\':
+						buffer[i+1]='_';
+					default:
+						if (buffer[i+1] == 0x7f ||
+							    buffer[i+1] < 0x20)
+							buffer[i+1]='_';
+				}
+			}
+		}
+		if (size & 1) {	/* beautification */
+	  		buffer[size - 1] = 0;
+		}
+		if (source == NULL) {
+			free(tmpbuf);
+		}
+		return (inlen - inleft);
+	}
+#endif
 
 	/*
 	 * Now start copying characters.  If the size was specified to be 0,
@@ -271,6 +353,9 @@ convert_to_unicode(buffer, size, source, inls)
 	if (source == NULL) {
 		free(tmpbuf);
 	}
+#ifdef USE_ICONV
+	return j;
+#endif
 }
 
 /*
@@ -287,12 +372,50 @@ int
 #else
 static int
 #endif
-joliet_strlen(string)
+joliet_strlen(string, inls)
 	const char	*string;
+	struct unls_table *inls;
 {
 	int		rtn;
 
+#ifdef USE_ICONV
+	if (inls->iconv_d && inls->unls_cs2uni==NULL &&
+			inls->unls_uni2cs==NULL) {
+		/*
+		 * we const-cast since we're sure iconv won't change
+		 * the string itself
+		 */
+		char *string_ptr = (char *)string;
+		size_t string_len = strlen(string);
+
+		/*
+		 * iconv has no way of finding out the required size
+		 * in the target
+		 */
+
+		char *tmp, *tmp_ptr;
+		/* we assume that the maximum length is 2 * jlen */
+		size_t tmp_len = (size_t)jlen * 2 + 1;
+		tmp = e_malloc(tmp_len);
+		tmp_ptr = tmp;
+
+		iconv(inls->iconv_d, NULL, NULL, NULL, NULL);
+		iconv(inls->iconv_d, &string_ptr, &string_len, &tmp_ptr,
+			&tmp_len);
+
+		/*
+		 * iconv advanced the tmp pointer with as many chars
+		 * as it has written to it, so we add up the delta
+		 */
+		rtn = (tmp_ptr - tmp);
+
+		free(tmp);
+	} else {
+		rtn = strlen(string) << 1;
+	}
+#else
 	rtn = strlen(string) << 1;
+#endif
 
 	/*
 	 * We do clamp the maximum length of a Joliet string to be the
@@ -480,16 +603,33 @@ joliet_compare_paths(r, l)
 	/* compare the Unicode names */
 
 	while (*rpnt && *lpnt) {
+#ifdef USE_ICONV
+		size_t ri, li;
+
+		ri = convert_to_unicode(rtmp, 2, rpnt, rinls);
+		li = convert_to_unicode(ltmp, 2, lpnt, linls);
+		rpnt += ri;
+		lpnt += li;
+		if(!ri && !li)
+			return (0);
+		else if(ri && !li)
+			return (1);
+		else if(!ri && li)
+			return (-1);
+#else
 		convert_to_unicode(rtmp, 2, rpnt, rinls);
 		convert_to_unicode(ltmp, 2, lpnt, linls);
+#endif
 
 		if (a_to_u_2_byte(rtmp) < a_to_u_2_byte(ltmp))
 			return (-1);
 		if (a_to_u_2_byte(rtmp) > a_to_u_2_byte(ltmp))
 			return (1);
 
+#ifndef USE_ICONV
 		rpnt++;
 		lpnt++;
+#endif
 	}
 
 	if (*rpnt)
@@ -574,10 +714,10 @@ generate_joliet_path_tables()
 		}
 #ifdef APPLE_HYB
 		if (USE_MAC_NAME(de))
-			namelen = joliet_strlen(de->hfs_ent->name);
+			namelen = joliet_strlen(de->hfs_ent->name, hfs_inls);
 		else
 #endif	/* APPLE_HYB */
-			namelen = joliet_strlen(de->name);
+			namelen = joliet_strlen(de->name, in_nls);
 
 		if (dpnt == root) {
 			jpath_table_l[jpath_table_index] = 1;
@@ -742,10 +882,10 @@ generate_one_joliet_directory(dpnt, outfile)
 #ifdef APPLE_HYB
 		/* Use the HFS name if it exists */
 		if (USE_MAC_NAME(s_entry1))
-			cvt_len = joliet_strlen(s_entry1->hfs_ent->name);
+			cvt_len = joliet_strlen(s_entry1->hfs_ent->name, hfs_inls);
 		else
 #endif	/* APPLE_HYB */
-			cvt_len = joliet_strlen(s_entry1->name);
+			cvt_len = joliet_strlen(s_entry1->name, in_nls);
 
 		/*
 		 * Fix the record length
@@ -891,12 +1031,12 @@ joliet_sort_n_finish(this_dir)
 				if (USE_MAC_NAME(s_entry))
 					/* Use the HFS name if it exists */
 					jpath_table_size +=
-						joliet_strlen(s_entry->hfs_ent->name) +
+						joliet_strlen(s_entry->hfs_ent->name, hfs_inls) +
 						offsetof(struct iso_path_table, name[0]);
 				else
 #endif	/* APPLE_HYB */
 					jpath_table_size +=
-						joliet_strlen(s_entry->name) +
+						joliet_strlen(s_entry->name, in_nls) +
 						offsetof(struct iso_path_table, name[0]);
 				if (jpath_table_size & 1) {
 					jpath_table_size++;
@@ -918,13 +1058,13 @@ joliet_sort_n_finish(this_dir)
 				/* Use the HFS name if it exists */
 				s_entry->jreclen =
 				offsetof(struct iso_directory_record, name[0])
-					+ joliet_strlen(s_entry->hfs_ent->name)
+					+ joliet_strlen(s_entry->hfs_ent->name, hfs_inls)
 					+ 1;
 			else
 #endif	/* APPLE_HYB */
 				s_entry->jreclen =
 				offsetof(struct iso_directory_record, name[0])
-					+ joliet_strlen(s_entry->name)
+					+ joliet_strlen(s_entry->name, in_nls)
 					+ 1;
 		} else {
 			/*
@@ -1072,6 +1212,9 @@ joliet_compare_dirs(rr, ll)
 #endif
 
 	while (*rpnt && *lpnt) {
+#ifdef USE_ICONV
+		size_t ri, li;
+#endif
 		if (*rpnt == ';' && *lpnt != ';')
 			return (-1);
 		if (*rpnt != ';' && *lpnt == ';')
@@ -1092,16 +1235,32 @@ joliet_compare_dirs(rr, ll)
 			return (1);
 #endif
 
+#ifdef USE_ICONV
+
+		ri = convert_to_unicode(rtmp, 2, rpnt, rinls);
+		li = convert_to_unicode(ltmp, 2, lpnt, linls);
+		rpnt += ri;
+		lpnt += li;
+		if(!ri && !li)
+			return (0);
+		else if(ri && !li)
+			return (1);
+		else if(!ri && li)
+			return (-1);
+#else
 		convert_to_unicode(rtmp, 2, rpnt, rinls);
 		convert_to_unicode(ltmp, 2, lpnt, linls);
+#endif
 
 		if (a_to_u_2_byte(rtmp) < a_to_u_2_byte(ltmp))
 			return (-1);
 		if (a_to_u_2_byte(rtmp) > a_to_u_2_byte(ltmp))
 			return (1);
 
+#ifndef USE_ICONV
 		rpnt++;
 		lpnt++;
+#endif
 	}
 	if (*rpnt)
 		return (1);

@@ -111,4 +111,8 @@ extern int init_unls_cp10079	__PR((void));
 extern int init_unls_cp10081	__PR((void));
 extern int init_unls_file	__PR((char * name));
 
+#ifdef USE_ICONV
+extern int init_nls_iconv     __PR((char * name));
+#endif
+
 #endif	/* _NLS_H */

@@ -8,6 +8,7 @@ include		$(SRCROOT)/$(RULESDIR)/rules.top
 INSDIR=		lib
 TARGETLIB=	unls
 #CPPOPTS +=	-Istdio
+CPPOPTS +=	-DUSE_ICONV
 include		Targets
 LIBS=		
 

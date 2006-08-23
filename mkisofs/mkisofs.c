@@ -59,10 +59,15 @@ static	char sccsid[] =
 #endif
 #endif	/* no_more_needed */
 
+#ifdef USE_ICONV
+#include <locale.h>
+#include <langinfo.h>
+#endif
+
 struct directory *root = NULL;
 int		path_ind;
 
-char	version_string[] = "mkisofs 2.01.01a05";
+char	version_string[] = "mkisofs 2.01.01a05-unofficial-iconv";
 
 char		*outfile;
 FILE		*discimage;
@@ -222,6 +227,10 @@ int	dvd_video = 0;
 #ifdef SORTING
 int	do_sort = 0;		/* sort file data */
 #endif /* SORTING */
+
+#ifdef USE_ICONV
+int   iconv_possible;
+#endif
 
 struct unls_table *in_nls = NULL;  /* input UNICODE conversion table */
 struct unls_table *out_nls = NULL; /* output UNICODE conversion table */
@@ -961,6 +970,7 @@ susage(excode)
 	fprintf(stderr, "Usage: %s [options] file...\n", program_name);
 	fprintf(stderr, "\nUse %s -help\n", program_name);
 	fprintf(stderr, "to get a list of valid options.\n");
+	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
 
 	exit(excode);
 }
@@ -1056,6 +1066,7 @@ usage(excode)
 			fprintf(stderr, "%s\n", ld_options[i].doc);
 		}
 	}
+	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
 	exit(excode);
 }
 
@@ -2339,6 +2350,37 @@ parse_input_files:
 	init_unls_file(hfs_ocharset);
 #endif /* APPLE_HYB */
 
+#ifdef USE_ICONV
+	iconv_possible = !(iso9660_level >= 4 || ((ocharset &&
+		strcmp(ocharset, icharset ? icharset : "")) &&
+		use_RockRidge) || apple_ext || apple_hyb);
+
+	setlocale(LC_CTYPE, "");
+	
+  	if (icharset == NULL && iconv_possible) {
+		char *charset = nl_langinfo(CODESET);
+		/* set to detected value but only if it is not pure US-ASCII */
+		if(strcmp(charset, "ANSI_X3.4-1968") != 0)
+			icharset = charset;
+
+		if(icharset && verbose > 0)
+			fprintf(stderr, "INFO:\t"
+			"%s character encoding detected by locale settings."
+			"\n\tAssuming %s encoded filenames on source "
+			"filesystem,\n"
+			"\tuse -input-charset to override.\n",
+			icharset, icharset);
+	}
+
+	if(iconv_possible) {
+		/*
+		 * don't care if initialization fails
+		 */
+		init_nls_iconv(icharset);
+		init_nls_iconv(ocharset);
+	}
+#endif
+
 	if (icharset == NULL) {
 #if	(defined(__CYGWIN32__) || defined(__CYGWIN__) || defined(__DJGPP__)) && !defined(IS_CYGWIN_1)
 		in_nls = load_unls("cp437");
@@ -2366,6 +2408,13 @@ parse_input_files:
 	if (in_nls == NULL || out_nls == NULL) { /* Unknown charset specified */
 		fprintf(stderr, "Unknown charset\nKnown charsets are:\n");
 		list_unls();	/* List all known charset names */
+#ifdef USE_ICONV
+        fprintf(stderr, "\nAdditional input charsets are available for Joliet through the iconv support."
+                "\nRun \"iconv -l\" to display them. Iconv charsets cannot be used with HFS, Apple"
+                "\nextension, ISO9660 version 2 or Rock Ridge.\n"
+                "\nIMPORTANT: never report problems with charset support directly"
+                "\nto Joerg Schilling! Report them to cdrtools@packages.debian.org first.\n");
+#endif
 		exit(1);
 	}
 

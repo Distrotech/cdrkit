@@ -1,3 +1,10 @@
+icewm (2.01.01a08+X.08) UNRELEASED; urgency=low
+
+  * mkisofs iconv support with log message adapted, added to CMake build
+    system as appropriate
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:57:10 +0200
+
 icewm (2.01.01a08+X.07) UNRELEASED; urgency=low
 
   * Applied patches: 07_noadvertising (strip adds for commercial
