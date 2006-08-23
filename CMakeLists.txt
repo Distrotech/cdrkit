@@ -1,5 +1,5 @@
 PROJECT (TALIBUS)
-SUBDIRS( cdda2wav cdrecord doc libdeflt libedc libfile libhfs_iso libparanoia librscg libscg libschily libunls mkisofs readcd rscsi scgcheck)
+SUBDIRS( cdda2wav cdrecord doc libdeflt libedc libfile libhfs_iso libparanoia librscg libscg libschily libunls mkisofs readcd rscsi)
 # does not work, whatever, moved to the distclean rule
 #SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES include/align.h ADDITIONAL_MAKE_CLEAN_FILES include/avoffset.h ADDITIONAL_MAKE_CLEAN_FILES inc/align_test ADDITIONAL_MAKE_CLEAN_FILES inc/avoffset)
 

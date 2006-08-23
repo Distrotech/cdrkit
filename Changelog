@@ -1,3 +1,14 @@
+icewm (2.01.01a08+Y) UNRELEASED; urgency=low
+
+  * Converted to use a CMake based filesystem. Generating relevant things with
+    its mechanisms instead of inc/*. Dropped BUILD, INSTALL files, rewrote
+    COMPILE fall to reflect the new build method.
+  * Added GNUmakefile which has rules to bootstrap the CMake build system and
+    then pass the actuall call to it. GNUmakefile is the prefered script used
+    by gmake. Users with other make implementations should run cmake manually.
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:35:23 +0200
+
 icewm (2.01.01a08+X) UNRELEASED; urgency=low
 
   * moved documentation around, READMEs/ directory contains a structure, moved
