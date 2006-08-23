@@ -1,4 +1,4 @@
 etc/default
-etc/cdrecord
-usr/share/bug/cdrecord
+#etc/cdrecord
+#usr/share/bug/cdrecord
 

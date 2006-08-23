@@ -5,109 +5,109 @@
 #
 # Source debconf library -- we have a Depends line
 # where we depend on it, so it had better be there...
-. /usr/share/debconf/confmodule
-db_version 2.0
-
-doit ()
-{
-   if ! "$@" ; then
-      echo ERROR: the following senstivie operation failed: "$@"
-      exit 1
-   fi
-}
-
-if [ "$1" = "configure" ] ; then
-   # check for upgrade from versions where the cdrecord variants did not
-   # exist and copy the permission set from dpkg-statoverride
-   if dpkg --compare-versions "$2" le "4:2.0+a16-1" ; then
-      if dpkg-statoverride --list /usr/bin/cdrecord 1>/dev/null 2>&1; then
-         statover="`dpkg-statoverride --list /usr/bin/cdrecord`" || true
-         # reset silly permissions from xcdroast 0.98+0alpha10-4
-         if [ "$statover" = "root cdrom 4710 /usr/bin/cdrecord" ] ; then
-            dpkg-statoverride --remove /usr/bin/cdrecord
-         else
-            for i in mmap shm ; do
-               dpkg-statoverride --update --add ${statover}.$i || true
-            done
-         fi
-      fi
-   fi
-
-   if dpkg-statoverride --list /usr/bin/cdrecord.mmap 1>/dev/null 2>&1; then
-      cdrmmapstatoverride=true
-   fi
-   if dpkg-statoverride --list /usr/bin/cdrecord.shm 1>/dev/null 2>&1; then
-      cdrshmstatoverride=true
-   fi
-   if dpkg-statoverride --list /usr/bin/cdrecord 1>/dev/null 2>&1; then
-      cdrstatoverride=true
-   fi
-
-   # if no variant has been overriden by local admin before...
-   if [ "$cdrshmstatoverride" != "true" ] || [ "$cdrmmapstatoverride" != "true" ] ; then
-      # check if we are installing suid or not
-      RET=false
-      db_get cdrecord/SUID_bit
-      if [ "$RET" = "true" ]; then
-         # if choosed to be SUID and not overriden before, set our permissions
-         if [ "$cdrshmstatoverride" != "true" ] ; then
-            chown root:cdrom /usr/bin/cdrecord.shm
-            chmod 4754 /usr/bin/cdrecord.shm
-         fi
-         #  same for mmap version
-         if [  "$cdrmmapstatoverride" != "true" ] ; then
-            chown root:cdrom /usr/bin/cdrecord.mmap
-            chmod 4754 /usr/bin/cdrecord.mmap
-         fi
-         # same for wrapper script, to work around broken frontends
-         if [  "$cdrstatoverride" != "true" ] ; then
-            chown root:cdrom /usr/bin/cdrecord
-            chmod 4754 /usr/bin/cdrecord
-         fi
-      else
-         # if not to be SUID and not overriden, reset permissions to defaults
-         if [ "$cdrshmstatoverride" != "true" ] ; then
-            chown root:root /usr/bin/cdrecord.shm
-            doit chmod 0755 /usr/bin/cdrecord.shm
-         fi
-         # same for the mmap version
-         if [  "$cdrmmapstatoverride" != "true" ] ; then
-            chown root:root /usr/bin/cdrecord.mmap
-            doit chmod 0755 /usr/bin/cdrecord.mmap
-         fi
-         # same for wrapper script, to work around broken frontends
-         if [  "$cdrstatoverride" != "true" ] ; then
-            chown root:root /usr/bin/cdrecord
-            doit chmod 0755 /usr/bin/cdrecord
-         fi
-      fi
-   fi
-
-   unset RET
-
-   # use /dev/MAKEDEV instead of /sbin/MAKEDEV because it is a sane
-   # wrapper on udev
-   #if [ ! -c /dev/.devfsd ] && [ ! -d /dev/scsi ] && [ -e /dev/MAKEDEV ] ; then
-   #  if [ ! -c /dev/sg0 ] && [ ! -b /dev/scd0 ]; then
-   #    printf "Generating missing device files needed by cdrecord" 1>&2
-   #    (cd /dev && /dev/MAKEDEV sg) || true
-   #    (cd /dev && /dev/MAKEDEV scd) || true
-   #    echo '.' 1>&2
-   #  fi
-   #fi
-
-   # if no nodes exist or don't have the right major numbers...
-   #[ "/dev/sg*" != '/dev/sg*' ] && MAJORS="`LANG=C LC_MESSAGES=C ls -l /dev/sg* | tr -s ' ' | cut -f5 -d' ' | grep -v 21, 2>/dev/null`"
-
-   #if [ -e /dev/MAKEDEV ] && [ -n "$MAJORS" ] ; then
-   #   db_get cdrecord/MAKEDEVNEW
-   #   if [ "$RET" = "true" ] ; then
-   #      (cd /dev && /dev/MAKEDEV sg) || true
-   #      (cd /dev && /dev/MAKEDEV scd) || true
-   #   fi
-   #fi
-fi
-
+###. /usr/share/debconf/confmodule
+###db_version 2.0
+###
+###doit ()
+###{
+###   if ! "$@" ; then
+###      echo ERROR: the following senstivie operation failed: "$@"
+###      exit 1
+###   fi
+###}
+###
+###if [ "$1" = "configure" ] ; then
+###   # check for upgrade from versions where the cdrecord variants did not
+###   # exist and copy the permission set from dpkg-statoverride
+###   if dpkg --compare-versions "$2" le "4:2.0+a16-1" ; then
+###      if dpkg-statoverride --list /usr/bin/cdrecord 1>/dev/null 2>&1; then
+###         statover="`dpkg-statoverride --list /usr/bin/cdrecord`" || true
+###         # reset silly permissions from xcdroast 0.98+0alpha10-4
+###         if [ "$statover" = "root cdrom 4710 /usr/bin/cdrecord" ] ; then
+###            dpkg-statoverride --remove /usr/bin/cdrecord
+###         else
+###            for i in mmap shm ; do
+###               dpkg-statoverride --update --add ${statover}.$i || true
+###            done
+###         fi
+###      fi
+###   fi
+###
+###   if dpkg-statoverride --list /usr/bin/cdrecord.mmap 1>/dev/null 2>&1; then
+###      cdrmmapstatoverride=true
+###   fi
+###   if dpkg-statoverride --list /usr/bin/cdrecord.shm 1>/dev/null 2>&1; then
+###      cdrshmstatoverride=true
+###   fi
+###   if dpkg-statoverride --list /usr/bin/cdrecord 1>/dev/null 2>&1; then
+###      cdrstatoverride=true
+###   fi
+###
+###   # if no variant has been overriden by local admin before...
+###   if [ "$cdrshmstatoverride" != "true" ] || [ "$cdrmmapstatoverride" != "true" ] ; then
+###      # check if we are installing suid or not
+###      RET=false
+###      db_get cdrecord/SUID_bit
+###      if [ "$RET" = "true" ]; then
+###         # if choosed to be SUID and not overriden before, set our permissions
+###         if [ "$cdrshmstatoverride" != "true" ] ; then
+###            chown root:cdrom /usr/bin/cdrecord.shm
+###            chmod 4754 /usr/bin/cdrecord.shm
+###         fi
+###         #  same for mmap version
+###         if [  "$cdrmmapstatoverride" != "true" ] ; then
+###            chown root:cdrom /usr/bin/cdrecord.mmap
+###            chmod 4754 /usr/bin/cdrecord.mmap
+###         fi
+###         # same for wrapper script, to work around broken frontends
+###         if [  "$cdrstatoverride" != "true" ] ; then
+###            chown root:cdrom /usr/bin/cdrecord
+###            chmod 4754 /usr/bin/cdrecord
+###         fi
+###      else
+###         # if not to be SUID and not overriden, reset permissions to defaults
+###         if [ "$cdrshmstatoverride" != "true" ] ; then
+###            chown root:root /usr/bin/cdrecord.shm
+###            doit chmod 0755 /usr/bin/cdrecord.shm
+###         fi
+###         # same for the mmap version
+###         if [  "$cdrmmapstatoverride" != "true" ] ; then
+###            chown root:root /usr/bin/cdrecord.mmap
+###            doit chmod 0755 /usr/bin/cdrecord.mmap
+###         fi
+###         # same for wrapper script, to work around broken frontends
+###         if [  "$cdrstatoverride" != "true" ] ; then
+###            chown root:root /usr/bin/cdrecord
+###            doit chmod 0755 /usr/bin/cdrecord
+###         fi
+###      fi
+###   fi
+###
+###   unset RET
+###
+###   # use /dev/MAKEDEV instead of /sbin/MAKEDEV because it is a sane
+###   # wrapper on udev
+###   #if [ ! -c /dev/.devfsd ] && [ ! -d /dev/scsi ] && [ -e /dev/MAKEDEV ] ; then
+###   #  if [ ! -c /dev/sg0 ] && [ ! -b /dev/scd0 ]; then
+###   #    printf "Generating missing device files needed by cdrecord" 1>&2
+###   #    (cd /dev && /dev/MAKEDEV sg) || true
+###   #    (cd /dev && /dev/MAKEDEV scd) || true
+###   #    echo '.' 1>&2
+###   #  fi
+###   #fi
+###
+###   # if no nodes exist or don't have the right major numbers...
+###   #[ "/dev/sg*" != '/dev/sg*' ] && MAJORS="`LANG=C LC_MESSAGES=C ls -l /dev/sg* | tr -s ' ' | cut -f5 -d' ' | grep -v 21, 2>/dev/null`"
+###
+###   #if [ -e /dev/MAKEDEV ] && [ -n "$MAJORS" ] ; then
+###   #   db_get cdrecord/MAKEDEVNEW
+###   #   if [ "$RET" = "true" ] ; then
+###   #      (cd /dev && /dev/MAKEDEV sg) || true
+###   #      (cd /dev && /dev/MAKEDEV scd) || true
+###   #   fi
+###   #fi
+###fi
+###
 
 #DEBHELPER#
 # vim:tabstop=3:expandtab:shiftwidth=3

@@ -13,13 +13,13 @@ else
 COPTX += -O2
 endif
 
-include /usr/share/dpatch/dpatch.make
+#include /usr/share/dpatch/dpatch.make
 
 i=$(shell pwd)/debian/tmp/usr
 b=$(shell pwd)/debian/build
 iso=mkisofs
 cdd=cdda2wav
-cdr=cdrecord
+cdr=wodim
 ziso_VERSION = $(shell cat zisofs_tools/version)
 source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
 
@@ -52,34 +52,27 @@ source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
 #	rm -f applydvd-stamp ; \
 #	fi
 
-build: patch $(dvdbuild) build-debstamp
-build-debstamp: cdrecord.mmap
+#build: patch $(dvdbuild) build-debstamp
+build: build-debstamp
+build-debstamp:
 	@if test -f ../talibus_$(source_VERSION).tar.gz ; then \
 		echo "You should not create native packages! Remove ../talibus_$(source_VERSION).tar.gz and copy upstream source to .orig.tar.gz" ; \
 		exit 1 ; \
 	fi
 	@echo "--- Compiling"
 	dh_testdir
-	cp /usr/share/misc/config.sub /usr/share/misc/config.guess conf
-	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > zisofs_tools/version.h
-
-	smake COPTX='-DUSE_USGSHM $(COPTX)' INS_BASE=/usr
+	cmake .
+	$(MAKE) all
+#	cp /usr/share/misc/config.sub /usr/share/misc/config.guess conf
+#	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > zisofs_tools/version.h
 	touch build-debstamp
-
-cdrecord.mmap:
-	@echo "--- Compiling cdrecord mmap variant"
-	dh_testdir
-	cp /usr/share/misc/config.sub /usr/share/misc/config.guess conf
-	smake COPTX='$(COPTX)' INS_BASE=/usr
-	mv `find cdrecord/OBJ/ -name cdrecord -type f` cdrecord.mmap
-	smake COPTX='$(COPTX)' INS_BASE=/usr clean
 
 clean: unpatch $(dvdclean)
 	@echo "--- Cleaning"
 	dh_testdir
 	dh_testroot
 	-rm -rf debian/patched
-	-rm -rf cdrecord-1.8.1_de-doc_0.1
+	-rm -rf wodim-1.8.1_de-doc_0.1
 	-./.clean
 	rm -f build-debstamp install-debstamp conf/config.sub conf/config.guess
 	dh_clean -k
@@ -92,7 +85,7 @@ clean: unpatch $(dvdclean)
 	-rm -rf `find . -name "\.libs"`
 	-rm -rf `find . -name "*\.rej"`
 	-rm -rf zisofs_tools
-	-rm -f cdrecord.mmap
+	-rm -f wodim.mmap
 
 install: build install-debstamp
 install-debstamp:
@@ -101,11 +94,8 @@ install-debstamp:
 	dh_testroot
 	dh_clean
 	rm -rf $(b)
-	smake install INS_BASE=$(i) MANDIR=share/man
-
-	mv $(i)/bin/cdrecord $(i)/bin/cdrecord.shm
-	install -m 755 cdrecord.mmap $(i)/bin/
-	install -m 755 debian/cdrecord.wrapper $(i)/bin/cdrecord
+	cmake -DCMAKE_INSTALL_PREFIX:PATH=$(i)
+	make install
 
 	install -m 755 cdda2wav/cdda2ogg $(i)/bin/
 	install -m 755 cdda2wav/cdda2mp3 $(i)/bin/
@@ -126,29 +116,29 @@ install-saved:
 binary-indep: build install talibus-doc
 
 binary-arch: build install \
-	cdrecord \
+	wodim \
 	mkisofs \
 	cdda2wav
 
 #
-# cdrecord
+# wodim
 #
 
-cdrecord: install
+wodim: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
-	cp -a cdrecord/cdrecord.dfl $(b)/$@/etc/default/cdrecord
+	cp -a cdrecord/wodim.dfl $(b)/$@/etc/default/wodim
 	cp -a rscsi/rscsi.dfl $(b)/$@/etc/default/rscsi
-	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/cdrecord/presubj
+#	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/wodim/presubj
 #ifeq ($(dvd),yes)
-	install -m755 debian/dvd.reportbug $(b)/$@/usr/share/bug/cdrecord/script
+#	install -m755 debian/dvd.reportbug $(b)/$@/usr/share/bug/wodim/script
 #endif
 	dh_link              -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@
 	dh_installchangelogs -p$@ -P$(b)/$@ Changelog
 	dh_install			 -p$@ -P$(b)/$@
 	dh_strip             -p$@ -P$(b)/$@
-	dh_installexamples   -p$@ -P$(b)/$@ rscsi/rscsi.dfl cdrecord/cdrecord.dfl
+	dh_installexamples   -p$@ -P$(b)/$@ rscsi/rscsi.dfl cdrecord/wodim.dfl
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
 	dh_installdeb        -p$@ -P$(b)/$@
@@ -170,7 +160,7 @@ mkisofs: install
 	dh_installdocs       -p$@ -P$(b)/$@
 	dh_installchangelogs -p$@ -P$(b)/$@ $(iso)/ChangeLog zisofs_tools/CHANGES
 	dh_install           -p$@ -P$(b)/$@
-	dh_installman        -p$@ -P$(b)/$@ debian/dirsplit.1
+	dh_installman        -p$@ -P$(b)/$@ 3rd-party/dirsplit-0.3.3/dirsplit.1
 	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/mkisofs/presubj
 	rm -f $(b)/$@/usr/bin/mkhybrid $(b)/$@/usr/share/man/man8/mkhybrid*
 	dh_link              -p$@ -P$(b)/$@
