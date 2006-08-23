@@ -1,4 +1,11 @@
-icewm (2.01.01a08+Y) UNRELEASED; urgency=low
+icewm (2.01.01a08+X.03) UNRELEASED; urgency=low
+
+  * adapted cdrecord/cdrecord.dfl for modern Linux system, based on bits from
+    02_cdrecord_default_conf.dpatch by Zack Cerza <zcerza@coe.neu.edu>
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:43:15 +0200
+
+icewm (2.01.01a08+X.02) UNRELEASED; urgency=low
 
   * Converted to use a CMake based filesystem. Generating relevant things with
     its mechanisms instead of inc/*. Dropped BUILD, INSTALL files, rewrote
@@ -9,7 +16,7 @@ icewm (2.01.01a08+Y) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:35:23 +0200
 
-icewm (2.01.01a08+X) UNRELEASED; urgency=low
+icewm (2.01.01a08+X.01) UNRELEASED; urgency=low
 
   * moved documentation around, READMEs/ directory contains a structure, moved
     mkisofs docs from the source directory to it
