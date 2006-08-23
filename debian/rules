@@ -55,10 +55,10 @@ source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
 #build: patch $(dvdbuild) build-debstamp
 build: build-debstamp
 build-debstamp:
-	@if test -f ../talibus_$(source_VERSION).tar.gz ; then \
-		echo "You should not create native packages! Remove ../talibus_$(source_VERSION).tar.gz and copy upstream source to .orig.tar.gz" ; \
-		exit 1 ; \
-	fi
+#	@if test -f ../talibus_$(source_VERSION).tar.gz ; then \
+#		echo "You should not create native packages! Remove ../talibus_$(source_VERSION).tar.gz and copy upstream source to .orig.tar.gz" ; \
+#		exit 1 ; \
+#	fi
 	@echo "--- Compiling"
 	dh_testdir
 	cmake .
