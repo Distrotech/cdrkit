@@ -94,6 +94,7 @@ install-debstamp:
 	dh_testroot
 	dh_clean
 	rm -rf $(b)
+	# Fixate the target dir in the cahced settings
 	cmake -DCMAKE_INSTALL_PREFIX:PATH=$(i)
 	make install
 
@@ -161,8 +162,8 @@ mkisofs: install
 	dh_installchangelogs -p$@ -P$(b)/$@ $(iso)/ChangeLog zisofs_tools/CHANGES
 	dh_install           -p$@ -P$(b)/$@
 	dh_installman        -p$@ -P$(b)/$@ 3rd-party/dirsplit-0.3.3/dirsplit.1
-	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/mkisofs/presubj
-	rm -f $(b)/$@/usr/bin/mkhybrid $(b)/$@/usr/share/man/man8/mkhybrid*
+#	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/mkisofs/presubj
+#	rm -f $(b)/$@/usr/bin/mkhybrid $(b)/$@/usr/share/man/man8/mkhybrid*
 	dh_link              -p$@ -P$(b)/$@
 	dh_strip             -p$@ -P$(b)/$@
 	dh_compress          -p$@ -P$(b)/$@
@@ -185,7 +186,7 @@ cdda2wav: install
 	dh_installdocs       -p$@ -P$(b)/$@ 
 	dh_installchangelogs -p$@ -P$(b)/$@ 
 	dh_install           -p$@ -P$(b)/$@
-	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/cdda2wav/presubj
+#	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/cdda2wav/presubj
 	dh_strip             -p$@ -P$(b)/$@
 	chmod 755 $(b)/$@/usr/bin/cdda2*
 	dh_link              -p$@ -P$(b)/$@
@@ -193,7 +194,7 @@ cdda2wav: install
 	chmod 755 $(b)/$@/usr/bin/pitchplay
 	dh_installman        -p$@ -P$(b)/$@
 	# cludge, integrate into the official BS later
-	dh_installman        -p$@ -P$(b)/$@ doc/readmult.man doc/pitchplay.man doc/list_audio_tracks.man
+#	dh_installman        -p$@ -P$(b)/$@ doc/readmult.man doc/pitchplay.man doc/list_audio_tracks.man
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
 	dh_installdeb        -p$@ -P$(b)/$@

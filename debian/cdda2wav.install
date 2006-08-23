@@ -5,3 +5,5 @@ debian/tmp/usr/bin/readmult
 debian/tmp/usr/bin/pitchplay
 debian/tmp/usr/share/man/man1/cdda2wav.1
 debian/tmp/usr/share/man/man1/cdda2ogg.1
+debian/tmp/usr/share/man/man1/readmult.1
+debian/tmp/usr/share/man/man1/pitchplay.1

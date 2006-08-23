@@ -1,4 +1,4 @@
-debian/tmp/usr/bin/cdrecord*
+debian/tmp/usr/bin/wodim
 debian/tmp/usr/bin/readcd
 debian/tmp/usr/sbin/rscsi
 debian/tmp/usr/share/man/man1/readcd.1
