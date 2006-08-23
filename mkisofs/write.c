@@ -2112,7 +2112,11 @@ vers_write(outfile)
 	}
 
 	cp[SECTOR_SIZE - 1] = '\0';
-	xfwrite(vers, SECTOR_SIZE, 1, outfile, 0, TRUE);
+ 	/* Per default: keep privacy. Blackout the version and arguments. */
+	if(getenv("ISODEBUG"))
+		xfwrite(vers, SECTOR_SIZE, 1, outfile, 0, TRUE);
+	else
+		xfwrite(calloc(SECTOR_SIZE, 1), SECTOR_SIZE, 1, outfile, 0, TRUE);
 	last_extent_written += 1;
 	return (0);
 }

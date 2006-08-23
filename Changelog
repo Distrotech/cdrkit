@@ -1,3 +1,10 @@
+icewm (2.01.01a08+X.07) UNRELEASED; urgency=low
+
+  * Applied patches: 07_noadvertising (strip adds for commercial
+    cdrecord-proDVD), 08_privacy (mkisofs revealing the exact command line)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:54:54 +0200
+
 icewm (2.01.01a08+X.06) UNRELEASED; urgency=low
 
   * Applied 06_dautipps - better hints about ATAPI usage howto and

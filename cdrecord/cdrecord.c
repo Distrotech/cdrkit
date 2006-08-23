@@ -695,9 +695,7 @@ if (lverbose > 2)
 			errmsgno(EX_BAD,
 			"This version of cdrecord does not include DVD-R/DVD-RW support code.\n");
 			errmsgno(EX_BAD,
-			"If you need DVD-R/DVD-RW support, ask the Author for cdrecord-ProDVD.\n");
-			errmsgno(EX_BAD,
-			"Free test versions and free keys for personal use are at ftp://ftp.berlios.de/pub/cdrecord/ProDVD/\n");
+ 			"See /usr/share/doc/cdrecord/README.DVD.Debian for details on DVD support.\n");
 		}
 		/*
 		 * Only exit if this is not the ProDVD test binary.
