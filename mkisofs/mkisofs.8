@@ -254,6 +254,120 @@ This does not happen when the
 cannot detect hardlinks anymore and the resulting CD image may be larger
 than expected.
 .TP
+.BI \-alpha\-boot " alpha_boot_image
+Specifies the path and filename of the boot image to be used when
+making an Alpha/SRM bootable CD. The pathname must be relative to the
+source path specified to
+.B mkisofs.
+.TP
+.BI \-hppa\-bootloader " hppa_bootloader_image
+Specifies the path and filename of the boot image to be used when
+making an HPPA bootable CD. The pathname must be relative to the
+source path specified to
+.B mkisofs.
+Other options are required, at the very least a kernel file name and
+the boot command line. See the
+.B HPPA NOTES
+section below for more information.
+.TP
+.BI \-hppa\-cmdline " hppa_boot_command_line
+Specifies the command line to be passed to the hppa boot loader when
+making a bootable CD. Separate the parameters with spaces or
+commas. More options must be passed to
+.B mkisofs,
+at the very least a kernel file name and the boot loader file
+name. See the
+.B HPPA NOTES
+section below for more information.
+.TP
+.BI \-hppa\-kernel\-32 " hppa_kernel_32
+Specifies the path and filename of the 32-bit kernel image to be used
+when making an HPPA bootable CD. The pathname must be relative to the
+source path specified to
+.B mkisofs.
+Other options are required, at the very least the boot loader file
+name and the boot command line. See the
+.B HPPA NOTES
+section below for more information.
+.TP
+.BI \-hppa\-kernel\-64 " hppa_kernel_64
+Specifies the path and filename of the 64-bit kernel image to be used
+when making an HPPA bootable CD. The pathname must be relative to the
+source path specified to
+.B mkisofs.
+Other options are required, at the very least the boot loader file
+name and the boot command line. See the
+.B HPPA NOTES
+section below for more information.
+.TP
+.BI \-hppa\-ramdisk " hppa_ramdisk_image
+Specifies the path and filename of the ramdisk image to be used when
+making an HPPA bootable CD. The pathname must be relative to the
+source path specified to
+.B mkisofs.
+This parameter is
+.B optional.
+Other options are required, at the very
+least a kernel file name and the boot command line. See the
+.B HPPA NOTES
+section below for more information.
+.TP
+.BI \-mips\-boot " mips_boot_image
+Specifies the path and filename of the boot image to be used when
+making an SGI/big-endian MIPS bootable CD. The pathname must be
+relative to the source path specified to
+.B mkisofs.
+This option may be specified several times to allow the addition of
+multiple boot images, up to a maximum of 15.
+.TP
+.BI \-mipsel\-boot " mipsel_boot_image
+Specifies the path and filename of the boot image to be used when
+making an DEC/little-endian MIPS bootable CD. The pathname must be
+relative to the source path specified to
+.B mkisofs.
+.TP
+.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+Specifies a comma separated list of boot images that are needed to make
+a bootable CD for sparc systems.
+Partition 0 is used for the ISO-9660 image, the first image file is mapped
+to partition 1.
+There may be empty fields in the comma separated list.
+The maximum number of possible partitions is 8 so it is impossible to specify
+more than 7 partition images.
+This option is required to make a bootable CD for Sun sparc systems.
+If the
+.B \-B
+or
+.B \-sparc\-boot
+option has been specified, the first sector of the resulting image will
+contain a Sun disk label. This disk label specifies slice 0 for the
+iso9660 image and slice 1 .\|.\|. slice 7 for the boot images that
+have been specified with this option. Byte offset 512 .\|.\|. 8191
+within each of the additional boot images must contain a primary boot
+that works for the appropriate sparc architecture. The rest of each
+of the images usually contains an ufs filesystem that is used primary
+kernel boot stage.
+.sp
+The implemented boot method is the boot method found with SunOS 4.x and SunOS 5.x.
+However, it does not depend on SunOS internals but only on properties of
+the Open Boot prom. For this reason, it should be usable for any OS
+that boots off a sparc system.
+.sp
+For more information also see the 
+.B NOTES
+section below.
+.sp
+If the special filename
+.B "..."
+is used, the actual and all following boot partitions are mapped to the
+previous partition. If
+.B mkisofs
+is called with
+.BI "\-G " image " \-B " ...
+all boot partitions are mapped to the partition that contains the iso9660
+filesystem image and the generic boot image that is located in the first
+16 sectors of the disk is used for all architectures.
+.TP
 .BI \-b " eltorito_boot_image
 Specifies the path and filename of the boot image to be used when making
 an "El Torito" bootable CD. The pathname must be relative to the source
@@ -2333,6 +2447,17 @@ Offset	Name	Size	Meaning
 The 32-bit checksum is the sum of all the 32-bit words in the boot
 file starting at byte offset 64.  All linear block addresses (LBAs)
 are given in CD sectors (normally 2048 bytes).
+.SH "HPPA NOTES"
+To make a bootable CD for HPPA, at the very least a boot loader file (
+.B \-hppa\-bootloader
+), a kernel image file (32- or 64-bit or both, depending on hardware)
+and a boot command line (
+.B \-hppa\-cmdline
+) must be specified. Some systems can boot either a 32- or a 64-bit
+kernel, and the choice of which one to use will be made by the
+firmware. Optionally, a ramdisk can be used for the root filesystem
+using
+.B \-hppa\-cmdline.
 .SH CONFIGURATION
 .B mkisofs
 looks for the

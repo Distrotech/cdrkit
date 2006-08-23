@@ -63,7 +63,7 @@ static char     sccsid[] =
 static struct cdrom_read_audio arg;
 #endif
 
-#if (defined(__FreeBSD__) && __FreeBSD_version >= 400014) || defined(__DragonFly__)
+#if (defined(__FreeBSD__) && __FreeBSD_version >= 400014) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
 static unsigned sector_size;
 #endif
 
@@ -76,7 +76,7 @@ static void EnableCdda_cooked (scgp, fAudioMode, uSectorsize)
 	int fAudioMode;
 	unsigned uSectorsize;
 {
-#if	(defined(__FreeBSD__) && __FreeBSD_version >= 400014) || defined(__DragonFly__)
+#if	(defined(__FreeBSD__) && __FreeBSD_version >= 400014) || defined(__DragonFly__)  || defined(__FreeBSD_kernel__)
 	if (scgp && scgp->verbose)
 		fprintf(stderr, "EnableCdda_cooked (CDRIOCSETBLOCKSIZE)...\n");
 
@@ -172,7 +172,7 @@ static unsigned ReadToc_cooked ( x )
 	    fprintf( stderr, "can't get TocEntry #%d lba (error %d).\n", i+1, err );
 	    exit( MEDIA_ERROR );
 	}
-#if defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
 	entry[i].cdte_addr.lba = be32_to_cpu(entry[i].cdte_addr.lba);
 #endif
     }
@@ -184,7 +184,7 @@ static unsigned ReadToc_cooked ( x )
 	fprintf( stderr, "can't get TocEntry LEADOUT lba (error %d).\n", err );
 	exit( MEDIA_ERROR );
     }
-#if defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
     entry[i].cdte_addr.lba = be32_to_cpu(entry[i].cdte_addr.lba);
 #endif
 
@@ -212,7 +212,7 @@ static void trash_cache_cooked(p, lSector, SectorBurstVal)
 {
       /* trash the cache */
 
-#if	defined(__FreeBSD__) || defined(__DragonFly__)
+#if	defined(__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
 #if	defined(__FreeBSD__) && __FreeBSD_version >= 501112
       pread(global.cooked_fd, (void *) &p[0], 3*CD_FRAMESIZE_RAW,
           find_an_off_sector(lSector, SectorBurstVal)*CD_FRAMESIZE_RAW);
@@ -287,7 +287,7 @@ static int ReadCdRom_cooked (x, p, lSector, SectorBurstVal )
   static int nothing_read = 1;
 
 /* read 2352 bytes audio data */
-#if	defined(__FreeBSD__) || defined(__DragonFly__)
+#if	defined(__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
 #if	defined(__FreeBSD__) && __FreeBSD_version >= 501112
     if (x && x->verbose) {
 	fprintf(stderr, "ReadCdRom_cooked (pread)...\n");
@@ -428,7 +428,7 @@ static subq_chnl *ReadSubQ_cooked ( x, sq_format, track )
 {
     struct cdrom_subchnl sub_ch;
 
-#if defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
     struct cd_sub_channel_info sub_ch_info;
 
     if (x && x->verbose) {
@@ -466,7 +466,7 @@ static subq_chnl *ReadSubQ_cooked ( x, sq_format, track )
           return NULL;
       }
       case GET_POSITIONDATA:
-#if defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined(__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
       sub_ch.data_format = CD_CURRENT_POSITION;
 #endif
 #if defined (__linux__)

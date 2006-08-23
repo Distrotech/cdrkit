@@ -1,3 +1,10 @@
+icewm (2.01.01a08+X.12) UNRELEASED; urgency=low
+
+  * 31_gnu-kfreebsd.dpatch with minor adoptions (needs testing!)
+  * 33_extra_arch_boot_support (extra arches, by Steve)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:29:32 +0200
+
 icewm (2.01.01a08+X.11) UNRELEASED; urgency=low
 
   * 26_author_locale (ASCII transliteration of Jörg in the standard credits

@@ -100,7 +100,11 @@ int	no_emul_boot = 0;
 int	load_addr = 0;
 int	load_size = 0;
 int	boot_info_table = 0;
+int	use_alphaboot = 0;
 int	use_sparcboot = 0;
+int	use_hppaboot = 0;
+int	use_mipsboot = 0;
+int	use_mipselboot = 0;
 int	use_sunx86boot = 0;
 int	use_genboot = 0;
 int	use_RockRidge = 0;
@@ -376,6 +380,18 @@ struct ld_option {
 #define	OPTION_ALLOW_LEADING_DOTS	1070
 #define	OPTION_PUBLISHER		1071
 
+#define	OPTION_BOOTALPHA		1200
+
+#define	OPTION_HPPA_CMDLINE 		1210
+#define	OPTION_HPPA_KERNEL_32   	1211
+#define	OPTION_HPPA_KERNEL_64   	1212
+#define	OPTION_HPPA_BOOTLOADER  	1213
+#define	OPTION_HPPA_RAMDISK     	1214
+
+#define	OPTION_BOOTMIPS     		1220
+
+#define	OPTION_BOOTMIPSEL   		1230
+
 #ifdef UDF
 #define	OPTION_UDF			1500
 #endif
@@ -601,6 +617,26 @@ LOCAL const struct ld_option ld_options[] =
 	'R', NULL, "Generate Rock Ridge directory information", ONE_DASH},
 	{{"sectype", required_argument, NULL, 's'},
 	's', "TYPE", "Set output sector type to e.g. data/xa1/raw", ONE_DASH},
+
+	{{"alpha-boot", required_argument, NULL, OPTION_BOOTALPHA},
+	'\0', "FILE", "Set alpha boot image name (relative to image root)", ONE_DASH},
+
+	{{"hppa-cmdline", required_argument, NULL, OPTION_HPPA_CMDLINE},
+	'\0', "CMDLINE", "Set hppa boot command line (relative to image root)", ONE_DASH},
+	{{"hppa-kernel-32", required_argument, NULL, OPTION_HPPA_KERNEL_32},
+	'\0', "FILE", "Set hppa 32-bit image name (relative to image root)", ONE_DASH},
+	{{"hppa-kernel-64", required_argument, NULL, OPTION_HPPA_KERNEL_64},
+	'\0', "FILE", "Set hppa 64-bit image name (relative to image root)", ONE_DASH},
+	{{"hppa-bootloader", required_argument, NULL, OPTION_HPPA_BOOTLOADER},
+	'\0', "FILE", "Set hppa boot loader file name (relative to image root)", ONE_DASH},
+	{{"hppa-ramdisk", required_argument, NULL, OPTION_HPPA_RAMDISK},
+	'\0', "FILE", "Set hppa ramdisk file name (relative to image root)", ONE_DASH},
+
+	{{"mips-boot", required_argument, NULL, OPTION_BOOTMIPS},
+	'\0', "FILE", "Set mips boot image name (relative to image root)", ONE_DASH},
+
+	{{"mipsel-boot", required_argument, NULL, OPTION_BOOTMIPSEL},
+	'\0', "FILE", "Set mipsel boot image name (relative to image root)", ONE_DASH},
 
 #ifdef SORTING
 	{ {"sort", required_argument, NULL, OPTION_SORT},
@@ -1397,6 +1433,41 @@ main(argc, argv)
 			 * Start new boot entry parameter list.
 			 */
 			new_boot_entry();
+			break;
+		case OPTION_BOOTALPHA:
+			use_alphaboot++;
+			/* list of pathnames of boot images */
+			add_boot_alpha_filename(optarg);
+			break;
+		case OPTION_HPPA_CMDLINE:
+			use_hppaboot++;
+			add_boot_hppa_cmdline(optarg);
+			break;
+		case OPTION_HPPA_KERNEL_32:
+			use_hppaboot++;
+			add_boot_hppa_kernel_32(optarg);
+			break;
+		case OPTION_HPPA_KERNEL_64:
+			use_hppaboot++;
+			add_boot_hppa_kernel_64(optarg);
+			break;
+		case OPTION_HPPA_BOOTLOADER:
+			use_hppaboot++;
+			add_boot_hppa_bootloader(optarg);
+			break;
+		case OPTION_HPPA_RAMDISK:
+			use_hppaboot++;
+			/* list of pathnames of boot images */
+			add_boot_hppa_ramdisk(optarg);
+			break;
+		case OPTION_BOOTMIPS:
+			use_mipsboot++;
+			/* list of pathnames of boot images */
+			add_boot_mips_filename(optarg);
+			break;
+		case OPTION_BOOTMIPSEL:
+			use_mipselboot++;
+			add_boot_mipsel_filename(optarg);
 			break;
 		case 'B':
 			if (use_sunx86boot)
@@ -3257,6 +3328,14 @@ if (check_session == 0)
 #endif	/* APPLE_HYB */
 	if (use_sparcboot || use_sunx86boot)
 		outputlist_insert(&sunlabel_desc);
+	if (use_alphaboot)
+		outputlist_insert(&alphaboot_desc);
+	if (use_hppaboot)
+		outputlist_insert(&hppaboot_desc);
+	if (use_mipsboot)
+		outputlist_insert(&mipsboot_desc);
+	if (use_mipselboot)
+		outputlist_insert(&mipselboot_desc);
 	if (use_genboot)
 		outputlist_insert(&genboot_desc);
 	outputlist_insert(&startpad_desc);

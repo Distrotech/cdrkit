@@ -58,7 +58,7 @@ All subcode only
 
 #   endif /* if 0 */
 #  else /* not Sun SVR4 */
-#   if defined __FreeBSD__ || defined __NetBSD__ || defined __OpenBSD__ || defined __DragonFly__
+#   if defined __FreeBSD__ || defined __NetBSD__ || defined __OpenBSD__ || defined __DragonFly__  || defined __OpenBSD__
 #    if (defined(__FreeBSD__) && __FreeBSD_version < 228000) || !defined(CDIOCREADAUDIO)
 	/*
 	 * FreeBSD_version >= 501112 has no CDIOCREADAUDIO but uses pread()

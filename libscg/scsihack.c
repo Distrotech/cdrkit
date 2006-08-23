@@ -128,7 +128,7 @@ EXPORT scg_ops_t scg_std_ops = {
 
 #endif	/* linux */
 
-#if	defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+#if	defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)  || defined(__FreeBSD_kernel__) 
 #define	SCSI_IMPL		/* We have a SCSI implementation for *BSD */
 
 #include "scsi-bsd.c"

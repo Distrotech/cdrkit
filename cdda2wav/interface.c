@@ -491,12 +491,12 @@ static void Check_interface_for_device( statstruct, pdev_name)
 #endif
        break;
 
-#if defined (__linux__) || defined (__FreeBSD__) || defined(__DragonFly__)
+#if defined (__linux__) || defined (__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
 #if defined (__linux__)
     case SCSI_CDROM_MAJOR:     /* scsi cd */
     default:			/* for example ATAPI cds */
 #else
-#if defined (__FreeBSD__) || defined(__DragonFly__)
+#if defined (__FreeBSD__) || defined(__DragonFly__) || defined(__FreeBSD_kernel__)
 #if __FreeBSD_version >= 600021
     case 0:	/* majors abandoned */
 	/* FALLTHROUGH */

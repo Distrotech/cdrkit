@@ -193,6 +193,10 @@ extern struct output_fragment genboot_desc;
 extern struct output_fragment strfile_desc;
 extern struct output_fragment strdir_desc;
 extern struct output_fragment strpath_desc;
+extern struct output_fragment alphaboot_desc;
+extern struct output_fragment hppaboot_desc;
+extern struct output_fragment mipsboot_desc;
+extern struct output_fragment mipselboot_desc;
 
 #ifdef APPLE_HYB
 extern struct output_fragment hfs_desc;
@@ -457,6 +461,22 @@ extern void scan_sparc_boot __PR((char *files));
 extern void scan_sunx86_boot __PR((char *files));
 extern int make_sun_label __PR((void));
 extern int make_sunx86_label __PR((void));
+
+/* boot-alpha.c */
+extern int add_boot_alpha_filename __PR((char *filename));
+
+/* boot-hppa.c */
+extern int add_boot_hppa_cmdline    __PR((char *cmdline));
+extern int add_boot_hppa_kernel_32  __PR((char *filename));
+extern int add_boot_hppa_kernel_64  __PR((char *filename));
+extern int add_boot_hppa_bootloader __PR((char *filename));
+extern int add_boot_hppa_ramdisk    __PR((char *filename));
+
+/* boot-mips.c */
+extern int add_boot_mips_filename __PR((char *filename));
+
+/* boot-mipsel.c */
+extern int add_boot_mipsel_filename  __PR((char *filename));
 
 /* write.c */
 extern int get_731 __PR((char *));
