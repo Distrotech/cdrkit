@@ -17,6 +17,7 @@ ADD_DEFINITIONS(-DUSE_LARGEFILES -DABORT_DEEP_ISO_ONLY -DAPPLE_HYB -DUDF -DDVD_V
 SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c getnum.c getopt.c getopt1.c hash.c ifo_read.c joliet.c mac_label.c match.c modes.c multi.c name.c rock.c scsi.c scsi_cdr.c stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
 	boot-mipsel.c endian.c  )
 
+#SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES COMPILE_FLAGS -O2)
 LINK_DIRECTORIES(../libhfs_iso ../libschily ../libscg ../libunls ../libdeflt ../libfile)
 
 LINK_LIBRARIES(schily hfs_iso deflt file scg unls z ${EXTRA_LIBICONV})
@@ -38,5 +39,5 @@ ADD_EXECUTABLE(isoinfo diag/isoinfo.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c
 ADD_EXECUTABLE(isovfy	diag/isovfy.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
 
 
-SET_TARGET_PROPERTIES(mkisofs devdump isodebug isodump isoinfo isovfy PROPERTIES COMPILE_FLAGS -O2 COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
+SET_TARGET_PROPERTIES(mkisofs devdump isodebug isodump isoinfo isovfy PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
 

@@ -4,5 +4,6 @@ INCLUDE_DIRECTORIES(../include ../cdrecord . )
 
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt ../libfile)
 ADD_EXECUTABLE (rscsi rscsi.c)
+SET_SOURCE_FILES_PROPERTIES(rscsi.c COMPILE_FLAGS -O2)
 TARGET_LINK_LIBRARIES(rscsi scg schily deflt file)
 SET_TARGET_PROPERTIES(rscsi PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
