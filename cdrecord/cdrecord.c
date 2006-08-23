@@ -359,7 +359,7 @@ main(ac, av)
 #	define	CLONE_TITLE	""
 #endif
 	if ((flags & F_MSINFO) == 0 || lverbose || flags & F_VERSION) {
-		printf("Cdrecord%s%s %s (%s-%s-%s) Copyright (C) 1995-2006 Jörg Schilling\n",
+		printf("Cdrecord%s%s %s (%s-%s-%s) Copyright (C) 1995-2006 Joerg Schilling\n",
 								PRODVD_TITLE,
 								CLONE_TITLE,
 								cdr_version,

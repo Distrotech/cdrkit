@@ -1,3 +1,12 @@
+icewm (2.01.01a08+X.11) UNRELEASED; urgency=low
+
+  * 26_author_locale (ASCII transliteration of Jörg in the standard credits
+    message)
+  * 28_cdda2wav_interface (Linux friendly cdda2wav behaviour)
+  * 30_doc_typo_fixes (various documentation/message fixes)
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:23:03 +0200
+
 icewm (2.01.01a08+X.10) UNRELEASED; urgency=low
 
   * Applied 23_o_excl (exclusive device opening)

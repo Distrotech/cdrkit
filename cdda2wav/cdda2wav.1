@@ -232,13 +232,13 @@ Frames (sectors) are indicated by a 'f' suffix (like 75f for 75 sectors).
 sets the time for whole track.
 .TP
 .B \-B " --bulk --alltracks"
-copies each track into a seperate file.
+copies each track into a separate file.
 .TP
 .B \-w " --wait"
 waits for signal, then start recording.
 .TP
 .B \-F " --find-extremes"
-finds extrem amplitudes in samples.
+finds extreme amplitudes in samples.
 .TP
 .B \-G " --find-mono"
 finds if input samples are in mono.
@@ -256,7 +256,7 @@ changes pitch of audio data copied to sound device.
 .B \-v " itemlist  --verbose-level"
 prints verbose information about the CD.
 .B Level
-is a list of comma seperated suboptions. Each suboption controls the type of information to be reported.
+is a list of comma separated suboptions. Each suboption controls the type of information to be reported.
 .TS H
 center box;
 r | l.
@@ -387,7 +387,7 @@ using an account that has been created with a remote SCSI server program as
 login shell.
 .SH "RETURN VALUES"
 .B cdda2wav
-uses the following exit codes to indicate various degress of success:
+uses the following exit codes to indicate various degrees of success:
 .TS H
 center box;
 r | l.
@@ -566,7 +566,7 @@ is the specific dividend). So for 22050 Hertz output we have to sum over
 higher frequencies. Standard sector size of an audio CD (ignoring
 additional information) is 2352 Bytes. In order to finish summing
 for an output sample at sector boundaries the rates above have to be
-choosen.  Arbitrary sampling rates in high quality would require some
+chosen.  Arbitrary sampling rates in high quality would require some
 interpolation scheme, which needs much more sophisticated programming.
 .IP "List a table of all sampling rates"
 .BI \-R
@@ -615,9 +615,9 @@ Differences can occur by the usage of the
 option (see below). Notice that recording time will be shortened, unless
 enough disk space exists. Recording can be aborted at anytime by
 pressing the break character (signal SIGQUIT).
-.IP "Record all tracks of a complete audio CD in seperate files"
+   .IP "Record all tracks of a complete audio CD in separate files"
 .B \-B
-copies each track into a seperate file. A base name can be given. File names
+copies each track into a separate file. A base name can be given. File names
 have an appended track number and an extension corresponding to the audio
 format. To record all audio tracks of a CD, use a sufficient high duration
 (i.e. -d99999).
@@ -640,7 +640,7 @@ reducing possibly file size.
 .B cdda2wav
 will watch for any signal in the output signal and switches on writing
 to file.
-.IP "Find extrem samples"
+.IP "Find extreme samples"
 .B \-F
 Turning on this option will display the most negative and the most positive
 sample value found during recording for both channels. This can be useful
@@ -690,7 +690,7 @@ Finally the easiest 'format',
 the cdr aka raw format. It is done per default in msb,lsb byte order to satisfy
 the order wanted by most cd writers. Since there is no header information in this
 format, the sample parameters can only be identified by playing the samples
-on a soundcard or similiar. The default filename extension is '.cdr' or '.raw'.
+on a soundcard or similar. The default filename extension is '.cdr' or '.raw'.
 .IP "Select cdrom drive reading speed"
 .B \-S " speed"
 allows to switch the cdrom drive to a certain level of speed in order to
@@ -775,7 +775,7 @@ retrieves and displays international standard recording codes
 .B "sectors"
 displays track start positions in absolute sector notation
 .sp
-To combine several requests just list the suboptions seperated with commas.
+To combine several requests just list the suboptions separated with commas.
 .IP "The table of contents"
 The display will show the table of contents with number of tracks and
 total time (displayed in

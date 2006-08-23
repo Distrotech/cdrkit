@@ -403,6 +403,32 @@ lost_toshibas:
     }
 }
 
+/* Check to see if the device will support SCSI generic commands. A
+ * better check than simply looking at the device name. Open the
+ * device, issue an inquiry. If they both succeed, there's a good
+ * chance that the device works... */
+#if defined(__linux__)
+static int check_linux_scsi_interface(pdev_name)
+    char *pdev_name;
+{
+    SCSI *dev = NULL;
+    unsigned char *p = NULL;
+	char	errstr[80];
+    
+	dev = scg_open(pdev_name, errstr, sizeof(errstr), 0, 0);
+    if (NULL == dev)
+        return EINVAL;
+    p = Inquiry(dev);
+    if (p)
+    {
+        scg_close(dev);
+        return 0;
+    }
+    scg_close(dev);
+    return EINVAL;
+}
+#endif
+
 /********************** General setup *******************************/
 
 /* As the name implies, interfaces and devices are checked.  We also
@@ -413,6 +439,7 @@ static void Check_interface_for_device( statstruct, pdev_name)
 	struct stat *statstruct;
 	char *pdev_name;
 {
+    int is_scsi = 1;
 
 #if !defined (STAT_MACROS_BROKEN) || (STAT_MACROS_BROKEN != 1)
     if (!S_ISCHR(statstruct->st_mode) &&
@@ -422,6 +449,24 @@ static void Check_interface_for_device( statstruct, pdev_name)
     }
 #endif
 
+/* Check what type of device we have */
+#if defined (__linux__)
+    if (check_linux_scsi_interface(pdev_name))
+        is_scsi = 0;
+    if (interface == GENERIC_SCSI && !is_scsi)
+    {
+        fprintf(stderr, "device %s does not support generic_scsi; falling back to cooked_ioctl instead\n", pdev_name);
+        interface = COOKED_IOCTL;
+    }
+    if ((interface == COOKED_IOCTL) &&
+        is_scsi &&
+        (SCSI_GENERIC_MAJOR == major(statstruct->st_rdev)))
+    {
+        fprintf(stderr, "device %s is generic_scsi NOT cooked_ioctl\n", pdev_name);
+        interface = GENERIC_SCSI;
+    }
+#else
+    
 #if defined (HAVE_ST_RDEV) && (HAVE_ST_RDEV == 1)
     switch (major(statstruct->st_rdev)) {
 #if defined (__linux__)
@@ -506,6 +551,7 @@ Setting interface to cooked_ioctl.\n", pdev_name);
 #endif
     }
 #endif
+#endif 
     if (global.overlap >= global.nsectors)
       global.overlap = global.nsectors-1;
 }
