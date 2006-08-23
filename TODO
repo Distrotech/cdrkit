@@ -1,8 +1,9 @@
 
+ - the align.h and avoffset.h generation in libschilly/CMakeLists.txt is a cludge and triggers unneccessary rebuilds too often. Solution: use CONFIGURE_FILE and replace @VAR@ with values detected with CHECK_TYPE_SIZE, then trough the Schilling's generator away
+ - Implement generation of cdda2wav/lconfig.h or just replace with cmake macros
  - add buildstuff for the doc directory? Any need?
  - Check the readmes. Drop obsolete instructions.
  - Same for the manpages. Adapt to current facts, rename cdrecord to... wodim?
- - Implement generation of cdda2wav/lconfig.h or just replace with cmake macros
  - some cdda2wav defined moved from the ueber-long command line to lconfig.h , make them configurable
  - is there really no distclean rule? Check that and maybe remove the cludge in GNUmakefile
  - find and eliminate remaining ".mk" ".mk*" files
