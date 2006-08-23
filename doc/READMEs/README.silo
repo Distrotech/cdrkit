@@ -1,0 +1,166 @@
+README.silo
+
+Update from 09 March 2003: Patch is now dropped, it doesnt apply
+anymore. Now you really should improve silo. :)
+
+You dont want un-bootable sparc cd's? Well, the patch for silo boot in
+mkisofs will be dropped in the not-so-far future. Please help to
+improve silo, so it can boot without the patch. (If you want to know
+the patch, you can get it with apt-get source cdrtools and a look into
+debian/patches).
+Patches should be directed to the silo Maintainer, Package silo. I will
+forward everything I may get.
+
+The following is a summary of a collection of mails to different
+locations I got forwarded from cdrtools Upstream.
+If you want to add something mail me. :)
+My annotations/translations are inside []
+
+You can also look at http://bugs.debian.org/153768 for some more text.
+
+/*--------------------------------------------------------------------------*/
+The implementation of SILO is a deaster. If SILO would have been 
+written in a way that I wrote to the SILO maintainer a long time ago, 
+there would be not problem with SILO. After I implemented a Sparc boot compliant
+boot method, SILO came out with a non Sparc comppliant code.
+
+A bootloader like SILO that forces the ISO-9660 filesystem to be patched with 
+blocknumbers is a bad idea. 
+
+The boot methods implemented in mkisofs allow any clever bootloader to be used 
+on sparc (together with mkisofs) without a need to add additional features into 
+mkisofs. 
+
+I already send several ideas hot to make SILO conform to the Sparc boot method
+_and_ make it less braindamaged. Here is the method that I now consider to be
+the best of three possible choices:
+
+Nearly _all_ Sun boot proms _need_ the method that is implemented in mkisofs
+with -sparc-boot. 
+ 
+	The only exception it the Sun-4/110 and friends (from 1987). 
+ 
+	All Machines starting from Sparcstation-I (from 1988) _need_ the way of 
+	booting that is implemented in mkisofs unless you like to force the user 
+	to type magic things to boot off a CD. 
+ 
+	Did you read README.sparcboot? It helps to understand the boot process  
+	and I know of at least two persons who have been able to create  
+	bootable CDs (using Sun's boot images) directly after reading the file.
+ 
+	Any Sun machine _knows_ about Sun disk labels and any machine  
+	starting from SS-I in addition knows which partition to boot from 
+	when typing 'boot cdrom'. For example: a SS-I will boot off 
+	partition #2 after you typed 'boot cdrom' 
+
+Mkisofs implements the method that is enforced by the Sun boot prom. 
+If you create the right boot code (as e.g. Sun did), you don't need to  
+manipulate the ISO-9660 image and thus don't need to change mkisofs. You only 
+need to assemble the boot blocks to the end of a ISO-9660 image and create a 
+Sun disk label that is related to the sizes of these boot blocks. Mkisofs 
+creates this Sun disk label when used with the -sparc-boot option using 
+portable code.
+
+The minimum requirement (which is enforced by the Sun boot prom) is that there  
+is a set of platform specific partitions _after_ the ISO-9660 image which all  
+start with the apropriate boot code at offset 512 relative to the start of  
+the apropriate partition. AFAIK, the amount loaded by the prom is 7680 Bytes. ** 
+
+From what I can tell, SILO does not meet these requirements. 
+
+**) This is an idea for a very simple method that does not need to fiddle with
+patched values and will meet the requirements by the sparc boot:
+ 
+	Simple make each of the platform specific partitions bigger than the  
+	minimum of 8192 bytes, but do _not_ add a ufs filesystem (as Sun does). 
+	Instead make the 7680 bytes only clever enough to load a certain amount 
+	of bytes directly following the primary boot block. This could be the 
+	current unmodified second stage from SILO. You only need to make the  
+	first stage of SILO sparc boot compliant. 
+ 
+	If both, the first and the second stage, of this new and sparc compliant 
+	SILO boot are witten in a way that does not depend on the machine type 
+	(I don't know whether this is possible), then all you need is to 
+	tell mkisofs to use the same file for all of the added boot partitions. 
+ 
+	If you read the mkisofs man page, you know that even for this case,
+	there is support in mkisofs. Mkisofs will make the last boot block the 
+	master for an overlapped boot sector if the next filename is '...' instead 
+	of a real file. This allows you to have only one boot block and a Sun disk  
+	label where slice 2 ... slice 7 refer to the same data as slice 1. 
+
+If the second stage fits in byte offset 8192 ... 32767, you could create a file 
+that looks: 
+ 
+	|< 512 byte nulls >|< 7680 byte first stage >|< 24576 second stage <| 
+ 
+and call "mkisofs -G bootcode -sparc-boot ... -R -o boot.iso ." 
+ 
+If the second boot is bigger, make a file that looks like: 
+ 
+	|< 512 byte nulls >|< 7680 byte first stage >|< any size second stage <| 
+ 
+and call "mkisofs  -sparc-boot bootcode,... -R -o boot.iso ." 
+ 
+This is more or less documented in the mkisofs man page. 
+
+/*--------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------*/
+Klar: Statt 50 Zeilen in einem anderen fehlerhaften Programm (Silo Boot Code) 
+zu ändern machen wir lieber ein heiles Programm kaputt :-(
+
+Wenn das daß ist was Debian als besonders stabil bezeichnet, dann ist Debian keinen
+Deut besser als M$.
+
+Du scheinst vollkommen zu ignorieren daß ich Dir schon _mehrfach_ mitgeteilt habe
+daß dieser "Silo Patch"
+
+        1) Unnötig ist: mkisofs kann seit langer Zeit Sparc Boot CDs bauen,
+                man nuß halt nur Boot code haben wo der Autor nicht nach 2 Stunden
+                die Lust verloren hat.
+
+        2) massive Bugs hat und nicht portabel ist
+                Code der auf Intel Prozessoren fehlerhaft läuft kommt nichtmal
+                rein wenn er nötig wdre.
+
+[Not so good translation from German to English from me]
+
+This "Silo Patch"
+ 1. is not needed: mkisofs is able to create bootable sparc CDs for a long
+    time, you only need working boot code.
+ 2. has massive bugs and is unportable.
+ 	Code that runs with errors isnt compiled even if it is needed.
+
+/*--------------------------------------------------------------------------*/
+>>      2) massive Bugs hat und nicht portabel ist
+>>              Code der auf Intel Prozessoren fehlerhaft läuft kommt nichtmal
+>>              rein wenn er nötig wäre.
+>
+>Komisch, warum hab ich dann bisher von keinen Problemen damit gehört?!
+Vielleicht weil der Code nicht wirklich benutzt wird?
+
+[Asked why there are no problems reported. Answer: Because Code is not
+really used.]
+
+Es ist schon merkwürdig, wenn man sieht das jemand anstatt eine einfache Lösung
+unter Verwendung des offiziellen Sparc Boot Codes in mkisofs zu verwenden
+einen 800 Zeilen Patch baut....
+Ich frage mich wie es sojemand überhaupt schaffen konnte es irgendwie zum Booten
+zu bekommen.
+
+[Simple Translation: He wonders why someone builds an 800lines patch
+instead of going the easy way using official sparc boot code in mkisofs
+and asks how he could get it too boot.]
+
+
+mkisofs -o cd.out ......
+blockno=`isoinfo -i cd.out -l | grep second.d | tr -d ']' | awk  '{print $10}'`
+silopatch $blockno cd.out
+
+'silopatch' ist ein Programm in dem sich die 20 wichtigen Zeilen aus den 
+inoffiziellen mkisofs Modifikationen  bei Debian befinden.
+
+[Thats a suggestion how it can be done without modifying
+mkisofs. silopatch is there a little programm that has the 20 important
+lines out of the silo patch that is used today]

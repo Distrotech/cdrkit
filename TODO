@@ -1,5 +1,5 @@
 
- - add README.ATAPI.setup, rewrotten by me (a07 branch) or from Ubuntu people
+ - create contact address? Mailinglist?
  - the align.h and avoffset.h generation in libschilly/CMakeLists.txt is a cludge and triggers unneccessary rebuilds too often. Solution: use CONFIGURE_FILE and replace @VAR@ with values detected with CHECK_TYPE_SIZE, then trough the Schilling's generator away
  - Implement generation of cdda2wav/lconfig.h or just replace with cmake macros
  - add buildstuff for the doc directory? Any need?

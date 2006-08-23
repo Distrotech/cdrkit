@@ -7,7 +7,6 @@ all: Makefile
 distclean: Makefile
 	$(MAKE) -f Makefile $(MAKE_FLAGS) clean
 	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
-	rm -f Makefile include/align.h include/avoffset.h inc/align_test inc/avoffset
 
 %: Makefile
 	$(MAKE) -f Makefile $(MAKE_FLAGS) $@
