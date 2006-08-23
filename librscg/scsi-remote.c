@@ -1099,6 +1099,13 @@ _rcmdrsh(ahost, inport, locuser, remuser, cmd, rsh)
 			_exit(EX_BAD);
 			/* NOTREACHED */
 		}
+		if (getuid() != geteuid() &&
+		    seteuid(pw->pw_uid) == -1) {
+			errmsg("seteuid(%lld) failed.\n",
+							(Llong)pw->pw_uid);
+			_exit(EX_BAD);
+			/* NOTREACHED */
+		}
 
 		/*
 		 * Fork again to completely detach from parent

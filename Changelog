@@ -1,3 +1,13 @@
+icewm (2.01.01a08+X.09) UNRELEASED; urgency=low
+
+  * Applied 18_donotopen_hda.dpatch - don't insist on opening unrelated IDE
+    devices
+  * 20_rsh-bugfix.dpatch - make really sure that the program does seteuid
+    right or exit
+  * 22_linux_rawio_capability.dpatch: get Linux capabilities as needed
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:11:47 +0200
+
 icewm (2.01.01a08+X.08) UNRELEASED; urgency=low
 
   * mkisofs iconv support with log message adapted, added to CMake build

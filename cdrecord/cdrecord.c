@@ -60,6 +60,9 @@ static	char sccsid[] =
 #include "defaults.h"
 #include "movesect.h"
 
+#ifdef __linux__
+#include <sys/capability.h> 	/* for rawio capability */
+#endif
 
 char	cdr_version[] = "2.01.01a06";
 
@@ -246,6 +249,10 @@ LOCAL	void	print_wrmodes	__PR((cdr_t *dp));
 LOCAL	BOOL	check_wrmode	__PR((cdr_t *dp, int wmode, int tflags));
 LOCAL	void	set_wrmode	__PR((cdr_t *dp, int wmode, int tflags));
 LOCAL	void	linuxcheck	__PR((void));
+
+#ifdef __linux__
+LOCAL int get_cap   __PR((cap_value_t cap_array));
+#endif
 
 struct exargs {
 	SCSI	*scgp;
@@ -535,6 +542,14 @@ main(ac, av)
 #endif
 			comerr("Panic cannot set back effective uid.\n");
 	}
+
+#ifdef __linux__
+	/* get the rawio capability */
+	if (get_cap(CAP_SYS_RAWIO))
+		perror("Error: Cannot gain SYS_RAWIO capability."
+			"Is cdrecord installed SUID root?\n");
+#endif
+
 	/*
 	 * WARNING: We now are no more able to do any privilleged operation
 	 * unless we have been called by root.
@@ -1061,6 +1076,12 @@ if (lverbose > 2)
 			if (setreuid(-1, getuid()) < 0)
 				comerr("Panic cannot set back effective uid.\n");
 		}
+#ifdef __linux__
+		if (get_cap(CAP_SYS_RAWIO))
+			perror("Error: Cannot gain SYS_RAWIO capability."
+				"Is cdrecord installed SUID root?\n");
+#endif
+
 #endif
 	}
 	if ((*dp->cdr_set_speed_dummy)(scgp, dp, &speed) < 0) {
@@ -4799,3 +4820,18 @@ linuxcheck()				/* For version 1.310 of cdrecord.c */
 #endif
 #endif
 }
+
+#ifdef __linux__
+LOCAL int
+get_cap(cap_array)
+	cap_value_t cap_array;
+{ 
+    	  int ret;
+	  cap_t capa;
+	  capa = cap_get_proc();
+	  cap_set_flag(capa, CAP_EFFECTIVE,  1, &cap_array, CAP_SET);
+	  ret = cap_set_proc(capa);
+	  cap_free(capa);
+	  return ret; 
+}
+#endif

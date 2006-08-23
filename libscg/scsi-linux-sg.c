@@ -417,7 +417,10 @@ scanopen:
 	 * look silly but there may be users that did boot from a SCSI hdd
 	 * and connected 4 CD/DVD writers to both IDE cables in the PC.
 	 */
-	if (use_ata) for (i = 0; i <= 25; i++) {
+/*	if (use_ata) for (i = 0; i <= 25; i++) { */
+/* If a device was specified with ATA:x,y,z try to open this device instead of
+ * uselessly opening all of them until we reach the specified one */
+	if (use_ata) for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
 					/* O_NONBLOCK is dangerous */
 		f = open(devname, O_RDWR | O_NONBLOCK);
