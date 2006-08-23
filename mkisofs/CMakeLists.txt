@@ -36,3 +36,7 @@ ADD_EXECUTABLE(isodebug	diag/isodebug.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc
 ADD_EXECUTABLE(isodump	diag/isodump.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c )
 ADD_EXECUTABLE(isoinfo diag/isoinfo.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
 ADD_EXECUTABLE(isovfy	diag/isovfy.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
+
+
+SET_TARGET_PROPERTIES(mkisofs devdump isodebug isodump isoinfo isovfy PROPERTIES SKIP_BUILD_RPATH TRUE)
+
