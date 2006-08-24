@@ -112,12 +112,12 @@ have proprietary command sets which vary from one manufacturer to
 another, and you need a specialized tool to actually burn the disk.
 .PP
 The
-.B cdrecord
+.B wodim
 utility is a utility capable of burning an actual disc.  The latest version
 of
-.B cdrecord
+.B wodim
 is available from
-ftp://ftp.berlios.de/pub/cdrecord
+http://alioth.debian.org/projects/debburn/
 .PP
 Also you should know that most cd writers are very particular about timing.
 Once you start to burn a disc, you cannot let their buffer empty before you
@@ -500,7 +500,7 @@ sector number of the first sector in the last session of the disk
 that should be appended to.
 The second number is the starting sector number of the new session.
 The expected pair of numbers may be retrieved by calling
-.B "cdrecord \-msinfo ...
+.B "wodim \-msinfo ...
 If the
 .B \-C
 option is used in conjunction with the
@@ -928,7 +928,7 @@ Specifies path to existing iso9660 image to be merged. The alternate form
 takes a SCSI device specifier that uses the same syntax as the
 .B "dev=
 parameter of
-.B cdrecord.
+.B wodim.
 The output of 
 .B mkisofs
 will be a new session which should get written to the end of the
@@ -1072,7 +1072,7 @@ If specified in both places, the command line version is used.
 Print estimated filesystem size in multiples of the sector size (2048 bytes)
 and exit. This option is needed for
 Disk At Once mode and with some CD-R drives when piping directly into
-.B cdrecord.
+.B wodim.
 In this case it is needed to know the size of the filesystem before the
 actual CD-creation is done.
 The option \-print\-size allows to get this size from a "dry-run" before
@@ -1093,7 +1093,7 @@ This may be done with:
 .sp
 .B "cdblocks=` mkisofs \-print\-size \-quiet .\|.\|. `
 .sp
-.B "mkisofs .\|.\|. | cdrecord .\|.\|. tsize=${cdblocks}s -"
+.B "mkisofs .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s -"
 .TP
 .B \-quiet
 This makes
@@ -1218,7 +1218,7 @@ option.
 Split the output image into several files of approximately 1 GB.
 This helps to create DVD sized iso9660 images on operating systems without
 large file support.
-Cdrecord will concatenate more than one file into a single track if writing
+Wodim will concatenate more than one file into a single track if writing
 to a DVD.
 To make
 .B \-split\-output
@@ -2674,7 +2674,7 @@ iso9660 filesystem with the tar archive call:
 .PP
 % star \-c . | mkisofs \-stream\-media\-size 333000 | \\
 .br
-cdrecord dev=b,t,l \-dao tsize=333000s \-
+wodim dev=b,t,l \-dao tsize=333000s \-
 .PP
 To create a HFS hybrid CD with the Joliet and Rock Ridge extensions of
 the source directory
@@ -2955,7 +2955,7 @@ should be able to create HFS hybrid images over 4Gb, although this has not
 been fully tested.
 
 .SH "SEE ALSO
-.BR cdrecord (1),
+.BR wodim (1),
 .BR mkzftree (8),
 .BR magic (5),
 .BR apple_driver (8).
