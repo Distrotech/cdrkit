@@ -15,7 +15,7 @@
 .if n .ds o oe
 .if n .ds u ue
 .if n .ds s sz
-.TH MKISOFS 8 "14 Feb 2003" "Version 2.01"
+.TH MKISOFS 8 "24 Aug 2006" "Version 2.01"
 .SH NAME
 mkisofs \- create an hybrid ISO9660/JOLIET/HFS filesystem with optional Rock Ridge attributes.
 .SH SYNOPSIS
@@ -2771,6 +2771,8 @@ libhfs code Copyright (C) 1996, 1997 Robert Leslie
 .br
 libfile code Copyright (C) Ian F. Darwin 1986, 1987, 1989, 1990, 1991,
 1992, 1994, 1995.
+.br
+libunls code Copyright (C) James Pearson 2000, (C) Joerg Schilling 2001-2006, (C) Jungshik Shin 2002
 .SH NOTES
 .PP
 .B Mkisofs
@@ -2954,7 +2956,7 @@ been fully tested.
 
 .SH "SEE ALSO
 .BR cdrecord (1),
-.BR mkzftree (1),
+.BR mkzftree (8),
 .BR magic (5),
 .BR apple_driver (8).
 
@@ -2962,22 +2964,16 @@ been fully tested.
 Some sort of gui interface.
 .SH AVAILABILITY
 .B m\&kisofs
-is available as part of the cdrecord package from
-ftp://ftp.berlios.de/pub/cdrecord/
-
+is available as part of the botox package from
+http://alioth.debian.org/projects/debburn/
 .B hfsutils
 from ftp://ftp.mars.org/pub/hfs
-
-.B mkzftree
-is available as part of the zisofs-tools package
-from ftp://ftp.kernel.org/pub/linux/utils/fs/zisofs/
 .SH "MAILING LISTS
 If you want to actively take part on the development of m\&kisofs,
-and/or mkhybrid,
-you may join the cdwriting mailing list by sending mail to:
+you may join the developers mailing list by following the instructions on:
 .nf
 .sp
-	other-cdwrite-request@lists.debian.org
+https://alioth.debian.org/mail/?group_id=31006	
 .sp
 .fi
 and include the word
@@ -2985,46 +2981,31 @@ and include the word
 in the body.
 The mail address of the list is:
 .nf
-.sp
-	cdwrite@lists.debian.org
+.B
+debburn-devel@lists.alioth.debian.org
 .fi
 
 .SH MAINTAINER
+.nf
+Joerg Jaspert
+Eduard Bloch
+Steve McIntyre
+.PP
+Previous maintainers:
+.PP
 .nf
 J\*org Schilling
 Seestr. 110
 D-13353 Berlin
 Germany
 .fi
-.SH "HFS MKHYBRID MAINTAINER
-James Pearson
 .PP
+.nf
+James Pearson (HFS MKHYBRID MAINTAINER)
 j.pearson@ge.ucl.ac.uk
 
 .PP
 If you have support questions, send them to:
 .PP
 .B
-cdrecord-support@berlios.de
-.br
-or
-.B
-other-cdwrite@lists.debian.org
-.PP
-If you definitly found a bug, send a mail to:
-.PP
-.B
-cdrecord-developers@berlios.de
-.br
-or
-.B
-schilling@fokus.fhg.de
-.PP
-To subscribe, use:
-.PP
-.B
-http://lists.berlios.de/mailman/listinfo/cdrecord-developers 
-.br
-or
-.B
-http://lists.berlios.de/mailman/listinfo/cdrecord-support 
+debburn-devel@lists.alioth.debian.org
