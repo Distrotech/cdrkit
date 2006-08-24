@@ -71,6 +71,16 @@ for SCSI based defices. Note that sg... devices represent the access trough the
 SCSI GENERIC interface and therefore the differ from the device files generaly
 used to open block devices (/dev/scd... or /dev/sr...).
 .PP
+In any case, the user running 
+.B wodim
+needs read and write access to the particular device file on a Linux system. It
+is recommended to be root or install the application as suid-root, because
+certain versions of Linux (kernel) limit the set of SCSI commands allowed for
+non-root users and also the verbosity of the returned status codes. Even if
+usage without root identity is possible in many cases, some device drivers
+still may fail, show unexplainable problems and generaly the problems are
+harder to debug. The risk for buffer-underruns is also increased.
+.PP
 The alternative and kind of "portable" way is using the 
 .IR devicetype:scsi/target/lun
 specification. However, the success of this method is not guaranteed since it
