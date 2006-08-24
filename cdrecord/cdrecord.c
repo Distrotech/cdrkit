@@ -606,26 +606,6 @@ if (lverbose > 2)
 		    track[i].flags |= TI_SAO;
 		}
 	}
-        is_mmc(scgp, &is_cdwr, &is_dvdwr);
-        if (ispacket) {
-	    if (is_dvdwr) {
-		track[0].flags |= TI_PACKET; 
-		/*XXX put here to only affect DVD writing, should be in gargs.
-		 * however if set in args for all mode, packet writing is then
-		 * broken for all disc as cdrecord assume that PACKET imply TAO which  
-		 * is not true at all???? */ 
-		track[0].flags &= ~TI_TAO;
-	    }
-	}
-	/* DVD does not support TAO */
-	if (dp->is_dvd) {
-	        printf("Using Session At Once (SAO) for DVD mode.\n");
-		dp->cdr_flags |= F_SAO;
-		for (i = 0; i <= MAX_TRACK; i++) {
-		    track[i].flags &= ~TI_TAO;
-		    track[i].flags |= TI_SAO;
-		}
-	}
 
 	if (!is_cddrive(scgp))
 		comerrno(EX_BAD, "Sorry, no CD/DVD-Drive found on this target.\n");
@@ -650,26 +630,6 @@ if (lverbose > 2)
 		fillbytes(dsp, sizeof (*dsp), '\0');
 		dsp->ds_minbuf = 0xFFFF;
 		dp->cdr_dstat = dsp;
-	}
-        is_mmc(scgp, &is_cdwr, &is_dvdwr);
-        if (ispacket) {
-	    if (is_dvdwr) {
-		track[0].flags |= TI_PACKET; 
-		/*XXX put here to only affect DVD writing, should be in gargs.
-		 * however if set in args for all mode, packet writing is then
-		 * broken for all disc as cdrecord assume that PACKET imply TAO which  
-		 * is not true at all???? */ 
-		track[0].flags &= ~TI_TAO;
-	    }
-	}
-	/* DVD does not support TAO */
-	if (dp->is_dvd) {
-	        printf("Using Session At Once (SAO) for DVD mode.\n");
-		dp->cdr_flags |= F_SAO;
-		for (i = 0; i <= MAX_TRACK; i++) {
-		    track[i].flags &= ~TI_TAO;
-		    track[i].flags |= TI_SAO;
-		}
 	}
 
 	if ((flags & (F_MSINFO|F_TOC|F_LOAD|F_DLCK|F_EJECT)) == 0 ||
