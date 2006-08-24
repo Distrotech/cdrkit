@@ -1,5 +1,5 @@
-talibus for Debian
-------------------
+botox for Debian
+----------------
 
 Talibus is The Alternative Burning Suite, a collection of applications related
 to creation of optical disk media on unixoid plattforms. It is heavily based on
@@ -10,7 +10,7 @@ The Debian packaging was initally done by Erik Andersen <andersee@debian.org>.
 
 If you want to report Bugs please read the following:
 
-Please use only the recent version of talibus for bug-reports, it
+Please use only the recent version of botox for bug-reports, it
 may be found on: http://alioth.debian.org/projects/debburn/.
 
 Please always include the following information in your bug-report:

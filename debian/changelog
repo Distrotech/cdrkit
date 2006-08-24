@@ -1,6 +1,6 @@
-talibus (4:2.99-0.0.1) UNRELEASED; urgency=low
+botox (4:2.99-0.0.1) UNRELEASED; urgency=low
 
-  * The Big Fork to an independent probject called talibus for now
+  * The Big Fork to an independent probject called botox for now
     + renamed binaries, renamed packages
     + using the last "clearly stated" GPLed versions of files from
       cdrtools-2.01.01a08 (closes: #353403)

@@ -1,10 +1,10 @@
 #!/usr/bin/make -f
 #
-# debian/rules file for talibus.  GPL2
+# debian/rules file for botox.  GPL2
 # Original from Erik Andersen <andersee@debian.org>
 #
 
-PACKAGE = talibus
+PACKAGE = botox
 
 COPTX = -g
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
@@ -55,8 +55,8 @@ source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
 #build: patch $(dvdbuild) build-debstamp
 build: build-debstamp
 build-debstamp:
-#	@if test -f ../talibus_$(source_VERSION).tar.gz ; then \
-#		echo "You should not create native packages! Remove ../talibus_$(source_VERSION).tar.gz and copy upstream source to .orig.tar.gz" ; \
+#	@if test -f ../botox_$(source_VERSION).tar.gz ; then \
+#		echo "You should not create native packages! Remove ../botox_$(source_VERSION).tar.gz and copy upstream source to .orig.tar.gz" ; \
 #		exit 1 ; \
 #	fi
 	@echo "--- Compiling"
@@ -114,7 +114,7 @@ install-saved:
 	rm -rf $(b)
 	touch install-debstamp
 
-binary-indep: build install talibus-doc
+binary-indep: build install botox-doc
 
 binary-arch: build install \
 	wodim \
@@ -206,10 +206,10 @@ cdda2wav: install
 
 
 #
-# talibus-doc
+# botox-doc
 #
 
-talibus-doc: install
+botox-doc: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@

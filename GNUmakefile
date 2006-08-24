@@ -1,5 +1,5 @@
 
-DISTNAME=talibus-$(shell cat VERSION)
+DISTNAME=botox-$(shell cat VERSION)
 
 all: Makefile
 	$(MAKE) -f Makefile $(MAKE_FLAGS) all
