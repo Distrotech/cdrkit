@@ -1,9 +1,15 @@
 botox (4:2.99-0.0.1) UNRELEASED; urgency=low
 
-  * The Big Fork to an independent probject called botox for now
-    + renamed binaries, renamed packages
-    + using the last "clearly stated" GPLed versions of files from
-      cdrtools-2.01.01a08 (closes: #353403)
+  * The Big Fork to an independent project called botox
+    + using the last clearly stated GPLed versions of files from
+      cdrtools-2.01.01a08 (closes: #353403, 372486
+    + we play the upstream role now, using our patches and we like them
+      (closes: #361450)
+    + renamed relevant works to avoid claims of "potential defamation" or
+      "damage of reputation", to not create a legal battlefield for
+      Joerg Schilling and "his understanding of how GPL applies in German
+      Urheberrecht" which was used to legitimate the "special clauses" in the
+      source (closes: #350738)
     + custom CMake based build system (closes: #350739 and hopefully
       closes: #350254, reopen if not)
   * dropped the shm build (kernel 2.2 is history)
@@ -11,17 +17,19 @@ botox (4:2.99-0.0.1) UNRELEASED; urgency=low
   * disabled debconf messages and device-creating code for now, things like
     hints to create device files are essential for only few people and can
     equaly be presented as program messages. Why shall we still MAKEDEV them?
-    It's not like we have switched to kernel 2.0.1 yesterday (closes: #342085)
+    It's not like we have switched to kernel 2.0.1 yesterday 
+    (closes: #342085, 188827)
   * updated of dpatches to the new version and integrated them
   * disabled 35_ultra_speed_media.dpatch, adopted by upstream
   * sync with 4:2.01+01a01-4ubuntu4:
     + merged README.ATAPI.setup with README.ATAPI.setup.ubuntu. Kernel 2.6 part
       now in the beginning and reflecting the reality (dev=/dev/drive syntax,
-      no SUID requirement, closes: #304230)
+      no SUID requirement, closes: #304230, 377736)
     + 02_cdrecord_default_conf.dpatch: changed /dev/cdrom to /dev/cdrw which
       is more likely to match the correct device on udev using systems
   * 36_ATA_scanbus_ignore_locked.dpatch to ignore busy devices (eg. hda
-    harddisk) while scanning with dev=ATA (closes: #310689, #309250, #317793)
+    harddisk) while scanning with dev=ATA 
+    (closes: #310689, #309250, #317793, 360295, 
   * Included 37_clean_dvdsup.dpatch (closes: #312062) based on
     cdrtools-2.01.01a04-dvd.patch.bz2 from
     http://people.mandriva.com/~warly/files/cdrtools/ with few updates to work
@@ -37,14 +45,16 @@ botox (4:2.99-0.0.1) UNRELEASED; urgency=low
     defaults), thanks to Fabian Pietsch (closes: #283794, #344443)
   * added additional script manpages from Oleksandr Moskalenko (closes: #295438)
   * changed -speed to speed= in cdrecord.1 for consistency (closes: #344214)
-  * 39_nonroot_skips_rezero_unit.dpatch - don't run rezero_unit() as root
+  * Anti-Root-Requirements:
+    + 39_nonroot_skips_rezero_unit.dpatch - don't run rezero_unit() as root
     which is a) most likely not needed (even admited in the comment) and b)
-    causes the whole scsi transport system to terminate (let's see whether it
-    solves #335253)
-  * 40_stop_setuid_games.dpatch - another workaround for problems introduced
+    causes the whole scsi transport system to terminate
+    + 40_stop_setuid_games.dpatch - another workaround for problems introduced
     in a03 - looks like Linux kernel does reject an application trying to
     change the UID between ioctls
+    (closes: #335253, 374685, 330506, 329308, 374345, 377421
   * Ubuntu's 40_fix_bad_spelling.dpatch integrated (typo in wodim.dfl)
+  * increased hash size in mkisofs/hash.c (closes: #327270)
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 

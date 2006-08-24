@@ -226,7 +226,7 @@ struct name_hash {
 	struct directory_entry *de;
 };
 
-#define	NR_NAME_HASH	128
+#define	NR_NAME_HASH	(256*1024)
 
 static struct name_hash *name_hash_table[NR_NAME_HASH] = {0, };
 
