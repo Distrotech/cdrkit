@@ -9,10 +9,15 @@ CMake framework. Therefore, the requirements to build this package are:
  - make (an implmentation supported by cmake, eg. GNU make, smake, ...)
  - working GCC compiler environment
 
+COMPILATION:
+
+Run: make
+
 INSTALLATION:
 
-Run:
+Run: make install
 
-make
+To force a custom target directory, use something like:
 
-(you can append DESTDIR=/alternative/root to install into a different location)
+cmake -DCMAKE_INSTALL_PREFIX=/opt/freeware build
+make install
