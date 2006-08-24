@@ -1,3 +1,8 @@
+/*
+ *
+ * Modified by Eduard Bloch in 08/2006
+ */
+
 /* @(#)cdrecord.c	1.310 06/02/09 Copyright 1995-2006 J. Schilling */
 #ifndef lint
 static	char sccsid[] =
@@ -307,116 +312,6 @@ main(ac, av)
 	if ((track[0].tracktype & TOC_MASK) == TOC_MASK)
 		comerrno(EX_BAD, "Internal error: Bad TOC type.\n");
 
-	/*
-	 * Begin restricted code for quality assurance.
-	 *
-	 * Warning: you are not allowed to modify or to remove the
-	 * Copyright and version printing code below!
-	 * See also GPL § 2 subclause c)
-	 *
-	 * If you modify cdrecord you need to include additional version
-	 * printing code that:
-	 *
-	 *	-	Clearly states that the current version is an
-	 *		inofficial (modified) version and thus may have bugs
-	 *		that are not present in the original.
-	 *
-	 *	-	Print your support e-mail address and tell people that
-	 *		you will do complete support for this version of
-	 *		cdrecord.
-	 *
-	 *		Or clearly state that there is absolutely no support
-	 *		for the modified version you did create.
-	 *
-	 *	-	Tell the users not to ask the original author for
-	 *		help.
-	 *
-	 * This limitation definitely also applies when you use any other
-	 * cdrecord release together with libscg-0.6 or later, or when you
-	 * use any amount of code from cdrecord-1.11a17 or later.
-	 * In fact, it applies to any version of cdrecord, see also
-	 * GPL Preamble, subsection 6.
-	 *
-	 * I am sorry for the inconvenience but I am forced to do this because
-	 * some people create inofficial branches. These branches create
-	 * problems but the initiators do not give support and thus cause the
-	 * development of the official cdrecord versions to slow down because
-	 * I am loaded with unneeded work.
-	 *
-	 * Please note that this is a memorandum on how I interpret the GPL.
-	 * If you use/modify/redistribute cdrecord, you need to accept it
-	 * this way.
-	 *
-	 *
-	 * The above statement is void if there has been neither a new version
-	 * of cdrecord nor a new version of star from the original author
-	 * within more then a year.
-	 */
-
-	/*
-	 * Ugly, but Linux incude files violate POSIX and #define printf
-	 * so we cannot include the #ifdef inside the printf() arg list.
-	 */
-#	define	PRODVD_TITLE	""
-#ifdef	CLONE_WRITE
-#	define	CLONE_TITLE	"-Clone"
-#else
-#	define	CLONE_TITLE	""
-#endif
-	if ((flags & F_MSINFO) == 0 || lverbose || flags & F_VERSION) {
-		printf("Cdrecord%s%s %s (%s-%s-%s) Copyright (C) 1995-2006 Joerg Schilling\n",
-								PRODVD_TITLE,
-								CLONE_TITLE,
-								cdr_version,
-								HOST_CPU, HOST_VENDOR, HOST_OS);
-
-#if	defined(SOURCE_MODIFIED) || !defined(IS_SCHILY_XCONFIG)
-#define	INSERT_YOUR_EMAIL_ADDRESS_HERE
-#define	NO_SUPPORT	0
-		printf("NOTE: this version of cdrecord is an inofficial (modified) release of cdrecord\n");
-		printf("      and thus may have bugs that are not present in the original version.\n");
-#if	NO_SUPPORT
-		printf("      The author of the modifications decided not to provide a support e-mail\n");
-		printf("      address so there is absolutely no support for this version.\n");
-#else
-		printf("      Please send bug reports and support requests to <%s>.\n", INSERT_YOUR_EMAIL_ADDRESS_HERE);
-#endif
-		printf("      The original author should not be bothered with problems of this version.\n");
-		printf("\n");
-#endif
-#if	!defined(IS_SCHILY_XCONFIG)
-		printf("\nWarning: This version of cdrecord has not been configured via the standard\n");
-		printf("autoconfiguration method of the Schily makefile system. There is a high risk\n");
-		printf("that the code is not configured correctly and for this reason will not behave\n");
-		printf("as expected.\n");
-#endif
-	}
-
-	/*
-	 * I am sorry that even for version 1.310 of cdrecord.c, I am forced to do
-	 * things like this, but defective versions of cdrecord cause a lot of
-	 * work load to me and it seems to be impossible to otherwise convince
-	 * SuSE to cooperate.
-	 * As people contact me and bother me with the related problems,
-	 * it is obvious that SuSE is violating subsection 6 in the preamble of
-	 * the GPL.
-	 *
-	 * The reason for including a test against SuSE's private
-	 * distribution environment is only that SuSE violates the GPL for
-	 * a long time and seems not to be willing to follow the requirements
-	 * imposed by the GPL. If SuSE starts to ship non defective versions
-	 * of cdrecord or informs their customers that they would need to
-	 * compile cdrecord themselves in order to get a working cdrecord,
-	 * they should contact me for a permission to change the related test.
-	 *
-	 * Note that although the SuSE test is effective only for SuSE, the
-	 * intention to have non bastardized versions out is not limited
-	 * to SuSE. It is bad to see that in special in the "Linux" business,
-	 * companies prefer a model with many proprietary differing programs
-	 * instead of cooperating with the program authors.
-	 */
-	linuxcheck();	/* For version 1.310 of cdrecord.c */
-
 	if (flags & F_VERSION)
 		exit(0);
 	/*
@@ -557,9 +452,10 @@ main(ac, av)
 
 #ifdef __linux__
 	/* get the rawio capability */
-	if (get_cap(CAP_SYS_RAWIO))
-		perror("Error: Cannot gain SYS_RAWIO capability."
-			"Is cdrecord installed SUID root?\n");
+	if (get_cap(CAP_SYS_RAWIO)) {
+		perror("Warning: Cannot gain SYS_RAWIO capability");
+    fprintf(stderr, "Possible reason: wodim not installed SUID root.\n");
+  }
 #endif
 
 	/*
