@@ -85,6 +85,7 @@ clean: unpatch $(dvdclean)
 	-rm -rf `find . -name "*\.rej"`
 	-rm -rf zisofs_tools
 	-rm -f wodim.mmap
+	-rm -rf build
 
 install: build install-debstamp
 install-debstamp:
