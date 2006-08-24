@@ -1,22 +1,19 @@
 talibus (4:2.99-0.0.1) UNRELEASED; urgency=low
 
-  * The Big Fork to talibus
+  * The Big Fork to an independent probject called talibus for now
     + renamed binaries, renamed packages
+    + using the last "clearly stated" GPLed versions of files from
+      cdrtools-2.01.01a08 (closes: #353403)
+    + custom CMake based build system (closes: #350739 and hopefully
+      closes: #350254, reopen if not)
   * dropped the shm build (kernel 2.2 is history)
-  * dropped dpatch, we are the upstream now
-  * dropped debconf templates. Such things shall better be program messages.
-
- -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
-
-cdrtools (4:2.01+01a07gpl-0.4) UNRELEASED; urgency=low
-
-  * New upstream version (closes: #353403)
-    + available on http://people.debian.org/~blade/cdrtools-2.01.01a07gpl.tgz,
-      rebuilt with build system files from version 2.01.01a01 which have been
-      licensed under the GPL (closes: #350739). Also including symlinks for
-      the armeb port (closes: #350254)
-    + update of dpatches to the new version
-    + disabled 35_ultra_speed_media.dpatch, adopted by upstream
+  * dropped dpatch integration, we are the upstream now
+  * disabled debconf messages and device-creating code for now, things like
+    hints to create device files are essential for only few people and can
+    equaly be presented as program messages. Why shall we still MAKEDEV them?
+    It's not like we have switched to kernel 2.0.1 yesterday (closes: #342085)
+  * updated of dpatches to the new version and integrated them
+  * disabled 35_ultra_speed_media.dpatch, adopted by upstream
   * sync with 4:2.01+01a01-4ubuntu4:
     + merged README.ATAPI.setup with README.ATAPI.setup.ubuntu. Kernel 2.6 part
       now in the beginning and reflecting the reality (dev=/dev/drive syntax,
@@ -26,22 +23,19 @@ cdrtools (4:2.01+01a07gpl-0.4) UNRELEASED; urgency=low
   * 36_ATA_scanbus_ignore_locked.dpatch to ignore busy devices (eg. hda
     harddisk) while scanning with dev=ATA (closes: #310689, #309250, #317793)
   * Included 37_clean_dvdsup.dpatch (closes: #312062) based on
-    http://people.mandriva.com/~warly/files/cdrtools/archives/cdrtools-2.01.01a04-dvd.patch.bz2
-    with few updates to work with a07. Also implements a fallback to ATA: bus
-    in the -scanbus operation (closes: #310689, #278894). This patch can be used
-    instead of the old 07_*. Enabled permanently, disabled the "cheatcode
-    processing" in debian/rules. Also eliminates some useability problems
-    that have been pushed to our users (closes: #325766, #271114, #312062).
-    Rewrote README.DVD.Debian to reflect the change and also mentioned the
-    dvd+rw-tools packages (closes: #353176).
+    cdrtools-2.01.01a04-dvd.patch.bz2 from
+    http://people.mandriva.com/~warly/files/cdrtools/ with few updates to work
+    with a08. Also implements a fallback to ATA: bus in the -scanbus operation
+    (closes: #310689, #278894). This patch is used instead of the old 07_....
+    Enabled permanently, disabled the "cheatcode processing" in debian/rules.
+    Also eliminates some useability problems that have been pushed to our
+    users (closes: #325766, #271114, #312062, #353176).
   * Updated dirsplit to version 0.3.3
   * updated Build-Dependencies for kfreebsd (closes: #355291)
   * de.po updates, summarized by Jens Seidel (closes: #326138, #314139)
   * cdda2wav wrapper script fixes (actually fixes of our dpatch setting better
     defaults), thanks to Fabian Pietsch (closes: #283794, #344443)
   * added additional script manpages from Oleksandr Moskalenko (closes: #295438)
-  * disabled all device-creating code. Why shall we still MAKEDEV them?
-    Workarounds for some Hamm/Slink bugs? Hello? (closes: #342085)
   * changed -speed to speed= in cdrecord.1 for consistency (closes: #344214)
   * 39_nonroot_skips_rezero_unit.dpatch - don't run rezero_unit() as root
     which is a) most likely not needed (even admited in the comment) and b)
@@ -51,7 +45,7 @@ cdrtools (4:2.01+01a07gpl-0.4) UNRELEASED; urgency=low
     in a03 - looks like Linux kernel does reject an application trying to
     change the UID between ioctls
 
- -- Eduard Bloch <blade@debian.org>  Sun, 19 Mar 2006 22:02:57 +0100
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 
 cdrtools (4:2.01+01a03-5) unstable; urgency=low
 
