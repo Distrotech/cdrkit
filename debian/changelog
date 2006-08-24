@@ -44,6 +44,7 @@ talibus (4:2.99-0.0.1) UNRELEASED; urgency=low
   * 40_stop_setuid_games.dpatch - another workaround for problems introduced
     in a03 - looks like Linux kernel does reject an application trying to
     change the UID between ioctls
+  * Ubuntu's 40_fix_bad_spelling.dpatch integrated (typo in wodim.dfl)
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 

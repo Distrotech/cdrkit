@@ -32,7 +32,7 @@ CDR_DEVICE=cdrom
 # the characters ',', ':', '/' and '@'
 #
 # Unless you have a good reason, use speed == -1 and let
-# cdrecord use it's intercal drive specific defaults.
+# cdrecord use it's internal drive specific defaults.
 #
 # drive name	device	speed	fifosize driveropts
 #
