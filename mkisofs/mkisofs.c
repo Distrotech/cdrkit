@@ -1,3 +1,10 @@
+/*
+ *
+ * Patched version with stuff from the Debian's cdrtools.
+ * Replaced various warnings/disclaimers with more simple ones.
+ *
+ * Eduard Bloch <blade@debian.org>
+*/
 /* @(#)mkisofs.c	1.167 06/01/30 joerg */
 #ifndef lint
 static	char sccsid[] =
@@ -1030,11 +1037,14 @@ susage(excode)
 {
 	const char	*program_name = "mkisofs";
 
-	fprintf(stderr, "Usage: %s [options] file...\n", program_name);
+	fprintf(stderr, "Usage: %s [options] -o file directory ...\n", program_name);
 	fprintf(stderr, "\nUse %s -help\n", program_name);
 	fprintf(stderr, "to get a list of valid options.\n");
-	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
-	fprintf(stderr, "This version of mkisofs includes the unofficial JTE patch\nfrom http://www.einval.com/~steve/software/JTE/\nReport errors to steve-jte@einval.com\n");
+	fprintf(stderr, 
+        "\nNOTE: This version of mkisofs differs from the one published by Eric Youngdale\n"
+        "and from the one included in cdrtools (by Joerg Schilling).\n"
+        "It provides a different set of features and has different problems.\n"
+        "Report errors to debburn-devel@lists.alioth.debian.org.\n");
 
 	exit(excode);
 }
@@ -1130,8 +1140,11 @@ usage(excode)
 			fprintf(stderr, "%s\n", ld_options[i].doc);
 		}
 	}
-	fprintf(stderr, "This version of mkisofs includes the unofficial iconv-patch\nfrom http://users.utu.fi/jahhein/mkisofs/\nReport errors to cdrtools@packages.debian.org\n");
-	fprintf(stderr, "This version of mkisofs includes the unofficial JTE patch\nfrom http://www.einval.com/~steve/software/JTE/\nReport errors to steve-jte@einval.com\n");
+	fprintf(stderr, 
+        "\nNOTE: This version of mkisofs differs from the one published by Eric Youngdale\n"
+        "and from the one included in cdrtools (by Joerg Schilling).\n"
+        "It provides a different set of features and has different problems.\n"
+        "Report errors to debburn-devel@lists.alioth.debian.org.\n");
 	exit(excode);
 }
 
