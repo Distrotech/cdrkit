@@ -14,7 +14,7 @@ cmakepurge:
 clean:
 	rm -rf build include/align.h
 
-%: Makefile
+%:
 	$(MAKE) -C build $(MAKE_FLAGS) $@
 
 release: distclean

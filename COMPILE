@@ -13,7 +13,6 @@ INSTALLATION:
 
 Run:
 
-cmake .
-make install
+make
 
 (you can append DESTDIR=/alternative/root to install into a different location)
