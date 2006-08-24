@@ -373,6 +373,7 @@ scgo_open(scgp, device)
 			 */
 			use_ata = TRUE;
 			device = NULL;
+#if 0 // WTF, stop spamming
 			if (scgp->overbose) {
 				/*
 				 * I strongly encourage people who believe that
@@ -385,6 +386,7 @@ scgo_open(scgp, device)
 				js_fprintf((FILE *)scgp->errfile,
 				"#########################################################################################\n#\n#  Warning: Using ATAPI via /dev/hd* interface. Use dev=ATA:X,Y,Z or dev=/dev/hdX\n\#\n#########################################################################################\n");
 			}
+#endif
 		}
 	}
 
@@ -547,9 +549,13 @@ openbydev:
 			 * cdda2wav, mkisofs and other programs (that
 			 * distinguish SCSI addresses from file names) from
 			 * getting unexpected results.
-			 */
+       *
+       *
+       * EB: Yes, I know, the hell I care about the distinguish SCSI addresses
+       * which I do not need and don't want to care about.
 			js_fprintf((FILE *)scgp->errfile,
 			"Warning: Open by 'devname' is unintentional and not supported.\n");
+			 */
 		}
 					/* O_NONBLOCK is dangerous */
 		f = sg_open_excl(device, O_RDWR | O_NONBLOCK, 0);

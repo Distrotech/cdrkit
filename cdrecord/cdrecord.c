@@ -390,26 +390,36 @@ main(ac, av)
 	}
 
 	/*
-	 * XXX scg_open() needs root privilleges.
+	 * XXX scg_open() needs root privilleges (According to Joerg Schilling, but let's try anyway)
 	 */
-	if ((scgp = scg_open(dev, errstr, sizeof (errstr),
-				debug, (flags & F_MSINFO) == 0 || lverbose)) == (SCSI *)0) {
-      if (dev != NULL || (flags & F_SCANBUS) == 0 || (scgp = scg_open("ATA", errstr, sizeof (errstr),
-                  debug, (flags & F_MSINFO) == 0 || lverbose)) == (SCSI *)0) {
-			errmsg("%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
-			errmsgno(EX_BAD, "For possible targets try 'wodim -scanbus'.%s\n",
-						geteuid() ? " Make sure you are root.":"");
-			errmsgno(EX_BAD, "For possible transport specifiers try 'wodim dev=help'.\n");
-			errmsgno(EX_BAD, "\n");
-			errmsgno(EX_BAD, "For more information, install the cdrtools-doc\n");
-			errmsgno(EX_BAD, "package and read /usr/share/doc/wodim/README.ATAPI.setup .\n");
-			exit(EX_BAD);
+	if (
+        (scgp = scg_open(dev, errstr, sizeof (errstr),
+                         debug, 
+                  /* disabled unless one can explain my what is so special about the F_MSINFO option that the absense of it requires printing of the uber-verbose scg messages  (flags & F_MSINFO) == 0 || */
+                         lverbose)) == (SCSI *)0
+        ) 
+  {
+      if (dev != NULL 
+            || (flags & F_SCANBUS) == 0 
+            || (scgp = scg_open("ATA", errstr, sizeof (errstr),
+                  debug, 
+                  /* disabled unless one can explain my what is so special about the F_MSINFO option that the absense of it requires printing of the uber-verbose scg messages  (flags & F_MSINFO) == 0 || */
+                            lverbose)) == (SCSI *)0
+            )
+      {
+         errmsg("%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
+         errmsgno(EX_BAD, "For possible targets try 'wodim -scanbus'.%s\n",
+               geteuid() ? " Make sure you are root.":"");
+         errmsgno(EX_BAD, "For possible transport specifiers try 'wodim dev=help'.\n");
+         errmsgno(EX_BAD, "\n");
+         errmsgno(EX_BAD, "For more information, install the cdrtools-doc\n");
+         errmsgno(EX_BAD, "package and read /usr/share/doc/wodim/README.ATAPI.setup .\n");
+         exit(EX_BAD);
       }
       else {
          dev = "ATA";
       }
-
-	}
+  }
 #ifdef	HAVE_PRIV_SET
 #ifdef	PRIV_DEBUG
 	error("file_dac_read: %d\n", priv_ineffect(PRIV_FILE_DAC_READ));
@@ -484,7 +494,8 @@ main(ac, av)
 		 */
 		vers = scg_version(0, SCG_VERSION);
 		auth = scg_version(0, SCG_AUTHOR);
-		printf("Using libscg version '%s-%s'.\n", auth, vers);
+		// One message is enough to teach the user, no reason to print more
+    // printf("Using libscg version '%s-%s'.\n", auth, vers);
 		if (auth == 0 || strcmp("schily", auth) != 0) {
 			errmsgno(EX_BAD,
 			"Warning: using inofficial version of libscg (%s-%s '%s').\n",

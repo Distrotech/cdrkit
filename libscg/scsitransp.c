@@ -51,8 +51,8 @@ static	char sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_version[]		= "0.8ubuntu1";	/* The global libscg version	*/
-LOCAL	char	_scg_auth_ubuntu[]	= "ubuntu";	/* The author for this module	*/
+LOCAL	char	_scg_version[]		= "0.8ubuntu1+debburn1";	/* The global libscg version	*/
+LOCAL	char	_scg_auth_ubuntu[]	= "debburn project";	/* The author for this module	*/
 
 #define	DEFTIMEOUT	20	/* Default timeout for SCSI command transport */
 
