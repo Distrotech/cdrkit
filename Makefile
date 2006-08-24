@@ -8,10 +8,8 @@ builddir:
 	-mkdir build 2>/dev/null
 	cd build && cmake ..
 
-#distclean: Makefile
-#	$(MAKE) -f Makefile $(MAKE_FLAGS) clean
-#	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
-#
+cmakepurge:
+	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
 
 clean:
 	rm -rf build include/align.h

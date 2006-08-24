@@ -61,7 +61,6 @@ build-debstamp:
 #	fi
 	@echo "--- Compiling"
 	dh_testdir
-	cmake .
 	$(MAKE) all
 #	cp /usr/share/misc/config.sub /usr/share/misc/config.guess conf
 #	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > zisofs_tools/version.h
@@ -95,7 +94,7 @@ install-debstamp:
 	dh_clean
 	rm -rf $(b)
 	# Fixate the target dir in the cahced settings
-	cmake -DCMAKE_INSTALL_PREFIX:PATH=$(i)
+	cmake -DCMAKE_INSTALL_PREFIX:PATH=$(i) build
 	make install
 
 	install -m 755 cdda2wav/cdda2ogg $(i)/bin/
