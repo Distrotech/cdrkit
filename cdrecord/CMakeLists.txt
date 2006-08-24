@@ -9,9 +9,9 @@ if(CAPTEST)
    set(CAPLINK cap)
 endif(CAPTEST)
 
-LINK_DIRECTORIES(../libschily ../libscg ../libdeflt ../libfile)
+LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)
 
 ADD_EXECUTABLE (wodim ${CDRECORD_SRCS})
-TARGET_LINK_LIBRARIES(wodim scg schily deflt file ${CAPLINK})
+TARGET_LINK_LIBRARIES(wodim scg schily deflt ${CAPLINK})
 SET_TARGET_PROPERTIES(wodim PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
 
