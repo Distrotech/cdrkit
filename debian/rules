@@ -160,7 +160,7 @@ mkisofs: install
 	dh_installdocs       -p$@ -P$(b)/$@
 	dh_installchangelogs -p$@ -P$(b)/$@ $(iso)/ChangeLog zisofs_tools/CHANGES
 	dh_install           -p$@ -P$(b)/$@
-	dh_installman        -p$@ -P$(b)/$@ 3rd-party/dirsplit-0.3.3/dirsplit.1
+#	dh_installman        -p$@ -P$(b)/$@ 3rd-party/dirsplit-0.3.3/dirsplit.1
 #	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/mkisofs/presubj
 #	rm -f $(b)/$@/usr/bin/mkhybrid $(b)/$@/usr/share/man/man8/mkhybrid*
 	dh_link              -p$@ -P$(b)/$@

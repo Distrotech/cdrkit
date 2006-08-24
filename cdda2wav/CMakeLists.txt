@@ -15,3 +15,8 @@ ADD_EXECUTABLE (cdda2wav aifc.c aiff.c base64.c cd_misc.c cdda2wav.c defaults.c 
 TARGET_LINK_LIBRARIES(cdda2wav scg schily deflt paranoia)
 SET_TARGET_PROPERTIES(cdda2wav PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
 
+
+INSTALL(TARGETS cdda2wav DESTINATION bin)
+INSTALL(PROGRAMS pitchplay readmult cdda2mp3 cdda2ogg DESTINATION bin)
+INSTALL(FILES cdda2ogg.1 cdda2wav.1 pitchplay.1 readmult.1 list_audio_tracks.1 DESTINATION share/man/man1)
+

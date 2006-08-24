@@ -41,3 +41,12 @@ ADD_EXECUTABLE(isovfy	diag/isovfy.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c d
 
 SET_TARGET_PROPERTIES(mkisofs devdump isodebug isodump isoinfo isovfy PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
 
+INSTALL(TARGETS mkisofs devdump isodebug isodump isoinfo isovfy DESTINATION bin)
+INSTALL(FILES 
+mkisofs.8
+diag/devdump.8
+diag/isodebug.8
+diag/isodump.8
+diag/isoinfo.8
+diag/isovfy.8
+DESTINATION share/man/man8)

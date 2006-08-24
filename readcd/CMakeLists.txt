@@ -6,3 +6,7 @@ ADD_EXECUTABLE (readcd cd_misc.c defaults.c getnum.c io.c misc.c modes.c movesec
 TARGET_LINK_LIBRARIES(readcd scg schily deflt file)
 SET_TARGET_PROPERTIES(readcd PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
 
+INSTALL(TARGETS readcd DESTINATION bin)
+INSTALL(FILES 
+readcd.1
+DESTINATION share/man/man1)
