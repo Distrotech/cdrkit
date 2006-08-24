@@ -1,20 +1,26 @@
 
+all: builddir
+	$(MAKE) -C build $(MAKE_FLAGS) all
+
 DISTNAME=botox-$(shell cat VERSION)
 
-all: Makefile
-	$(MAKE) -f Makefile $(MAKE_FLAGS) all
+builddir:
+	-mkdir build 2>/dev/null
+	cd build && cmake ..
 
-distclean: Makefile
-	$(MAKE) -f Makefile $(MAKE_FLAGS) clean
-	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
+#distclean: Makefile
+#	$(MAKE) -f Makefile $(MAKE_FLAGS) clean
+#	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
+#
+
+clean:
+	rm -rf build include/align.h
 
 %: Makefile
-	$(MAKE) -f Makefile $(MAKE_FLAGS) $@
+	$(MAKE) -C build $(MAKE_FLAGS) $@
 
 release: distclean
 #	if test "$(shell svn status | grep -v -i make)" ; then echo Uncommited files found. Run \"svn status\" to display them. ; exit 1 ; fi
 	@if test -f ../$(DISTNAME).tgz ; then echo ../$(DISTNAME).tgz exists, not overwritting ; exit 1; fi
 	mkdir tmp && svn export . tmp/$(DISTNAME) && cd tmp && tar -f - -c $(DISTNAME) | gzip -9 > ../../$(DISTNAME).tgz && cd .. && rm -rf tmp
 
-Makefile:
-	cmake .
