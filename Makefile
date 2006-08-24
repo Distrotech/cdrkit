@@ -1,10 +1,10 @@
 
-all: builddir
+all: build/Makefile
 	$(MAKE) -C build $(MAKE_FLAGS) all
 
 DISTNAME=botox-$(shell cat VERSION)
 
-builddir:
+build/Makefile:
 	-mkdir build 2>/dev/null
 	cd build && cmake ..
 
@@ -14,7 +14,7 @@ cmakepurge:
 clean:
 	rm -rf build include/align.h
 
-%:
+%: build/Makefile
 	$(MAKE) -C build $(MAKE_FLAGS) $@
 
 release: distclean

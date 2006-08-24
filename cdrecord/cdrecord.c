@@ -397,12 +397,12 @@ main(ac, av)
       if (dev != NULL || (flags & F_SCANBUS) == 0 || (scgp = scg_open("ATA", errstr, sizeof (errstr),
                   debug, (flags & F_MSINFO) == 0 || lverbose)) == (SCSI *)0) {
 			errmsg("%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
-			errmsgno(EX_BAD, "For possible targets try 'cdrecord -scanbus'.%s\n",
+			errmsgno(EX_BAD, "For possible targets try 'wodim -scanbus'.%s\n",
 						geteuid() ? " Make sure you are root.":"");
-			errmsgno(EX_BAD, "For possible transport specifiers try 'cdrecord dev=help'.\n");
+			errmsgno(EX_BAD, "For possible transport specifiers try 'wodim dev=help'.\n");
 			errmsgno(EX_BAD, "\n");
 			errmsgno(EX_BAD, "For more information, install the cdrtools-doc\n");
-			errmsgno(EX_BAD, "package and read /usr/share/doc/cdrecord/README.ATAPI.setup .\n");
+			errmsgno(EX_BAD, "package and read /usr/share/doc/wodim/README.ATAPI.setup .\n");
 			exit(EX_BAD);
       }
       else {
@@ -452,7 +452,8 @@ main(ac, av)
 
 #ifdef __linux__
 	/* get the rawio capability */
-	if (get_cap(CAP_SYS_RAWIO)) {
+  if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose)) 
+  {
 		perror("Warning: Cannot gain SYS_RAWIO capability");
     fprintf(stderr, "Possible reason: wodim not installed SUID root.\n");
   }
@@ -675,9 +676,13 @@ if (lverbose > 2)
 
 		if (is_dvdwr && !set_cdrcmds("mmc_mdvd", (cdr_t **)NULL)) {
 			errmsgno(EX_BAD,
+			"Internal error, DVD driver failure. Please report to debburn-devel@lists.alioth.debian.org.\n");
+       /*
+			errmsgno(EX_BAD,
 			"This version of cdrecord does not include DVD-R/DVD-RW support code.\n");
 			errmsgno(EX_BAD,
  			"See /usr/share/doc/cdrecord/README.DVD.Debian for details on DVD support.\n");
+      */
 		}
 		/*
 		 * Only exit if this is not the ProDVD test binary.
@@ -1040,9 +1045,8 @@ if (lverbose > 2)
 				comerr("Panic cannot set back effective uid.\n");
 		}
 #ifdef __linux__
-		if (get_cap(CAP_SYS_RAWIO))
-			perror("Error: Cannot gain SYS_RAWIO capability."
-				"Is cdrecord installed SUID root?\n");
+		if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose))
+			perror("Error: Cannot gain SYS_RAWIO capability, is wodim installed SUID root? Reason");
 #endif
 
 #endif
@@ -1239,7 +1243,7 @@ if (lverbose > 2)
 			errmsgno(EX_BAD, "Cannot blank disk, aborting.\n");
 			if (blanktype != BLANK_DISC) {
 				errmsgno(EX_BAD, "Some drives do not support all blank types.\n");
-				errmsgno(EX_BAD, "Try again with cdrecord blank=all.\n");
+				errmsgno(EX_BAD, "Try again with wodim blank=all.\n");
 			}
 			comexit(EX_BAD);
 		}
@@ -1256,7 +1260,7 @@ if (lverbose > 2)
 			comexit(0);
 		}
       if (flags & F_FORMAT) {
-         printf("cdrecord: media format asked\n");
+         printf("wodim: media format asked\n");
          /*
           * Do not abort if OPC failes. Just give it a chance
           * for better laser power calibration than without OPC.
@@ -3724,7 +3728,7 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 		if (tracks == 0 && (wm == 0)) {
 			errmsgno(EX_BAD, "No write mode specified.\n");
 			errmsgno(EX_BAD, "Asuming -tao mode.\n");
-			errmsgno(EX_BAD, "Future versions of cdrecord may have different drive dependent defaults.\n");
+			errmsgno(EX_BAD, "Future versions of wodim may have different drive dependent defaults.\n");
 			tao = 1;
 		}
 		tracks++;
@@ -4840,56 +4844,6 @@ set_wrmode(dp, wmode, tflags)
 #include <sys/utsname.h>
 #endif
 #endif
-
-LOCAL void
-linuxcheck()				/* For version 1.310 of cdrecord.c */
-{
-#if	defined(linux) || defined(__linux) || defined(__linux__)
-#ifdef	HAVE_UNAME
-	struct	utsname	un;
-
-	if (uname(&un) >= 0) {
-		/*
-		 * I really hope that the Linux kernel developers will soon
-		 * fix the most annoying bugs (as promised). Linux-2.6.8
-		 * has still much more reported problems than Linux-2.4.
-		 */
-		if ((un.release[0] == '2' && un.release[1] == '.') &&
-		    (un.release[2] == '5' || un.release[2] == '6')) {
-			errmsgno(EX_BAD,
-			"Warning: Running on Linux-%s\n", un.release);
-			errmsgno(EX_BAD,
-			"There are unsettled issues with Linux-2.5 and newer.\n");
-			errmsgno(EX_BAD,
-			"If you have unexpected problems, please try Linux-2.4 or Solaris.\n");
-		}
-		if ((un.release[0] == '2' && un.release[1] == '.') &&
-		    (un.release[2] > '6' ||
-		    (un.release[2] == '6' && un.release[3] == '.' && un.release[4] >= '8'))) {
-			errmsgno(EX_BAD,
-			"Warning: Linux-2.6.8 introduced incompatible interface changes.\n");
-			errmsgno(EX_BAD,
-			"Warning: SCSI transport does no longer work for suid root programs.\n");
-			errmsgno(EX_BAD,
-			"Warning: if cdrecord fails, try to run it from a root account.\n");
-		}
-	}
-#endif
-#if	0
-	if (streql(HOST_VENDOR, "suse")) { /* For version 1.310 of cdrecord.c */
-/* 1.310 */	errmsgno(EX_BAD,
-/* 1.310 */	"SuSE Linux is known to ship bastardized and defective versions of cdrecord.\n");
-/* 1.310 */	errmsgno(EX_BAD,
-/* 1.310 */	"SuSE is unwilling to cooperate with the authors.\n");
-/* 1.310 */	errmsgno(EX_BAD,
-/* 1.310 */	"If you like to have a working version of cdrtools, get the\n");
-/* 1.310 */	errmsgno(EX_BAD,
-/* 1.310 */	"original source from ftp://ftp.berlios.de/pub/cdrecord/\n");
-
-	}
-#endif
-#endif
-}
 
 #ifdef __linux__
 LOCAL int
