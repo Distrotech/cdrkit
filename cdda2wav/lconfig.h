@@ -12,9 +12,9 @@
 
 /* #undef HAVE_SOUNDCARD_H */		/* if we should use soundcard.h */
 
-#define HAVE_SYS_SOUNDCARD_H 1	/* if we should use sys/soundcard.h */
-
-#define HAVE_LINUX_SOUNDCARD_H 1	/* if we should use linux/soundcard.h */
+/* TESTED BY CMAKE, (eduard) */
+//#define HAVE_SYS_SOUNDCARD_H 1	/* if we should use sys/soundcard.h */
+//#define HAVE_LINUX_SOUNDCARD_H 1	/* if we should use linux/soundcard.h */
 
 /* #undef HAVE_MACHINE_SOUNDCARD_H */	/* if we should use machine/soundcard.h */
 
