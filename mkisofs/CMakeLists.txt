@@ -1,5 +1,5 @@
 PROJECT (MKISOFS)
-INCLUDE_DIRECTORIES(../include ../libhfs_iso . ../cdrecord)
+INCLUDE_DIRECTORIES(../include ../libhfs_iso . ../cdrecord ${CMAKE_BINARY_DIR})
 
 FIND_FILE (USE_ICONV iconv.h)
 IF(USE_ICONV)

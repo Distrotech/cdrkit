@@ -1,5 +1,5 @@
 PROJECT (CDDA2WAV)
-INCLUDE_DIRECTORIES(../include ../cdrecord . )
+INCLUDE_DIRECTORIES(../include ../cdrecord . ${CMAKE_BINARY_DIR})
 
 FIND_FILE (HAVE_SYS_SOUNDCARD_H sys/soundcard.h)
 IF(HAVE_SYS_SOUNDCARD_H)

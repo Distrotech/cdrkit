@@ -1,5 +1,5 @@
 PROJECT (LIBfile)
-INCLUDE_DIRECTORIES(../include ../libhfs_iso . ../cdrecord)
+INCLUDE_DIRECTORIES(../include ../libhfs_iso . ../cdrecord ${CMAKE_BINARY_DIR})
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 SET(LIBfile_SRCS apprentice.c file.c softmagic.c )
 

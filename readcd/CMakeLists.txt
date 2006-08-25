@@ -1,5 +1,5 @@
 PROJECT (READECD)
-INCLUDE_DIRECTORIES(../include ../cdrecord . )
+INCLUDE_DIRECTORIES(../include ../cdrecord . ${CMAKE_BINARY_DIR})
 
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt ../libfile)
 ADD_EXECUTABLE (readcd cd_misc.c defaults.c getnum.c io.c misc.c modes.c movesect.c readcd.c scsi_cdr.c scsi_mmc.c scsi_scan.c)
