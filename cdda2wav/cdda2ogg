@@ -49,7 +49,7 @@ TRACK=1
 while :
 do
    NAME=`printf "%02d" $TRACK`-$FILEPREFIX.ogg
-  $CDDA2WAV $CDDA2WAV_OPTS -D$CDDA_DEVICE -t$TRACK $DEBUG - | \
+  $CDDA2WAV $CDDA2WAV_OPTS -t$TRACK $DEBUG - | \
   $MP_CODER $MP_OPTIONS - > $NAME 
 
   # check result code

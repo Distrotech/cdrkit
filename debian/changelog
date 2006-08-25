@@ -44,7 +44,7 @@ botox (4:2.99-0.0.1) UNRELEASED; urgency=low
   * de.po updates, summarized by Jens Seidel (closes: #326138, #314139)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus
-    real use of CDDA_DEVICE now (has anyone ever tested this code?!)
+    possible override of preset CDDA_DEVICE variable fixed
   * added additional script manpages from Oleksandr Moskalenko (closes: #295438)
   * changed -speed to speed= in cdrecord.1 for consistency (closes: #344214)
   * Anti-Root-Requirements:
