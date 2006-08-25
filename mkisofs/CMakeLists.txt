@@ -20,23 +20,17 @@ SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c d
 #SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES COMPILE_FLAGS -O2)
 LINK_DIRECTORIES(../libhfs_iso ../libschily ../libscg ../libunls ../libdeflt ../libfile)
 
-LINK_LIBRARIES(schily hfs_iso deflt file scg unls z ${EXTRA_LIBICONV})
 ADD_EXECUTABLE (mkisofs mkisofs.c ${MKISOFS_MOST_SRCS})
+TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt file scg unls z ${EXTRA_LIBICONV})
 
-#ADD_EXECUTABLE (isoinfo diag/isoinfo.c diag/isoinfo.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c  diag/defaults.c diag/getnum.c)
-#TARGET_LINK_LIBRARIES(isoinfo schily hfs_iso deflt file scg unls )
-
-#ADD_EXECUTABLE (mkisofs mkisofs.c ${MKISOFS_MOST_SRCS})
-#
-#ADD_EXECUTABLE (isoinfo diag/isoinfo.c diag/isoinfo.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c  diag/defaults.c diag/getnum.c)
-##TARGET_LINK_LIBRARIES(isoinfo schily hfs_iso deflt file scg unls )
-
-
-ADD_EXECUTABLE(devdump diag/dump.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
-ADD_EXECUTABLE(isodebug	diag/isodebug.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
-ADD_EXECUTABLE(isodump	diag/isodump.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c )
-ADD_EXECUTABLE(isoinfo diag/isoinfo.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
-ADD_EXECUTABLE(isovfy	diag/isovfy.c diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
+# common lib set and mkisofs source parts for the rest
+LINK_LIBRARIES(schily deflt scg unls ${EXTRA_LIBICONV})
+SET(MI_COMMON diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
+ADD_EXECUTABLE(devdump diag/dump.c  ${MI_COMMON})
+ADD_EXECUTABLE(isodebug	diag/isodebug.c   ${MI_COMMON})
+ADD_EXECUTABLE(isodump	diag/isodump.c    ${MI_COMMON})
+ADD_EXECUTABLE(isoinfo diag/isoinfo.c	 ${MI_COMMON})
+ADD_EXECUTABLE(isovfy	diag/isovfy.c	 ${MI_COMMON})
 
 
 SET_TARGET_PROPERTIES(mkisofs devdump isodebug isodump isoinfo isovfy PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
