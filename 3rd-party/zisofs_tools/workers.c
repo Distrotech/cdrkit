@@ -1,7 +1,7 @@
-#ident "$Id: workers.c,v 1.2 2001/07/31 03:20:52 hpa Exp $"
+#ident "$Id: workers.c,v 1.3 2006/07/04 04:57:42 hpa Exp $"
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,13 +17,14 @@
  * Parallel job maintenance
  */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <stddef.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
 #include <sys/wait.h>
-#include "mkzftree.h"
 
 /* Global option */
 extern int parallel;		/* Number of parallel jobs */

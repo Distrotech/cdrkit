@@ -1,7 +1,7 @@
-/* $Id: util.c,v 1.2 2001/07/31 03:20:52 hpa Exp $ */
+/* $Id: util.c,v 1.3 2006/07/04 04:57:42 hpa Exp $ */
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -11,12 +11,13 @@
  *
  * ----------------------------------------------------------------------- */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#include "mkzftree.h"
 
 /* Convenience functions */
 void *xmalloc(size_t size)

@@ -1,4 +1,4 @@
-/* $Id: mkzftree.c,v 1.16 2002/11/07 04:10:06 hpa Exp $ */
+/* $Id: mkzftree.c,v 1.18 2006/07/04 04:57:42 hpa Exp $ */
 /* ----------------------------------------------------------------------- *
  *   
  *   Copyright 2001 H. Peter Anvin - All Rights Reserved
@@ -59,22 +59,23 @@
  * The block data is compressed according to "zlib".
  */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <limits.h>
-#include <utime.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-
-#include "mkzftree.h"
-#include "version.h"
+#include <sys/time.h>
 
 #ifdef HAVE_GETOPT_H
 #include <getopt.h>
 #endif
+
+#include "version.h"
 
 /* Command line options */
 struct cmdline_options opt = {
@@ -94,7 +95,7 @@ struct cmdline_options opt = {
 const char *program;
 
 /* Long options */
-#define OPTSTRING "fz:up:xXC:lLFsvqV:hw"
+#define OPTSTRING "fz:up:xXC:lLFvqV:hw"
 #ifdef HAVE_GETOPT_LONG
 const struct option long_options[] = {
   { "force",	             0,  0,  'f' },
@@ -106,7 +107,6 @@ const struct option long_options[] = {
   { "crib-tree",             1,  0,  'C' },
   { "local",                 0,  0,  'l' },
   { "strict-local",          0,  0,  'L' },
-  { "sloppy",                0,  0,  's' },
   { "file",                  0,  0,  'F' },
   { "verbose",               0,  0,  'v' },
   { "quiet",                 0,  0,  'q' },
@@ -163,7 +163,6 @@ int main(int argc, char *argv[])
 {
   const char *in, *out, *crib = NULL;
   struct stat st;
-  struct utimbuf ut;
   int optch, err;
 
   program = argv[0];
@@ -266,17 +265,15 @@ int main(int argc, char *argv[])
 
   if ( !opt.file_root ) {
     if ( chown(out, st.st_uid, st.st_gid) && !opt.sloppy ) {
-      message(vl_error, "%s: %s: %s\n", program, out, strerror(errno));
+      message(vl_error, "%s: %s: %s", program, out, strerror(errno));
       err = EX_CANTCREAT;
     }
     if ( chmod(out, st.st_mode) && !opt.sloppy && !err ) {
-      message(vl_error, "%s: %s: %s\n", program, out, strerror(errno));
+      message(vl_error, "%s: %s: %s", program, out, strerror(errno));
       err = EX_CANTCREAT;
     }
-    ut.actime  = st.st_atime;
-    ut.modtime = st.st_mtime;
-    if ( utime(out, &ut) && !opt.sloppy && !err ) {
-      message(vl_error, "%s: %s: %s\n", program, out, strerror(errno));
+    if ( copytime(out, &st) && !opt.sloppy && !err ) {
+      message(vl_error, "%s: %s: %s", program, out, strerror(errno));
       err = EX_CANTCREAT;
     }
   }

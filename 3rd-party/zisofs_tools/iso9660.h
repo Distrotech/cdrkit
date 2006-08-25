@@ -1,4 +1,4 @@
-#ident "$Id: iso9660.h,v 1.3 2001/07/27 19:49:08 hpa Exp $"
+#ident "$Id: iso9660.h,v 1.4 2006/07/04 04:57:42 hpa Exp $"
 /* ----------------------------------------------------------------------- *
  *   
  *   Copyright 2001 H. Peter Anvin - All Rights Reserved
@@ -12,6 +12,9 @@
  * ----------------------------------------------------------------------- */
 
 /* zisofs definitions */
+
+#ifndef ISO9660_H
+#define ISO9660_H
 
 #ifndef CBLOCK_SIZE_LG2
 #define CBLOCK_SIZE_LG2	15	/* Compressed block size */
@@ -43,3 +46,5 @@ unsigned int get_732(void *);
 void set_733(void *, unsigned int);
 #define get_723(x) get_721(x)
 #define get_733(x) get_731(x)
+
+#endif /* ISO9660_H */

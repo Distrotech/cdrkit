@@ -1,7 +1,7 @@
-/* $Id: compress.c,v 1.3 2001/07/31 03:20:52 hpa Exp $ */
+/* $Id: compress.c,v 1.4 2006/07/04 04:57:42 hpa Exp $ */
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -11,19 +11,21 @@
  *
  * ----------------------------------------------------------------------- */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <utime.h>
 #include <unistd.h>
 #include <zlib.h>
-#include "mkzftree.h"
+
 #include "iso9660.h"
 
 
 int block_compress_file(FILE *input, FILE *output, off_t size)
 {
   struct compressed_file_header hdr;
-  char inbuf[CBLOCK_SIZE], outbuf[2*CBLOCK_SIZE];
+  Bytef inbuf[CBLOCK_SIZE], outbuf[2*CBLOCK_SIZE];
   size_t bytes, pointer_bytes, nblocks, block;
   uLong cbytes;			/* uLong is a zlib datatype */
   char *pointer_block, *curptr;

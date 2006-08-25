@@ -1,3 +1,11 @@
+Changes in zisofs-tools-1.0.6:
+
+	Further portability fixes; use subsecond resolution if available.
+
+Changes in zisofs-tools-1.0.5:
+
+	Portability improvements.
+
 Changes in zisofs-tools-1.0.4:
 
 	Update the documentation.

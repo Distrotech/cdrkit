@@ -1,7 +1,7 @@
-/* $Id: uncompress.c,v 1.2 2001/07/27 19:49:08 hpa Exp $ */
+/* $Id: uncompress.c,v 1.3 2006/07/04 04:57:42 hpa Exp $ */
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -11,16 +11,18 @@
  *
  * ----------------------------------------------------------------------- */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <zlib.h>
-#include "mkzftree.h"
+
 #include "iso9660.h"
 
 int block_uncompress_file(FILE *input, FILE *output, off_t size)
 {
   struct compressed_file_header hdr;
-  char *inbuf, *outbuf;
+  Bytef *inbuf, *outbuf;
   int block_shift;
   char *pointer_block, *pptr;
   unsigned long nblocks;

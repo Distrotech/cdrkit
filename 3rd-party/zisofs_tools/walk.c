@@ -1,7 +1,7 @@
-#ident "$Id: walk.c,v 1.5 2002/11/07 03:58:18 hpa Exp $"
+#ident "$Id: walk.c,v 1.7 2006/07/04 04:57:42 hpa Exp $"
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001-2002 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -17,17 +17,18 @@
  * Functions to walk the file tree
  */
 
+#include "mkzftree.h"		/* Must be included first! */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <limits.h>
-#include <utime.h>
 #include <string.h>
 #include <errno.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "mkzftree.h"
+
 #include "iso9660.h"
 
 static int munge_file(const char *inpath, const char *outpath,
@@ -35,7 +36,6 @@ static int munge_file(const char *inpath, const char *outpath,
 {
   FILE *in, *out;
   int err = 0;
-  struct utimbuf ut;
 
   if ( cribpath ) {
     struct stat cst;
@@ -51,9 +51,7 @@ static int munge_file(const char *inpath, const char *outpath,
 	int e = fread(&cfh, 1, sizeof cfh, in);
 	fclose(in);
 	/* Attempt to restore the atime */
-	ut.actime  = cst.st_atime;
-	ut.modtime = cst.st_mtime;
-	utime(cribpath, &ut);
+	copytime(cribpath, &cst);
 
 	if ( (e == sizeof cfh &&
 	      !memcmp(cfh.magic, zisofs_magic, sizeof zisofs_magic) &&
@@ -64,10 +62,7 @@ static int munge_file(const char *inpath, const char *outpath,
 	  /* File is cribbable.  Steal it. */
 	  if ( !link(cribpath, outpath) ) {
 	    message(vl_crib, "crib: %s -> %s\n", cribpath, outpath);
-	    ut.actime  = st->st_atime;
-	    ut.modtime = st->st_mtime;
-	    utime(outpath, &ut);	/* Set the the atime */
-	    
+	    copytime(outpath, st);	/* Set the the atime */
 	    return 0;
 	  }
 	}
@@ -91,9 +86,7 @@ static int munge_file(const char *inpath, const char *outpath,
     
     chown(outpath, st->st_uid, st->st_gid);
     chmod(outpath, st->st_mode);
-    ut.actime  = st->st_atime;
-    ut.modtime = st->st_mtime;
-    utime(outpath, &ut);
+    copytime(outpath, st);
     
     end_worker(err);
   } else {
@@ -183,7 +176,6 @@ int munge_entry(const char *in_path, const char *out_path,
 		const char *crib_path, const struct stat *dirst)
 {
   struct stat st;
-  struct utimbuf ut;
   int err = 0;
 
   message(vl_filename, "%s -> %s\n", in_path, out_path);
@@ -291,26 +283,24 @@ int munge_entry(const char *in_path, const char *out_path,
   /* This is done by munge_file() for files */
   if ( !S_ISREG(st.st_mode) ) {
 #ifdef HAVE_LCHOWN
-    if ( lchown(out_path, st.st_uid, st.st_gid) && !opt.sloppy && !err ) {
-      message(vl_error, "%s: %s: %s\n", program, out_path, strerror(errno));
+    if ( lchown(out_path, st.st_uid, st.st_gid) && opt.sloppy && !err ) {
+      message(vl_error, "%s: %s: %s", program, out_path, strerror(errno));
       err = EX_CANTCREAT;
     }
 #endif
     if ( !S_ISLNK(st.st_mode) ) {
 #ifndef HAVE_LCHOWN
       if ( chown(out_path, st.st_uid, st.st_gid) && !opt.sloppy && !err ) {
-	message(vl_error, "%s: %s: %s\n", program, out_path, strerror(errno));
+	message(vl_error, "%s: %s: %s", program, out_path, strerror(errno));
 	err = EX_CANTCREAT;
       }
 #endif
       if ( chmod(out_path, st.st_mode) && !opt.sloppy && !err ) {
-	message(vl_error, "%s: %s: %s\n", program, out_path, strerror(errno));
+	message(vl_error, "%s: %s: %s", program, out_path, strerror(errno));
 	err = EX_CANTCREAT;
       }
-      ut.actime  = st.st_atime;
-      ut.modtime = st.st_mtime;
-      if ( utime(out_path, &ut) && !opt.sloppy && !err ) {
-	message(vl_error, "%s: %s: %s\n", program, out_path, strerror(errno));
+      if ( copytime(out_path, &st) && !opt.sloppy && !err ) {
+	message(vl_error, "%s: %s: %s", program, out_path, strerror(errno));
 	err = EX_CANTCREAT;
       }
     }

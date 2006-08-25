@@ -1,4 +1,4 @@
-#ident "$Id: hash.c,v 1.1 2001/07/27 14:37:07 hpa Exp $"
+#ident "$Id: hash.c,v 1.3 2006/07/04 04:57:42 hpa Exp $"
 /* ----------------------------------------------------------------------- *
  *   
  *   Copyright 2001 H. Peter Anvin - All Rights Reserved
@@ -17,8 +17,7 @@
  * Hash table used to find hard-linked files
  */
 
-#include <stdlib.h>
-#include "mkzftree.h"
+#include "mkzftree.h"		/* Must be included first! */
 
 #define HASH_BUCKETS 	  2683
 

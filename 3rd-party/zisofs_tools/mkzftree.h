@@ -1,7 +1,7 @@
-#ident "$Id: mkzftree.h,v 1.4 2002/11/07 03:58:18 hpa Exp $"
+#ident "$Id: mkzftree.h,v 1.7 2006/07/04 04:57:42 hpa Exp $"
 /* ----------------------------------------------------------------------- *
  *   
- *   Copyright 2001 H. Peter Anvin - All Rights Reserved
+ *   Copyright 2001-2006 H. Peter Anvin - All Rights Reserved
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -11,12 +11,24 @@
  *
  * ----------------------------------------------------------------------- */
 
+#ifndef MKZFTREE_H
+#define MKZFTREE_H
+
+/* config.h should be included before any system headers!!!! */
 #include "config.h"
+
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+#ifdef HAVE_ENDIAN_H
+#include <endian.h>
+#endif
 
 #ifdef HAVE_SYSEXITS_H
 #include <sysexits.h>
@@ -77,6 +89,7 @@ void end_worker(int);
 
 /* util.c */
 void *xmalloc(size_t);
+void *xrealloc(void *, size_t);
 char *xstrdup(const char *);
 void message(enum verbosity, const char *, ...);
 
@@ -84,3 +97,7 @@ void message(enum verbosity, const char *, ...);
 const char *hash_find_file(struct stat *);
 void hash_insert_file(struct stat *, const char *);
 
+/* copytime.h */
+int copytime(const char *, const struct stat *);
+
+#endif /* MKZFTREE_H */
