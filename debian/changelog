@@ -1,4 +1,4 @@
-botox (4:2.99-0.0.1) UNRELEASED; urgency=low
+botox (5:1.0~pre1-1) UNRELEASED; urgency=low
 
   * The Big Fork to an independent project called botox
     + using the last clearly stated GPLed versions of files from
