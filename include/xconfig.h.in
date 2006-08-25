@@ -149,7 +149,8 @@
 #define HAVE_MEMMOVE 1		/* memmove() is present in libc */
 #define HAVE_MADVISE 1		/* madvise() is present in libc */
 #define HAVE_MLOCK 1		/* mlock() is present in libc */
-#define HAVE_MLOCKALL 1		/* working mlockall() is present in libc */
+#cmakedefine HAVE_MLOCKALL
+	/* working mlockall() is present in libc */
 #define HAVE_MMAP 1		/* working mmap() is present in libc */
 /* #undef _MMAP_WITH_SIZEP */		/* mmap() needs address of size parameter */
 #define HAVE_FLOCK 1		/* *BSD flock() is present in libc */
