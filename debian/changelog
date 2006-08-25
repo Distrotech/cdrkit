@@ -21,7 +21,7 @@ botox (4:2.99-0.0.1) UNRELEASED; urgency=low
     hints to create device files are essential for only few people and can
     equaly be presented as program messages. Why shall we still MAKEDEV them?
     It's not like we have switched to kernel 2.0.1 yesterday 
-    (closes: #342085, 188827)
+    (closes: #342085, 188827, #200665)
   * sync with 4:2.01+01a01-4ubuntu4:
     + merged README.ATAPI.setup with README.ATAPI.setup.ubuntu. Kernel 2.6 part
       now in the beginning and reflecting the reality (dev=/dev/drive syntax,
@@ -42,8 +42,9 @@ botox (4:2.99-0.0.1) UNRELEASED; urgency=low
   * Updated dirsplit to version 0.3.3
   * updated Build-Dependencies for kfreebsd (closes: #355291)
   * de.po updates, summarized by Jens Seidel (closes: #326138, #314139)
-  * cdda2wav wrapper script fixes (actually fixes of our dpatch setting better
-    defaults), thanks to Fabian Pietsch (closes: #283794, #344443)
+  * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
+    fixes for unreliable encoder detection (closes: #283794, #344443) plus
+    real use of CDDA_DEVICE now (has anyone ever tested this code?!)
   * added additional script manpages from Oleksandr Moskalenko (closes: #295438)
   * changed -speed to speed= in cdrecord.1 for consistency (closes: #344214)
   * Anti-Root-Requirements:

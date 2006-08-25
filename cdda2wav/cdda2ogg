@@ -25,17 +25,19 @@ CDDA2WAV_OPTS=${CDDA2WAV_OPTS:-'-H -P0 -q'}
 MP_CODER=${MP_CODER:-oggenc}
 MP_OPTIONS=${MP_OPTIONS:-''}
 
-$MP_CODER -h >/dev/null 2>&1
-if [ $? != 0 ] ; then
-   echo "Oggenc not found. Install vorbis-tools first!"
+export MP_CODER
+MP_CODER=$(which $MP_CODER 2>/dev/null)
+if [ ! -x "$MP_CODER" ] ; then
+   echo "Encoder not found. Install one first!"
    exit 1
 fi
 
-if [ "$CDDADEVICE" = "" ]
+if [ -z "$CDDA_DEVICE" ]
 then
-  CDDA_DEVICE=/dev/cdrom
-  export CDDA_DEVICE
+  CDDA_DEVICE=/dev/cdrw
 fi
+
+export CDDA_DEVICE
 
 FILEPREFIX=${1:-audiotrack}
 
@@ -47,7 +49,7 @@ TRACK=1
 while :
 do
    NAME=`printf "%02d" $TRACK`-$FILEPREFIX.ogg
-  $CDDA2WAV $CDDA2WAV_OPTS -t$TRACK $DEBUG - | \
+  $CDDA2WAV $CDDA2WAV_OPTS -D$CDDA_DEVICE -t$TRACK $DEBUG - | \
   $MP_CODER $MP_OPTIONS - > $NAME 
 
   # check result code
