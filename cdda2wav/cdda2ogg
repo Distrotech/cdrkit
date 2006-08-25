@@ -41,18 +41,24 @@ if [ -e /etc/default/cdda2ogg ]; then
 	. /etc/default/cdda2ogg
 fi
 
-TRACK=1
-while :
-do
+LIST="$($CDDA2WAV -v trackid -t -1 2>&1|grep T:|cut -f1 -d.|cut -f2 -d:)"
+if [ -z "$LIST" ] ; then
+   echo "ERROR: No audio tracks detected"
+   exit 1
+else
+   echo Found `echo $LIST | wc -w` tracks in $CDDA_DEVICE, encoding with $MP_CODER.
+   echo Cancel with Ctrl-C, watch out for error messages.
+fi
+
+for TRACK in $LIST ; do
+   echo Start ripping Track Nr. $TRACK
    NAME=`printf "%02d" $TRACK`-$FILEPREFIX.ogg
   $CDDA2WAV $CDDA2WAV_OPTS -t$TRACK $DEBUG - | \
   $MP_CODER $MP_OPTIONS - > $NAME 
 
   # check result code
   RES=$?
-  if [ $RES = 0 ] ; then
-    echo File $NAME finished successfully.
-  else
+  if [ $RES != 0 ] ; then
     echo File $NAME failed \(result $RES\). Aborted. >&2
     break
   fi
