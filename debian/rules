@@ -213,10 +213,10 @@ botox-doc: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@
-	@-find $(b)/$@ | grep svn | xargs rm -rf
 	dh_installchangelogs -p$@ -P$(b)/$@
 	dh_install           -p$@ -P$(b)/$@
 	dh_link              -p$@ -P$(b)/$@
+	@-find $(b)/$@ | grep svn | xargs rm -rf
 	dh_strip             -p$@ -P$(b)/$@
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
