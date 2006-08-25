@@ -12,6 +12,9 @@ botox (4:2.99-0.0.1) UNRELEASED; urgency=low
       source (closes: #350738)
     + custom CMake based build system (closes: #350739 and hopefully
       closes: #350254, reopen if not)
+  * removed most of the anti-linux2.6 FUD from program messages (unless beeing
+    in verbose mode). Decent information about code modifications is okay,
+    oververbose progranda isn't (closes: #377145)
   * dropped the shm build (kernel 2.2 is history)
   * dropped dpatch integration, we are the upstream now
   * disabled debconf messages and device-creating code for now, things like
@@ -19,8 +22,6 @@ botox (4:2.99-0.0.1) UNRELEASED; urgency=low
     equaly be presented as program messages. Why shall we still MAKEDEV them?
     It's not like we have switched to kernel 2.0.1 yesterday 
     (closes: #342085, 188827)
-  * updated of dpatches to the new version and integrated them
-  * disabled 35_ultra_speed_media.dpatch, adopted by upstream
   * sync with 4:2.01+01a01-4ubuntu4:
     + merged README.ATAPI.setup with README.ATAPI.setup.ubuntu. Kernel 2.6 part
       now in the beginning and reflecting the reality (dev=/dev/drive syntax,
