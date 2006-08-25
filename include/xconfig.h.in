@@ -1,4 +1,4 @@
-/* xconfig.h.  Generated automatically by configure.  */
+/* xconfig.h  Generated automatically by cmake */
 /* @(#)xconfig.h.in	1.84 05/05/16 Copyright 1998-2003 J. Schilling */
 /*
  *	Dynamic autoconf C-include code.
