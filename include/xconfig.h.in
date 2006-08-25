@@ -447,8 +447,8 @@
 /*#undef HAVE_SIZE_T*/
 /*#undef NO_SIZE_T*/
 /* 
- * Critical on some of Debian architectures (EB)
- * #define VA_LIST_IS_ARRAY 1		* va_list is an array */
+ * Critical on some of Debian architectures (EB) */
+/* #define VA_LIST_IS_ARRAY 1		*/
 
 #cmakedefine VA_LIST_IS_ARRAY
 
