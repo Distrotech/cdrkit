@@ -1,5 +1,7 @@
 /* xconfig.h  Generated automatically by cmake */
-/* @(#)xconfig.h.in	1.84 05/05/16 Copyright 1998-2003 J. Schilling */
+
+/* Modified by Eduard Bloch, 2006 */
+
 /*
  *	Dynamic autoconf C-include code.
  *
@@ -444,7 +446,12 @@
 
 /*#undef HAVE_SIZE_T*/
 /*#undef NO_SIZE_T*/
-#define VA_LIST_IS_ARRAY 1		/* va_list is an array */
+/* 
+ * Critical on some of Debian architectures (EB)
+ * #define VA_LIST_IS_ARRAY 1		* va_list is an array */
+
+#cmakedefine VA_LIST_IS_ARRAY
+
 #define GETGROUPS_T gid_t
 #define GID_T		GETGROUPS_T
 
@@ -455,8 +462,11 @@
 
 /*
  * Defines needed to get large file support.
- */
 #ifdef	USE_LARGEFILES
+
+We always use LFS on Debian, basta (EB)
+
+ */
 
 #define	HAVE_LARGEFILES 1
 #define _FILE_OFFSET_BITS 64
@@ -467,10 +477,7 @@
 				/* XXX is bad anyway. If we define	   */
 				/* XXX _XOPEN_SOURCE we will loose caddr_t */
 
-/* #undef HAVE_FSEEKO */		/* Do we need this? If HAVE_LARGEFILES is  */
-				/* defined, we have fseeko()		   */
-
-#endif	/* USE_LARGEFILES */
+/*#endif	* USE_LARGEFILES */
 
 #ifdef USE_ACL			/* Enable/disable ACL support */
 /*
