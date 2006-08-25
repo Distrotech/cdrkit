@@ -32,11 +32,7 @@ if [ ! -x "$MP_CODER" ] ; then
    exit 1
 fi
 
-if [ -z "$CDDA_DEVICE" ]
-then
-  CDDA_DEVICE=/dev/cdrw
-fi
-export CDDA_DEVICE
+CDDA_DEVICE=${CDDA_DEVICE:-/dev/cdrw}
 
 FILEPREFIX=${1:-audiotrack}
 
