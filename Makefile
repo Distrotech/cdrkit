@@ -12,9 +12,9 @@ cmakepurge:
 	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
 
 clean:
-	-cd build && make clean
+#	-cd build && make clean
+#	rm -f include/xconfig.h include/align.h
 	rm -rf build
-	rm -f include/xconfig.h include/align.h
 
 %: build/Makefile
 	$(MAKE) -C build $(MAKE_FLAGS) $@
