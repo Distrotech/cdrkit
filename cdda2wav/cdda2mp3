@@ -53,11 +53,11 @@ echo Fetching `echo $LIST | wc -w` tracks in $CDDA_DEVICE, encoding with $MP_COD
 echo Cancel with Ctrl-C, watch out for error messages.
 
 for TRACK in $LIST ; do
+   NAME="`printf "%02d" $TRACK`-$FILEPREFIX.mp3"
    echo
-   echo "############ Starting with Track Nr. $TRACK -> $FILEPREFIX$TRACK.mp3 ############"
+   echo "############ Starting with Track Nr. $TRACK -> $NAME ############"
   $CDDA2WAV $CDDA2WAV_OPTS -t$TRACK $DEBUG - | \
-#  echo n | $MP_CODER $NPIPE $FILEPREFIX$TRACK.mp3 $MP_OPTIONS 
-  $MP_CODER $MP_OPTIONS - $FILEPREFIX$TRACK.mp3 
+  $MP_CODER $MP_OPTIONS - "$NAME"
   # check result code
   RES=$?
   if [ $RES != 0 ] ; then

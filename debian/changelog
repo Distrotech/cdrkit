@@ -70,6 +70,7 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
   * Ubuntu's 40_fix_bad_spelling.dpatch integrated (typo in wodim.dfl)
   * increased hash size in mkisofs/hash.c (closes: #327270)
   * more decent info message about locale detection
+  * debian/copyright has uptodate mail address for Schilling (closes: #372484)
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 
