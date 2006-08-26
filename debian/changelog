@@ -1,5 +1,10 @@
 botox (5:1.0~pre1-1) UNRELEASED; urgency=low
 
+  * FIXME: 
+
+  Before releasing, move the upstream-related bits to an entry in ../Changelog
+
+
   * The Big Fork to an independent project called botox
     + using the last clearly stated GPLed versions of files from
       cdrtools-2.01.01a08 (closes: #353403, 372486
@@ -14,7 +19,7 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
       closes: #350254, reopen if not)
   * removed most of the anti-linux2.6 FUD from program messages (unless beeing
     in verbose mode). Decent information about code modifications is okay,
-    oververbose progranda isn't (closes: #377145)
+    subtle propaganda isn't (closes: #377145)
   * dropped the shm build (kernel 2.2 is history)
   * dropped dpatch integration, we are the upstream now
   * disabled debconf messages and device-creating code for now, things like
@@ -22,6 +27,13 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
     equaly be presented as program messages. Why shall we still MAKEDEV them?
     It's not like we have switched to kernel 2.0.1 yesterday 
     (closes: #342085, 188827, #200665)
+  * long help output of wodim, mkisofs, cdda2wav goes to stdout IFF -help was
+    used deliberately (closes: #138490)
+  * added more meaningful error message on -dvd-video failure (closes: #324586)
+  * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
+    fixes for unreliable encoder detection (closes: #283794, #344443) plus
+    possible override of preset CDDA_DEVICE variable fixed. Made the list of
+    selected audiotracks modifiable, see manpage (closes: #344445)
   * sync with 4:2.01+01a01-4ubuntu4:
     + merged README.ATAPI.setup with README.ATAPI.setup.ubuntu. Kernel 2.6 part
       now in the beginning and reflecting the reality (dev=/dev/drive syntax,
@@ -57,6 +69,7 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
     (closes: #335253, 374685, 330506, 329308, 374345, 377421
   * Ubuntu's 40_fix_bad_spelling.dpatch integrated (typo in wodim.dfl)
   * increased hash size in mkisofs/hash.c (closes: #327270)
+  * more decent info message about locale detection
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 

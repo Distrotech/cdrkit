@@ -2318,7 +2318,11 @@ file_gen()
 	if (!assign_file_addresses(root)) {
 #ifdef DVD_VIDEO
 		if (dvd_video) {
-			comerrno(EX_BAD, "Unable to make a DVD-Video image.\n");
+			comerrno(EX_BAD, "Unable to make a DVD-Video image.\n"
+            "Possible reasons:\n"
+            "  - VIDEO_TS subdirectory was not found on specified location\n"
+            "  - VIDEO_TS has invalid contents\n"
+            );
 		}
 #else
 		;	/* EMPTY */

@@ -40,17 +40,21 @@ if [ -e /etc/default/cdda2mp3 ]; then
 	. /etc/default/cdda2mp3
 fi
 
-LIST="$($CDDA2WAV -v trackid -t -1 2>&1|grep T:|cut -f1 -d.|cut -f2 -d:)"
 if [ -z "$LIST" ] ; then
-   echo "ERROR: No audio tracks detected"
-   exit 1
-else
-   echo Found `echo $LIST | wc -w` tracks in $CDDA_DEVICE, encoding with $MP_CODER.
-   echo Cancel with Ctrl-C, watch out for error messages.
+   echo Looking for available tracks...
+   LIST="$($CDDA2WAV -v trackid -t -1 2>&1|grep T:|cut -f1 -d.|cut -f2 -d:)"
+   if [ -z "$LIST" ] ; then
+      echo "ERROR: No valid audio tracks detected"
+      exit 1
+   fi
 fi
 
+echo Fetching `echo $LIST | wc -w` tracks in $CDDA_DEVICE, encoding with $MP_CODER.
+echo Cancel with Ctrl-C, watch out for error messages.
+
 for TRACK in $LIST ; do
-   echo Start ripping Track Nr. $TRACK
+   echo
+   echo "############ Starting with Track Nr. $TRACK -> $FILEPREFIX$TRACK.mp3 ############"
   $CDDA2WAV $CDDA2WAV_OPTS -t$TRACK $DEBUG - | \
 #  echo n | $MP_CODER $NPIPE $FILEPREFIX$TRACK.mp3 $MP_OPTIONS 
   $MP_CODER $MP_OPTIONS - $FILEPREFIX$TRACK.mp3 

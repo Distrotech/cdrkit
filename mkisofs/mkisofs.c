@@ -846,7 +846,7 @@ LOCAL const struct ld_option ld_options[] =
 
 LOCAL	void	read_rcfile	__PR((char *appname));
 LOCAL	void	susage		__PR((int excode));
-LOCAL	void	usage		__PR((int excode));
+LOCAL	void	usage		__PR((int excode, int deliberate));
 EXPORT	int	iso9660_date	__PR((char *result, time_t crtime));
 LOCAL	void	hide_reloc_dir	__PR((void));
 LOCAL	char *	get_pnames	__PR((int argc, char **argv, int opt,
@@ -1050,10 +1050,11 @@ susage(excode)
 }
 
 LOCAL void
-usage(excode)
-	int		excode;
+usage(int excode, int deliberate)
 {
 	const char	*program_name = "mkisofs";
+
+   FILE *target=deliberate ? stdout : stderr;
 
 #if 0
 	fprintf(stderr, "Usage:\n");
@@ -1069,16 +1070,16 @@ usage(excode)
 
 /*	const char **targets, **pp;*/
 
-	fprintf(stderr, "Usage: %s [options] file...\n", program_name);
+	fprintf(target, "Usage: %s [options] file...\n", program_name);
 
-	fprintf(stderr, "Options:\n");
+	fprintf(target, "Options:\n");
 	for (i = 0; i < (int)OPTION_COUNT; i++) {
 		if (ld_options[i].doc != NULL) {
 			int	comma;
 			int	len;
 			int	j;
 
-			fprintf(stderr, "  ");
+			fprintf(target, "  ");
 
 			comma = FALSE;
 			len = 2;
@@ -1087,16 +1088,16 @@ usage(excode)
 			do {
 				if (ld_options[j].shortopt != '\0' &&
 					ld_options[j].control != NO_HELP) {
-					fprintf(stderr, "%s-%c",
+					fprintf(target, "%s-%c",
 						comma ? ", " : "",
 						ld_options[j].shortopt);
 					len += (comma ? 2 : 0) + 2;
 					if (ld_options[j].arg != NULL) {
 						if (ld_options[j].opt.has_arg != optional_argument) {
-							fprintf(stderr, " ");
+							fprintf(target, " ");
 							++len;
 						}
-						fprintf(stderr, "%s",
+						fprintf(target, "%s",
 							ld_options[j].arg);
 						len += strlen(ld_options[j].arg);
 					}
@@ -1110,7 +1111,7 @@ usage(excode)
 			do {
 				if (ld_options[j].opt.name != NULL &&
 					ld_options[j].control != NO_HELP) {
-					fprintf(stderr, "%s-%s%s",
+					fprintf(target, "%s-%s%s",
 						comma ? ", " : "",
 						ld_options[j].control == TWO_DASHES ? "-" : "",
 						ld_options[j].opt.name);
@@ -1119,7 +1120,7 @@ usage(excode)
 						+ (ld_options[j].control == TWO_DASHES ? 1 : 0)
 						+ strlen(ld_options[j].opt.name));
 					if (ld_options[j].arg != NULL) {
-						fprintf(stderr, " %s",
+						fprintf(target, " %s",
 							ld_options[j].arg);
 						len += 1 +
 						    strlen(ld_options[j].arg);
@@ -1131,16 +1132,16 @@ usage(excode)
 			while (j < (int)OPTION_COUNT && ld_options[j].doc == NULL);
 
 			if (len >= 30) {
-				fprintf(stderr, "\n");
+				fprintf(target, "\n");
 				len = 0;
 			}
 			for (; len < 30; len++)
-				fputc(' ', stderr);
+				fputc(' ', target);
 
-			fprintf(stderr, "%s\n", ld_options[i].doc);
+			fprintf(target, "%s\n", ld_options[i].doc);
 		}
 	}
-	fprintf(stderr, 
+	fprintf(target, 
         "\nNOTE: This version of mkisofs differs from the one published by Eric Youngdale\n"
         "and from the one included in cdrtools (by Joerg Schilling).\n"
         "It provides a different set of features and has different problems.\n"
@@ -2160,7 +2161,7 @@ main(argc, argv)
 			hide_rr_moved++;
 			break;
 		case OPTION_HELP:
-			usage(0);
+			usage(0, 1);
 			break;
 		case OPTION_PVERSION:
 			printf("%s (%s-%s-%s)\n",
@@ -2531,11 +2532,7 @@ parse_input_files:
 			icharset = charset;
 
 		if(icharset && verbose > 0)
-			fprintf(stderr, "INFO:\t"
-			"%s character encoding detected by locale settings."
-			"\n\tAssuming %s encoded filenames on source "
-			"filesystem,\n"
-			"\tuse -input-charset to override.\n",
+			fprintf(stderr, "I: -input-charset not specified, using %s (detected in locale settings)\n",
 			icharset, icharset);
 	}
 
@@ -2580,7 +2577,7 @@ parse_input_files:
                 "\nRun \"iconv -l\" to display them. Iconv charsets cannot be used with HFS, Apple"
                 "\nextension, ISO9660 version 2 or Rock Ridge.\n"
                 "\nIMPORTANT: never report problems with charset support directly"
-                "\nto Joerg Schilling! Report them to cdrtools@packages.debian.org first.\n");
+                "\nto Joerg Schilling! Report them to debburn-devel@lists.alioth.debian.org.\n");
 #endif
 		exit(1);
 	}
