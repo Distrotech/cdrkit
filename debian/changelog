@@ -28,7 +28,8 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
     It's not like we have switched to kernel 2.0.1 yesterday 
     (closes: #342085, 188827, #200665)
   * long help output of wodim, mkisofs, cdda2wav goes to stdout IFF -help was
-    used deliberately (closes: #138490)
+    used deliberately. No matter what JS claims to be "the Unix Tradition"
+    (closes: #138490, #299641)
   * added more meaningful error message on -dvd-video failure (closes: #324586)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus
