@@ -20,6 +20,7 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
   * removed most of the anti-linux2.6 FUD from program messages (unless beeing
     in verbose mode). Decent information about code modifications is okay,
     subtle propaganda isn't (closes: #377145)
+  * changed default config file location to /etc/default/wodim
   * dropped the shm build (kernel 2.2 is history)
   * dropped dpatch integration, we are the upstream now
   * disabled debconf messages and device-creating code for now, things like

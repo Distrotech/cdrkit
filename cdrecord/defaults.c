@@ -53,7 +53,7 @@ open_cdrdefaults()
 	 * don't contribute work and don't give support, they are causing extra
 	 * work for me and this way slow down the cdrecord development.
 	 */
-	return (defltopen("/etc/default/cdrecord"));
+	return (defltopen("/etc/default/wodim"));
 }
 
 EXPORT void

@@ -1,8 +1,10 @@
 PROJECT (READECD)
 INCLUDE_DIRECTORIES(../include ../cdrecord . ${CMAKE_BINARY_DIR})
 
+AUX_SOURCE_DIRECTORY(. READCD_SRCS)
+
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt ../libfile)
-ADD_EXECUTABLE (readcd cd_misc.c defaults.c getnum.c io.c misc.c modes.c movesect.c readcd.c scsi_cdr.c scsi_mmc.c scsi_scan.c)
+ADD_EXECUTABLE (readcd ${READCD_SRCS})
 TARGET_LINK_LIBRARIES(readcd scg schily deflt file)
 SET_TARGET_PROPERTIES(readcd PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
 
