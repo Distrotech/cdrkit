@@ -15,8 +15,9 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
       Joerg Schilling and "his understanding of how GPL applies in German
       Urheberrecht" which was used to legitimate the "special clauses" in the
       source (closes: #350738)
-    + custom CMake based build system (closes: #350739 and hopefully
-      closes: #350254, reopen if not)
+    + custom CMake based build system used instead of the original one, since
+      we understand it better (closes: #350739 and hopefully closes: #350254,
+      reopen if not)
   * removed most of the anti-linux2.6 FUD from program messages (unless beeing
     in verbose mode). Decent information about code modifications is okay,
     subtle propaganda isn't (closes: #377145)
