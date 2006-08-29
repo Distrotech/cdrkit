@@ -295,16 +295,13 @@ main(ac, av)
   BOOL	is_cdwr = FALSE;
   BOOL	is_dvdwr = FALSE;
 
-  /* Look for any traces of cdrecord linking */
-	if (strstr(av[0], "cdrecord")) {
-		fprintf(stderr,
-          "##############################################################################\n"
-          "This is wodim, not cdrecord. Don't run this program like cdrecord.\n"
-          "Since you apparently do, don't bother Joerg Schilling with any problems caused\n"
-          "by this application.\n"
-          "##############################################################################\n\n"
-          );
-	}
+  fprintf(stderr,
+        "##############################################################################\n"
+        "This is wodim, not cdrecord. Don't expect it to behave like cdrecord in any\n"
+        "way, don't refer to it as \"cdrecord\".\n"
+        "Don't bother Joerg Schilling with any problems caused by this application.\n"
+        "##############################################################################\n\n"
+        );
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
