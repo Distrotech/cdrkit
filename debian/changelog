@@ -17,7 +17,9 @@ botox (5:1.0~pre1-1) UNRELEASED; urgency=low
       source (closes: #350738)
     + custom CMake based build system used instead of the original one, since
       we understand it better (closes: #350739 and hopefully closes: #350254,
-      reopen if not)
+      reopen if not). It seems to be portable among the the plattforms
+      supported by Debian, it needs a bit of work for porting to non-Linux
+      plattforms, though.
   * removed most of the anti-linux2.6 FUD from program messages (unless beeing
     in verbose mode). Decent information about code modifications is okay,
     subtle propaganda isn't (closes: #377145)
