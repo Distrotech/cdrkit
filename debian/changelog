@@ -87,7 +87,8 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
 
   [ Steve McIntyre]:
   * Minor spelling/English fixes
-
+  * Remove __va_arg_list from format.c so alpha builds work
+	
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 
 cdrtools (4:2.01+01a03-5) unstable; urgency=low
