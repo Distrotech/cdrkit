@@ -80,6 +80,9 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
   * Make build-depends on cmake versioned, to show backporters we need a recent one.
   * Bump build-depends on debhelper.
 
+  [ Steve McIntyre]:
+  * Minor spelling/English fixes
+
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 
 cdrtools (4:2.01+01a03-5) unstable; urgency=low

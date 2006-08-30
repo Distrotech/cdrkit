@@ -4,8 +4,8 @@ Short overview for those who don't read manuals:
 This software is compiled to binary form using a build system based on the
 CMake framework. Therefore, the requirements to build this package are:
 
- - cmake (revent version, available from http://www.cmake.org or maybe as a
-   package in system's Linux distribution)
+ - cmake (recent version, available from http://www.cmake.org or maybe as a
+   package in your Linux distribution)
  - make (an implmentation supported by cmake, eg. GNU make, smake, ...)
  - working GCC compiler environment
 
