@@ -1,11 +1,11 @@
-botox (5:1.0~pre1-1) UNRELEASED; urgency=low
+cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
 
   * FIXME: 
 
   Before releasing, move the upstream-related bits to an entry in ../Changelog
 
 
-  * The Big Fork to an independent project called botox
+  * The Big Fork to an independent project called cdrkit
     + using the last clearly stated GPLed versions of files from
       cdrtools-2.01.01a08 (closes: #353403, 372486
     + we play the upstream role now, using our patches and we like them

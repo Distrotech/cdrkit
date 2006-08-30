@@ -1,4 +1,4 @@
-Source: botox
+Source: cdrkit
 Priority: optional
 Section: otherosfs
 Maintainer: Joerg Jaspert <joerg@debian.org>
@@ -11,20 +11,20 @@ Architecture: any
 Depends: ${shlibs:Depends}, debconf | debconf-2.0, makedev (>= 2.3.1-24)
 Recommends: mkisofs
 Replaces: cdrtools-doc, cdrecord
-Suggests: xcdroast, botox-doc
+Suggests: xcdroast, cdrkit-doc
 Conflicts: xcdroast (<< 0.98+0alpha14-5), cdrecord
 Description: command line CD writing tool
  wodim allows you to create CDs on a CD recorder.
  It supports writing data, audio, mixed, multi-session, and CD+
  discs, on just about every type of CD recorder out there.
  .
- Please install botox-doc if you want most of the documentation and
+ Please install cdrkit-doc if you want most of the documentation and
  Readme-files.
 
 Package: mkisofs
 Architecture: any
 Depends: ${shlibs:Depends}
-Suggests: wodim, botox-doc
+Suggests: wodim, cdrkit-doc
 Conflicts: mkhybrid, xcdroast (<< 0.98+0alpha11)
 Description: Creates ISO-9660 CD-ROM filesystem images
  mkisofs is a pre-mastering program for creating ISO-9660 CD-ROM 
@@ -36,12 +36,12 @@ Description: Creates ISO-9660 CD-ROM filesystem images
  The package also includes tools needed to create compressed isofs images
  (mkzftree from zisofs_tools source).
  .
- Please install botox-doc if you want most of the documentation and
+ Please install cdrkit-doc if you want most of the documentation and
  Readme-files.
 
 Package: cdda2wav
 Architecture: any
-Suggests: vorbis-tools, botox-doc
+Suggests: vorbis-tools, cdrkit-doc
 Depends: ${shlibs:Depends}
 Conflicts: xcdroast (<< 0.98+0alpha11)
 Section: sound
@@ -51,13 +51,13 @@ Description: Creates WAV files from audio CDs
  can be dumped into raw (cdr), wav or sun format sound files. Options control
  the recording format (stereo/mono; 8/16 bits; sampling rate, etc).
  .
- Please install botox-doc if you want most of the documentation and
+ Please install cdrkit-doc if you want most of the documentation and
  Readme-files.
 
-Package: botox-doc
+Package: cdrkit-doc
 Architecture: all
 Section: doc
 Suggests: wodim, mkisofs, cdda2wav
-Description: Documentation for the botox package-suite
- This is the documentation for the botox package-suite, namely
+Description: Documentation for the cdrkit package-suite
+ This is the documentation for the cdrkit package-suite, namely
  wodim, mkisofs and cdda2wav.

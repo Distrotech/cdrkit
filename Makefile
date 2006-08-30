@@ -2,7 +2,7 @@
 all: build/Makefile
 	$(MAKE) -C build $(MAKE_FLAGS) all
 
-DISTNAME=botox-$(shell cat VERSION)
+DISTNAME=cdrkit-$(shell cat VERSION)
 
 build/Makefile:
 	-mkdir build 2>/dev/null
