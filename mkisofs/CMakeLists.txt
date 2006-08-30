@@ -17,7 +17,7 @@ ADD_DEFINITIONS(-DUSE_LARGEFILES -DABORT_DEEP_ISO_ONLY -DAPPLE_HYB -DUDF -DDVD_V
 SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c getnum.c getopt.c getopt1.c hash.c ifo_read.c joliet.c mac_label.c match.c modes.c multi.c name.c rock.c scsi.c scsi_cdr.c stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
 	boot-mipsel.c endian.c  )
 
-#SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES COMPILE_FLAGS -O2)
+#SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES )
 LINK_DIRECTORIES(../libhfs_iso ../libschily ../libscg ../libunls ../libdeflt ../libfile)
 
 ADD_EXECUTABLE (mkisofs mkisofs.c ${MKISOFS_MOST_SRCS})
@@ -33,7 +33,7 @@ ADD_EXECUTABLE(isoinfo diag/isoinfo.c	 ${MI_COMMON})
 ADD_EXECUTABLE(isovfy	diag/isovfy.c	 ${MI_COMMON})
 
 
-SET_TARGET_PROPERTIES(mkisofs devdump isodebug isodump isoinfo isovfy PROPERTIES COMPILE_FLAGS -O2 SKIP_BUILD_RPATH TRUE)
+SET_TARGET_PROPERTIES(mkisofs devdump isodebug isodump isoinfo isovfy PROPERTIES  SKIP_BUILD_RPATH TRUE)
 
 INSTALL(TARGETS mkisofs devdump isodebug isodump isoinfo isovfy DESTINATION bin)
 INSTALL(FILES 
