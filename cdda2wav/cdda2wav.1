@@ -341,8 +341,8 @@ settings (currently
 ).
 .SH "ENVIRONMENT VARIABLES"
 .B CDDA_DEVICE
-is used to set the device name. The device naming is compatible with J\*org
-Schilling's cdrecord package.
+is used to set the device name. The device naming is compatible with the one
+used by the wodim tool.
 .TP
 .B CDDBP_SERVER
 is used for cddbp title lookups when supplied.
@@ -820,8 +820,8 @@ gui frontends (like xcd-roast).
 this option switches on logging of SCSI commands. This will produce
 a lot of output (when SCSI devices are being used).
 This is needed for debugging purposes. The format
-is the same as being used with the cdrecord program from J\*org Schilling.
-I will not describe it here.
+is the same as being used with the cdrecord program from J\*org Schilling or
+the wodim tool. See there for details.
 .IP "Quiet option"
 .B \-q
 suppresses all screen output except error messages.
@@ -918,7 +918,7 @@ Inf files:
 .sp
 The inf files are describing the sample files and the part from the audio cd,
 it was taken from. They are a means to transfer information to a cd burning
-program like cdrecord. For example, if the original audio cd had pre-emphasis
+program like wodim. For example, if the original audio cd had pre-emphasis
 enabled, and cdda2wav -T did remove the pre-emphasis, then the inf file has
 pre-emphasis not set (since the audio file does not have it anymore), while
 the .cddb and the .cdindex have pre-emphasis set as the original does.
