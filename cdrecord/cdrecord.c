@@ -502,8 +502,9 @@ main(ac, av)
 		 */
 		vers = scg_version(0, SCG_VERSION);
 		auth = scg_version(0, SCG_AUTHOR);
-		// One message is enough to teach the user, no reason to print more
-    // printf("Using libscg version '%s-%s'.\n", auth, vers);
+		/* (eb) One message is enough to teach the user, no reason to print more of them
+     printf("Using libscg version '%s-%s'.\n", auth, vers);
+     */
 		if (auth == 0 || strcmp("schily", auth) != 0) {
 			errmsgno(EX_BAD,
 			"Warning: using inofficial version of libscg (%s-%s '%s').\n",
@@ -3992,7 +3993,7 @@ load_media(scgp, dp, doexit)
 	scsi_start_stop_unit(scgp, 1, 0, immed);
 	wait_unit_ready(scgp, 120);
 	scgp->silent++;
-	if(geteuid() == 0) // EB: needed? Not allowed for non-root, that is sure.
+	if(geteuid() == 0) /* EB: needed? Not allowed for non-root, that is sure. */
       rezero_unit(scgp);	/* Is this needed? Not supported by some drvives */
 	scgp->silent--;
 	test_unit_ready(scgp);
