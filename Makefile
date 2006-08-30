@@ -1,12 +1,16 @@
 
+ifneq ($(CFLAGS),)
+EXTRA_CMAKE_FLAGS += -DCMAKE_C_FLAGS="$(CFLAGS)"
+endif
+
 all: build/Makefile
 	$(MAKE) -C build $(MAKE_FLAGS) all
 
 DISTNAME=cdrkit-$(shell cat VERSION)
 
 build/Makefile:
-	-mkdir build 2>/dev/null
-	cd build && cmake ..
+	@-mkdir build 2>/dev/null
+	cd build && cmake .. $(EXTRA_CMAKE_FLAGS)
 
 cmakepurge:
 	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
