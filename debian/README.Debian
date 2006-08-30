@@ -1,12 +1,10 @@
 cdrkit for Debian
 ----------------
 
-Talibus is The Alternative Burning Suite, a collection of applications related
+cdrkit is Cd Recording Kit, a collection of applications related
 to creation of optical disk media on unixoid plattforms. It is heavily based on
 the cdrtools package (partially developed and maintained by Joerg Schilling
 <schilling@fokus.gmd.de> before), however it is maintained independently now.
-
-The Debian packaging was initally done by Erik Andersen <andersee@debian.org>.
 
 If you want to report Bugs please read the following:
 
@@ -29,4 +27,6 @@ CD/DVD-Recorder found" is inaceptable as error report because we cannot see any
 reason why this message has been printed. For this reason we would need the
 complete inquiry output to understand why this message was printed.
 
-Eduard Bloch <blade@debian.org>, Wed, 23 Aug 2006 21:47:08 +0200
+ -- Joerg Jaspert <joerg@debian.org>, Thu, 31 Aug 2006 00:25:05 +0200
+ -- Eduard Bloch <blade@debian.org>, Wed, 23 Aug 2006 21:47:08 +0200
+

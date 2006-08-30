@@ -79,6 +79,11 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
   [ Joerg Jaspert]:
   * Make build-depends on cmake versioned, to show backporters we need a recent one.
   * Bump build-depends on debhelper.
+  * Kill old conflict on xcdroast, that version is no longer in Debian
+  * Added a dummy cdrecord package to ease upgrades for our users. Will get removed
+    some time after etch released.
+  * Cleaned debian/rules a bit.
+  * wodim.links: s/cdrecord/wodim/
 
   [ Steve McIntyre]:
   * Minor spelling/English fixes

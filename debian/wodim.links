@@ -1,4 +1,3 @@
-etc/default/cdrecord etc/cdrecord/cdrecord
-etc/default/rscsi etc/cdrecord/rscsi
-usr/share/man/man1/cdrecord.1.gz usr/share/man/man1/cdrecord.shm.1.gz
-usr/share/man/man1/cdrecord.1.gz usr/share/man/man1/cdrecord.mmap.1.gz
+etc/default/wodim etc/wodim/wodim
+etc/default/rscsi etc/wodim/rscsi
+usr/share/man/man1/wodim.1.gz usr/share/man/man1/wodim.1.gz

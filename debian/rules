@@ -6,11 +6,11 @@
 
 PACKAGE = cdrkit
 
-COPTX = -g
+CMakeFlags = -g
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-COPTX += -O0
+CMakeFlags += -O0
 else
-COPTX += -O2
+CMakeFlags += -O2
 endif
 
 i=$(shell pwd)/debian/tmp/usr
@@ -18,7 +18,7 @@ b=$(shell pwd)/debian/build
 iso=mkisofs
 cdd=cdda2wav
 cdr=wodim
-ziso_VERSION = $(shell cat zisofs_tools/version)
+ziso_VERSION = $(shell cat 3rd-party/zisofs_tools/version)
 source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
 
 
@@ -30,9 +30,8 @@ build-debstamp:
 #	fi
 	@echo "--- Compiling"
 	dh_testdir
-	$(MAKE) all
-#	cp /usr/share/misc/config.sub /usr/share/misc/config.guess conf
-#	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > zisofs_tools/version.h
+	make CFLAGS='$(CMakeFlags)'
+	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > 3rd-party/zisofs_tools/version.h
 	touch build-debstamp
 
 clean:
@@ -82,7 +81,7 @@ install-saved:
 	rm -rf $(b)
 	touch install-debstamp
 
-binary-indep: build install cdrkit-doc
+binary-indep: build install cdrkit-doc cdrecord
 
 binary-arch: build install \
 	wodim \
@@ -115,6 +114,21 @@ wodim: install
 	dh_md5sums           -p$@ -P$(b)/$@
 	dh_builddeb          -p$@ -P$(b)/$@
 
+#
+# cdrecord dummy one
+#
+
+cdrecord:
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_link              -p$@ -P$(b)/$@ 
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
 
 #
 # mkisofs
@@ -158,7 +172,7 @@ cdda2wav: install
 	chmod 755 $(b)/$@/usr/bin/readmult
 	chmod 755 $(b)/$@/usr/bin/pitchplay
 	dh_installman        -p$@ -P$(b)/$@
-	# cludge, integrate into the official BS later
+# cludge, integrate into the official BS later
 #	dh_installman        -p$@ -P$(b)/$@ doc/readmult.man doc/pitchplay.man doc/list_audio_tracks.man
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
@@ -192,4 +206,4 @@ cdrkit-doc: install
 	dh_builddeb          -p$@ -P$(b)/$@
 
 binary: binary-indep binary-arch
-.PHONY: binary clean binary-indep binary-arch build install install-save install-saved patch unpatch unapplydvd
+.PHONY: binary clean binary-indep binary-arch build install install-save install-saved
