@@ -6,11 +6,11 @@
 
 PACKAGE = cdrkit
 
-CMakeFlags = -g
+CFLAGS = -g
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-CMakeFlags += -O0
+CFLAGS += -O0
 else
-CMakeFlags += -O2
+CMAKEFLAGS += -O2
 endif
 
 i=$(shell pwd)/debian/tmp/usr
@@ -30,7 +30,7 @@ build-debstamp:
 #	fi
 	@echo "--- Compiling"
 	dh_testdir
-	make CFLAGS='$(CMakeFlags)'
+	make CFLAGS='$(CFLAGS)'
 	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > 3rd-party/zisofs_tools/version.h
 	touch build-debstamp
 
@@ -61,9 +61,7 @@ install-debstamp:
 	dh_testroot
 	dh_clean
 	rm -rf $(b)
-# Fixate the target dir in the cahced settings
-	cmake -DCMAKE_INSTALL_PREFIX:PATH=$(i) build
-	make install
+	make install PREFIX=$(i)
 
 	install -m 755 cdda2wav/cdda2ogg $(i)/bin/
 	install -m 755 cdda2wav/cdda2mp3 $(i)/bin/
