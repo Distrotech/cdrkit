@@ -23,6 +23,11 @@ clean:
 %: build/Makefile
 	$(MAKE) -C build $(MAKE_FLAGS) $@
 
+ifneq ($(PREFIX),)
+install: build/Makefile
+	cd build && cmake .. -DCMAKE_INSTALL_PREFIX="$(PREFIX)" && $(MAKE) $(MAKE_FLAGS) install
+endif
+
 release:
 #	if test "$(shell svn status | grep -v -i make)" ; then echo Uncommited files found. Run \"svn status\" to display them. ; exit 1 ; fi
 	@if test -f ../$(DISTNAME).tgz ; then echo ../$(DISTNAME).tgz exists, not overwritting ; exit 1; fi
