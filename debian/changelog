@@ -4,7 +4,6 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
 
   Before releasing, move the upstream-related bits to an entry in ../Changelog
 
-
   * The Big Fork to an independent project called cdrkit
     + using the last clearly stated GPLed versions of files from
       cdrtools-2.01.01a08 (closes: #353403, 372486
@@ -76,6 +75,10 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
   * increased hash size in mkisofs/hash.c (closes: #327270)
   * more decent info message about locale detection
   * debian/copyright has uptodate mail address for Schilling (closes: #372484)
+
+  [ Joerg Jaspert]:
+  * Make build-depends on cmake versioned, to show backporters we need a recent one.
+  * Bump build-depends on debhelper.
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
 

@@ -3,16 +3,16 @@ Priority: optional
 Section: otherosfs
 Maintainer: Joerg Jaspert <joerg@debian.org>
 Uploaders: Eduard Bloch <blade@debian.org>, Steve McIntyre <93sam@debian.org>
-Build-Depends: debhelper (>=4.1.16), autotools-dev, zlib1g-dev, cmake, libcap-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libcam-dev [kfreebsd-i386 kfreebsd-amd64]
+Build-Depends: debhelper (>=5.0.37.3), autotools-dev, zlib1g-dev, cmake (>= 2.4.3-1), libcap-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libcam-dev [kfreebsd-i386 kfreebsd-amd64]
 Standards-Version: 3.6.2.1
 
 Package: wodim
 Architecture: any
 Depends: ${shlibs:Depends}, debconf | debconf-2.0, makedev (>= 2.3.1-24)
 Recommends: mkisofs
-Replaces: cdrtools-doc, cdrecord
+Replaces: cdrtools-doc (<< 5:1.0~pre1-0), cdrecord (<< 5:1.0~pre1-0)
 Suggests: xcdroast, cdrkit-doc
-Conflicts: xcdroast (<< 0.98+0alpha14-5), cdrecord
+Conflicts: cdrecord (<< 5:1.0~pre1-1)
 Description: command line CD writing tool
  wodim allows you to create CDs on a CD recorder.
  It supports writing data, audio, mixed, multi-session, and CD+
@@ -21,11 +21,19 @@ Description: command line CD writing tool
  Please install cdrkit-doc if you want most of the documentation and
  Readme-files.
 
+Package: cdrecord
+Architecture: all
+Depends: wodim (>= 5:1.0~pre1-1)
+Description: Dummy package for transition to wodim
+ This is a dummy package to ease the transition to wodim, the fork
+ of cdrecord. Please use wodim instead of cdrecord.
+ It provides a cdrecord symlink to wodim for compatibility purposes.
+
 Package: mkisofs
 Architecture: any
 Depends: ${shlibs:Depends}
 Suggests: wodim, cdrkit-doc
-Conflicts: mkhybrid, xcdroast (<< 0.98+0alpha11)
+Conflicts: mkhybrid
 Description: Creates ISO-9660 CD-ROM filesystem images
  mkisofs is a pre-mastering program for creating ISO-9660 CD-ROM 
  filesystem images, which can then be written to a CD-ROM (or DVD-ROM) using
@@ -43,7 +51,6 @@ Package: cdda2wav
 Architecture: any
 Suggests: vorbis-tools, cdrkit-doc
 Depends: ${shlibs:Depends}
-Conflicts: xcdroast (<< 0.98+0alpha11)
 Section: sound
 Description: Creates WAV files from audio CDs
  cdda2wav lets you digitally copy audio tracks from a CD-ROM, avoiding

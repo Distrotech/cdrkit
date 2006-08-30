@@ -420,7 +420,7 @@ main(ac, av)
                geteuid() ? " Make sure you are root.":"");
          errmsgno(EX_BAD, "For possible transport specifiers try 'wodim dev=help'.\n");
          errmsgno(EX_BAD, "\n");
-         errmsgno(EX_BAD, "For more information, install the cdrtools-doc\n");
+         errmsgno(EX_BAD, "For more information, install the cdrkit-doc\n");
          errmsgno(EX_BAD, "package and read /usr/share/doc/wodim/README.ATAPI.setup .\n");
          exit(EX_BAD);
       }
