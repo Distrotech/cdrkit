@@ -1,7 +1,7 @@
 
 <FIXME: see debian/changelog for more recent changes>
 
-icewm (2.01.01a08+X.15) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.15) UNRELEASED; urgency=low
 
   * Removed cdrtools-2.01.01a05-ossdvd.patch.bz2 again (threw bogus error
     messages in TAO mode), used 37_clean_dvdsup.dpatch (from Warly/Mandriva)
@@ -9,14 +9,14 @@ icewm (2.01.01a08+X.15) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 15:03:46 +0200
 
-icewm (2.01.01a08+X.15) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.15) UNRELEASED; urgency=low
 
   * Applied cdrtools-2.01.01a05-ossdvd.patch.bz2 slightly adapted to work with
     a08.
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 15:03:46 +0200
 
-icewm (2.01.01a08+X.14) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.14) UNRELEASED; urgency=low
 
   * 39_nonroot_skips_rezero_unit (don't try to run rezero_unit when not beeing
     root)
@@ -24,7 +24,7 @@ icewm (2.01.01a08+X.14) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:44:53 +0200
 
-icewm (2.01.01a08+X.13) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.13) UNRELEASED; urgency=low
 
   * 34_JTE (Jigdo Template Extraction, by Steve)
   * 36_ATA_scanbus_ignore_locked (skip busy devices when scaning, by myself)
@@ -33,14 +33,14 @@ icewm (2.01.01a08+X.13) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:35:30 +0200
 
-icewm (2.01.01a08+X.12) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.12) UNRELEASED; urgency=low
 
   * 31_gnu-kfreebsd.dpatch with minor adoptions (needs testing!)
   * 33_extra_arch_boot_support (extra arches, by Steve)
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:29:32 +0200
 
-icewm (2.01.01a08+X.11) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.11) UNRELEASED; urgency=low
 
   * 26_author_locale (ASCII transliteration of Jörg in the standard credits
     message)
@@ -49,7 +49,7 @@ icewm (2.01.01a08+X.11) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:23:03 +0200
 
-icewm (2.01.01a08+X.10) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.10) UNRELEASED; urgency=low
 
   * Applied 23_o_excl (exclusive device opening)
   * Applied 24_debug_tmpfile (more safe/secure log file location)
@@ -57,7 +57,7 @@ icewm (2.01.01a08+X.10) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:20:05 +0200
 
-icewm (2.01.01a08+X.09) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.09) UNRELEASED; urgency=low
 
   * Applied 18_donotopen_hda.dpatch - don't insist on opening unrelated IDE
     devices
@@ -67,28 +67,28 @@ icewm (2.01.01a08+X.09) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 14:11:47 +0200
 
-icewm (2.01.01a08+X.08) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.08) UNRELEASED; urgency=low
 
   * mkisofs iconv support with log message adapted, added to CMake build
     system as appropriate
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:57:10 +0200
 
-icewm (2.01.01a08+X.07) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.07) UNRELEASED; urgency=low
 
   * Applied patches: 07_noadvertising (strip adds for commercial
     cdrecord-proDVD), 08_privacy (mkisofs revealing the exact command line)
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:54:54 +0200
 
-icewm (2.01.01a08+X.06) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.06) UNRELEASED; urgency=low
 
   * Applied 06_dautipps - better hints about ATAPI usage howto and
     -joliet-long workaround
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:52:50 +0200
 
-icewm (2.01.01a08+X.05) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.05) UNRELEASED; urgency=low
 
   * Bits from 03_script.dpatch by Joerg Jaspert <joerg@debian.org> and Eduard
     Bloch: Linux-friendly device location for cdda scripts and better encoder
@@ -96,21 +96,21 @@ icewm (2.01.01a08+X.05) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:49:56 +0200
 
-icewm (2.01.01a08+X.04) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.04) UNRELEASED; urgency=low
 
   * Added bits from 02_paths.dpatch by Joerg Jaspert <joerg@debian.org>:
     /var/log directory location and SILO relevant paths
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:46:55 +0200
 
-icewm (2.01.01a08+X.03) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.03) UNRELEASED; urgency=low
 
   * adapted cdrecord/cdrecord.dfl for modern Linux system, based on bits from
     02_cdrecord_default_conf.dpatch by Zack Cerza <zcerza@coe.neu.edu>
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:43:15 +0200
 
-icewm (2.01.01a08+X.02) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.02) UNRELEASED; urgency=low
 
   * Converted to use a CMake based filesystem. Generating relevant things with
     its mechanisms instead of inc/*. Dropped BUILD, INSTALL files, rewrote
@@ -121,7 +121,7 @@ icewm (2.01.01a08+X.02) UNRELEASED; urgency=low
 
  -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 13:35:23 +0200
 
-icewm (2.01.01a08+X.01) UNRELEASED; urgency=low
+cdrkit (2.01.01a08+X.01) UNRELEASED; urgency=low
 
   * moved documentation around, READMEs/ directory contains a structure, moved
     mkisofs docs from the source directory to it
