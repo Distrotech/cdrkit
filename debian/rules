@@ -22,8 +22,8 @@ ziso_VERSION = $(shell cat 3rd-party/zisofs_tools/version)
 source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
 
 
-build: build-debstamp
-build-debstamp:
+build: build/build-debstamp
+build/build-debstamp:
 #	@if test -f ../cdrkit_$(source_VERSION).tar.gz ; then \
 #		echo "You should not create native packages! Remove ../cdrkit_$(source_VERSION).tar.gz and copy upstream source to .orig.tar.gz" ; \
 #		exit 1 ; \
@@ -32,7 +32,7 @@ build-debstamp:
 	dh_testdir
 	make CFLAGS='$(CFLAGS)'
 	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > 3rd-party/zisofs_tools/version.h
-	touch build-debstamp
+	touch build/build-debstamp
 
 clean:
 	@echo "--- Cleaning"
@@ -54,8 +54,8 @@ clean:
 	-rm -f wodim.mmap
 	-rm -rf build
 
-install: build install-debstamp
-install-debstamp:
+install: build build/install-debstamp
+build/install-debstamp:
 	@echo "--- Installing"
 	dh_testdir
 	dh_testroot
@@ -67,17 +67,7 @@ install-debstamp:
 	install -m 755 cdda2wav/cdda2mp3 $(i)/bin/
 	install -m 755 cdda2wav/readmult $(i)/bin/
 	install -m 755 cdda2wav/pitchplay $(i)/bin/
-	touch install-debstamp
-
-install-save: install
-	rm -rf $(i).saved
-	cp -a $(i) $(i).saved
-
-install-saved:
-	rm -rf $(i)
-	cp -a $(i).saved $(i)
-	rm -rf $(b)
-	touch install-debstamp
+	touch build/install-debstamp
 
 binary-indep: build install cdrkit-doc cdrecord
 

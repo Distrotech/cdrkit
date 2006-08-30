@@ -87,6 +87,8 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
   * Let cdrkitt-doc conflict/replace old cdrtools-doc
   * Cleaned up postinst for wodim and removed makedev dependency.
   * debhelper level 5, Policy version 3.7.2
+  * Moved all buildstamps into the build/ dir
+  * Dropped old install-save[d] targets.
 
   [ Steve McIntyre]:
   * Minor spelling/English fixes
