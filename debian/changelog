@@ -84,6 +84,9 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
     some time after etch released.
   * Cleaned debian/rules a bit.
   * wodim.links: s/cdrecord/wodim/
+  * Let cdrkitt-doc conflict/replace old cdrtools-doc
+  * Cleaned up postinst for wodim and removed makedev dependency.
+  * debhelper level 5, Policy version 3.7.2
 
   [ Steve McIntyre]:
   * Minor spelling/English fixes

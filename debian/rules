@@ -116,10 +116,11 @@ wodim: install
 # cdrecord dummy one
 #
 
-cdrecord:
+cdrecord: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
 	dh_link              -p$@ -P$(b)/$@ 
+	dh_install			 -p$@ -P$(b)/$@
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
 	dh_installdeb        -p$@ -P$(b)/$@

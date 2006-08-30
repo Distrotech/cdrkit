@@ -4,11 +4,11 @@ Section: otherosfs
 Maintainer: Joerg Jaspert <joerg@debian.org>
 Uploaders: Eduard Bloch <blade@debian.org>, Steve McIntyre <93sam@debian.org>
 Build-Depends: debhelper (>=5.0.37.3), autotools-dev, zlib1g-dev, cmake (>= 2.4.3-1), libcap-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libcam-dev [kfreebsd-i386 kfreebsd-amd64]
-Standards-Version: 3.6.2.1
+Standards-Version: 3.7.2
 
 Package: wodim
 Architecture: any
-Depends: ${shlibs:Depends}, debconf | debconf-2.0, makedev (>= 2.3.1-24)
+Depends: ${shlibs:Depends}
 Recommends: mkisofs
 Replaces: cdrtools-doc (<< 5:1.0~pre1-0), cdrecord (<< 5:1.0~pre1-0)
 Suggests: xcdroast, cdrkit-doc
@@ -23,7 +23,7 @@ Description: command line CD writing tool
 
 Package: cdrecord
 Architecture: all
-Depends: wodim (>= 5:1.0~pre1-1)
+Depends: wodim (>= 5:1.0~pre1-1), debconf | debconf-2.0
 Description: Dummy package for transition to wodim
  This is a dummy package to ease the transition to wodim, the fork
  of cdrecord. Please use wodim instead of cdrecord.
@@ -64,6 +64,8 @@ Description: Creates WAV files from audio CDs
 Package: cdrkit-doc
 Architecture: all
 Section: doc
+Replaces: cdrtools-doc
+Conflicts: cdrtools-doc
 Suggests: wodim, mkisofs, cdda2wav
 Description: Documentation for the cdrkit package-suite
  This is the documentation for the cdrkit package-suite, namely

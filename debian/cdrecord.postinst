@@ -3,5 +3,8 @@
 # Copyright 1999 Erik Andersen.  Licensed under the GNU GPL.
 # Changes by Eduard Bloch, Andreas Metzler, Joerg Jaspert (2002/2003/2006)
 
-
-#DEBHELPER#
+# Remove old left-over, not-used-anymore debconf stuff.
+if [ "$1" = "configure" ] && [ -e /usr/share/debconf/confmodule ]; then
+      . /usr/share/debconf/confmodule
+      db_purge
+fi
