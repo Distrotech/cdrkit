@@ -3,23 +3,22 @@ Forking cdrtools as cdrkit
 
 
 So, why the fork? CD/DVD burning is a complicated business that needs a
-lot of knowledge, so forking such a big collection isn't a light
-step. It needs a lot of human resources that could better do something
-else.
+lot of knowledge, so forking such a big collection isn't a step to be
+taken lightly. It requires a lot of human resources that could be put to
+better use elsewhere.
 
-That in mind we (Debian maintainers) did have a good and working
-relationship with cdrtools upstream Jörg Schilling for the past few
-years. It did work well, in both directions, Jörg even commented on
-Debian bugreports, which is one of the best steps any upstream can
-do. Of course we had some discussions over the years, but thats normal.
+In the past, we (the Debian maintainers) had a good and mutually
+cooperative relationship with Jörg.  He even commented on Debian bug
+reports, which is one of the best things an upstream maintainer can do.
+Naturally, there were occasionally discussions, but this is normal.
 
 
-Unfortunately SUN then developped the CDDL[1], a license that was
-intentionally made incompatible to the GPL.  The FSF itself says that
-this is the case and also people who helped drafting the CDDL state
-it. We had two (one former) Sun employees visiting us at our yearly
-Debian Conference, 2006 in Mexico, and there Danese Cooper clearly said
-that the CDDL was modelled with the MPL in mind to achieve the
+Unfortunately SUN then developed the CDDL[1], a license that was
+intentionally made to be incompatible with the GPL.  The FSF itself says
+that this is the case and also people who helped drafting the CDDL state
+it. One current and one former Sun employee visited the annual Debian
+conference in Mexico in 2006.  There, Danese Cooper clearly stated that
+the CDDL was modelled upon the MPL in order to achieve this
 incompatibility with the GPL. For everyone who wants to hear this, we
 have videos from that talk available at [2].
 
