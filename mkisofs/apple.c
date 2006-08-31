@@ -2476,7 +2476,7 @@ hfs_init(name, fdflags, hfs_select)
 	mlen = PATH_MAX;
 
 	/* initialise magic file */
-	if (magic_file && init_magic(magic_file) != 0)
+	if (magic_file && magic_open(magic_file) != 0)
 		perr("unable to open magic file");
 
 	/* set defaults */

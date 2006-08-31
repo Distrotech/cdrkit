@@ -446,7 +446,7 @@ format(fun, farg, fmt, args)
 			 * It would be nice to have something like
 			 * __va_arg_list() in stdarg.h
 			 */
-			count += format(fun, farg, rfmt, args);
+			count += format(fun, farg, rfmt, __va_arg_list(args));
 			continue;
 
 		case 'n':
