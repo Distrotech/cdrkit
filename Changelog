@@ -1,7 +1,13 @@
 cdrkit (1.0pre1) UNRELEASED; urgency=low
 
-	* Changed source package name and the version set to 1.0pre1
-	* The Big Fork to an independent project called cdrkit
+  * Changed source package name and the version set to 1.0pre1
+  * resorted contents to give the files a better structure (docs to docs,
+    readmes to readmes and announcements to announements)
+  * 3rd-party/ contains additional tools that make sense to be installed in
+    the contents of some of the applications here
+  * mods-archive/ contains patches used in the development, for easier history
+    lookup and easier merging of future versions of this parts
+  * The Big Fork to an independent project called cdrkit
     + using the last clearly stated GPLed versions of files from
       cdrtools-2.01.01a08 (closes: #353403, 372486
     + we play the upstream role now, using our patches and we like them
