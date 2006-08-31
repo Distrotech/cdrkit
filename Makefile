@@ -13,7 +13,10 @@ build/Makefile:
 	cd build && cmake .. $(EXTRA_CMAKE_FLAGS)
 
 cmakepurge:
-	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake */CMakeFiles */CMakeCache.txt */cmake_install.cmake */progress.make
+	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake 
+	rm -rf */install_manifest.txt */progress.make */CMakeFiles */CMakeCache.txt */cmake_install.cmake 
+	rm -rf */*/install_manifest.txt */*/progress.make */*/CMakeFiles */*/CMakeCache.txt */*/cmake_install.cmake 
+	rm */Makefile */*/Makefile
 
 clean:
 #	-cd build && make clean
