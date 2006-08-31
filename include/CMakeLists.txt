@@ -22,9 +22,8 @@ CONFIGURE_FILE( align.h.in align.h)
 
 TRY_COMPILE(VA_LIST_IS_ARRAY ${CMAKE_BINARY_DIR}  ${CMAKE_CURRENT_SOURCE_DIR}/test_VA_LIST_IS_ARRAY.c)
 MESSAGE("Got result: ${VA_LIST_IS_ARRAY} ")
-# invert the result, has the condition IFF compiler fails
+# invert the result, has the condition IFF compiler fails. There must be a simple way to say a=!b... but how?
 IF(VA_LIST_IS_ARRAY) 
-   # cannot believe that, no simple stupid NOT operator to invert the value?
    SET(VA_LIST_IS_ARRAY FALSE)
 else(VA_LIST_IS_ARRAY) 
    SET(VA_LIST_IS_ARRAY TRUE)
