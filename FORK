@@ -1,0 +1,54 @@
+Forking cdrtools as cdrkit
+--------------------------
+
+
+So, why the fork? CD/DVD burning is a complicated business that needs a
+lot of knowledge, so forking such a big collection isn't a light
+step. It needs a lot of human resources that could better do something
+else.
+
+That in mind we (Debian maintainers) did have a good and working
+relationship with cdrtools upstream Jörg Schilling for the past few
+years. It did work well, in both directions, Jörg even commented on
+Debian bugreports, which is one of the best steps any upstream can
+do. Of course we had some discussions over the years, but thats normal.
+
+
+Unfortunately SUN then developped the CDDL[1], a license that was
+intentionally made incompatible to the GPL.  The FSF itself says that
+this is the case and also people who helped drafting the CDDL state
+it. We had two (one former) Sun employees visiting us at our yearly
+Debian Conference, 2006 in Mexico, and there Danese Cooper clearly said
+that the CDDL was modelled with the MPL in mind to achieve the
+incompatibility with the GPL. For everyone who wants to hear this, we
+have videos from that talk available at [2].
+
+
+You can read the FSF position about the CDDL at [3] and some statements
+Debian people brought up at [4] and a wide range of other mails in that
+thread.  Basically the CDDL has extra restrictions, something thats not
+allowed from the GPL.  As Jörg has a different opinion about this and
+repeatedly stated that the CDDL is not incompatible, interpreting the
+look of a face in the mentioned video, calling us liar and generally
+seemed to be unwilling to consider our concerns (he never replied to the
+parts where we explained why it is incompatible), so basically ignoring
+what we said - we had no other choice than a fork.
+
+
+We used the last version where the program code was licensed under GPL
+and killed the incompatibly licensed build-system. It is now replaced by
+a cmake system, and the whole source we distribute should be free of
+other incompatibilities, as to the best of our current knowledge.
+
+
+Anyone who wants to help with this fork, which especially includes other
+distributions, is welcome to join our efforts. You can contact us on
+IRC, server irc.oftc.net, channel #debburn or via mail at
+debburn-devel@lists.alioth.debian.org, our svn repository is
+http://svn.debian.org/wsvn/debburn.
+
+
+[1] http://www.opensource.org/licenses/cddl1.php
+[2] http://meetings-archive.debian.net/pub/debian-meetings/2006/debconf6/theora-small/2006-05-14/tower/OpenSolaris_Java_and_Debian-Simon_Phipps__Alvaro_Lopez_Ortega.ogg
+[3] http://www.gnu.org/licenses/license-list.html
+[4] http://lists.debian.org/debian-devel/2006/08/msg00552.html
