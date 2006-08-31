@@ -2320,6 +2320,10 @@ main(argc, argv)
 			gen_pt = 1;
 			break;
 		case OPTION_MAGIC_FILE:
+#ifndef USE_MAGIC
+      fprintf(stderr, "This program has been compiled without magic library support.\n"
+            "Ignoring the -magic option.\n");
+#endif
 			magic_filename = optarg;
 			hfs_last = MAG_LAST;
 			break;

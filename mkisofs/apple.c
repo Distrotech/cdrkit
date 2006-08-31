@@ -49,7 +49,13 @@ static	char sccsid[] =
 #include <apple.h>
 #include <schily.h>
 
+#ifdef USE_MAGIC
 #include <magic.h>
+magic_t pMagic=NULL; // pointer to the magic state object
+#ifdef USE_DLOPEN
+#include  <dlfcn.h>
+#endif /* USE_DLOPEN */
+#endif /* USE_MAGIC */
 
 /* tidy up mkisofs definition ... */
 typedef struct directory_entry dir_ent;
@@ -153,7 +159,6 @@ static struct hfs_type hfs_types[] = {
 };
 
 /* used by get_magic_match() return */
-magic_t pMagic=NULL; // pointer to the magic state object
 static char	tmp_type[CT_SIZE + 1],
 		tmp_creator[CT_SIZE + 1];
 
@@ -2478,9 +2483,11 @@ hfs_init(name, fdflags, hfs_select)
 	/* min length set to max to start with */
 	mlen = PATH_MAX;
 
+#ifdef USE_MAGIC
+
 	/* initialise magic file */
 	if (magic_filename) {
-     pMagic = magic_open(MAGIC_CHECK); /* any special flags? See libmagic(3) */
+     pMagic = magic_open(0); /* any special flags? See libmagic(3) */
 
      /* When we use dlopen, that could matter... */
      if (pMagic == NULL) {
@@ -2493,6 +2500,7 @@ hfs_init(name, fdflags, hfs_select)
         exit(1);
      }
   }
+#endif
 
 	/* set defaults */
 	map_num = last_ent = 0;
@@ -2621,6 +2629,7 @@ map_ext(name, type, creator, fdflags, whole_name)
 	/* we don't take fdflags from the map or magic file */
 	*fdflags = defmap->fdflags;
 
+#ifdef USE_MAGIC
 	/*
 	 * if we have a magic file and we want to search it first,
 	 * then try to get a match
@@ -2637,6 +2646,9 @@ map_ext(name, type, creator, fdflags, whole_name)
 			}
 		}
 	}
+
+#endif /* USE_MAGIC */
+
 	len = strlen(name);
 
 	/* have an afpfile and filename if long enough */
@@ -2673,6 +2685,7 @@ map_ext(name, type, creator, fdflags, whole_name)
 	*type = defmap->type;
 	*creator = defmap->creator;
 
+#ifdef USE_MAGIC
 	/*
 	 * if we have a magic file and we haven't searched yet,
 	 * then try to get a match
@@ -2688,6 +2701,7 @@ map_ext(name, type, creator, fdflags, whole_name)
 			}
 		}
 	}
+#endif /* USE_MAGIC */
 }
 
 void
@@ -2717,10 +2731,12 @@ clean_hfs()
 	if (defmap)
 		free(defmap);
 
+#ifdef USE_MAGIC
 	if (pMagic) {
 		magic_close(pMagic);
     pMagic=NULL;
   }
+#endif /* USE_MAGIC */
 }
 
 #endif	/* APPLE_HYB */
