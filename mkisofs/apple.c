@@ -49,6 +49,8 @@ static	char sccsid[] =
 #include <apple.h>
 #include <schily.h>
 
+#include <magic.h>
+
 /* tidy up mkisofs definition ... */
 typedef struct directory_entry dir_ent;
 
@@ -151,6 +153,7 @@ static struct hfs_type hfs_types[] = {
 };
 
 /* used by get_magic_match() return */
+magic_t pMagic=NULL; // pointer to the magic state object
 static char	tmp_type[CT_SIZE + 1],
 		tmp_creator[CT_SIZE + 1];
 
@@ -2476,8 +2479,20 @@ hfs_init(name, fdflags, hfs_select)
 	mlen = PATH_MAX;
 
 	/* initialise magic file */
-	if (magic_file && init_magic(magic_file) != 0)
-		perr("unable to open magic file");
+	if (magic_filename) {
+     pMagic = magic_open(MAGIC_CHECK); /* any special flags? See libmagic(3) */
+
+     /* When we use dlopen, that could matter... */
+     if (pMagic == NULL) {
+        (void)fprintf(stderr, "Internal failure in libmagic setup: %s\n", strerror(errno));
+        exit(1);
+     }
+     if (magic_load(pMagic, magic_filename) == -1) {
+        (void)fprintf(stderr, "Unable to open magic file: %s\n",
+              magic_error(pMagic));
+        exit(1);
+     }
+  }
 
 	/* set defaults */
 	map_num = last_ent = 0;
@@ -2601,7 +2616,7 @@ map_ext(name, type, creator, fdflags, whole_name)
 	int	i;		/* loop counter */
 	int	len;		/* filename length */
 	afpmap	*amap;		/* mapping entry */
-	char	*ret;
+	const char	*ret;
 
 	/* we don't take fdflags from the map or magic file */
 	*fdflags = defmap->fdflags;
@@ -2610,10 +2625,11 @@ map_ext(name, type, creator, fdflags, whole_name)
 	 * if we have a magic file and we want to search it first,
 	 * then try to get a match
 	 */
-	if (magic_file && hfs_last == MAP_LAST) {
-		ret = get_magic_match(whole_name);
+	if (pMagic && hfs_last == MAP_LAST) {
+		ret = magic_file(pMagic, whole_name);
 
 		if (ret) {
+    /*fprintf(stderr, "Got from magic lib: %s\n", ret); */
 			if (sscanf(ret, "%4s%4s", tmp_creator, tmp_type) == 2) {
 				*type = tmp_type;
 				*creator = tmp_creator;
@@ -2661,10 +2677,11 @@ map_ext(name, type, creator, fdflags, whole_name)
 	 * if we have a magic file and we haven't searched yet,
 	 * then try to get a match
 	 */
-	if (magic_file && hfs_last == MAG_LAST) {
-		ret = get_magic_match(whole_name);
+	if (pMagic && hfs_last == MAG_LAST) {
+		ret = magic_file(pMagic, whole_name);
 
 		if (ret) {
+    /* fprintf(stderr, "Got from magic lib: %s\n", ret); */
 			if (sscanf(ret, "%4s%4s", tmp_creator, tmp_type) == 2) {
 				*type = tmp_type;
 				*creator = tmp_creator;
@@ -2700,8 +2717,10 @@ clean_hfs()
 	if (defmap)
 		free(defmap);
 
-	if (magic_file)
-		clean_magic();
+	if (pMagic) {
+		magic_close(pMagic);
+    pMagic=NULL;
+  }
 }
 
 #endif	/* APPLE_HYB */

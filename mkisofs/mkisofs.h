@@ -388,7 +388,7 @@ extern hce_mem	*hce;		/* libhfs/mkisofs extras */
 extern int	use_mac_name;	/* use Mac name for ISO9660/Joliet/RR */
 extern int	create_dt;	/* create the Desktp files */
 extern char	*hfs_boot_file;	/* name of HFS boot file */
-extern char	*magic_file;	/* magic file for CREATOR/TYPE matching */
+extern char	*magic_filename;	/* magic file for CREATOR/TYPE matching */
 extern int	hfs_last;	/* order in which to process map/magic files */
 extern char	*deftype;	/* default Apple TYPE */
 extern char	*defcreator;	/* default Apple CREATOR */

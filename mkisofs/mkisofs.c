@@ -203,7 +203,7 @@ hce_mem	*hce;			/* libhfs/mkisofs extras */
 char	*hfs_boot_file = 0;	/* name of HFS boot file */
 int	gen_pt = 0;		/* generate HFS partition table */
 char	*autoname = 0;		/* AutoStart filename */
-char	*magic_file = 0;	/* name of magic file */
+char	*magic_filename = 0;	/* name of magic file */
 int	probe = 0;		/* search files for HFS/Unix type */
 int	nomacfiles = 0;		/* don't look for Mac/Unix files */
 int	hfs_select = 0;		/* Mac/Unix types to select */
@@ -2320,7 +2320,7 @@ main(argc, argv)
 			gen_pt = 1;
 			break;
 		case OPTION_MAGIC_FILE:
-			magic_file = optarg;
+			magic_filename = optarg;
 			hfs_last = MAG_LAST;
 			break;
 		case OPTION_AUTOSTART:
@@ -2685,7 +2685,7 @@ parse_input_files:
 	 */
 	if (!apple_hyb && !apple_ext) {
 		if (*afpfile || probe || use_mac_name || hfs_select ||
-				hfs_boot_file || magic_file ||
+				hfs_boot_file || magic_filename ||
 				hfs_ishidden() || gen_pt || autoname ||
 				afe_size || icon_pos || hfs_ct ||
 				hfs_icharset || hfs_ocharset) {
@@ -2742,7 +2742,7 @@ parse_input_files:
 		/* we need to search for all types of Apple/Unix files */
 		hfs_select = ~0;
 
-	if (apple_both && verbose && !(hfs_select || *afpfile || magic_file)) {
+	if (apple_both && verbose && !(hfs_select || *afpfile || magic_filename)) {
 #ifdef	USE_LIBSCHILY
 		errmsgno(EX_BAD,
 		"Warning: no Apple/Unix files will be decoded/mapped\n");

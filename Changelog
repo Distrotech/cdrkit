@@ -6,7 +6,7 @@ cdrkit (1.0pre1) UNRELEASED; urgency=low
   * 3rd-party/ contains additional tools that make sense to be installed in
     the contents of some of the applications here
   * mods-archive/ contains patches used in the development, for easier history
-    lookup and easier merging of future versions of this parts
+    lookup and easier merging of future versions of this parts (interdiff'ing)
   * The Big Fork to an independent project called cdrkit
     + using the last clearly stated GPLed versions of files from
       cdrtools-2.01.01a08 (closes: #353403, 372486
@@ -22,6 +22,8 @@ cdrkit (1.0pre1) UNRELEASED; urgency=low
       reopen if not). It seems to be portable among the the plattforms
       supported by Debian, it needs a bit of work for porting to non-Linux
       plattforms, though.
+  * changed mkisofs/apple.c and company to use system's libmagic instead of
+    the built-in
   * removed most of the anti-linux2.6 FUD from program messages (unless beeing
     in verbose mode). Decent information about code modifications is okay,
     subtle propaganda isn't (closes: #377145)

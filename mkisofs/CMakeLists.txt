@@ -21,7 +21,8 @@ SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c d
 LINK_DIRECTORIES(../libhfs_iso ../libschily ../libscg ../libunls ../libdeflt ../libfile)
 
 ADD_EXECUTABLE (mkisofs mkisofs.c ${MKISOFS_MOST_SRCS})
-TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt file scg unls z ${EXTRA_LIBICONV})
+#TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt file scg unls z ${EXTRA_LIBICONV})
+TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt magic scg unls z ${EXTRA_LIBICONV})
 
 # common lib set and mkisofs source parts for the rest
 LINK_LIBRARIES(schily deflt scg unls ${EXTRA_LIBICONV})
