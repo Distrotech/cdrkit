@@ -1,5 +1,5 @@
 PROJECT (cdrkit)
-SUBDIRS(cdda2wav cdrecord libdeflt libedc libfile libhfs_iso libparanoia librscg libscg libschily libunls mkisofs readcd rscsi 3rd-party/zisofs_tools 3rd-party/dirsplit include)
+SUBDIRS(cdda2wav cdrecord libdeflt libedc libhfs_iso libparanoia librscg libscg libschily libunls mkisofs readcd rscsi 3rd-party/zisofs_tools 3rd-party/dirsplit include)
 
 SET(BINS_SET cdrecord/wodim readcd/readcd 3rd-party/zisofs_tools/mkzftree)
 FOREACH(app ${BINS_SET})

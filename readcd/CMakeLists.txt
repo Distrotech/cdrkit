@@ -3,9 +3,9 @@ INCLUDE_DIRECTORIES(../include ../cdrecord . ${CMAKE_BINARY_DIR})
 
 AUX_SOURCE_DIRECTORY(. READCD_SRCS)
 
-LINK_DIRECTORIES(../libschily ../libscg ../libdeflt ../libfile)
+LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)
 ADD_EXECUTABLE (readcd ${READCD_SRCS})
-TARGET_LINK_LIBRARIES(readcd scg schily deflt file)
+TARGET_LINK_LIBRARIES(readcd scg schily deflt)
 SET_TARGET_PROPERTIES(readcd PROPERTIES  SKIP_BUILD_RPATH TRUE)
 
 INSTALL(TARGETS readcd DESTINATION bin)

@@ -23,7 +23,7 @@ cdrkit (1.0pre1) UNRELEASED; urgency=low
       supported by Debian, it needs a bit of work for porting to non-Linux
       plattforms, though.
   * changed mkisofs/apple.c and company to use system's libmagic instead of
-    the built-in
+    the built-in prehistoric libfile version
   * removed most of the anti-linux2.6 FUD from program messages (unless beeing
     in verbose mode). Decent information about code modifications is okay,
     subtle propaganda isn't (closes: #377145)
