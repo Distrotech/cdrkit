@@ -45,95 +45,10 @@ is used to read or write Compact Discs.
 .PP
 The
 .I device
-refers to
-.IR scsibus / target / lun
-of the drive. Communication on 
-.I SunOS
-is done with the SCSI general driver
-.B scg.
-Other operating systems are using a library simulation of this driver.
-Possible syntax is:
-.B dev=
-.IR scsibus , target , lun
-or
-.B dev=
-.IR target , lun .
-In the latter case, the drive has to be connected to the default 
-SCSI bus of the machine.
-.IR Scsibus ,
-.I target 
-and 
-.I lun
-are integer numbers. 
-Some operating systems or SCSI transport implementations may require to
-specify a filename in addition.
-In this case the correct syntax for the device is:
-.B dev=
-.IR devicename : scsibus , target , lun
-or
-.B dev=
-.IR devicename : target , lun .
-If the name of the device node that has been specified on such a system
-refers to exactly one SCSI device, a shorthand in the form
-.B dev=
-.IR devicename : @
-or
-.B dev=
-.IR devicename : @ , lun
-may be used instead of
-.B dev=
-.IR devicename : scsibus , target , lun .
-
+refers to a device location similar to the one used in the wodim command. Refer to its manpage for details.
 .PP
-To access remote SCSI devices, you need to prepend the SCSI device name by
-a remote device indicator. The remote device indicator is either
-.BI REMOTE: user@host:
-or
-.BR
-.BI REMOTE: host:
-.br
-A valid remote SCSI device name may be:
-.BI REMOTE: user@host:
-to allow remote SCSI bus scanning or
-.BI REMOTE: user@host:1,0,0
-to access the SCSI device at 
-.I host
-connected to SCSI bus # 1,target 0 lun 0.
-
-.PP
-To access SCSI devices via alternate transport layers,
-you need to prepend the SCSI device name by a transport layer indicator.
-The transport layer indicator may be something like
-.B USCSI: 
-or
-.BR ATAPI: .
-To get a list of supported transport layers for your platform, use 
-.B dev=
-.IR HELP :
-
-.PP
-To make 
-.B readcd
-portable to all \s-2UNIX\s0 platforms, the syntax
-.B dev=
-.IR devicename : scsibus , target , lun
-is preferred as is hides OS specific knowledge about device names from the user.
-A specific OS must not necessarily support a way to specify a real device file name nor a
-way to specify 
-.IR scsibus , target , lun .
-
-.PP
-.I Scsibus 
-0 is the default SCSI bus on the machine. Watch the boot messages for more 
-information or look into 
-.B /var/adm/messages 
-for more information about the SCSI configuration of your machine.
-If you have problems to figure out what values for 
-.IR scsibus , target , lun
-should be used, try the 
-.B \-scanbus
-option of 
-.BR cdrecord .
+Also note that this version of readcd uses a modified libscg library which has
+a different behaviour compared to the one distributed by its original author.
 
 .SH OPTIONS
 .PP
@@ -174,7 +89,7 @@ targets on this virtual SCSI bus.
 If no 
 .I dev
 option is present, 
-.B cdrecord
+.B readcd
 will try to get the device from the 
 .B CDR_DEVICE
 environment.
@@ -297,7 +212,7 @@ Using a lower speed may increase the readability of a CD or DVD.
 Set the maximum transfer size for a single SCSI command to #.
 The syntax for the 
 .B ts=
-option is the same as for cdrecord fs=# or sdd bs=#.
+option is the same as for wodim fs=# or sdd bs=#.
 .sp
 If no 
 .B ts=
@@ -410,11 +325,11 @@ Use e.g.
 to create a secure shell connection.
 .sp
 Note that this forces 
-.B cdrecord
+.B wodim
 to create a pipe to the 
 .B rsh(1)
 program and disallows
-.B cdrecord
+.B wodim
 to directly access the network socket to the remote server.
 This makes it impossible to set up performance parameters and slows down
 the connection compared to a 
@@ -433,12 +348,9 @@ but the program pointed to by
 Note that the remote SCSI server program name will be ignored if you log in
 using an account that has been created with a remote SCSI server program as
 login shell.
-.SH FILES
 .SH SEE ALSO
-.BR cdrecord (1),
+.BR wodim (1),
 .BR mkisofs (1),
-.BR scg (7),
-.BR fbk (7),
 .BR rcmd (3),
 .BR ssh (1).
 
@@ -484,9 +396,9 @@ CD-Recorder or the source disk.
 .PP
 When using 
 .B readcd
-with the broken 
-.B "Linux SCSI generic driver."
-You should note that 
+with the
+.B "Linux SCSI generic driver",
+you should note that 
 .B readcd
 uses a hack, that tries to emulate the functionality of the scg driver.
 Unfortunately, the sg driver on 
@@ -597,7 +509,7 @@ Germany
 
 .PP
 Though beeing the original author and deserving the most credits for
-successfull result, Joerg Schilling is no longer involved into the development
+successfull results, Joerg Schilling is no longer involved into the development
 of this application and therefore he shall not be made responsible for any
 problem caused by it. Do not try to get support by contacting the original
 author!
