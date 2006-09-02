@@ -51,10 +51,7 @@ static	char sccsid[] =
 
 #ifdef USE_MAGIC
 #include <magic.h>
-magic_t pMagic=NULL; // pointer to the magic state object
-#ifdef USE_DLOPEN
-#include  <dlfcn.h>
-#endif /* USE_DLOPEN */
+magic_t magic_state = NULL;
 #endif /* USE_MAGIC */
 
 /* tidy up mkisofs definition ... */
@@ -2484,23 +2481,18 @@ hfs_init(name, fdflags, hfs_select)
 	mlen = PATH_MAX;
 
 #ifdef USE_MAGIC
-
-	/* initialise magic file */
+	/* initialise magic state */
 	if (magic_filename) {
-     pMagic = magic_open(0); /* any special flags? See libmagic(3) */
-
-     /* When we use dlopen, that could matter... */
-     if (pMagic == NULL) {
-        (void)fprintf(stderr, "Internal failure in libmagic setup: %s\n", strerror(errno));
-        exit(1);
-     }
-     if (magic_load(pMagic, magic_filename) == -1) {
-        (void)fprintf(stderr, "Unable to open magic file: %s\n",
-              magic_error(pMagic));
-        exit(1);
-     }
-  }
-#endif
+		magic_state = magic_open(MAGIC_ERROR);
+		if (magic_state == NULL)
+			perr("failed to initialise libmagic");
+		if (magic_load(magic_state, magic_filename) == -1) {
+			fprintf(stderr, "failed to open magic file: %s\n",
+				magic_error(magic_state));
+			exit(1);
+		}
+	}
+#endif /* USE_MAGIC */
 
 	/* set defaults */
 	map_num = last_ent = 0;
@@ -2610,6 +2602,43 @@ hfs_init(name, fdflags, hfs_select)
 	}
 }
 
+#ifdef USE_MAGIC
+static int
+try_map_magic(whole_name, type, creator)
+	char	*whole_name;
+	char	**type;		/* set type */
+	char	**creator;	/* set creator */
+{
+	const char * ret = magic_file(magic_state, whole_name);
+
+#ifdef DEBUG
+	fprintf(stderr, "magic_file(magic_state, \"%s\"): %s\n",
+		whole_name, ret ? ret : "NULL");
+#endif
+	/*
+	 * check that we found a match; ignore results in the
+	 * wrong format (probably due to libmagic's built-in rules)
+	 */
+	if (ret && strcspn(ret, " ") == CT_SIZE
+	    && ret[CT_SIZE] == ' '
+	    && strcspn(ret + CT_SIZE + 1, " ") == CT_SIZE) {
+		memcpy(tmp_type, ret, CT_SIZE);
+		tmp_type[CT_SIZE] = 0;
+		memcpy(tmp_creator, ret + CT_SIZE + 1, CT_SIZE);
+		tmp_creator[CT_SIZE] = 0;
+#ifdef DEBUG
+		fprintf(stderr, "tmp_type = \"%s\"; tmp_creator = \"%s\"\n",
+			tmp_type, tmp_creator);
+#endif
+		*type = tmp_type;
+		*creator = tmp_creator;
+		return (1);
+	}
+
+	return (0);
+}
+#endif /* USE_MAGIC */
+
 /*
  *	map_ext: map a files extension with the list to get type/creator
  */
@@ -2634,19 +2663,9 @@ map_ext(name, type, creator, fdflags, whole_name)
 	 * if we have a magic file and we want to search it first,
 	 * then try to get a match
 	 */
-	if (pMagic && hfs_last == MAP_LAST) {
-		ret = magic_file(pMagic, whole_name);
-
-		if (ret) {
-    /*fprintf(stderr, "Got from magic lib: %s\n", ret); */
-			if (sscanf(ret, "%4s%4s", tmp_creator, tmp_type) == 2) {
-				*type = tmp_type;
-				*creator = tmp_creator;
+	if (magic_state && hfs_last == MAP_LAST
+	    && try_map_magic(whole_name, type, creator))
 				return;
-			}
-		}
-	}
-
 #endif /* USE_MAGIC */
 
 	len = strlen(name);
@@ -2690,17 +2709,8 @@ map_ext(name, type, creator, fdflags, whole_name)
 	 * if we have a magic file and we haven't searched yet,
 	 * then try to get a match
 	 */
-	if (pMagic && hfs_last == MAG_LAST) {
-		ret = magic_file(pMagic, whole_name);
-
-		if (ret) {
-    /* fprintf(stderr, "Got from magic lib: %s\n", ret); */
-			if (sscanf(ret, "%4s%4s", tmp_creator, tmp_type) == 2) {
-				*type = tmp_type;
-				*creator = tmp_creator;
-			}
-		}
-	}
+	if (magic_state && hfs_last == MAG_LAST)
+		try_map_magic(whole_name, type, creator);
 #endif /* USE_MAGIC */
 }
 
@@ -2732,10 +2742,10 @@ clean_hfs()
 		free(defmap);
 
 #ifdef USE_MAGIC
-	if (pMagic) {
-		magic_close(pMagic);
-    pMagic=NULL;
-  }
+	if (magic_state) {
+		magic_close(magic_state);
+		magic_state = NULL;
+	}
 #endif /* USE_MAGIC */
 }
 
