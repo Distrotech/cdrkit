@@ -4,46 +4,53 @@ Forking cdrtools as cdrkit
 
 So, why the fork? CD/DVD burning is a complicated business that needs a
 lot of knowledge, so forking such a big collection isn't a step to be
-taken lightly. It requires a lot of human resources that could be put to
+taken lightly. It requires a lot of development effort that could be put to
 better use elsewhere.
 
 In the past, we (the Debian maintainers) had a good and mutually
 cooperative relationship with Jörg.  He even commented on Debian bug
 reports, which is one of the best things an upstream maintainer can do.
-Naturally, there were occasionally discussions, but this is normal.
+Naturally, there were occasionally disagreements, but this is normal.
 
 
-Unfortunately SUN then developed the CDDL[1], a license that was
+Unfortunately Sun then developed the CDDL[1], a license that was
 intentionally made to be incompatible with the GPL.  The FSF itself says
-that this is the case and also people who helped drafting the CDDL state
-it. One current and one former Sun employee visited the annual Debian
-conference in Mexico in 2006.  There, Danese Cooper clearly stated that
-the CDDL was modelled upon the MPL in order to achieve this
-incompatibility with the GPL. For everyone who wants to hear this, we
+that this is the case as do people who helped draft the CDDL. One
+current and one former Sun employee visited the annual Debian conference
+in Mexico in 2006. Danese Cooper clearly stated there that the CDDL was
+intentionally modelled on the MPL in order to make it
+GPL-incompatible. For everyone who wants to hear this first-hand, we
 have videos from that talk available at [2].
 
 
-You can read the FSF position about the CDDL at [3] and some statements
-Debian people brought up at [4] and a wide range of other mails in that
-thread.  Basically the CDDL has extra restrictions, something thats not
-allowed from the GPL.  As Jörg has a different opinion about this and
-repeatedly stated that the CDDL is not incompatible, interpreting the
-look of a face in the mentioned video, calling us liar and generally
-seemed to be unwilling to consider our concerns (he never replied to the
-parts where we explained why it is incompatible), so basically ignoring
-what we said - we had no other choice than a fork.
+You can read the FSF position about the CDDL at [3]. The thread behind
+[4] contains statements on the issue made by Debian people; for more
+context also see the other mails in that thread.
+In short -  the CDDL has extra restrictions, which the GPL does not
+allow.  Jörg has a different opinion about this and has repeatedly
+stated that the CDDL is not incompatible, interpreting a facial
+expression in the above-mentioned video, calling us liars and generally
+appearing unwilling to consider our concerns (he never replied to the
+parts where we explained why it is incompatible). As he has basically
+ignored what we have said, we have no choice but to fork. While the CDDL
+*may* be a free license, we never questioned if it is free or not, as it
+is not our place to decide this as the Debian cdrtools
+maintainers. However, having been approved by OSI doesn't mean it's ok
+for any usage, as Jörg unfortunately seems to assume. There are several
+OSI-approved licenses that are GPL-incompatible and CDDL is one of
+them. That is and always was our point.
 
 
-We used the last version where the program code was licensed under GPL
-and killed the incompatibly licensed build-system. It is now replaced by
+For our fork we used the last GPL-licensed version of the program code
+and killed the incompatibly licensed build system. It is now replaced by
 a cmake system, and the whole source we distribute should be free of
 other incompatibilities, as to the best of our current knowledge.
 
 
-Anyone who wants to help with this fork, which especially includes other
-distributions, is welcome to join our efforts. You can contact us on
-IRC, server irc.oftc.net, channel #debburn or via mail at
-debburn-devel@lists.alioth.debian.org, our svn repository is
+Anyone who wants to help with this fork, particularly developers of
+other distributions, is welcome to join our efforts. You can contact us
+on IRC, server irc.oftc.net, channel #debburn, or via mail at
+debburn-devel@lists.alioth.debian.org. Our svn repository is
 http://svn.debian.org/wsvn/debburn.
 
 
