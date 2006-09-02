@@ -184,7 +184,7 @@ cdrkit-doc: install
 	dh_installchangelogs -p$@ -P$(b)/$@
 	dh_install           -p$@ -P$(b)/$@
 	dh_link              -p$@ -P$(b)/$@
-	@-find $(b)/$@ | grep svn | xargs rm -rf
+	@-find $(b)/$@ | grep '\.svn' | xargs rm -rf
 #	dh_strip             -p$@ -P$(b)/$@
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
