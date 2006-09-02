@@ -69,7 +69,7 @@ static	char sccsid[] =
 #include <sys/capability.h> 	/* for rawio capability */
 #endif
 
-char	cdr_version[] = "2.01.01a06";
+#define cdr_version "1.0pre1"
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) && _POSIX_PRIORITY_SCHEDULING -0 >= 0
 #ifdef  HAVE_SYS_PRIOCNTL_H	/* The preferred SYSvR4 schduler */
@@ -291,17 +291,25 @@ main(ac, av)
 	SCSI	*scgp = NULL;
 	char	errstr[80];
 	BOOL	gracedone = FALSE;
-  int     ispacket;
-  BOOL	is_cdwr = FALSE;
-  BOOL	is_dvdwr = FALSE;
+	int     ispacket;
+	BOOL	is_cdwr = FALSE;
+	BOOL	is_dvdwr = FALSE;
 
-  fprintf(stderr,
-        "##############################################################################\n"
-        "This is wodim, not cdrecord. Don't expect it to behave like cdrecord in any\n"
-        "way, don't refer to it as \"cdrecord\".\n"
-        "Don't bother Joerg Schilling with any problems caused by this application.\n"
-        "##############################################################################\n\n"
-        );
+
+	/* workaround for k3b */
+	int acpos;
+	for(acpos=0;acpos<ac;acpos++) {
+	   if(!strcmp(av[acpos],"-version") || !strcmp(av[acpos],"--version"))
+	      fprintf(stderr, "Cdrecord-yelling-line-to-tell-frontends-to-use-it-like-version 2.01.01a03-dvd \n");
+	}
+
+	fprintf(stderr,
+	      "##############################################################################\n"
+	      "This is wodim, not cdrecord. Don't expect it to behave like cdrecord in any\n"
+	      "way, don't refer to it as \"cdrecord\".\n"
+	      "Don't bother Joerg Schilling with any problems caused by this application.\n"
+	      "##############################################################################\n\n"
+	      );
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
@@ -320,11 +328,15 @@ main(ac, av)
 	if ((track[0].tracktype & TOC_MASK) == TOC_MASK)
 		comerrno(EX_BAD, "Internal error: Bad TOC type.\n");
 
-	if (flags & F_VERSION)
-		exit(0);
-	/*
-	 * End restricted code for quality assurance.
-	 */
+	if (flags & F_VERSION) {
+	   fprintf(stderr,
+		 "Wodim " cdr_version "\n"
+		 "Copyright (C) 2006 Cdrkit suite contributors\n"
+		 "Based on works from Joerg Schilling, Copyright (C) 1995-2006, J. Schilling\n"
+		 );
+	   exit(0);
+	}
+
 	checkgui();
 
 	if (debug || lverbose) {
