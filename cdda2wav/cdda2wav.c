@@ -2216,7 +2216,8 @@ int main( argc, argv )
 	if (version) {
 		fputs ("cdda2wav version ", stderr);
 		fputs (VERSION, stderr);
-		fputs ("\n", stderr);
+		fputs ("\n"
+          "NOTE: modified version of the cdrkit suite, differs from the original\n", stderr);
 		exit (NO_ERROR);
 	}
 	if (help) {
