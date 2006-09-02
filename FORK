@@ -7,22 +7,21 @@ lot of knowledge, so forking such a big collection isn't a step to be
 taken lightly. It requires a lot of development effort that could be put to
 better use elsewhere.
 
-In the past, we, the Debian maintainers of cdrtools, had a good and
-mutually cooperative relationship with Jörg Schilling.  He even
-commented on Debian bug reports, which is one of the best things an
-upstream maintainer can do.  Naturally, there were occasionally
-disagreements, but this is normal.
+In the past, we (the Debian maintainers) had a good and mutually
+cooperative relationship with Jörg.  He even commented on Debian bug
+reports, which is one of the best things an upstream maintainer can do.
+Naturally, there were occasionally disagreements, but this is normal.
 
 
-Unfortunately Sun then developed the CDDL[1] and Jörg Schilling
-released parts of recent versions of cdrtools under this license.
-The CDDL is incompatible with the GPL.  The FSF itself says that this
-is the case as do people who helped draft the CDDL. One current and
-one former Sun employee visited the annual Debian conference in Mexico
-in 2006. Danese Cooper clearly stated there that the CDDL was
-intentionally modelled on the MPL in order to make it GPL-
-incompatible. For everyone who wants to hear this first-hand, we have
-video from that talk available at [2].
+Unfortunately Sun then developed the CDDL[1], a license that was
+intentionally made to be incompatible with the GPL.  The FSF itself says
+that this is the case as do people who helped draft the CDDL. One
+current and one former Sun employee visited the annual Debian conference
+in Mexico in 2006. Danese Cooper clearly stated there that the CDDL was
+intentionally modelled on the MPL in order to make it
+GPL-incompatible. For everyone who wants to hear this first-hand, we
+have videos from that talk available at [2].
+
 
 You can read the FSF position about the CDDL at [3]. The thread behind
 [4] contains statements on the issue made by Debian people; for more
