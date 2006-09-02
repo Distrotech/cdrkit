@@ -30,8 +30,8 @@ build/build-debstamp:
 #	fi
 	@echo "--- Compiling"
 	dh_testdir
-	make CFLAGS='$(CFLAGS)'
 	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > 3rd-party/zisofs_tools/version.h
+	make CFLAGS='$(CFLAGS)'
 	touch build/build-debstamp
 
 clean:
