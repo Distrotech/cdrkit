@@ -1,6 +1,6 @@
 cdrkit (1.0pre1) RELEASED; urgency=low
 
-  [ For the explanation of 
+  [ See http://bugs.debian.org/$BUGNR for detailed explanations ]
   * The Big Fork to an independent project called cdrkit
     + using the last clearly stated GPLed versions of files from
       cdrtools-2.01.01a08 (closes: #353403, 372486)
