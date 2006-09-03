@@ -8,3 +8,5 @@ if [ "$1" = "configure" ] && [ -e /usr/share/debconf/confmodule ]; then
       . /usr/share/debconf/confmodule
       db_purge
 fi
+
+#DEBHELPER#
