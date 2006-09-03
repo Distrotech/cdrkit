@@ -1,27 +1,28 @@
-This package was first debianized by Erik Andersen andersee@debian.org. The
-current debian maintainer is Joerg Jaspert <joerg@debian.org>
+This package was first debianized by Erik Andersen andersee@debian.org.
+The current Debian maintainer is Joerg Jaspert <joerg@debian.org>.
+Co-maintainers: Eduard Bloch <blade@debian.org>,
+Steve McIntyre <93sam@debian.org>
 
-Co-Maintainers: Eduard Bloch <blade@debian.org>, Steve McIntyre <93sam@debian.org>
-
-It is available as free download on https://alioth.debian.org/projects/debburn/.
+It is available as free download on
+<https://alioth.debian.org/projects/debburn/>.
+The package contains parts of zisofs-tools, downloaded from
+<ftp://ftp.kernel.org/pub/linux/utils/fs/zisofs/>.
 
 Upstream maintainers:
-
-Debian maintainers, see above
+The upstream author of zisofs-tools is H. Peter Anvin <hpa@zytor.com>.
+The rest is maintained by the Debian maintainers; see above.
 
 Other authors:
-Joerg Schilling <schilling@fokus.fraunhofer.de>, Eric Youngdale and many others.
+Joerg Schilling <schilling@fokus.fraunhofer.de>, Eric Youngdale and many
+others.
 
-This package is distributed under the terms of the GNU General Public License
-as available in the file /usr/share/common-licenses/GPL on a Debian system.
-
-Names of relevant binary program(s) and copyright info has been adapted to
+Names of relevant binary program(s) and copyright info have been adapted to
 avoid the violation of the GPL license (as offered by Joerg Schilling) and the
 obligations created by German laws.
 
 Copyright:
-----------------------------------------------------------------------------
-* cdrecord -- Record data on a CD-Recorder
+
+* wodim (originally known as cdrecord)
   Copyright (c) 1995-2004 J. Schilling
   License: GPLv2 with the following additional requirement:
 -       You may not modify certain copyright messages in cdrecord.c
@@ -134,6 +135,7 @@ defaults.c says:
  | don't contribute work and don't give support, they are causing extra
  | work for me and this way slow down the cdrecord development.
 ------------------------------------------
+
 * cdda2wav 
   Copyright 1998-2003 Heiko Eissfeldt
   parts    (C) Peter Widow
@@ -149,78 +151,30 @@ defaults.c says:
   License: GPLv2
 
 * libedc compact disc reed-solomon routines
- (c) 1998-2002 by Heiko Eissfeldt, heiko@colossus.escape.de
- (c) 2002 by Joerg Schilling
+  (c) 1998-2002 by Heiko Eissfeldt, heiko@colossus.escape.de
+  (c) 2002 by Joerg Schilling
   License: GPLv2
 
-libfile - code from file(1)
- (c) Ian F. Darwin, 1987
- License
- | This software is not subject to any license of the American Telephone
- | and Telegraph Company or of the Regents of the University of California.
- |
- | Permission is granted to anyone to use this software for any purpose on
- | any computer system, and to alter it and redistribute it freely, subject
- | to the following restrictions:
- |
- | 1. The author is not responsible for the consequences of use of this
- |    software, no matter how awful, even if they arise from flaws in it.
- |
- | 2. The origin of this software must not be misrepresented, either by
- |    explicit claim or by omission.  Since few users ever read sources,
- |    credits must appear in the documentation.
- |
- | 3. Altered versions must be plainly marked as such, and must not be
- |    misrepresented as being the original software.  Since few users
- |    ever read sources, credits must appear in the documentation.
- |
- | 4. This notice may not be removed or altered.
-
-libhfs_iso - Modified version of libhfs (v2.0) to work with mkhybrid.
- (C) 1996, 1997 Robert Leslie
+* libhfs_iso - Modified version of libhfs (v2.0) to work with mkhybrid.
+  (C) 1996, 1997 Robert Leslie
   License: GPLv2
 
-libcdparanoia
- (C) by Monty (xiphmont@mit.edu)
- Modifications to make the code portable Copyright (c) 2002 J. Schilling
+* libcdparanoia
+  (C) by Monty (xiphmont@mit.edu)
+  Modifications to make the code portable Copyright (c) 2002 J. Schilling
   License: GPLv2
 
-readcd
+* readcd
   Copyright (c) 1987, 1995-2003 J. Schilling
   License: GPLv2
 
-*
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with
- * this program; see the file COPYING.  If not, write to the Free Software
- * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+* zisofs-tools:
+  Copyright 2001 H. Peter Anvin - All Rights Reserved
+  *   This program is free software; you can redistribute it and/or modify
+  *   it under the terms of the GNU General Public License as published by
+  *   the Free Software Foundation, Inc., 675 Mass Ave, Cambridge MA 02139,
+  *   USA; either version 2 of the License, or (at your option) any later
+  *   version; incorporated herein by reference.
 
-
----
-
-Copyright of zisofs-tools:
-Copyright 2001 H. Peter Anvin - All Rights Reserved
- *   This program is free software; you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, Inc., 675 Mass Ave, Cambridge MA 02139,
- *   USA; either version 2 of the License, or (at your option) any later
- *   version; incorporated herein by reference.
-
-=====================================================================
-=====================================================================
-Note that the complete text of the GNU General Public License is available in
-/usr/share/common-licenses/GPL on a Debian system.
-
-The package contains also parts of zisofs-tools, downloaded from
-ftp://ftp.kernel.org/pub/linux/utils/fs/zisofs/.
-Upstream Author: H. Peter Anvin <hpa@zytor.com>
+The complete text of the GNU General Public License version 2 is
+available in /usr/share/common-licenses/GPL on a Debian system.
