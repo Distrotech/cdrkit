@@ -2649,7 +2649,8 @@ fixate_mmc(scgp, dp, trackp)
 	struct timeval stoptime;
 	int	dummy = (track_base(trackp)->tracktype & TOCF_DUMMY) != 0;
 
-	printf("fixate_mmc\n");
+	if(debug)
+		 printf("fixate_mmc\n");
 	starttime.tv_sec = 0;
 	starttime.tv_usec = 0;
 	stoptime = starttime;
@@ -2659,7 +2660,8 @@ fixate_mmc(scgp, dp, trackp)
 		printf("WARNING: Some drives don't like fixation in dummy mode.\n");
 
 	scgp->silent++;
-	printf("is_tao: %d,is_packet: %d\n", is_tao(trackp), is_packet(trackp));
+	if(debug)
+		 printf("is_tao: %d,is_packet: %d\n", is_tao(trackp), is_packet(trackp));
 	if (is_tao(trackp) || is_packet(trackp)) {
 		ret = scsi_close_tr_session(scgp, CL_TYPE_SESSION, 0,
 				(dp->cdr_cmdflags&F_IMMED) != 0);
