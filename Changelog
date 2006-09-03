@@ -1,3 +1,10 @@
+cdrkit (1.0pre2) RELEASED; urgency=low
+
+  * Took zisofs_tools out of the global build system and restored its original
+    Makefile. Its own build system works better.
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 03 Sep 2006 22:14:31 +0200
+
 cdrkit (1.0pre1) RELEASED; urgency=low
 
   [ See http://bugs.debian.org/$BUGNR for detailed explanations ]
