@@ -1,36 +1,21 @@
-cdrkit (1.0pre1) UNRELEASED; urgency=low
+cdrkit (1.0pre1) RELEASED; urgency=low
 
-  * Changed source package name and the version set to 1.0pre1
-  * resorted contents to give the files a better structure (docs to docs,
-    readmes to readmes and announcements to announements)
-  * 3rd-party/ contains additional tools that make sense to be installed in
-    the contents of some of the applications here
-  * mods-archive/ contains patches used in the development, for easier history
-    lookup and easier merging of future versions of this parts (interdiff'ing)
+  [ For the explanation of 
   * The Big Fork to an independent project called cdrkit
     + using the last clearly stated GPLed versions of files from
-      cdrtools-2.01.01a08 (closes: #353403, 372486
+      cdrtools-2.01.01a08 (closes: #353403, 372486)
     + we play the upstream role now, using our patches and we like them
       (closes: #361450)
     + renamed relevant works to avoid claims of "potential defamation" or
-      "damage of reputation", to not create a legal battlefield for
-      Joerg Schilling and "his understanding of how GPL applies in German
-      Urheberrecht" which was used to legitimate the "special clauses" in the
-      source (closes: #350738)
+      "damage of reputation" (closes: #350738)
     + custom CMake based build system used instead of the original one, since
       we understand it better (closes: #350739 and hopefully closes: #350254,
-      reopen if not). It seems to be portable among the the plattforms
+      reopen if not). It seems to be portable among the platforms
       supported by Debian, it needs a bit of work for porting to non-Linux
       plattforms, though.
-  * changed mkisofs/apple.c and company to use system's libmagic instead of
-    the built-in prehistoric libfile version
-  * removed most of the anti-linux2.6 FUD from program messages (unless beeing
-    in verbose mode). Decent information about code modifications is okay,
-    subtle propaganda isn't (closes: #377145)
+  * removed most of the anti-linux2.6  program messages (unless being
+    in verbose mode). (closes: #377145)
   * changed default config file location to /etc/default/wodim
-  * long help output of wodim, mkisofs, cdda2wav goes to stdout IFF -help was
-    used deliberately. No matter what JS claims to be "the Unix Tradition"
-    (closes: #138490, #299641)
   * added more meaningful error message on -dvd-video failure (closes: #324586)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus
@@ -73,7 +58,7 @@ cdrkit (1.0pre1) UNRELEASED; urgency=low
   * increased hash size in mkisofs/hash.c (closes: #327270)
   * more decent info message about locale detection
 
- -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 15:03:46 +0200
+ -- Eduard Bloch <blade@debian.org>  Sun, 03 Sep 2006 22:14:31 +0200
 
 cdrkit (2.01.01a08+X.15) UNRELEASED; urgency=low
 
