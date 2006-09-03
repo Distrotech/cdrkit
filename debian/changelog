@@ -1,3 +1,11 @@
+cdrkit (5:1.0~pre1-2) unstable; urgency=low
+
+  * Restored the build system of zisofs-tools and changed to its use in
+    debian/rules. It is a separate project with a mature build system while
+    the replacement would need improvements to keep up.
+
+ -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 01:24:22 +0200
+
 cdrkit (5:1.0~pre1-1) unstable; urgency=low
 
   [ Eduard Bloch ]

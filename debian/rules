@@ -32,6 +32,7 @@ build/build-debstamp:
 	dh_testdir
 	echo "#define ZISOFS_TOOLS_VERSION \"$(ziso_VERSION)\"" > 3rd-party/zisofs_tools/version.h
 	make CFLAGS='$(CFLAGS)'
+	cd 3rd-party/zisofs_tools && CFLAGS='$(CFLAGS)' ./configure && $(MAKE)
 	touch build/build-debstamp
 
 clean:
@@ -63,6 +64,7 @@ build/install-debstamp:
 	rm -rf $(b)
 	make install PREFIX=$(i)
 
+	install -m 755 3rd-party/zisofs_tools/mkzftree $(i)/bin/
 	install -m 755 cdda2wav/cdda2ogg $(i)/bin/
 	install -m 755 cdda2wav/cdda2mp3 $(i)/bin/
 	install -m 755 cdda2wav/readmult $(i)/bin/
@@ -129,7 +131,7 @@ mkisofs: install
 	dh_installdocs       -p$@ -P$(b)/$@
 	dh_installchangelogs -p$@ -P$(b)/$@ $(iso)/ChangeLog zisofs_tools/CHANGES
 	dh_install           -p$@ -P$(b)/$@
-#	dh_installman        -p$@ -P$(b)/$@ 3rd-party/dirsplit-0.3.3/dirsplit.1
+	dh_installman        -p$@ -P$(b)/$@ 3rd-party/zisofs_tools/mkzftree.1
 #	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/mkisofs/presubj
 #	rm -f $(b)/$@/usr/bin/mkhybrid $(b)/$@/usr/share/man/man8/mkhybrid*
 	dh_link              -p$@ -P$(b)/$@
