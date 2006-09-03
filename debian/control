@@ -11,7 +11,7 @@ Architecture: any
 Depends: ${shlibs:Depends}
 Recommends: mkisofs
 Replaces: cdrtools-doc (<< 5:1.0~pre1-0), cdrecord (<< 5:1.0~pre1-0)
-Suggests: xcdroast, cdrkit-doc
+Suggests: cdrkit-doc
 Conflicts: cdrecord (<< 5:1.0~pre1-1)
 Description: command line CD writing tool
  wodim allows you to create CDs on a CD recorder.
