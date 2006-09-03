@@ -1,4 +1,4 @@
-cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
+cdrkit (5:1.0~pre1-1) unstable; urgency=low
 
   [ Eduard Bloch ]
   * dropped the shm build (kernel 2.2 is history)
