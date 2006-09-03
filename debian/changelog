@@ -27,8 +27,6 @@ cdrkit (5:1.0~pre1-1) unstable; urgency=low
   * removed most of the anti-linux2.6  program messages (unless being
     in verbose mode). (closes: #377145)
   * changed default config file location to /etc/default/wodim
-  * long help output of wodim, mkisofs, cdda2wav goes to stdout IFF -help was
-    used deliberately. (closes: #138490, #299641)
   * added more meaningful error message on -dvd-video failure (closes: #324586)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus

@@ -147,7 +147,7 @@ static void CloseAll			__PR((void));
 static void OpenAudio			__PR((char *fname, double rate, long nBitsPerSample, long channels_val, unsigned long expected_bytes, struct soundfile*audio_out));
 static void set_offset			__PR((myringbuff *p, int offset));
 static int get_offset			__PR((myringbuff *p));
-static void usage			__PR((int));
+static void usage			__PR((void));
 static void init_globals		__PR((void));
 static	int	is_fifo			__PR((char * filename));
 
@@ -710,10 +710,8 @@ myringbuff *p;
 }
 
 
-static void usage(int deliberate)
+static void usage( )
 {
-   FILE *target=deliberate ? stdout : stderr;
-
   fputs(
 "usage: cdda2wav [OPTIONS ...] [trackfilenames ...]\n\
 OPTIONS:\n\
@@ -778,18 +776,18 @@ OPTIONS:\n\
 Please note: some short options will be phased out soon (disappear)!\n\
 \n\
 parameters: (optional) one or more file names or - for standard output.\n\
-", target);
-  fputs("Version ", target);
-  fputs(VERSION, target);
-  fprintf(target, "\n\
+", stderr);
+  fputs("Version ", stderr);
+  fputs(VERSION, stderr);
+  fprintf(stderr, "\n\
 defaults	%s, %d bit, %d.%02d Hz, track 1, no offset, one track,\n",
 	  CHANNELS-1?"stereo":"mono", BITS_P_S,
 	 44100 / UNDERSAMPLING,
 	 (4410000 / UNDERSAMPLING) % 100);
-  fprintf(target, "\
+  fprintf(stderr, "\
           type %s '%s', don't wait for signal, not quiet,\n",
           AUDIOTYPE, FILENAME);
-  fprintf(target, "\
+  fprintf(stderr, "\
           use %s, device %s, aux %s\n",
 	  DEF_INTERFACE, CD_DEVICE, AUX_DEVICE);
   exit( SYNTAX_ERROR );
@@ -2233,7 +2231,7 @@ int main( argc, argv )
 		exit (NO_ERROR);
 	}
 	if (help) {
-		usage(1);
+		usage();
 	}
 	if (!global.scanbus)
 		cdr_defaults(&global.dev_name, NULL, NULL, NULL); 

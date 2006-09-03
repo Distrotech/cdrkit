@@ -858,7 +858,7 @@ LOCAL const struct ld_option ld_options[] =
 
 LOCAL	void	read_rcfile	__PR((char *appname));
 LOCAL	void	susage		__PR((int excode));
-LOCAL	void	usage		__PR((int excode, int deliberate));
+LOCAL	void	usage		__PR((int excode));
 EXPORT	int	iso9660_date	__PR((char *result, time_t crtime));
 LOCAL	void	hide_reloc_dir	__PR((void));
 LOCAL	char *	get_pnames	__PR((int argc, char **argv, int opt,
@@ -1062,11 +1062,10 @@ susage(excode)
 }
 
 LOCAL void
-usage(int excode, int deliberate)
+usage(excode)
+	int		excode;
 {
 	const char	*program_name = "mkisofs";
-
-   FILE *target=deliberate ? stdout : stderr;
 
 #if 0
 	fprintf(stderr, "Usage:\n");
@@ -1082,16 +1081,16 @@ usage(int excode, int deliberate)
 
 /*	const char **targets, **pp;*/
 
-	fprintf(target, "Usage: %s [options] file...\n", program_name);
+	fprintf(stderr, "Usage: %s [options] file...\n", program_name);
 
-	fprintf(target, "Options:\n");
+	fprintf(stderr, "Options:\n");
 	for (i = 0; i < (int)OPTION_COUNT; i++) {
 		if (ld_options[i].doc != NULL) {
 			int	comma;
 			int	len;
 			int	j;
 
-			fprintf(target, "  ");
+			fprintf(stderr, "  ");
 
 			comma = FALSE;
 			len = 2;
@@ -1100,16 +1099,16 @@ usage(int excode, int deliberate)
 			do {
 				if (ld_options[j].shortopt != '\0' &&
 					ld_options[j].control != NO_HELP) {
-					fprintf(target, "%s-%c",
+					fprintf(stderr, "%s-%c",
 						comma ? ", " : "",
 						ld_options[j].shortopt);
 					len += (comma ? 2 : 0) + 2;
 					if (ld_options[j].arg != NULL) {
 						if (ld_options[j].opt.has_arg != optional_argument) {
-							fprintf(target, " ");
+							fprintf(stderr, " ");
 							++len;
 						}
-						fprintf(target, "%s",
+						fprintf(stderr, "%s",
 							ld_options[j].arg);
 						len += strlen(ld_options[j].arg);
 					}
@@ -1123,7 +1122,7 @@ usage(int excode, int deliberate)
 			do {
 				if (ld_options[j].opt.name != NULL &&
 					ld_options[j].control != NO_HELP) {
-					fprintf(target, "%s-%s%s",
+					fprintf(stderr, "%s-%s%s",
 						comma ? ", " : "",
 						ld_options[j].control == TWO_DASHES ? "-" : "",
 						ld_options[j].opt.name);
@@ -1132,7 +1131,7 @@ usage(int excode, int deliberate)
 						+ (ld_options[j].control == TWO_DASHES ? 1 : 0)
 						+ strlen(ld_options[j].opt.name));
 					if (ld_options[j].arg != NULL) {
-						fprintf(target, " %s",
+						fprintf(stderr, " %s",
 							ld_options[j].arg);
 						len += 1 +
 						    strlen(ld_options[j].arg);
@@ -1144,16 +1143,16 @@ usage(int excode, int deliberate)
 			while (j < (int)OPTION_COUNT && ld_options[j].doc == NULL);
 
 			if (len >= 30) {
-				fprintf(target, "\n");
+				fprintf(stderr, "\n");
 				len = 0;
 			}
 			for (; len < 30; len++)
-				fputc(' ', target);
+				fputc(' ', stderr);
 
-			fprintf(target, "%s\n", ld_options[i].doc);
+			fprintf(stderr, "%s\n", ld_options[i].doc);
 		}
 	}
-	fprintf(target, 
+	fprintf(stderr, 
         "\nNOTE: This version of mkisofs differs from the one published by Eric Youngdale\n"
         "and from the one included in cdrtools (by Joerg Schilling).\n"
         "It provides a different set of features and has different problems.\n"
@@ -2173,7 +2172,7 @@ main(argc, argv)
 			hide_rr_moved++;
 			break;
 		case OPTION_HELP:
-			usage(0, 1);
+			usage(0);
 			break;
 		case OPTION_PVERSION:
 			printf("%s (%s-%s-%s)\n",

@@ -200,7 +200,7 @@ EXPORT	int 	main		__PR((int ac, char **av));
 LOCAL	int	gracewait	__PR((cdr_t *dp, BOOL *didgracep));
 LOCAL	void	cdrstats	__PR((cdr_t *dp));
 LOCAL	void	susage		__PR((int));
-LOCAL	void	usage		__PR((int, int));
+LOCAL	void	usage		__PR((int));
 LOCAL	void	blusage		__PR((int));
 LOCAL	void	formattypeusage	__PR((int));
 LOCAL	void	intr		__PR((int sig));
@@ -417,7 +417,7 @@ main(ac, av)
 	if (dev != NULL &&
 	    ((strncmp(dev, "HELP", 4) == 0) ||
 	    (strncmp(dev, "help", 4) == 0))) {
-		scg_help(stdout);
+		scg_help(stderr);
 		exit(0);
 	}
 
@@ -1657,98 +1657,98 @@ susage(ret)
 }
 
 LOCAL void
-usage(int excode, int deliberate)
+usage(excode)
+	int excode;
 {
-   FILE *target=deliberate ? stdout : stderr;
-	fprintf(target,"Usage: %s [options] track1...trackn\n", get_progname());
-	fprintf(target,"Options:\n");
-	fprintf(target,"\t-version	print version information and exit\n");
-	fprintf(target,"\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
-	fprintf(target,"\tgracetime=#	set the grace time before starting to write to #.\n");
-	fprintf(target,"\ttimeout=#	set the default SCSI command timeout to #.\n");
-	fprintf(target,"\tdebug=#,-d	Set to # or increment misc debug level\n");
-	fprintf(target,"\tkdebug=#,kd=#	do Kernel debugging\n");
-	fprintf(target,"\t-verbose,-v	increment general verbose level by one\n");
-	fprintf(target,"\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
-	fprintf(target,"\t-silent,-s	do not print status of failed SCSI commands\n");
-	fprintf(target,"\tdriver=name	user supplied driver name, use with extreme care\n");
-	fprintf(target,"\tdriveropts=opt	a comma separated list of driver specific options\n");
-	fprintf(target,"\t-setdropts	set driver specific options and exit\n");
-	fprintf(target,"\t-checkdrive	check if a driver for the drive is present\n");
-	fprintf(target,"\t-prcap		print drive capabilities for MMC compliant drives\n");
-	fprintf(target,"\t-inq		do an inquiry for the drive and exit\n");
- 	fprintf(target,"\t-scanbus	scan the SCSI and IDE buses and exit\n");
-	fprintf(target,"\t-reset		reset the SCSI bus with the cdrecorder (if possible)\n");
-	fprintf(target,"\t-abort		send an abort sequence to the drive (may help if hung)\n");
-	fprintf(target,"\t-overburn	allow to write more than the official size of a medium\n");
-	fprintf(target,"\t-ignsize	ignore the known size of a medium (may cause problems)\n");
-	fprintf(target,"\t-useinfo	use *.inf files to overwrite audio options.\n");
-	fprintf(target,"\tspeed=#		set speed of drive\n");
-	fprintf(target,"\tblank=type	blank a CD-RW disc (see blank=help)\n");
-	fprintf(target,"\t-format		format a CD-RW/DVD-RW/DVD+RW disc\n");
-   fprintf(target,"\tformattype=#	select the format method for DVD+RW disc\n");
+	error("Usage: %s [options] track1...trackn\n", get_progname());
+	error("Options:\n");
+	error("\t-version	print version information and exit\n");
+	error("\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
+	error("\tgracetime=#	set the grace time before starting to write to #.\n");
+	error("\ttimeout=#	set the default SCSI command timeout to #.\n");
+	error("\tdebug=#,-d	Set to # or increment misc debug level\n");
+	error("\tkdebug=#,kd=#	do Kernel debugging\n");
+	error("\t-verbose,-v	increment general verbose level by one\n");
+	error("\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
+	error("\t-silent,-s	do not print status of failed SCSI commands\n");
+	error("\tdriver=name	user supplied driver name, use with extreme care\n");
+	error("\tdriveropts=opt	a comma separated list of driver specific options\n");
+	error("\t-setdropts	set driver specific options and exit\n");
+	error("\t-checkdrive	check if a driver for the drive is present\n");
+	error("\t-prcap		print drive capabilities for MMC compliant drives\n");
+	error("\t-inq		do an inquiry for the drive and exit\n");
+ 	error("\t-scanbus	scan the SCSI and IDE buses and exit\n");
+	error("\t-reset		reset the SCSI bus with the cdrecorder (if possible)\n");
+	error("\t-abort		send an abort sequence to the drive (may help if hung)\n");
+	error("\t-overburn	allow to write more than the official size of a medium\n");
+	error("\t-ignsize	ignore the known size of a medium (may cause problems)\n");
+	error("\t-useinfo	use *.inf files to overwrite audio options.\n");
+	error("\tspeed=#		set speed of drive\n");
+	error("\tblank=type	blank a CD-RW disc (see blank=help)\n");
+	error("\t-format		format a CD-RW/DVD-RW/DVD+RW disc\n");
+   error("\tformattype=#	select the format method for DVD+RW disc\n");
 #ifdef	FIFO
-	fprintf(target,"\tfs=#		Set fifo size to # (0 to disable, default is %ld MB)\n",
+	error("\tfs=#		Set fifo size to # (0 to disable, default is %ld MB)\n",
 							DEFAULT_FIFOSIZE/(1024L*1024L));
 #endif
-	fprintf(target,"\tts=#		set maximum transfer size for a single SCSI command\n");
-	fprintf(target,"\t-load		load the disk and exit (works only with tray loader)\n");
-	fprintf(target,"\t-lock		load and lock the disk and exit (works only with tray loader)\n");
-	fprintf(target,"\t-eject		eject the disk after doing the work\n");
-	fprintf(target,"\t-dummy		do everything with laser turned off\n");
-	fprintf(target,"\t-msinfo		retrieve multi-session info for mkisofs >= 1.10\n");
-	fprintf(target,"\t-toc		retrieve and print TOC/PMA data\n");
-	fprintf(target,"\t-atip		retrieve and print ATIP data\n");
-	fprintf(target,"\t-multi		generate a TOC that allows multi session\n");
-	fprintf(target,"\t		In this case default track type is CD-ROM XA mode 2 form 1 - 2048 bytes\n");
-	fprintf(target,"\t-fix		fixate a corrupt or unfixated disk (generate a TOC)\n");
-	fprintf(target,"\t-nofix		do not fixate disk after writing tracks\n");
-	fprintf(target,"\t-waiti		wait until input is available before opening SCSI\n");
-	fprintf(target,"\t-immed		Try to use the SCSI IMMED flag with certain long lasting commands\n");
-	fprintf(target,"\t-force		force to continue on some errors to allow blanking bad disks\n");
-	fprintf(target,"\t-tao		Write disk in TAO mode. This option will be replaced in the future.\n");
-	fprintf(target,"\t-dao		Write disk in SAO mode. This option will be replaced in the future.\n");
-	fprintf(target,"\t-sao		Write disk in SAO mode. This option will be replaced in the future.\n");
-	fprintf(target,"\t-raw		Write disk in RAW mode. This option will be replaced in the future.\n");
-	fprintf(target,"\t-raw96r		Write disk in RAW/RAW96R mode. This option will be replaced in the future.\n");
-	fprintf(target,"\t-raw96p		Write disk in RAW/RAW96P mode. This option will be replaced in the future.\n");
-	fprintf(target,"\t-raw16		Write disk in RAW/RAW16 mode. This option will be replaced in the future.\n");
+	error("\tts=#		set maximum transfer size for a single SCSI command\n");
+	error("\t-load		load the disk and exit (works only with tray loader)\n");
+	error("\t-lock		load and lock the disk and exit (works only with tray loader)\n");
+	error("\t-eject		eject the disk after doing the work\n");
+	error("\t-dummy		do everything with laser turned off\n");
+	error("\t-msinfo		retrieve multi-session info for mkisofs >= 1.10\n");
+	error("\t-toc		retrieve and print TOC/PMA data\n");
+	error("\t-atip		retrieve and print ATIP data\n");
+	error("\t-multi		generate a TOC that allows multi session\n");
+	error("\t		In this case default track type is CD-ROM XA mode 2 form 1 - 2048 bytes\n");
+	error("\t-fix		fixate a corrupt or unfixated disk (generate a TOC)\n");
+	error("\t-nofix		do not fixate disk after writing tracks\n");
+	error("\t-waiti		wait until input is available before opening SCSI\n");
+	error("\t-immed		Try to use the SCSI IMMED flag with certain long lasting commands\n");
+	error("\t-force		force to continue on some errors to allow blanking bad disks\n");
+	error("\t-tao		Write disk in TAO mode. This option will be replaced in the future.\n");
+	error("\t-dao		Write disk in SAO mode. This option will be replaced in the future.\n");
+	error("\t-sao		Write disk in SAO mode. This option will be replaced in the future.\n");
+	error("\t-raw		Write disk in RAW mode. This option will be replaced in the future.\n");
+	error("\t-raw96r		Write disk in RAW/RAW96R mode. This option will be replaced in the future.\n");
+	error("\t-raw96p		Write disk in RAW/RAW96P mode. This option will be replaced in the future.\n");
+	error("\t-raw16		Write disk in RAW/RAW16 mode. This option will be replaced in the future.\n");
 #ifdef	CLONE_WRITE
-	fprintf(target,"\t-clone		Write disk in clone write mode.\n");
+	error("\t-clone		Write disk in clone write mode.\n");
 #endif
-	fprintf(target,"\ttsize=#		Length of valid data in next track\n");
-	fprintf(target,"\tpadsize=#	Amount of padding for next track\n");
-	fprintf(target,"\tpregap=#	Amount of pre-gap sectors before next track\n");
-	fprintf(target,"\tdefpregap=#	Amount of pre-gap sectors for all but track #1\n");
-	fprintf(target,"\tmcn=text	Set the media catalog number for this CD to 'text'\n");
-	fprintf(target,"\tisrc=text	Set the ISRC number for the next track to 'text'\n");
-	fprintf(target,"\tindex=list	Set the index list for the next track to 'list'\n");
-	fprintf(target,"\t-text		Write CD-Text from information from *.inf or *.cue files\n");
-	fprintf(target,"\ttextfile=name	Set the file with CD-Text data to 'name'\n");
-	fprintf(target,"\tcuefile=name	Set the file with CDRWIN CUE data to 'name'\n");
+	error("\ttsize=#		Length of valid data in next track\n");
+	error("\tpadsize=#	Amount of padding for next track\n");
+	error("\tpregap=#	Amount of pre-gap sectors before next track\n");
+	error("\tdefpregap=#	Amount of pre-gap sectors for all but track #1\n");
+	error("\tmcn=text	Set the media catalog number for this CD to 'text'\n");
+	error("\tisrc=text	Set the ISRC number for the next track to 'text'\n");
+	error("\tindex=list	Set the index list for the next track to 'list'\n");
+	error("\t-text		Write CD-Text from information from *.inf or *.cue files\n");
+	error("\ttextfile=name	Set the file with CD-Text data to 'name'\n");
+	error("\tcuefile=name	Set the file with CDRWIN CUE data to 'name'\n");
 
-	fprintf(target,"\t-audio		Subsequent tracks are CD-DA audio tracks\n");
-	fprintf(target,"\t-data		Subsequent tracks are CD-ROM data mode 1 - 2048 bytes (default)\n");
-	fprintf(target,"\t-mode2		Subsequent tracks are CD-ROM data mode 2 - 2336 bytes\n");
-	fprintf(target,"\t-xa		Subsequent tracks are CD-ROM XA mode 2 form 1 - 2048 bytes\n");
-	fprintf(target,"\t-xa1		Subsequent tracks are CD-ROM XA mode 2 form 1 - 2056 bytes\n");
-	fprintf(target,"\t-xa2		Subsequent tracks are CD-ROM XA mode 2 form 2 - 2324 bytes\n");
-	fprintf(target,"\t-xamix		Subsequent tracks are CD-ROM XA mode 2 form 1/2 - 2332 bytes\n");
-	fprintf(target,"\t-cdi		Subsequent tracks are CDI tracks\n");
-	fprintf(target,"\t-isosize	Use iso9660 file system size for next data track\n");
-	fprintf(target,"\t-preemp		Audio tracks are mastered with 50/15 Âµs preemphasis\n");
-	fprintf(target,"\t-nopreemp	Audio tracks are mastered with no preemphasis (default)\n");
-	fprintf(target,"\t-copy		Audio tracks have unlimited copy permission\n");
-	fprintf(target,"\t-nocopy		Audio tracks may only be copied once for personal use (default)\n");
-	fprintf(target,"\t-scms		Audio tracks will not have any copy permission at all\n");
-	fprintf(target,"\t-pad		Pad data tracks with %d zeroed sectors\n", PAD_SECS);
-	fprintf(target,"\t		Pad audio tracks to a multiple of %d bytes\n", AUDIO_SEC_SIZE);
-	fprintf(target,"\t-nopad		Do not pad data tracks (default)\n");
-	fprintf(target,"\t-shorttrack	Subsequent tracks may be non Red Book < 4 seconds if in SAO or RAW mode\n");
-	fprintf(target,"\t-noshorttrack	Subsequent tracks must be >= 4 seconds\n");
-	fprintf(target,"\t-swab		Audio data source is byte-swapped (little-endian/Intel)\n");
-	fprintf(target,"The type of the first track is used for the toc type.\n");
-	fprintf(target,"Currently only form 1 tracks are supported.\n");
+	error("\t-audio		Subsequent tracks are CD-DA audio tracks\n");
+	error("\t-data		Subsequent tracks are CD-ROM data mode 1 - 2048 bytes (default)\n");
+	error("\t-mode2		Subsequent tracks are CD-ROM data mode 2 - 2336 bytes\n");
+	error("\t-xa		Subsequent tracks are CD-ROM XA mode 2 form 1 - 2048 bytes\n");
+	error("\t-xa1		Subsequent tracks are CD-ROM XA mode 2 form 1 - 2056 bytes\n");
+	error("\t-xa2		Subsequent tracks are CD-ROM XA mode 2 form 2 - 2324 bytes\n");
+	error("\t-xamix		Subsequent tracks are CD-ROM XA mode 2 form 1/2 - 2332 bytes\n");
+	error("\t-cdi		Subsequent tracks are CDI tracks\n");
+	error("\t-isosize	Use iso9660 file system size for next data track\n");
+	error("\t-preemp		Audio tracks are mastered with 50/15 µs preemphasis\n");
+	error("\t-nopreemp	Audio tracks are mastered with no preemphasis (default)\n");
+	error("\t-copy		Audio tracks have unlimited copy permission\n");
+	error("\t-nocopy		Audio tracks may only be copied once for personal use (default)\n");
+	error("\t-scms		Audio tracks will not have any copy permission at all\n");
+	error("\t-pad		Pad data tracks with %d zeroed sectors\n", PAD_SECS);
+	error("\t		Pad audio tracks to a multiple of %d bytes\n", AUDIO_SEC_SIZE);
+	error("\t-nopad		Do not pad data tracks (default)\n");
+	error("\t-shorttrack	Subsequent tracks may be non Red Book < 4 seconds if in SAO or RAW mode\n");
+	error("\t-noshorttrack	Subsequent tracks must be >= 4 seconds\n");
+	error("\t-swab		Audio data source is byte-swapped (little-endian/Intel)\n");
+	error("The type of the first track is used for the toc type.\n");
+	error("Currently only form 1 tracks are supported.\n");
 	exit(excode);
 }
 
@@ -3354,7 +3354,7 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 			susage(EX_BAD);
 		}
 		if (help)
-			usage(0, 1);
+			usage(0);
 		if (tracks == 0) {
 			if (driver)
 				set_cdrcmds(driver, dpp);
