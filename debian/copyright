@@ -36,7 +36,7 @@ cdrecord.c says (but see below):
 ------------------------------------------
 |   Warning: you are not allowed to modify or to remove the
 |   Copyright and version printing code below!
-|   See also GPL § 2 subclause c)
+|   See also GPL Â§ 2 subclause c)
 |  
 |   If you modify cdrecord you need to include additional version
 |   printing code that:
@@ -98,10 +98,10 @@ Date: Thu, 19 Aug 2004 18:10:31 +0200
 Darf geaendert werden. und ich habe auch absichtlich ein "Loch" gelassen, so
 dasz jemand den uname() Test mit einem automatischen Patch versehen kann.
 
-Jörg
+JÃ¶rg
 
 -- 
- EMail:joerg@schily.isdn.cs.tu-berlin.de (home) Jörg Schilling D-13353 Berlin
+ EMail:joerg@schily.isdn.cs.tu-berlin.de (home) JÃ¶rg Schilling D-13353 Berlin
        js@cs.tu-berlin.de		(uni)  If you don't have iso-8859-1
        schilling@fokus.fraunhofer.de	(work) chars I am J"org Schilling
  URL:  http://www.fokus.fraunhofer.de/usr/schilling ftp://ftp.berlios.de/pub/schily
@@ -114,7 +114,7 @@ Let me ask again: linuxcheck() is not restricted with
 "you are not allowed to modify or to remove the Copyright and version
 printing code below!"?
 
-Jörg answers:
+JÃ¶rg answers:
 It is allowed to change this and I have a "gap" there intentionally, so
 one can change the uname() check with an automated patch.
 ------------------------------------------------------------
