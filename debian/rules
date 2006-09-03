@@ -39,7 +39,7 @@ clean:
 	@echo "--- Cleaning"
 	dh_testdir
 	dh_testroot
-	-rm -rf wodim-1.8.1_de-doc_0.1
+	-rm -f 3rd-party/zisofs_tools/config.log 3rd-party/zisofs_tools/config.status
 	-./.clean
 	rm -f build-debstamp install-debstamp conf/config.sub conf/config.guess
 	dh_clean -k
