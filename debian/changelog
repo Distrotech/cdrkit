@@ -7,14 +7,14 @@ cdrkit (5:1.0~pre1-1) unstable; urgency=low
     (closes: #326138, #314139); things like hints to create device files are
     essential for only few people and can equaly be presented as program
     messages. Why shall we still MAKEDEV them?  It's not like we have switched
-    to kernel 2.0.1 yesterday (closes: #342085, 188827, #200665)
+    to kernel 2.0.1 yesterday (closes: #342085, #188827, #200665)
   * updated Build-Dependencies for kfreebsd (closes: #355291)
   * debian/copyright got uptodate mail address for Schilling (closes: #372484)
 
   [ Eduard Bloch, upstream related changes ] 
   * The Big Fork to an independent project called cdrkit
     + using the last clearly stated GPLed versions of files from
-      cdrtools-2.01.01a08 (closes: #353403, 372486)
+      cdrtools-2.01.01a08 (closes: #353403, #372486)
     + we play the upstream role now, using our patches and we like them
       (closes: #361450)
     + renamed relevant works to avoid claims of "potential defamation" or
@@ -35,12 +35,12 @@ cdrkit (5:1.0~pre1-1) unstable; urgency=low
   * sync with 4:2.01+01a01-4ubuntu4:
     + merged README.ATAPI.setup with README.ATAPI.setup.ubuntu. Kernel 2.6 part
       now in the beginning and reflecting the reality (dev=/dev/drive syntax,
-      no SUID requirement, closes: #304230, 377736)
+      no SUID requirement, closes: #304230, #377736)
     + 02_cdrecord_default_conf.dpatch: changed /dev/cdrom to /dev/cdrw which
       is more likely to match the correct device on udev using systems
   * 36_ATA_scanbus_ignore_locked.dpatch to ignore busy devices (eg. hda
     harddisk) while scanning with dev=ATA 
-    (closes: #310689, #309250, #317793, 360295, 
+    (closes: #310689, #309250, #317793, #360295, 
   * Included 37_clean_dvdsup.dpatch (closes: #312062) based on
     cdrtools-2.01.01a04-dvd.patch.bz2 from
     http://people.mandriva.com/~warly/files/cdrtools/ with few updates to work
@@ -64,7 +64,7 @@ cdrkit (5:1.0~pre1-1) unstable; urgency=low
     + 40_stop_setuid_games.dpatch - another workaround for problems introduced
     in a03 - looks like Linux kernel does reject an application trying to
     change the UID between ioctls
-    (closes: #335253, 374685, 330506, 329308, 374345, 377421)
+    (closes: #335253, #374685, #330506, #329308, #374345, #377421)
   * Ubuntu's 40_fix_bad_spelling.dpatch integrated (typo in wodim.dfl)
   * increased hash size in mkisofs/hash.c (closes: #327270)
   * more decent info message about locale detection
@@ -82,11 +82,12 @@ cdrkit (5:1.0~pre1-1) unstable; urgency=low
   * debhelper level 5, Policy version 3.7.2
   * Moved all buildstamps into the build/ dir
   * Dropped old install-save[d] targets.
+  * No more debconf (Closes: #361776, #379992, #381954)
 
   [ Steve McIntyre]:
   * Minor spelling/English fixes
 
- -- Joerg Jaspert <joerg@debian.org>  Sun,  3 Sep 2006 21:53:38 +0200
+ -- Joerg Jaspert <joerg@debian.org>  Sun,  3 Sep 2006 22:50:24 +0200
 
 cdrtools (4:2.01+01a03-5) unstable; urgency=low
 
