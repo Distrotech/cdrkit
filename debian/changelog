@@ -18,22 +18,17 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
     + we play the upstream role now, using our patches and we like them
       (closes: #361450)
     + renamed relevant works to avoid claims of "potential defamation" or
-      "damage of reputation", to not create a legal battlefield for
-      Joerg Schilling and "his understanding of how GPL applies in German
-      Urheberrecht" which was used to legitimate the "special clauses" in the
-      source (closes: #350738)
+      "damage of reputation" (closes: #350738)
     + custom CMake based build system used instead of the original one, since
       we understand it better (closes: #350739 and hopefully closes: #350254,
-      reopen if not). It seems to be portable among the the plattforms
+      reopen if not). It seems to be portable among the platforms
       supported by Debian, it needs a bit of work for porting to non-Linux
       plattforms, though.
-  * removed most of the anti-linux2.6 FUD from program messages (unless beeing
-    in verbose mode). Decent information about code modifications is okay,
-    subtle propaganda isn't (closes: #377145)
+  * removed most of the anti-linux2.6  program messages (unless being
+    in verbose mode). (closes: #377145)
   * changed default config file location to /etc/default/wodim
   * long help output of wodim, mkisofs, cdda2wav goes to stdout IFF -help was
-    used deliberately. No matter what JS claims to be "the Unix Tradition"
-    (closes: #138490, #299641)
+    used deliberately. (closes: #138490, #299641)
   * added more meaningful error message on -dvd-video failure (closes: #324586)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus
@@ -93,7 +88,7 @@ cdrkit (5:1.0~pre1-1) UNRELEASED; urgency=low
   [ Steve McIntyre]:
   * Minor spelling/English fixes
 
- -- Eduard Bloch <blade@debian.org>  Wed, 23 Aug 2006 22:06:28 +0200
+ -- Joerg Jaspert <joerg@debian.org>  Sun,  3 Sep 2006 21:53:38 +0200
 
 cdrtools (4:2.01+01a03-5) unstable; urgency=low
 
