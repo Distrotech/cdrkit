@@ -1,3 +1,15 @@
+/*
+ * This file has been modified for the cdrkit suite.
+ *
+ * The behaviour and appearence of the program code below can differ to a major
+ * extent from the version distributed by the original author(s).
+ *
+ * For details, see Changelog file distributed with the cdrkit package. If you
+ * received this file from another source then ask the distributing person for
+ * a log of modifications.
+ *
+ */
+
 /* @(#)mycdrom.h	1.10 06/05/07 Copyright 1998,1999 Heiko Eissfeldt, Copyright 2005-2006 J. Schilling */
 #if defined(__linux__)
 # include <linux/cdrom.h>
