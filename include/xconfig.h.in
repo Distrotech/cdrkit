@@ -397,17 +397,17 @@
  * Types/Keywords
  */
 #define SIZEOF_CHAR 1
-#define SIZEOF_SHORT_INT 2
-#define SIZEOF_INT 4
-#define SIZEOF_LONG_INT 8
-#define SIZEOF_LONG_LONG 8
-#define SIZEOF_CHAR_P 8
+#define SIZEOF_SHORT_INT  @SIZE_SHORT@
+#define SIZEOF_INT  @SIZE_INT@
+#define SIZEOF_LONG_INT @SIZE_LONG@
+#define SIZEOF_LONG_LONG @SIZE_LLONG@
+#define SIZEOF_CHAR_P @SIZE_PTR@
 #define SIZEOF_UNSIGNED_CHAR 1
-#define SIZEOF_UNSIGNED_SHORT_INT 2
-#define SIZEOF_UNSIGNED_INT 4
-#define SIZEOF_UNSIGNED_LONG_INT 8
-#define SIZEOF_UNSIGNED_LONG_LONG 8
-#define SIZEOF_UNSIGNED_CHAR_P 8
+#define SIZEOF_UNSIGNED_SHORT_INT @SIZE_SHORT@
+#define SIZEOF_UNSIGNED_INT @SIZE_INT@
+#define SIZEOF_UNSIGNED_LONG_INT  @SIZE_LONG@
+#define SIZEOF_UNSIGNED_LONG_LONG @SIZE_LLONG@
+#define SIZEOF_UNSIGNED_CHAR_P @SIZE_PTR@
 
 #define HAVE_LONGLONG 1		/* Compiler defines long long type */
 /* #undef CHAR_IS_UNSIGNED */		/* Compiler defines char to be unsigned */
@@ -555,11 +555,13 @@ We always use LFS on Debian, basta (EB)
 /*
  * Strings that help to maintain OS/platform id's in C-programs
  */
-#define HOST_ALIAS "x86_64-unknown-linux-gnu"		/* Output from config.guess (orig)	*/
-#define HOST_SUB "x86_64-unknown-linux-gnu"			/* Output from config.sub (modified)	*/
-#define HOST_CPU "x86_64"			/* CPU part from HOST_SUB		*/
+#define HOST_ALIAS @CMAKE_SYSTEM_MACHINE@	
+/* FIXME */
+#define HOST_SUB   @CMAKE_SYSTEM_MACHINE@
+#define HOST_CPU   @CMAKE_SYSTEM_MACHINE@
+/* FIXME */
 #define HOST_VENDOR "unknown"		/* VENDOR part from HOST_SUB		*/
-#define HOST_OS "linux-gnu"			/* CPU part from HOST_SUB		*/
+#define HOST_OS "unknown"			/* CPU part from HOST_SUB		*/
 
 
 /*
