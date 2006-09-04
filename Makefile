@@ -33,6 +33,7 @@ endif
 
 release:
 #	if test "$(shell svn status | grep -v -i make)" ; then echo Uncommited files found. Run \"svn status\" to display them. ; exit 1 ; fi
-	@if test -f ../$(DISTNAME).tgz ; then echo ../$(DISTNAME).tgz exists, not overwritting ; exit 1; fi
+	@if test -f ../$(DISTNAME).tar.gz ; then echo ../$(DISTNAME).tar.gz exists, not overwritting ; exit 1; fi
 	mkdir tmp && svn export . tmp/$(DISTNAME) && cd tmp && rm -rf ./debian/ && tar -f - -c $(DISTNAME) | gzip -9 > ../../$(DISTNAME).tar.gz && cd .. && rm -rf tmp
+	-if test -e /etc/debian_version ; then ln -f ../$(DISTNAME).tar.gz ../cdrkit_$(shell cat VERSION | sed -e "s,pre,~pre,").orig.tar.gz ; fi
 
