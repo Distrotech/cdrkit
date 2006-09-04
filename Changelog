@@ -1,3 +1,9 @@
+cdrkit (1.0pre3) RELEASED; urgency=low
+
+  * Added FAQ ("where wodim name comes from")
+
+ -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 09:56:38 +0200
+
 cdrkit (1.0pre2) RELEASED; urgency=low
 
   * Took zisofs_tools out of the global build system and restored its original
