@@ -1,4 +1,4 @@
-cdrkit (1.0pre3) UNRELEASED; urgency=low
+cdrkit (1.0pre3) unstable; urgency=low
 
   [ Eduard Bloch ]
   * Added FAQ ("where wodim name comes from")
@@ -20,6 +20,9 @@ cdrkit (1.0pre3) UNRELEASED; urgency=low
 
   [ Michael Ablassmeier ]
   * Typo fixes in mkisofs messages and unified identical ones with a macro
+
+  [Joerg Jaspert]
+  * Released as 1.0pre3
 
  -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 09:56:38 +0200
 

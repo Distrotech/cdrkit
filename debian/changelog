@@ -1,11 +1,14 @@
-cdrkit (5:1.0~pre3-1) UNRELEASED; urgency=low
+cdrkit (5:1.0~pre3-1) unstable; urgency=low
 
-  * NOT RELEASED YET
+  [ Eduard Bloch ]
   * New upstream snapshot
   * Updates/fixes of README.ATAPI.setup, README.Debian, wodim.NEWS from
     Michael Ablassmeier
 
- -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 01:43:49 +0200
+  [ Joerg Jaspert ]
+  * Several other upstream fixes included, should make it work on ppc.
+
+ -- Joerg Jaspert <joerg@debian.org>  Mon,  4 Sep 2006 19:38:57 +0200
 
 cdrkit (5:1.0~pre2-1) unstable; urgency=low
 
