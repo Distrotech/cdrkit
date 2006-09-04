@@ -1,5 +1,6 @@
 cdrkit (1.0pre3) UNRELEASED; urgency=low
 
+  [ Eduard Bloch ]
   * Added FAQ ("where wodim name comes from")
   * Moved the NULL pointer check on cdr_t to a place before it is used for DVD
     feature checks (otherwise it would crash when run on any pure CD-ROM
@@ -12,9 +13,13 @@ cdrkit (1.0pre3) UNRELEASED; urgency=low
     replacing the output of "schily" where the commend said that we are forced
     to. One part in cdrecord.c still remains, the comment sounds too dangerous
     to be touched.
+  * forced FIFO define, suggested by Peter
 
   [ Peter Samuelson ]
   * Created cmake test and code snippet for HAVE_C_BITFIELDS
+
+  [ Michael Ablassmeier ]
+  * Typo fixes in mkisofs messages and unified identical ones with a macro
 
  -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 09:56:38 +0200
 

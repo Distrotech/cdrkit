@@ -44,6 +44,10 @@ static	char sccsid[] =
 #include "ifo_read.h"
 #include "bswap.h"
 
+#define MSGEREAD "Failed to read VIDEO_TS.IFO\n"
+#define MSGESEEK "Failed to seek VIDEO_TS.IFO\n"
+#define MSGEOPEN "Failed to open VIDEO_TS.IFO\n"
+
 LOCAL	ifo_handle_t *	ifoReadVTSI	__PR((int file, ifo_handle_t * ifofile));
 LOCAL	ifo_handle_t *	ifoReadVGMI	__PR((int file, ifo_handle_t * ifofile));
 EXPORT	ifo_handle_t *	ifoOpen		__PR((dvd_reader_t *dvd, int title));
@@ -80,9 +84,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -90,9 +94,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -108,9 +112,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -118,9 +122,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -137,9 +141,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -148,9 +152,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -167,9 +171,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -178,9 +182,9 @@ ifoReadVTSI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -225,9 +229,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -235,9 +239,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -253,9 +257,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -264,9 +268,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -283,9 +287,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -294,9 +298,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (read(file, &titles, sizeof (titles)) != sizeof (titles)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -313,9 +317,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -324,9 +328,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -343,9 +347,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -354,9 +358,9 @@ ifoReadVGMI(file, ifofile)
 
 	if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		ifoClose(ifofile);
 		return (0);
@@ -382,18 +386,18 @@ ifoReadVGMI(file, ifofile)
 
 	if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to seek VIDEO_TS.IFO\n");
+		errmsg(MSGESEEK);
 #else
-		fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+		printf(stderr, MSGESEEK);
 #endif
 		return (0);
 	}
 
 	if (read(file, &titles, sizeof (titles)) != sizeof (titles)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		return (0);
 	}
@@ -415,9 +419,9 @@ ifoReadVGMI(file, ifofile)
 		offset = (2048 * vmgi_mat->tt_srpt) + 8 + (counter * 12) + 8;
 		if (lseek(file, offset, SEEK_SET) != offset) {
 #ifdef	USE_LIBSCHILY
-			errmsg("Faild to seek VIDEO_TS.IFO\n");
+			errmsg(MSGESEEK);
 #else
-			fprintf(stderr, "Faild to seek VIDEO_TS.IFO\n");
+			printf(stderr, MSGESEEK);
 #endif
 			ifoClose(ifofile);
 			return (0);
@@ -425,9 +429,9 @@ ifoReadVGMI(file, ifofile)
 
 		if (read(file, &sector, sizeof (sector)) != sizeof (sector)) {
 #ifdef	USE_LIBSCHILY
-			errmsg("Faild to read VIDEO_TS.IFO\n");
+			errmsg(MSGEREAD);
 #else
-			fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+			printf(stderr, MSGEREAD);
 #endif
 			ifoClose(ifofile);
 			return (0);
@@ -473,9 +477,9 @@ ifoOpen(dvd, title)
 
 	if ((file = open(full_path, O_RDONLY | O_BINARY)) == -1) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to open %s\n", full_path);
+		errmsg(MSGEOPEN);
 #else
-		fprintf(stderr, "Faild to open %s\n", full_path);
+		printf(stderr, MSGEOPEN);
 #endif
 		free(ifofile);
 		return (0);
@@ -487,9 +491,9 @@ ifoOpen(dvd, title)
 
 	if (read(file, identifier, sizeof (identifier)) != sizeof (identifier)) {
 #ifdef	USE_LIBSCHILY
-		errmsg("Faild to read VIDEO_TS.IFO\n");
+		errmsg(MSGEREAD);
 #else
-		fprintf(stderr, "Faild to read VIDEO_TS.IFO\n");
+		printf(stderr, MSGEREAD);
 #endif
 		return (0);
 	}

@@ -33,7 +33,7 @@ static	char sccsid[] =
 /*#define	XDEBUG*/
 #include <mconfig.h>
 
-  /* XXX Force use of FIFO untill we fixed the detection */
+  /* We always wish FIFO unless it is disabled below */
 #ifndef FIFO
 #define FIFO
 #endif
