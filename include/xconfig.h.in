@@ -391,7 +391,8 @@
 /* If using network byte order             */
 #cmakedefine WORDS_BIGENDIAN
 #define	HAVE_C_BITFIELDS	/* Flag that BITFIELDS_HTOL test was done  */
-/* #undef BITFIELDS_HTOL */		/* If high bits come first in structures   */
+/* If high bits come first in structures   */
+#cmakedefine BITFIELDS_HTOL
 
 /*
  * Types/Keywords
