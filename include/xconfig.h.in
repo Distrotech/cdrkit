@@ -563,20 +563,3 @@ We always use LFS on Debian, basta (EB)
 #define HOST_VENDOR "unknown"		/* VENDOR part from HOST_SUB		*/
 #define HOST_OS "unknown"			/* CPU part from HOST_SUB		*/
 
-
-/*
- * Begin restricted code for quality assurance.
- *
- * Warning: you are not allowed to include the #define below if you are not
- * using the Schily makefile system or if you modified the autoconfiguration
- * tests.
- *
- * If you only added other tests you are allowed to keep this #define.
- *
- * This restiction is introduced because this way, I hope that people
- * contribute to the project instead of creating branches.
- */
-#define	IS_SCHILY_XCONFIG
-/*
- * End restricted code for quality assurance.
- */
