@@ -30,6 +30,9 @@ endif(VA_LIST_IS_ARRAY)
 
 TRY_COMPILE(HAVE_MLOCKALL ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_HAVE_MLOCKALL.c)
 
+INCLUDE(TestBigEndian)
+TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
+
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 
 # FIXME! Does not work as expected. Not important for out-of-source builds but

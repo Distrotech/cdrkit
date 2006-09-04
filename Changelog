@@ -4,6 +4,7 @@ cdrkit (1.0pre3) UNRELEASED; urgency=low
   * Moved the NULL pointer check on cdr_t to a place before it is used for DVD
     feature checks (otherwise it would crash when run on any pure CD-ROM
     reader)
+  * Added test for WORDS_BIGENDIAN
 
  -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 09:56:38 +0200
 

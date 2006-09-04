@@ -388,7 +388,8 @@
  * Byteorder/Bitorder
  */
 #define	HAVE_C_BIGENDIAN	/* Flag that WORDS_BIGENDIAN test was done */
-/* #undef WORDS_BIGENDIAN */		/* If using network byte order             */
+/* If using network byte order             */
+#cmakedefine WORDS_BIGENDIAN
 #define	HAVE_C_BITFIELDS	/* Flag that BITFIELDS_HTOL test was done  */
 /* #undef BITFIELDS_HTOL */		/* If high bits come first in structures   */
 
