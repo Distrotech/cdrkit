@@ -630,6 +630,10 @@ if (lverbose > 2)
 		track[0].flags &= ~TI_TAO;
 	    }
 	}
+
+	if (dp == (cdr_t *)0)
+		comerrno(EX_BAD, "Sorry, no supported CD/DVD-Recorder found on this target.\n");
+
 	/* DVD does not support TAO */
 	if (dp->is_dvd) {
 	        printf("Using Session At Once (SAO) for DVD mode.\n");
@@ -642,8 +646,6 @@ if (lverbose > 2)
 
 	if (!is_cddrive(scgp))
 		comerrno(EX_BAD, "Sorry, no CD/DVD-Drive found on this target.\n");
-	if (dp == (cdr_t *)0)
-		comerrno(EX_BAD, "Sorry, no supported CD/DVD-Recorder found on this target.\n");
 	/*
 	 * The driver is known, set up data structures...
 	 */

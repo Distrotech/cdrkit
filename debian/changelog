@@ -1,3 +1,9 @@
+cdrkit (5:1.0~pre3-1) UNRELEASED; urgency=low
+
+  * NOT RELEASED YET
+
+ -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 01:43:49 +0200
+
 cdrkit (5:1.0~pre2-1) unstable; urgency=low
 
   * Restored the build system of zisofs-tools and changed to its use in
