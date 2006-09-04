@@ -1,10 +1,10 @@
 cdrtools (4:2.0+a26pre27-1) unstable; urgency=low
 
-  * Please note that cdrecord's behavior has changed signigicantly since 1.x
+  * Please note that cdrecord's behavior has changed significantly since 1.x
     versions, please consult the manpage for details:
     - -xa1 and -xa2 options work differently (but correctly now).
     - It is strongly suggested to explicitely specify the intended write
-      mode (-tao, -dao/-sao, -raw, ...) on the commandline. Currently
+      mode (-tao, -dao/-sao, -raw, ...) on the command line. Currently
       cdrecord will issue a warning otherwise and continue to use -tao per
       default, but this is supposed to change.
 

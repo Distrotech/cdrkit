@@ -6,12 +6,11 @@ Howto setup an ATAPI CD-RW/DVD+-RW recorder on Debian/Ubuntu
 Kernel 2.6.*
 ============
 
-If you have just one CD burner in your computer, burning should work
-out of the box, since there should be a symbolic link /dev/cdrw which
-points to your actual CD burner (e. g. /dev/hdb). If the link is not
-present (eg. the system is not using udev/devfs) or if you want to use a
-different burner device as default, you can configure the device in
-/etc/default/wodim:
+If you have just one CD writer in your computer, CD-writing should work out of
+the box. There should be a symbolic link /dev/cdrw which points to your actual
+CD-Writer's device (e. g. /dev/hdb). If the link is not present (eg.  the
+system is not using udev/devfs) or if you want to use a different device as
+default, you can configure the device in /etc/default/wodim:
 
   CDR_DEVICE=/dev/hdd
 
@@ -23,12 +22,12 @@ option:
 
     wodim dev=/dev/hdc ...
 
-Only users who are in the group "cdrom" are able to burn CDs.
+Only users part of the system group "cdrom" are able to write CDs.
 If you wish to allow non-root users to write CDs then add your users to the
 cdrom group ("adduser user cdrom") and let the user completely logout and
 re-login.
 Note: with certain kernel versions wodim can fail with this message:
-cdrecord: Operation not permitted. Cannot send SCSI cmd via ioctl
+"cdrecord: Operation not permitted. Cannot send SCSI cmd via ioctl"
 In this case it still does need the suid bit - please send patches if you have
 identified the reason of that problem.
 
@@ -54,7 +53,7 @@ Where we start:
 5. Save the file, reinstall the bootloader (ie. running "/sbin/lilo")
 6. Call "modconf" in a console or xterm, enter the section 
    "kernel/drivers/scsi", load "sg" and "ide-scsi"
-7. Reboot Debian, watch while booting, you should see a line like this
+7. Reboot Debian, watch while booting, you should see a line like this:
    "Detected scsi CD-ROM sr0 at scsi0, channel 0, id 0, lun 0".
    Your old ATAPI devices virtually don't exist any longer, you cannot refer to
    /dev/hd* as CDROM drives. Use the SCSI equivalents instead, /dev/sr*.
@@ -70,7 +69,7 @@ Where we start:
       cdrw=1,0,0        4       8m
       cdrom=1,2,0       0       0m
    Insert the right values, the fields are described in the manpage
-   of wodim. Alternatively, you may use this values as
+   of wodim. Alternatively, you may use these values as
    wodim-parameter or take a frontend with an own configuration
    scheme, then you don't need to modify /etc/default/wodim.
    The columns must be separated by tabs.

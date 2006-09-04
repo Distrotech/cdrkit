@@ -2,7 +2,7 @@ cdrkit for Debian
 ----------------
 
 cdrkit is Cd Recording Kit, a collection of applications related
-to creation of optical disk media on unixoid plattforms. It is heavily based on
+to creation of optical disk media on unixoid platforms. It is heavily based on
 the cdrtools package (partially developed and maintained by Joerg Schilling
 <schilling@fokus.gmd.de> before), however it is maintained independently now.
 
@@ -23,9 +23,9 @@ Please always include the following information in your bug-report:
   history of this media.
 
 A message in the form: "Sorry, no CD/DVD-Recorder or unsupported
-CD/DVD-Recorder found" is inaceptable as error report because we cannot see any
-reason why this message has been printed. For this reason we would need the
-complete inquiry output to understand why this message was printed.
+CD/DVD-Recorder found" is not an acceptable error report, because we cannot
+see any reason why this message has been printed. For this reason we would
+need the complete inquiry output to understand why this message was printed.
 
  -- Joerg Jaspert <joerg@debian.org>, Thu, 31 Aug 2006 00:25:05 +0200
  -- Eduard Bloch <blade@debian.org>, Wed, 23 Aug 2006 21:47:08 +0200
