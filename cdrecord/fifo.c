@@ -32,6 +32,12 @@ static	char sccsid[] =
 #endif
 /*#define	XDEBUG*/
 #include <mconfig.h>
+
+  /* XXX Force use of FIFO untill we fixed the detection */
+#ifndef FIFO
+#define FIFO
+#endif
+
 #if	defined(HAVE_OS_H) && \
 	defined(HAVE_CLONE_AREA) && defined(HAVE_CREATE_AREA) && \
 	defined(HAVE_DELETE_AREA)
