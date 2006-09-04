@@ -92,7 +92,7 @@ LOCAL	int	scgo_initiator_id __PR((SCSI *scgp));
 LOCAL	int	scgo_isatapi	__PR((SCSI *scgp));
 LOCAL	int	scgo_reset	__PR((SCSI *scgp, int what));
 
-LOCAL	char	_scg_auth_schily[]	= "schily";	/* The author for this module	*/
+LOCAL	char	_scg_auth_cdrkit[]	= "cdrkit-team";	/* The author for this module	*/
 
 EXPORT scg_ops_t scg_std_ops = {
 	scgo_send,
@@ -368,7 +368,7 @@ scgo_dversion(scgp, what)
 		 * return "schily" for the SCG_AUTHOR request.
 		 */
 		case SCG_AUTHOR:
-			return (_scg_auth_schily);
+			return (_scg_auth_cdrkit);
 		case SCG_SCCS_ID:
 			return (_sccsid);
 		}

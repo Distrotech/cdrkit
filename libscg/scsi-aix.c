@@ -78,7 +78,7 @@ scgo_version(scgp, what)
 		 * return "schily" for the SCG_AUTHOR request.
 		 */
 		case SCG_AUTHOR:
-			return (_scg_auth_schily);
+			return (_scg_auth_cdrkit);
 		case SCG_SCCS_ID:
 			return (__sccsid);
 		}

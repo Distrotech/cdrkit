@@ -110,7 +110,7 @@ static	char __sccsid[] =
 LOCAL	BOOL	debug = 1;
 
 LOCAL	char	_scg_trans_version[] = "remote-1.18";	/* The version for remote SCSI	*/
-LOCAL	char	_scg_auth_schily[]	= "schily";	/* The author for this module	*/
+LOCAL	char	_scg_auth_cdrkit[]	= "cdrkit-team";	/* The author for this module	*/
 
 LOCAL	int	scgo_rsend		__PR((SCSI *scgp));
 LOCAL	char *	scgo_rversion		__PR((SCSI *scgp, int what));
@@ -237,7 +237,7 @@ scgo_rversion(scgp, what)
 		 * return "schily" for the SCG_AUTHOR request.
 		 */
 		case SCG_AUTHOR:
-			return (_scg_auth_schily);
+			return (_scg_auth_cdrkit);
 		case SCG_SCCS_ID:
 			return (__sccsid);
 

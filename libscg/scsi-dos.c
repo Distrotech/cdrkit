@@ -87,7 +87,7 @@ scgo_version(scgp, what)
 		case SCG_VERSION:
 			return (_scg_trans_version);
 		case SCG_AUTHOR:
-			return (_scg_auth_schily);
+			return (_scg_auth_cdrkit);
 		case SCG_SCCS_ID:
 			return (__sccsid);
 		}

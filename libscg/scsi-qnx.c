@@ -81,7 +81,7 @@ scgo_version(scgp, what)
 		 */
 		case SCG_AUTHOR:
 			return ("Initial Version adopted from OSF-1 by QNX-people");
-			return (_scg_auth_schily);
+			return (_scg_auth_cdrkit);
 		case SCG_SCCS_ID:
 			return (__sccsid);
 		}
