@@ -7,6 +7,11 @@ cdrkit (1.0pre3) UNRELEASED; urgency=low
   * Added test for WORDS_BIGENDIAN
   * copied values from align.h to xconfig.h (is there another redundant
     check&define somewhere, maybe?)
+  * workarounds for almost all "you are not allowed to modify that {version
+    checking,quality assurance,other-important-looking-wording}" parts,
+    replacing the output of "schily" where the commend said that we are forced
+    to. One part in cdrecord.c still remains, the comment sounds too dangerous
+    to be touched.
 
  -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 09:56:38 +0200
 
