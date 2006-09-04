@@ -555,10 +555,10 @@ We always use LFS on Debian, basta (EB)
 /*
  * Strings that help to maintain OS/platform id's in C-programs
  */
-#define HOST_ALIAS @CMAKE_SYSTEM_MACHINE@	
+#define HOST_ALIAS "@CMAKE_SYSTEM_MACHINE@"
 /* FIXME */
-#define HOST_SUB   @CMAKE_SYSTEM_MACHINE@
-#define HOST_CPU   @CMAKE_SYSTEM_MACHINE@
+#define HOST_SUB   "@CMAKE_SYSTEM_MACHINE@"
+#define HOST_CPU   "@CMAKE_SYSTEM_MACHINE@"
 /* FIXME */
 #define HOST_VENDOR "unknown"		/* VENDOR part from HOST_SUB		*/
 #define HOST_OS "unknown"			/* CPU part from HOST_SUB		*/
