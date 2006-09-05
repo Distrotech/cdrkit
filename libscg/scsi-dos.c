@@ -1,3 +1,15 @@
+/*
+ * This file has been modified for the cdrkit suite.
+ *
+ * The behaviour and appearence of the program code below can differ to a major
+ * extent from the version distributed by the original author(s).
+ *
+ * For details, see Changelog file distributed with the cdrkit package. If you
+ * received this file from another source then ask the distributing person for
+ * a log of modifications.
+ *
+ */
+
 /* @(#)scsi-dos.c	1.11 03/12/10 Copyright 1998-2003 J. Schilling, 2003 Alex Kopylov reanimatolog@yandex.ru */
 #ifndef lint
 static	char __sccsid[] =

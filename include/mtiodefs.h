@@ -1,3 +1,15 @@
+/*
+ * This file has been modified for the cdrkit suite.
+ *
+ * The behaviour and appearence of the program code below can differ to a major
+ * extent from the version distributed by the original author(s).
+ *
+ * For details, see Changelog file distributed with the cdrkit package. If you
+ * received this file from another source then ask the distributing person for
+ * a log of modifications.
+ *
+ */
+
 /* @(#)mtiodefs.h	1.4 02/08/26 Copyright 1995,2000-2002 J. Schilling */
 /*
  *	Generic header for users of magnetic tape ioctl interface.

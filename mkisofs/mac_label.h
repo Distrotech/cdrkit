@@ -1,3 +1,15 @@
+/*
+ * This file has been modified for the cdrkit suite.
+ *
+ * The behaviour and appearence of the program code below can differ to a major
+ * extent from the version distributed by the original author(s).
+ *
+ * For details, see Changelog file distributed with the cdrkit package. If you
+ * received this file from another source then ask the distributing person for
+ * a log of modifications.
+ *
+ */
+
 /* @(#)mac_label.h	1.3 04/03/01 joerg, Copyright 1997, 1998, 1999, 2000 James Pearson */
 /*
  *      Copyright (c) 1997, 1998, 1999, 2000 James Pearson
