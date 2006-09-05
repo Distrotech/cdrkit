@@ -319,12 +319,6 @@ extern "C" {
 #	endif
 #endif
 
-#ifdef	__CHAR_UNSIGNED__	/* GNU GCC define (dynamic)	*/
-#ifndef CHAR_IS_UNSIGNED
-#define	CHAR_IS_UNSIGNED	/* Sing Schily define (static)	*/
-#endif
-#endif
-
 /*
  * Convert to GNU name
  */

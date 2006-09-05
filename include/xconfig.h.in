@@ -411,7 +411,6 @@
 #define SIZEOF_UNSIGNED_CHAR_P @SIZE_PTR@
 
 #define HAVE_LONGLONG 1		/* Compiler defines long long type */
-/* #undef CHAR_IS_UNSIGNED */		/* Compiler defines char to be unsigned */
 
 /* #undef const */			/* Define to empty if const doesn't work */
 /* #undef uid_t */			/* To be used if uid_t is not present  */

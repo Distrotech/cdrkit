@@ -92,12 +92,6 @@
 #define	_INCL_SYS_TYPES_H
 #endif
 
-#ifdef	__CHAR_UNSIGNED__	/* GNU GCC define (dynamic)	*/
-#ifndef CHAR_IS_UNSIGNED
-#define	CHAR_IS_UNSIGNED	/* Sing Schily define (static)	*/
-#endif
-#endif
-
 /*
  * Several unsigned cardinal types
  */
@@ -204,11 +198,7 @@ typedef unsigned char	Ucbit;
 error  Sizeof char is not equal 1
 #endif
 
-#if	defined(__STDC__) || defined(CHAR_IS_UNSIGNED)
-	typedef	signed char		Int8_t;
-#else
-	typedef	char			Int8_t;
-#endif
+typedef signed char			Int8_t;
 
 #if SIZEOF_SHORT_INT == 2
 	typedef	short			Int16_t;

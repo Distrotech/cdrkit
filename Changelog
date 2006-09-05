@@ -1,6 +1,11 @@
 cdrkit (1.0pre4) UNRELEASED; urgency=low
 
+  [ Eduard Bloch ]
   * Added checks for libcam to make (k)FreeBSD compilation work (untested)
+
+  [ Peter Samuelson ]
+  * Cleanups: unused macros/defines
+  * Unified and simplified the build-host data crawling methods
 
  -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 23:36:58 +0200
 
