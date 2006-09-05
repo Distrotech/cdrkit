@@ -3,6 +3,7 @@ cdrkit (1.0pre4) UNRELEASED; urgency=low
   [ Eduard Bloch ]
   * Added checks for libcam to make (k)FreeBSD compilation work (untested)
   * added clarifications about changes to all source files
+  * adapted initial message to display the copyright more clearly
 
   [ Peter Samuelson ]
   * Cleanups: unused macros/defines
