@@ -39,8 +39,7 @@ clean:
 	@echo "--- Cleaning"
 	dh_testdir
 	dh_testroot
-	-$(MAKE) -C 3rd-party/zisofs_tools clean
-	-rm -f 3rd-party/zisofs_tools/config.log 3rd-party/zisofs_tools/config.status
+	-$(MAKE) -C 3rd-party/zisofs_tools distclean
 	-./.clean
 	dh_clean -k
 	 # clean up the stuff dh_clean leaves behind
