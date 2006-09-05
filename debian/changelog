@@ -6,7 +6,10 @@ cdrkit (5:1.0~pre3-2) unstable; urgency=low
   [ Eduard Bloch ]
   * added detection for libcam header (closes: #385975)
 
- -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 23:39:20 +0200
+  [ Joerg Jaspert ]
+  * Added link for cdrecord manpage to dummy package, thanks to Ryan Finnie
+
+ -- Joerg Jaspert <joerg@debian.org>  Tue,  5 Sep 2006 12:15:45 +0200
 
 cdrkit (5:1.0~pre3-1) unstable; urgency=low
 
