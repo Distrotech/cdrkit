@@ -708,8 +708,7 @@ main(argc, argv)
 	if (help)
 		usage(0);
 	if (prvers) {
-		printf("isovfy %s (%s-%s-%s)\n", "2.01.01a03",
-					HOST_CPU, HOST_VENDOR, HOST_OS);
+		printf("isovfy %s (%s)\n", "2.01.01a03", HOST_SYSTEM);
 		exit(0);
 	}
 	cac = argc - 1;

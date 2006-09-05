@@ -312,10 +312,11 @@ main(ac, av)
 	if (help)
 		usage(0);
 	if (pversion) {
-		printf("readcd %s (%s-%s-%s) Copyright (C) 1987, 1995-2006 Joerg Schilling\n",
-								cdr_version,
-								HOST_CPU, HOST_VENDOR, HOST_OS);
-		printf("(using modified version of libscg -- don't bother Joerg Schilling with problems)\n");
+		printf("readcd %s (%s) "
+		       "Copyright (C) 1987, 1995-2006 Joerg Schilling\n",
+		       cdr_version, HOST_SYSTEM);
+		printf("(using modified version of libscg -- "
+		       "don't bother Joerg Schilling with problems)\n");
 		exit(0);
 	}
 

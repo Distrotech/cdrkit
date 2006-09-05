@@ -275,8 +275,7 @@ main(argc, argv)
 	if (help)
 		usage(0);
 	if (prvers) {
-		printf("devdump %s (%s-%s-%s)\n", "2.01.01a03",
-					HOST_CPU, HOST_VENDOR, HOST_OS);
+		printf("devdump %s (%s)\n", "2.01.01a03", HOST_SYSTEM);
 		exit(0);
 	}
 	cac = argc - 1;

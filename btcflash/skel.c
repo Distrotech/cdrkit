@@ -156,9 +156,10 @@ main(ac, av)
 	if (help)
 		usage(0);
 	if (pversion) {
-		printf("btcflash %s (%s-%s-%s) Copyright (C) 1987, 1995-2006 Jörg Schilling (C) 2004 David Huang\n",
-								skel_version,
-								HOST_CPU, HOST_VENDOR, HOST_OS);
+		printf("btcflash %s (%s) "
+		       "Copyright (C) 1987, 1995-2006 Jörg Schilling "
+		       "(C) 2004 David Huang\n",
+		       skel_version, HOST_SYSTEM);
 		exit(0);
 	}
 

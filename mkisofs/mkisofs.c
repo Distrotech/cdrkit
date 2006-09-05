@@ -2175,9 +2175,7 @@ main(argc, argv)
 			usage(0);
 			break;
 		case OPTION_PVERSION:
-			printf("%s (%s-%s-%s)\n",
-				version_string,
-				HOST_CPU, HOST_VENDOR, HOST_OS);
+			printf("%s (%s)\n", version_string, HOST_SYSTEM);
 #ifdef	OPTION_SILO_BOOT
 			printf("Warning: this is unofficial (modified) version of mkisofs that incorporates\n");
 			printf("	support for a non Sparc compliant boot method called SILO.\n");
@@ -2805,9 +2803,7 @@ parse_input_files:
 	}
 
 	if (verbose > 1) {
-		fprintf(stderr, "%s (%s-%s-%s)\n",
-				version_string,
-				HOST_CPU, HOST_VENDOR, HOST_OS);
+		fprintf(stderr, "%s (%s)\n", version_string, HOST_SYSTEM);
 	}
 	if (cdrecord_data == NULL && !check_session && merge_image != NULL) {
 #ifdef	USE_LIBSCHILY
@@ -2944,9 +2940,8 @@ parse_input_files:
 			for (i = 0; i < argc; i++)
 				fprintf(stderr, "%s ", argv[i]);
 
-			fprintf(stderr, "\n%s (%s-%s-%s)\n",
-				version_string,
-				HOST_CPU, HOST_VENDOR, HOST_OS);
+			fprintf(stderr, "\n%s (%s)\n",
+				version_string, HOST_SYSTEM);
 		}
 	}
 	/* Find name of root directory. */

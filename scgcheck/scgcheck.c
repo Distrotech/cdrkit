@@ -128,9 +128,9 @@ main(ac, av)
 	if (help)
 		usage(0);
 	if (pversion) {
-		printf("scgckeck %s (%s-%s-%s) Copyright (C) 1998-2002 Jörg Schilling\n",
+		printf("scgckeck %s (%s) Copyright (C) 1998-2002 Jörg Schilling\n",
 								scgc_version,
-								HOST_CPU, HOST_VENDOR, HOST_OS);
+								HOST_SYSTEM);
 		exit(0);
 	}
 
@@ -151,14 +151,15 @@ main(ac, av)
 	if (logfile == NULL)
 		comerr("Cannot open logfile.\n");
 
-	printf("Scgcheck %s (%s-%s-%s) SCSI user level transport library ABI checker.\n\
-Copyright (C) 1998,2001 Jörg Schilling\n",
+	printf("Scgcheck %s (%s) "
+	       "SCSI user level transport library ABI checker.\n"
+	       "Copyright (C) 1998,2001 Jörg Schilling\n",
 						scgc_version,
-						HOST_CPU, HOST_VENDOR, HOST_OS);
-	fprintf(logfile, "Scgcheck %s (%s-%s-%s) SCSI user level transport library ABI checker.\n\
-Copyright (C) 1998,2001 Jörg Schilling\n",
-						scgc_version,
-						HOST_CPU, HOST_VENDOR, HOST_OS);
+						HOST_SYSTEM);
+	fprintf(logfile, "Scgcheck %s (%s) "
+		"SCSI user level transport library ABI checker.\n"
+		"Copyright (C) 1998,2001 Jörg Schilling\n",
+		scgc_version, HOST_SYSTEM);
 	/*
 	 * Call scg_remote() to force loading the remote SCSI transport library
 	 * code that is located in librscg instead of the dummy remote routines
