@@ -1,5 +1,9 @@
 cdrkit (5:1.0~pre3-2) unstable; urgency=low
 
+  [ Peter Samuelson ]
+  * clean target fixes to purge zisofs leftovers
+
+  [ Eduard Bloch ]
   * added detection for libcam header (closes: #385975)
 
  -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 23:39:20 +0200

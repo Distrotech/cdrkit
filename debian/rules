@@ -39,20 +39,16 @@ clean:
 	@echo "--- Cleaning"
 	dh_testdir
 	dh_testroot
+	-$(MAKE) -C 3rd-party/zisofs_tools clean
 	-rm -f 3rd-party/zisofs_tools/config.log 3rd-party/zisofs_tools/config.status
 	-./.clean
-	rm -f build-debstamp install-debstamp conf/config.sub conf/config.guess
 	dh_clean -k
 	 # clean up the stuff dh_clean leaves behind
 	-rm -rf debian/build debian/files
-	-rm -f `find . -type d | grep OBJ`
-	-rm -f `find . -type d | grep CVS`
 	-rm -f `find . -name "*~"`
 	-rm -rf `find . -name "\.deps"`
 	-rm -rf `find . -name "\.libs"`
 	-rm -rf `find . -name "*\.rej"`
-	-rm -rf zisofs_tools
-	-rm -f wodim.mmap
 	-rm -rf build
 
 install: build build/install-debstamp
