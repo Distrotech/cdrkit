@@ -4,16 +4,14 @@ INCLUDE(../include/AddScgBits.cmake)
 
 AUX_SOURCE_DIRECTORY(. CDRECORD_SRCS)
 
-FIND_LIBRARY(CAPTEST cap)
+FIND_FILE(CAPTEST "sys/capability.h")
 if(CAPTEST) 
    set(CAPLINK cap)
 endif(CAPTEST)
 
-#INCLUDE(CheckIncludeFiles)
-#CHECK_INCLUDE_FILES("stdio.h;linux/syscalls.h" IS_LINUX)
-#if(IS_LINUX AND NOT CAPTEST)
-#   MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
-#endif(IS_LINUX AND NOT CAPTEST)
+if(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
+   MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
+endif(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
 
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)
 ADD_EXECUTABLE (wodim ${CDRECORD_SRCS})
