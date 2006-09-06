@@ -1,4 +1,4 @@
-cdrkit (5:1.0~pre3-2) unstable; urgency=low
+cdrkit (5:1.0~pre4-1) unstable; urgency=low
 
   [ Peter Samuelson ]
   * clean target fixes to purge zisofs leftovers
