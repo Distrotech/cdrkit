@@ -1,4 +1,10 @@
-cdrkit (1.0pre4) UNRELEASED; urgency=low
+cdrkit (1.0pre5) UNRELEASED; urgency=low
+
+  * added better check for capability.h and FATAL_ERROR if it's missing on Linux
+
+ -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
+
+cdrkit (1.0pre4) RELEASED; urgency=low
 
   [ Eduard Bloch ]
   * Added checks for libcam to make (k)FreeBSD compilation work (untested)
