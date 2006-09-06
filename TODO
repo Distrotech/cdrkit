@@ -5,12 +5,9 @@
    replace with cmake macros
  - add better detection for various functions. Eg. correct checks for have_soundcard, have_mlockall and have_wait_h for cygwin.
  - add buildstuff for the doc directory? Any need?
+ - see http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=cdrkit and try to solve upstream related problems
  - find and eliminate remaining ".mk" ".mk*" files
-- The AUTHOR sections of scgcheck/scgcheck.1, btcflash/btcflash.1 have
-  a number of URLs and mailing lists all pointing to Schilling.
-  I suggest to add hints to the debian fork there too.
-
-- Can we rename the 'cdrecord' directory into 'wodim'?
-  That may be hard on the build system, this could be the best time
-  to change it.
+ - Can we rename the 'cdrecord' directory into 'wodim'?
+ That may be hard on the build system, this could be the best time
+ to change it.
 
