@@ -4,6 +4,9 @@ cdrkit (1.0pre4) UNRELEASED; urgency=low
   * Added checks for libcam to make (k)FreeBSD compilation work (untested)
   * added clarifications about changes to all source files
   * adapted initial message to display the copyright more clearly
+  * adapted copyright and contact information in scgcheck manpage
+  * adapted contact information in btcflash manpage, also added a reference to
+    its original author which has been missing
 
   [ Peter Samuelson ]
   * Cleanups: unused macros/defines
