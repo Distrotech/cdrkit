@@ -1,5 +1,5 @@
 #!/bin/sh
-# Debian cdrecord package post-remove script
+# Debian wodim package post-remove script
 # Copyright 2000 Erik Andersen.
 # Copyright 2001 Colin Walters <walters@debian.org>
 # Licensed under the GNU GPL.

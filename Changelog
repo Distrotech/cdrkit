@@ -8,6 +8,10 @@ cdrkit (1.0pre4) UNRELEASED; urgency=low
   [ Peter Samuelson ]
   * Cleanups: unused macros/defines
   * Unified and simplified the build-host data crawling methods
+  
+  [ Juergen Weigert ]
+  * Various documentation corrections, replaced cdrecord->wodim where it is
+    appropriate and legal on many visible locations
 
  -- Eduard Bloch <blade@debian.org>  Mon,  4 Sep 2006 23:36:58 +0200
 

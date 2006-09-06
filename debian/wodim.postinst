@@ -1,5 +1,5 @@
 #!/bin/sh
-# Debian cdrecord package post-installation script
+# Debian wodim package post-installation script
 # Copyright 1999 Erik Andersen.  Licensed under the GNU GPL.
 # Changes by Eduard Bloch, Andreas Metzler, Joerg Jaspert (2002/2003/2006)
 

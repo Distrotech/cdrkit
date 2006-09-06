@@ -123,7 +123,7 @@ If you have problems to figure out what values for
 should be used, try the 
 .B \-scanbus
 option of 
-.BR cdrecord .
+.BR wodim .
 
 .SH OPTIONS
 .TP
@@ -159,7 +159,7 @@ targets on this virtual SCSI bus.
 If no 
 .I dev
 option is present, 
-.B cdrecord
+.B wodim
 will try to get the device from the 
 .B CDR_DEVICE
 environment.
@@ -168,7 +168,7 @@ If the argument to the
 .B dev=
 option does not contain the characters ',', '/', '@' or ':',
 it is interpreted as an label name that may be found in the file
-/etc/default/cdrecord (see FILES section).
+/etc/default/wodim (see FILES section).
 .TP
 .BI timeout= #
 Set the default SCSI command timeout value to 
@@ -230,7 +230,7 @@ Specify the log file to be used instead of
 
 .SH FILES
 .SH SEE ALSO
-.BR cdrecord (1),
+.BR wodim (1),
 .BR readcd (1),
 .BR mkisofs (1),
 .BR scg (7).

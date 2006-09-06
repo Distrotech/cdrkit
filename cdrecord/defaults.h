@@ -12,7 +12,7 @@
 
 /* @(#)defaults.h	1.1 04/02/22 Copyright 1998-2004 J. Schilling */
 /*
- *	The cdrecord defaults (/etc/default/cdrecord) interface
+ *	The cdrecord defaults (/etc/default/wodim) interface
  *
  *	Copyright (c) 1998-2004 J. Schilling
  */

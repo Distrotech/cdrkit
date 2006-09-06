@@ -4822,29 +4822,6 @@ set_wrmode(dp, wmode, tflags)
 	dsp->ds_wrmode = WM_NONE;
 }
 
-/*
- * I am sorry that even for version 1.310 of cdrecord.c, I am forced to do
- * things like this, but defective versions of cdrecord cause a lot of
- * work load to me and it seems to be impossible to otherwise convince
- * SuSE to cooperate.
- * As people contact me and bother me with the related problems,
- * it is obvious that SuSE is violating subsection 6 in the preamble of
- * the GPL.
- *
- * The reason for including a test against SuSE's private
- * distribution environment is only that SuSE violates the GPL for
- * a long time and seems not to be willing to follow the requirements
- * imposed by the GPL. If SuSE starts to ship non defective versions
- * of cdrecord or informs their customers that they would need to
- * compile cdrecord themselves in order to get a working cdrecord,
- * they should contact me for a permission to change the related test.
- *
- * Note that although the SuSE test is effective only for SuSE, the
- * intention to have non bastardized versions out is not limited
- * to SuSE. It is bad to see that in special in the "Linux" business,
- * companies prefer a model with many proprietary differing programs
- * instead of cooperating with the program authors.
- */
 #if	defined(linux) || defined(__linux) || defined(__linux__)
 #ifdef	HAVE_UNAME
 #include <sys/utsname.h>

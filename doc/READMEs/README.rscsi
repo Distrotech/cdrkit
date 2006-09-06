@@ -92,7 +92,7 @@ RSCSI usage:
 		Will let you log in as rscsi on host babbel and open Target 3 lun 0
 		on SCSI bus #1
 
-	-	If you use cdrecord -vv ...., cdrecord will on startup print some 
+	-	If you use wodim -vv ...., wodim will on startup print some 
 		information about the remote libscg version used for the connection.
 
 -	To be able to use the remote SCSI client code from win32 you need to create
@@ -110,14 +110,14 @@ RSCSI speed:
 
 -	With 10 MB/s, 4x recording is the maximum. Do tests before!
 
--	Logging into a remote machine and running cdrecord on the remote machine
+-	Logging into a remote machine and running wodim on the remote machine
 	causes the buffer cache on that machine to be trashed. The main user
 	is disturbed.
 
 -	Doing cdrecording via Remote SCSI causes only the rscsi command with less
 	than 200kB to be needed on the remote machine hosting the CD recorder.
 	The main user on that machine is not disturbed.
-	The buffer cache of the machine running cdrecord is trashed.
+	The buffer cache of the machine running wodim is trashed.
 
 -	It is desirable to use a Burn-Proof recorder to make sure that network
 	load will not cause buffer underruns.

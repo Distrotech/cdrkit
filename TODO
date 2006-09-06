@@ -6,4 +6,18 @@
  - add better detection for various functions. Eg. correct checks for have_soundcard, have_mlockall and have_wait_h for cygwin.
  - add buildstuff for the doc directory? Any need?
  - find and eliminate remaining ".mk" ".mk*" files
+- The AUTHOR sections of scgcheck/scgcheck.1, btcflash/btcflash.1 have
+  a number of URLs and mailing lists all pointing to Schilling.
+  I suggest to add hints to the debian fork there too.
+
+- The AVAILABILITY section of mkisofs/diag/isoinfo.8 only points to
+  berlios. I suggest to also point to a debian mirror.
+
+- doc/READMEs/README currently only talks about cdrecord, smake and the
+  like. I suggest to also mention wodim, perhaps only where cdrecord is
+  first mentioned. 'This is version 2.0 of wodim (formerly known as cdrecord)'
+
+- Can we rename the 'cdrecord' directory into 'wodim'?
+  That may be hard on the build system, this could be the best time
+  to change it.
 
