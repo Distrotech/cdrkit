@@ -10,9 +10,6 @@
   a number of URLs and mailing lists all pointing to Schilling.
   I suggest to add hints to the debian fork there too.
 
-- The AVAILABILITY section of mkisofs/diag/isoinfo.8 only points to
-  berlios. I suggest to also point to a debian mirror.
-
 - doc/READMEs/README currently only talks about cdrecord, smake and the
   like. I suggest to also mention wodim, perhaps only where cdrecord is
   first mentioned. 'This is version 2.0 of wodim (formerly known as cdrecord)'
