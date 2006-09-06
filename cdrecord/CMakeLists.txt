@@ -9,12 +9,11 @@ if(CAPTEST)
    set(CAPLINK cap)
 endif(CAPTEST)
 
-INCLUDE(CheckIncludeFiles)
-CHECK_INCLUDE_FILES("stdio.h;linux/syscalls.h" IS_LINUX)
-if(IS_LINUX AND NOT CAPTEST)
-   MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
-endif(IS_LINUX AND NOT CAPTEST)
-
+#INCLUDE(CheckIncludeFiles)
+#CHECK_INCLUDE_FILES("stdio.h;linux/syscalls.h" IS_LINUX)
+#if(IS_LINUX AND NOT CAPTEST)
+#   MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
+#endif(IS_LINUX AND NOT CAPTEST)
 
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)
 ADD_EXECUTABLE (wodim ${CDRECORD_SRCS})
