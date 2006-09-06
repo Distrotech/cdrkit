@@ -318,8 +318,8 @@ main(ac, av)
 	fprintf(stderr,
 	      "This is wodim, not cdrecord. Don't expect it to behave like cdrecord in any\n"
 	      "way, don't refer to it as \"cdrecord\". Send problem reports to\n"
-        "debburn-devel@lists.alioth.debian.org, don't bother Joerg Schilling\n"
-        "with any problems caused by this application.\n"
+        "debburn-devel@lists.alioth.debian.org, don't bother Joerg Schilling with any\n"
+        "problems caused by this application.\n"
         "Copyright (C) 2006 cdrkit maintainers, (C) 1994-2006 Joerg Schilling\n\n"
 	      );
 
