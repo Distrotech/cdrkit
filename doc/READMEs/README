@@ -1,3 +1,24 @@
+# README for cdrkit
+
+This README is an adapted version for the cdrkit suite. The old README file
+contents pulled from the cdrtools package (as created by Joerg Schilling) are
+attached below.
+
+Most of the installation instructions mentioned below are void in context of
+cdrkit. Don't rely on them. Read the INSTALL file to learn to install cdrkit.
+
+Many of compatibility and portability descriptions below are void in context of
+cdrkit. Cdrkit is less portable than cdrtools and may support fewer devices.
+Cdrkit maintainers encourage to submit results from users of non-Linux
+platforms.
+
+Application name(s) have been changed. The wodim executable is the one used for
+CD/DVD recording within the cdrkit suite.
+
+The same applies to most README.<topic> files found in this directory.
+
+ -- Eduard Bloch <blade@debian.org> Wed, 06 Sep 2006 18:08:08 +0200
+
 # @(#)README	1.25 02/12/25 Copyright 1996-2002 J. Schilling
 
 This is Version 2.0 of cdrecord
