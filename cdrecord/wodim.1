@@ -76,10 +76,12 @@ In any case, the user running
 needs read and write access to the particular device file on a Linux system. It
 is recommended to be root or install the application as suid-root, because
 certain versions of Linux (kernel) limit the set of SCSI commands allowed for
-non-root users and also the verbosity of the returned status codes. Even if
-usage without root identity is possible in many cases, some device drivers
-still may fail, show unexplainable problems and generaly the problems are
-harder to debug. The risk for buffer-underruns is also increased.
+non-root users. Even if usage without root identity is possible in many cases,
+some device drivers still may fail, show unexplainable problems and generaly
+the problems are harder to debug. The risk for buffer-underruns is also
+increased. See
+.IR NOTES
+section below for more details.
 .PP
 The alternative and kind of "portable" way is using the 
 .IR devicetype:scsi/target/lun
@@ -2094,10 +2096,6 @@ default speed and the default FIFO size.
 
 .SH NOTES
 .PP
-Not all options described in this manual may be supported by the GPL variant
-of wodim. wodim issues a warning if an attempt is made to use an option
-that has been disabled in the GPL variant.
-.PP
 On Solaris you need to stop the volume management if you like to use the USCSI
 fallback SCSI transport code. Even things like 
 .B "wodim -scanbus
@@ -2118,19 +2116,6 @@ The minimal size of a track is 4 seconds or 300 sectors. If you write
 smaller tracks, the CD-Recorder will add dummy blocks. This is not an
 error, even though the SCSI-error message looks this way.
 .PP
-.B wodim
-has been tested on an upgraded Philips CDD-521 recorder at single and 
-double speed on a SparcStation 20/502 with no problems, slower computer systems
-should work also. 
-The newer Philips/HP/Plasmon/Grundig
-drives as well as Yamaha CDR-100 and CDR-102 work also. The Plasmon RF-4100
-work, but has not tested in multi session.
-A Philips CDD-521 that has not been upgraded will not work.
-The Sony CDU-924 has been tested, but does not support XA-mode2 in hardware.
-The Sony therefore cannot create conforming multi session disks.
-The Ricoh RO-1420C works, but some people seem to have problems to 
-use them with speed=2, try speed=0 in this case.
-.PP
 The Yamaha CDR-400 and all new SCSI-3/mmc conforming drives are supported
 in single and multi-session.
 .PP
@@ -2139,62 +2124,39 @@ You should run several tests in all supported speeds of your drive with the
 option turned on if you are using 
 .B wodim
 on an unknown system. Writing a CD is a real-time process. 
-.B NFS
-will not always deliver constantly the needed data rates.
+.B NFS, CIFS
+and other network file systems
+won't always deliver constantly the needed data rates.
 If you want to use 
 .B wodim 
 with CD-images that are located on a
 .B NFS
 mounted filesystem, be sure that the FIFO size is big enough.
-I used
-.B wodim 
-with medium load on a SS20/502 and even at quad speed 
-on a Sparcstation-2 which was heavily loaded, 
-but it is recommended to leave the system
-as lightly loaded as possible while writing a CD.
 If you want to make sure that buffer underruns are not
 caused by your source disk, you may use the command
 .PP
 .B "    wodim -dummy dev=2,0 padsize=600m /dev/null
 .PP
 to create a disk that is entirely made of dummy data.
-.B wodim
-needs to run as root to get access to the 
-.B /dev/scg?
-device nodes and to be able to lock itself into memory.
 .PP
-If you don't want to allow users to become root on your system,
-.B wodim
-may safely be installed suid root. This allows all users or a group of
-users with no root privileges to use 
-.B wodim.
+There are also cases where you either need to be root or install
 .B wodim 
-in this case checks, if the real user would have been able to read 
-the specified files.
-To give all user access to use 
-.B wodim, 
-enter:
+executable with suid-root permissions. First, if you are using a device
+manufactured before 1999 which requires a non-MMC driver, you should run
+.B wodim
+in dummy mode before writting data. If you find a problem doing this, please
+report it to the cdrkit maintainers (see below).
 .PP
-	chown root /usr/local/bin/wodim
-.br
-	chmod 4711 /usr/local/bin/wodim
+Second, certain functionality may be unuseable because of Linux' SCSI command filtering. When using
+.B wodim
+for anything except of pure data writting, you should also test the process in
+dummy mode and report trouble to the contact address below.
 .PP
-To give a restricted group of users access to wodim enter:
-.PP
-	chown root /usr/local/bin/wodim
-.br
-	chgrp cdburners /usr/local/bin/wodim
-.br
-	chmod 4710 /usr/local/bin/wodim
-.PP
-and add a group 
-.I cdburners
-on your system.
-.PP
-Never give write permissions for non root users to the 
-.I /dev/scg?
-devices unless you would allow anybody to read/write/format
-all your disks.
+If you still want to run
+.B wodim
+with root permissions, you can set the permissions of the executable to
+suid-root. See the additional notes of your system/program distribution or
+README.suidroot which is part of the cdrkit source.
 .PP
 You should not connect old drives that do not support
 disconnect/reconnect to either the SCSI bus that is connected to the
@@ -2210,49 +2172,15 @@ containing the audio tracks and the following session containing the data track.
 Many operating systems are not able to read more than a single data track, or
 need special software to do so.
 .PP
-More information on the SCSI command set of a HP CD-Recorder can be found at:
-.PP
-	http://www.hp.com/isgsupport/cdr/index.html
-.PP
 If you have more information or SCSI command manuals for currently 
-unsupported CD/DVD-Recorders please contact the author.
+unsupported CD/DVD/BR/HD-DVD-Recorders please contact the author.
 .PP
-The Philips CDD 521 CD-Recorder (even in the upgraded version)
-has several firmware bugs. Some of them will
-force you to power cycle the device or to reboot the machine.
+Many CD recorders have bugs and often require a firmware update to work
+correctly. If you exprience problems which cannot be solved or explained by the
+notes above, please look for instructions on the homepage of the particular
+manufacturer.
 .PP
-When using 
-.B wodim
-with the broken 
-.B "Linux SCSI generic driver."
-You should note that 
-.B wodim
-uses a hack, that tries to emulate the functionality of the scg driver.
-Unfortunately, the sg driver on 
-.B Linux
-has several severe bugs:
-.TP
-\(bu
-It cannot see if a SCSI command could not be sent at all.
-.TP
-\(bu
-It cannot get the SCSI status byte. 
-.B wodim
-for that reason cannot report failing SCSI commands in some
-situations.
-.TP
-\(bu
-It cannot get real DMA count of transfer. 
-.B wodim
-cannot tell you if there is an DMA residual count.
-.TP
-\(bu
-It cannot get number of bytes valid in auto sense data.
-.B wodim
-cannot tell you if device transfers no sense data at all.
-.TP
-\(bu
-It fetches to few data in auto request sense (CCS/SCSI-2/SCSI-3 needs >= 18).
+Some bugs will force you to power cycle the device or to reboot the machine.
 .PP
 The FIFO percent output is computed just after a block of data has been written
 to the CD/DVD-Recorder. For this reason, there will never be 100% FIFO fill ratio
@@ -2260,11 +2188,12 @@ while the FIFO is in streaming mode.
 
 .SH DIAGNOSTICS
 .PP
-You have 9 seconds to type ^C to abort 
+You have 9 seconds to abort
 .B wodim
-after you see the message:
+start after you see the message:
 .PP
 Starting to write CD at speed %d in %s mode for %s session.
+In most shells you can do that by pressing Ctrl-C.
 .PP
 A typical error message for a SCSI command looks like:
 .sp

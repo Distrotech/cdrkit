@@ -171,7 +171,16 @@ scg__open(scgp, device)
 	scg_ops_t *ops;
 extern	scg_ops_t scg_std_ops;
 
-	/*
+#ifdef DONT_CARE 
+/* 
+ * Who defines which changes decrease the quality and how? The one who hates
+ * all changes not done by him personally? There are more harsch (but more
+ * precise) words to describe stuff like that below, for now let's call it
+ * "unpleasant easter egg" or "addition of code which is enabled by conditional
+ * compilation when a condition appears which the creator of the code dislikes
+ * by principle".
+ */
+/*
 	 * Begin restricted code for quality assurance.
 	 *
 	 * Warning: you are not allowed to modify the quality ensurance code below.
@@ -188,6 +197,7 @@ extern	scg_ops_t scg_std_ops;
 	/*
 	 * End restricted code for quality assurance.
 	 */
+#endif
 
 	scgp->ops = &scg_std_ops;
 
