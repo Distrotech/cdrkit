@@ -77,16 +77,16 @@ needs read and write access to the particular device file on a Linux system. It
 is recommended to be root or install the application as suid-root, because
 certain versions of Linux (kernel) limit the set of SCSI commands allowed for
 non-root users. Even if usage without root identity is possible in many cases,
-some device drivers still may fail, show unexplainable problems and generaly
+some device drivers still may fail, show unexplainable problems and generally
 the problems are harder to debug. The risk for buffer-underruns is also
-increased. See
+increased. See the
 .IR NOTES
 section below for more details.
 .PP
 The alternative and kind of "portable" way is using the 
 .IR devicetype:scsi/target/lun
 specification. However, the success of this method is not guaranteed since it
-requires an adaption scheme for your architecture.
+requires an adaptation scheme for your architecture.
 .PP
 To access remote SCSI devices, you need to prepend the SCSI device name by
 a remote device indicator. The remote device indicator is either
@@ -2144,12 +2144,15 @@ There are also cases where you either need to be root or install
 executable with suid-root permissions. First, if you are using a device
 manufactured before 1999 which requires a non-MMC driver, you should run
 .B wodim
-in dummy mode before writting data. If you find a problem doing this, please
-report it to the cdrkit maintainers (see below).
+in dummy mode before writing data. If you find a problem doing this, please
+report it to the
+.B cdrkit
+maintainers (see below).
 .PP
-Second, certain functionality may be unuseable because of Linux' SCSI command filtering. When using
+Second, certain functionality may be unusable because of Linux's SCSI
+command filtering. When using
 .B wodim
-for anything except of pure data writting, you should also test the process in
+for anything except of pure data writing, you should also test the process in
 dummy mode and report trouble to the contact address below.
 .PP
 If you still want to run
@@ -2173,7 +2176,9 @@ Many operating systems are not able to read more than a single data track, or
 need special software to do so.
 .PP
 If you have more information or SCSI command manuals for currently 
-unsupported CD/DVD/BR/HD-DVD-Recorders please contact the author.
+unsupported CD/DVD/BR/HD-DVD-Recorders, please contact the
+.B cdrkit
+maintainers (see below).
 .PP
 Many CD recorders have bugs and often require a firmware update to work
 correctly. If you exprience problems which cannot be solved or explained by the
@@ -2282,7 +2287,7 @@ during a power failure.
 .TP 15
 Joerg Schilling (schilling@fokus.fhg.de)
 .br
-For writting cdrecord and libscg which represent the most part of wodim's code.
+For writing cdrecord and libscg which represent the most part of wodim's code.
 .PP
 .TP 15
 Bill Swartz	(Bill_Swartz@twolf.com)
@@ -2310,7 +2315,7 @@ Dave Platt	(dplatt@feghoot.ml.org)
 For creating the experimental packet writing support,
 the first implementation of CD-RW blanking support,
 the first .wav file decoder 
-and many nice discussions on wodim.
+and many nice discussions on cdrecord.
 .TP
 Chris P. Ross (cross@eng.us.uu.net)
 .br
@@ -2350,8 +2355,8 @@ D-13353 Berlin
 Germany
 .fi
 .PP
-Though beeing the original author and deserving the most credits for
-successfull result, Joerg Schilling is no longer involved into the development
+Though he is the original author and deserves the most credit for
+successful result, Joerg Schilling is no longer involved in the development
 of this application and therefore he shall not be made responsible for any
 problem caused by it. Do not refer to this application as "cdrecord", do not
 try to get support for wodim by contacting the original authors.

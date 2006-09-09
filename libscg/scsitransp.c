@@ -174,7 +174,7 @@ extern	scg_ops_t scg_std_ops;
 #ifdef DONT_CARE 
 /* 
  * Who defines which changes decrease the quality and how? The one who hates
- * all changes not done by him personally? There are more harsch (but more
+ * all changes not done by him personally? There are more harsh (but more
  * precise) words to describe stuff like that below, for now let's call it
  * "unpleasant easter egg" or "addition of code which is enabled by conditional
  * compilation when a condition appears which the creator of the code dislikes

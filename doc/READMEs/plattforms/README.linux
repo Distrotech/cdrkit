@@ -187,6 +187,7 @@ driver.  Unfortunately, the sg driver on Linux has several severe bugs:
    an DMA residual count.
  - It cannot get number of bytes valid in auto sense data. wodim cannot tell
    you if device transfers no sense data at all.
- - It fetches to few data in auto request sense (CCS/SCSI-2/SCSI-3 needs >= 18).
+ - It fetches too few data in auto request sense (CCS/SCSI-2/SCSI-3 needs
+   >= 18).
 
  -- Reviewed by Eduard Bloch  -- Sat, 09 Sep 2006 11:49:08 +0200
