@@ -1,6 +1,22 @@
-/* Copyright 2006 Eduard Bloch */
 /*
- * This code emulates the interface of the original defaults.c file
+ * This file has been modified for the cdrkit suite.
+ *
+ * The behaviour and appearence of the program code below can differ to a major
+ * extent from the version distributed by the original author(s).
+ *
+ * For details, see Changelog file distributed with the cdrkit package. If you
+ * received this file from another source then ask the distributing person for
+ * a log of modifications.
+ *
+ */
+
+/* @(#)defaults.c	1.17 06/02/15 Copyright 1998-2005 J. Schilling */
+#ifndef lint
+static	char sccsid[] =
+	"@(#)defaults.c	1.17 06/02/15 Copyright 1998-2005 J. Schilling";
+#endif
+/*
+ *	Copyright (c) 1998-2005 J. Schilling
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -29,21 +45,36 @@
 #include "cdrecord.h"	/* only for getnum() */
 #include "defaults.h"
 
-int open_cdrdefaults()
+LOCAL	int	open_cdrdefaults __PR((void));
+EXPORT	void	cdr_defaults	__PR((char **devp, int *speedp, long *fsp, char **drvoptp));
+LOCAL	void	cdr_xdefaults	__PR((char **devp, int *speedp, long *fsp, char **drvoptp));
+LOCAL	char *	strsv		__PR((char *s));
+
+LOCAL int
+open_cdrdefaults()
 {
+	/*
+	 * WARNING you are only allowed to change this filename if you also
+	 * change the documentation and add a statement that makes clear
+	 * where the official location of the file is why you did choose a
+	 * nonstandard location and that the nonstandard location only refers
+	 * to inofficial cdrecord versions.
+	 *
+	 * I was forced to add this because some people change cdrecord without
+	 * rational reason and then publish the result. As those people
+	 * don't contribute work and don't give support, they are causing extra
+	 * work for me and this way slow down the cdrecord development.
+	 */
 	return (defltopen("/etc/default/wodim"));
 }
 
-void
-cdr_defaults(char **ppszDevice, int *piSpeed, long *pFifoSize, char *ppDriverOptions) {
-      /*
-      devp, speedp, fsp, drvoptp)
+EXPORT void
+cdr_defaults(devp, speedp, fsp, drvoptp)
 	char	**devp;
 	int	*speedp;
 	long	*fsp;
 	char	**drvoptp;
 {
-*/
 	char	*dev	= NULL;
 	int	speed	= 0;
 	long	fs	= 0L;
@@ -61,7 +92,7 @@ cdr_defaults(char **ppszDevice, int *piSpeed, long *pFifoSize, char *ppDriverOpt
 		if (!*devp && open_cdrdefaults() == 0) {
 			dev = defltread("CDR_DEVICE=");
 			if (dev != NULL)
-				*devp = strdup(dev);
+				*devp = strsv(dev);
 		}
 	}
 	if (devp != NULL && *devp)
@@ -154,7 +185,7 @@ cdr_xdefaults(devp, speedp, fsp, drvoptp)
 			*x = '\0';
 		else if ((x = strchr(p, ' ')) != NULL)
 			*x = '\0';
-		*devp = strdup(p);
+		*devp = strsv(p);
 		if (x) {
 			p = ++x;
 			while (*p == '\t' || *p == ' ')
@@ -199,8 +230,21 @@ cdr_xdefaults(devp, speedp, fsp, drvoptp)
 				 * Driver opts found.
 				 */
 				if (drvoptp && *drvoptp == NULL)
-					*drvoptp = strdup(p);
+					*drvoptp = strsv(p);
 			}
 		}
 	}
+}
+
+LOCAL char *
+strsv(s)
+	char	*s;
+{
+	char	*p;
+	int len = strlen(s);
+
+	p = malloc(len+1);
+	if (p)
+		strcpy(p, s);
+	return (p);
 }
