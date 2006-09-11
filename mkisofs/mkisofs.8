@@ -40,7 +40,7 @@ specified
 by the 
 .B "Rock Ridge Interchange Protocol.
 This is used to further describe the
-files in the ISO9660 filesystem to a UNIX host, and provides information such
+files in the ISO9660 filesystem to a Unix host, and provides information such
 as long filenames, UID/GID, POSIX permissions, symbolic links,
 block and character devices.
 .PP
@@ -82,7 +82,7 @@ is in use.  This filename is used on systems that are not able to make use of
 the Rock Ridge extensions (such as MS-DOS), and each filename in each directory
 must be different from the other filenames in the same directory.
 .B mkisofs
-generally tries to form correct names by forcing the UNIX filename to upper
+generally tries to form correct names by forcing the Unix filename to upper
 case and truncating as required, but often times this yields unsatisfactory
 results when there are cases where the
 truncated names are not all unique.
@@ -96,7 +96,7 @@ foo.bar would be written as FOO.BAR;1
 .PP
 When used with various HFS options,
 .B mkisofs
-will attempt to recognise files stored in a number of Apple/UNIX file formats
+will attempt to recognise files stored in a number of Apple/Unix file formats
 and will copy the data and resource forks as well as any
 relevant finder information. See the
 .B HFS MACINTOSH FILE FORMATS
@@ -163,7 +163,7 @@ the intermediate directories, see \-uid, \-gid, \-dir\-mode, \-file\-mode and
 will also run on Win9X/NT4 machines when compiled with Cygnus' cygwin
 (available from http://sourceware.cygnus.com/cygwin/). Therefore most
 references in this man page to
-.I UNIX
+.I Unix
 can be replaced with
 .IR Win32 .
 
@@ -227,7 +227,7 @@ finds a hard link (a file with multiple names), then the file will only
 appear once on the CD. This helps to save space on the CD.
 The option
 .B \-cache\-inodes
-is default on UNIX like operating systems.
+is default on Unix like operating systems.
 Be careful when using this option on a filesystem without unique
 inode numbers as it may result in files containing the wrong content on CD.
 .TP
@@ -957,7 +957,7 @@ If the
 .B \-no\-bak
 option is specified, files that contain the characters '~' or '#'
 or end in '.bak' will not be included (these are typically backup files
-for editors under UNIX).
+for editors under Unix).
 .TP
 .B \-force\-rr
 Do not use the automatic Rock Ridge attributes recognition for previous sessions.
@@ -1498,7 +1498,7 @@ Use the
 .I mapping_file
 to set the CREATOR and TYPE information for a file based on the
 filename's extension. A filename is 
-mapped only if it is not one of the know Apple/UNIX file formats. See the
+mapped only if it is not one of the know Apple/Unix file formats. See the
 .B "HFS CREATOR/TYPE
 section below.
 .TP
@@ -1507,7 +1507,7 @@ The CREATOR and TYPE information is set by using a file's
 .I magic number
 (usually the first few bytes of a file). The
 .I magic_file
-is only used if a file is not one of the known Apple/UNIX file formats, or
+is only used if a file is not one of the known Apple/Unix file formats, or
 the filename extension has not been mapped using the
 .B \-map
 option. See the 
@@ -1525,7 +1525,7 @@ Set the default TYPE for all files. Must be exactly 4 characters. See the
 section below for more details.
 .TP
 .B \-probe
-Search the contents of files for all the known Apple/UNIX file formats.
+Search the contents of files for all the known Apple/Unix file formats.
 See the
 .B HFS MACINTOSH FILE FORMATS
 section below for more about these formats.
@@ -1537,7 +1537,7 @@ files is to open and read them. Therefore this option
 .I may
 increase processing time. It is better to use one or more
 .I double dash
-options given below if the Apple/UNIX formats in use are known.
+options given below if the Apple/Unix formats in use are known.
 .TP
 .B \-no\-desktop
 Do not create (empty) Desktop files. New HFS Desktop files will be created
@@ -1625,7 +1625,7 @@ used with the
 option
 .TP
 .B \-icon\-position
-Use the icon position information, if it exists, from the Apple/UNIX file.
+Use the icon position information, if it exists, from the Apple/Unix file.
 The icons will appear in the same position as they would on a Macintosh
 desktop. Folder location and size on screen, its scroll positions, folder
 View (view as Icons, Small Icons, etc.) are also preserved.
@@ -1686,8 +1686,8 @@ be used in normal circumstances. See the libhfs_iso/hybrid.h source file for
 details.
 .TP
 .B \-\-cap
-Look for AUFS CAP Macintosh files. Search for CAP Apple/UNIX file formats
-only. Searching for the other possible Apple/UNIX file formats is disabled,
+Look for AUFS CAP Macintosh files. Search for CAP Apple/Unix file formats
+only. Searching for the other possible Apple/Unix file formats is disabled,
 unless other
 .I double dash
 options are given.
@@ -1748,7 +1748,7 @@ is used by Microsoft with Win32 with the disadvantage that it only supports
 a subset of all codes and that 16-bit characters are not compliant with
 the POSIX filesystem interface.
 .PP
-Modern UNIX operating systems may use
+Modern Unix operating systems may use
 .B UTF-8
 coding for filenames. This coding allows to use the complete Unicode code set.
 Each 32-bit character is represented by one or more 8-bit characters.
@@ -1803,10 +1803,10 @@ when viewed on a machine in, say eastern Europe.
 To make matters more complicated, different operating systems use
 different character sets for the region or language. For example the character
 code for "small e with acute accent" may be character code 0x82 on a PC, 
-code 0x8e on a Macintosh and code 0xe9 on a UNIX system.
+code 0x8e on a Macintosh and code 0xe9 on a Unix system.
 Note while the codings used on a PC or Mac are nonstandard,
 Unicode codes this character as 0x00000000e9 which is basically the
-same value as the value used by most UNIX systems.
+same value as the value used by most Unix systems.
 .PP
 As long as not all operating systems and applications will use the Unicode
 character set as the basis for file names in a unique way, it may be
@@ -1836,15 +1836,15 @@ options.
 .IP \-output\-charset
 Defines the character set that will be used with for the Rock Ridge names
 on the CD. Defaults to the input character set. Only likely to be useful
-if used on a non-UNIX platform. e.g. using
+if used on a non-Unix platform. e.g. using
 .B mkisofs
 on a Microsoft Win32 machine to create Rock Ridge CDs. If you are using
 .B mkisofs
-on a UNIX machine, it is likely that the output character set
+on a Unix machine, it is likely that the output character set
 will be the same as the input character set.
 .IP \-input\-hfs\-charset
 Defines the HFS character set used for HFS file names decoded from
-any of the various Apple/UNIX file formats. Only useful when used with
+any of the various Apple/Unix file formats. Only useful when used with
 .I \-mac\-name
 option. See the
 .B HFS MACINTOSH FILE NAMES
@@ -1887,7 +1887,7 @@ warnings. Any missing input code is mapped to Unicode character 0x0000.
 Note that there is no support for 16 bit UNICODE (UTF-16) or 32 bit UNICODE
 (UTF-32) coding because this coding is not POSIX compliant. There should 
 be support for UTF-8 UNICODE coding which is compatible to POSIX filenames
-and supported by moder UNIX implementations such as Solaris.
+and supported by moder Unix implementations such as Solaris.
 .PP
 A 1:1 character set mapping can be defined by using the keyword
 .I default
@@ -1914,7 +1914,7 @@ allows a Macintosh user to double-click on a file and launch the correct
 application etc. The CREATOR and TYPE of a particular file can be found by
 using something like ResEdit (or similar) on a Macintosh.
 .LP
-The CREATOR and TYPE information is stored in all the various Apple/UNIX
+The CREATOR and TYPE information is stored in all the various Apple/Unix
 encoded files.
 For other files it is possible to base the CREATOR and TYPE on the
 filename's extension using a
@@ -1944,7 +1944,7 @@ file or using the
 .B \-hfs\-creator
 and/or
 .B \-hfs\-type
-options, otherwise the default CREATOR and TYPE are 'unix' and 'TEXT'.
+options, otherwise the default CREATOR and TYPE are 'Unix' and 'TEXT'.
 .PP
 The format of the
 .I mapping
@@ -1982,13 +1982,13 @@ Where:
 .IP
 The first column
 .I EXTN
-defines the UNIX filename extension to be
+defines the Unix filename extension to be
 mapped. The default mapping for any filename extension that doesn't
 match is defined with the "*" character.
 .IP
 The
 .I Xlate
-column defines the type of text translation between the UNIX and
+column defines the type of text translation between the Unix and
 Macintosh file it is ignored by
 .BR mkisofs ,
 but is kept to be compatible with
@@ -2045,7 +2045,7 @@ l l l l .
 0/string/GIF8/8BIM GIFf  GIF image
 0/beshort/0xffd8/8BIM JPEG  image data
 0/string/SIT!/SIT! SIT!  StuffIt Archive
-0/string/\\037\\235/LZIV ZIVU  standard UNIX compress
+0/string/\\037\\235/LZIV ZIVU  standard Unix compress
 0/string/\\037\\213/GNUz ZIVU  gzip compressed data
 0/string/%!/ASPS TEXT  Postscript
 0/string/\\004%!/ASPS TEXT  PC Postscript with a ^D to start
@@ -2070,7 +2070,7 @@ Using the
 option may significantly increase processing time as each file has to opened
 and read to find it's magic number.
 .PP
-In summary, for all files, the default CREATOR is 'unix' and the default
+In summary, for all files, the default CREATOR is 'Unix' and the default
 TYPE is 'TEXT'.  These can be changed by using entries in the 
 .I \&.m\&kisofsrc 
 file or by using the
@@ -2079,9 +2079,9 @@ and/or
 .B \-hfs\-type
 options. 
 .PP
-If the a file is in one of the known Apple/UNIX formats (and the format
+If the a file is in one of the known Apple/Unix formats (and the format
 has been selected), then the CREATOR and TYPE are taken from the values
-stored in the Apple/UNIX file.
+stored in the Apple/Unix file.
 .PP
 Other files can have their CREATOR and TYPE set from their file name
 extension (the
@@ -2100,25 +2100,25 @@ Macintosh files have two parts called the
 .I Data
 and
 .I Resource
-fork. Either may be empty. UNIX (and many other OSs) can only
+fork. Either may be empty. Unix (and many other OSs) can only
 cope with files having one part (or fork). To add to this, Macintosh files
 have a number of attributes associated with them - probably the most
-important are the TYPE and CREATOR. Again UNIX has no concept of these
+important are the TYPE and CREATOR. Again Unix has no concept of these
 types of attributes.
 .PP
 e.g. a Macintosh file may be a JPEG image where the image is stored in the
 Data fork and a desktop thumbnail stored in the Resource fork. It is usually
 the information in the data fork that is useful across platforms.
 .PP
-Therefore to store a Macintosh file on a UNIX filesystem, a way has to be
+Therefore to store a Macintosh file on a Unix filesystem, a way has to be
 found to cope with the two forks and the extra attributes (which are
 referred to as the
 .I finder
 .IR info ).
 Unfortunately, it seems that every software package that stores Macintosh
-files on UNIX has chosen a completely different storage method.
+files on Unix has chosen a completely different storage method.
 .PP
-The Apple/UNIX formats that
+The Apple/Unix formats that
 .I mkisofs
 (partially) supports are:
 .IP "CAP AUFS format"
@@ -2201,7 +2201,7 @@ system (e.g. UFS, NFS etc.), the files are stored in AppleDouble format.
 Data fork stored in a file. Resource fork stored in a file with
 same name prefixed with "._". Finder info also stored in same "._" file.
 .IP "MacOS X HFS (Alpha)"
-Not really an Apple/UNIX encoding, but actual HFS/HFS+ files on a MacOS X
+Not really an Apple/Unix encoding, but actual HFS/HFS+ files on a MacOS X
 system. Data fork stored in a file. Resource fork stored in a pseudo file
 with the same name with the suffix '/rsrc'. The finderinfo is only
 available via a MacOS X library call.
@@ -2212,13 +2212,13 @@ Only works when used on MacOS X.
 .IP
 If a file is found with a zero
 length resource fork and empty finderinfo, it is assumed not to have
-any Apple/UNIX encoding - therefore a TYPE and CREATOR can be set using
+any Apple/Unix encoding - therefore a TYPE and CREATOR can be set using
 other methods.
 .LP
 .I mkisofs
 will attempt to set the CREATOR, TYPE, date and possibly other flags from
 the finder info. Additionally, if it exists, the Macintosh filename is set
-from the finder info, otherwise the Macintosh name is based on the UNIX
+from the finder info, otherwise the Macintosh name is based on the Unix
 filename - see the
 .B "HFS MACINTOSH FILE NAMES
 section below.
@@ -2255,21 +2255,21 @@ more files on a CD - important when the total size of the source files is
 approaching 650MB.
 
 .SH "HFS MACINTOSH FILE NAMES
-Where possible, the HFS filename that is stored with an Apple/UNIX file
-is used for the HFS part of the CD. However, not all the Apple/UNIX
+Where possible, the HFS filename that is stored with an Apple/Unix file
+is used for the HFS part of the CD. However, not all the Apple/Unix
 encodings store the HFS filename with the finderinfo. In these cases,
-the UNIX filename is used - with escaped special characters. Special
+the Unix filename is used - with escaped special characters. Special
 characters include '/' and characters with codes over 127.
 .PP
 AUFS escapes these characters by using ":" followed by the character code
 as two hex digits. Netatalk and EtherShare have a similar scheme, but uses
 "%" instead of a ":".
 .PP
-If mkisofs can not find an HFS filename, it uses the UNIX name, with
+If mkisofs can not find an HFS filename, it uses the Unix name, with
 any %xx or :xx characters (xx == two hex digits) converted to a single
 character code. If "xx" are not hex digits ([0-9a-fA-F]), then they are
 left alone - although any remaining ":" is converted to "%" as colon
-is the HFS directory separator. Care must be taken, as an ordinary UNIX
+is the HFS directory separator. Care must be taken, as an ordinary Unix
 file with %xx or :xx will also be converted. e.g.
 .PP
 .TS
@@ -2297,7 +2297,7 @@ If an HFS filename exists for a file, then mkisofs can use this name as
 the starting point for the ISO9660, Joliet and Rock Ridge filenames using
 the
 .B \-mac\-name
-option. Normal UNIX files without an HFS name will still use their UNIX name.
+option. Normal Unix files without an HFS name will still use their Unix name.
 e.g.
 .PP
 If a
@@ -2307,10 +2307,10 @@ If a
 .IR Exchange )
 file is stored as 
 .I someimage.gif.bin
-on the UNIX filesystem, but contains a HFS file called
+on the Unix filesystem, but contains a HFS file called
 .IR someimage.gif ,
 then this is the name that would appear on the HFS part of the CD. However, as
-mkisofs uses the UNIX name as the starting point for the other names, then
+mkisofs uses the Unix name as the starting point for the other names, then
 the ISO9660 name generated will probably be 
 .I SOMEIMAG.BIN
 and the Joliet/Rock Ridge would be
@@ -2325,7 +2325,7 @@ Using the
 .B \-mac\-name
 option will not currently work with the
 .B \-T
-option - the UNIX
+option - the Unix
 name will be used in the TRANS.TBL file, not the Macintosh name.
 .PP
 The character set used to convert any HFS file name to a Joliet/Rock Ridge
@@ -2339,13 +2339,13 @@ cp10007 (MacCyrillic), cp10029 (MacLatin2), cp10079 (MacIcelandandic) and
 cp10081 (MacTurkish).
 .PP
 Note: the character codes used by HFS file names taken from the various
-Apple/UNIX formats will not be converted as they are assumed to be in the
+Apple/Unix formats will not be converted as they are assumed to be in the
 correct Apple character set. Only the Joliet/Rock Ridge names derived from
 the HFS file names will be converted.
 .PP
 The existing mkisofs code will filter out any illegal characters for the
 ISO9660 and Joliet filenames, but as mkisofs expects to be dealing
-directly with UNIX names, it leaves the Rock Ridge names as is.
+directly with Unix names, it leaves the Rock Ridge names as is.
 But as '/' is a legal HFS filename character, the
 .B \-mac\-name
 option converts '/' to a '_' in Rock Ridge filenames.
@@ -2684,7 +2684,7 @@ the source directory
 To create a HFS hybrid CD from the source directory 
 .I cd_dir
 that contains
-Netatalk Apple/UNIX files:
+Netatalk Apple/Unix files:
 .PP
 % mkisofs \-o cd.iso \-\-netatalk cd_dir
 .PP
@@ -2701,7 +2701,7 @@ directories
 .I cd_dir
 and
 .IR another_dir.
-Files in all the known Apple/UNIX format
+Files in all the known Apple/Unix format
 are decoded and any other files are given CREATOR and TYPE based on their
 magic number given in the file "magic":
 .PP
@@ -2717,7 +2717,7 @@ Current directory contains:
 .PP
 % ls \-F
 .br
-README.hfs     README.joliet  README.unix    cd_dir/
+README.hfs     README.joliet  README.Unix    cd_dir/
 .PP
 The following command puts the contents of the directory
 .I cd_dir
@@ -2729,13 +2729,13 @@ each of the three filesystems:
 .br
         \-hide README.hfs \-hide README.joliet \\
 .br
-        \-hide\-joliet README.hfs \-hide\-joliet README.unix \\
+        \-hide\-joliet README.hfs \-hide\-joliet README.Unix \\
 .br
-        \-hide\-hfs README.joliet \-hide\-hfs README.unix \\
+        \-hide\-hfs README.joliet \-hide\-hfs README.Unix \\
 .br
         README=README.hfs README=README.joliet \\
 .br
-        README=README.unix cd_dir
+        README=README.Unix cd_dir
 .PP
 i.e. the file README.hfs will be seen as README on the HFS CD and the
 other two README files will be hidden. Similarly for the Joliet and
@@ -2775,11 +2775,11 @@ See MAINTAINER section for contact information.
 .SH NOTES
 .PP
 .B mkisofs
-is not based on the standard mk*fs tools for UNIX, because we must generate
+is not based on the standard mk*fs tools for Unix, because we must generate
 a complete copy of an existing filesystem on a disk in the ISO9660
 filesystem.  The name mkisofs is probably a bit of a misnomer, since it
 not only creates the filesystem, but it also populates it.
-However, the appropriate tool name for a UNIX tool that creates populated
+However, the appropriate tool name for a Unix tool that creates populated
 filesystems - mkproto - is not well known.
 .PP
 .B mkisofs
@@ -2863,16 +2863,16 @@ HFS file/directory names that share the first 31 characters have
 _N' (N == decimal number) substituted for the last few characters
 to generate unique names.
 .PP
-Care must be taken when "grafting" Apple/UNIX files or directories (see
+Care must be taken when "grafting" Apple/Unix files or directories (see
 above for the method and syntax involved). It is not possible to use a
-new name for an Apple/UNIX encoded file/directory. e.g. If a Apple/UNIX
+new name for an Apple/Unix encoded file/directory. e.g. If a Apple/Unix
 encoded file called "oldname" is to added to the CD, then you can not use
 the command line:
 .IP
 mkisofs \-o output.raw \-hfs \-graft\-points newname=oldname cd_dir
 .LP
 mkisofs will be unable to decode "oldname". However, you can graft
-Apple/UNIX encoded files or directories as long as you do not attempt to
+Apple/Unix encoded files or directories as long as you do not attempt to
 give them new names as above.
 .PP
 When creating an HFS volume with the multisession options,
@@ -2907,7 +2907,7 @@ about 70Kb.
 The maximum number of files in an HFS volume is about 65500 - although
 the real limit will be somewhat less than this.
 .PP
-The resulting hybrid volume can be accessed on a UNIX machine by using
+The resulting hybrid volume can be accessed on a Unix machine by using
 the hfsutils routines. However, no changes can be made to the volume as it
 is set as
 .B locked.
@@ -2921,7 +2921,7 @@ Using the
 .B \-mac\-name
 option will not currently work with the
 .B \-T
-option - the UNIX
+option - the Unix
 name will be used in the TRANS.TBL file, not the Macintosh name.
 .PP
 Although 
@@ -3028,3 +3028,6 @@ If you are interested in using the alternative mkisofs derivative maintained in
 the Cdrtools package, visit http://cdrecord.berlios.de/. See there for download
 and contact information for cdrtools related issues. Note that the Cdrkit is
 not affiliated to Cdrtools and vice versa.
+
+.SH ACKNOWLEDGEMENTS
+UNIX is a registered trademark of The Open Group in the US and other countries.
