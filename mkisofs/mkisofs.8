@@ -30,8 +30,8 @@ mkisofs \- create an hybrid ISO9660/JOLIET/HFS filesystem with optional Rock Rid
 .I pathspec [pathspec ...]
 .SH DESCRIPTION
 .B mkisofs
-is effectively a pre-mastering program to generate an ISO9660/JOLIET/HFS hybrid
-filesystem.
+is a pre-mastering program to generate ISO9660/JOLIET/HFS hybrid
+filesystems.
 .PP
 .B mkisofs
 is capable of generating the 
@@ -40,17 +40,16 @@ specified
 by the 
 .B "Rock Ridge Interchange Protocol.
 This is used to further describe the
-files in the iso9660 filesystem to a unix host, and provides information such
-as longer filenames, uid/gid, posix permissions, symbolic links,
+files in the ISO9660 filesystem to a UNIX host, and provides information such
+as long filenames, UID/GID, POSIX permissions, symbolic links,
 block and character devices.
 .PP
 If Joliet or HFS hybrid command line options are specified, 
 .B mkisofs
-will create additional filesystem meta data for Joliet or HFS.
-The file content in this case refers to the same data blocks on the media.
-It
-will generate a pure ISO9660 filesystem unless the Joliet or HFS hybrid command
-line options are given.
+will create the additional filesystem metadata needed for Joliet or HFS.
+If no Joliet or HFS hybrid command line options are given,
+.B mkisofs
+will generate a pure ISO9660 filesystem.
 .PP
 .B mkisofs
 can generate a 
@@ -77,7 +76,7 @@ takes a snapshot of a given directory tree, and generates a
 binary image which will correspond to an ISO9660 or HFS filesystem when
 written to a block device.
 .PP
-Each file written to the iso9660 filesystem must have a filename in the 8.3
+Each file written to the ISO9660 filesystem must have a filename in the 8.3
 format (8 characters, period, 3 characters, all upper case), even if Rock Ridge
 is in use.  This filename is used on systems that are not able to make use of
 the Rock Ridge extensions (such as MS-DOS), and each filename in each directory
@@ -97,7 +96,7 @@ foo.bar would be written as FOO.BAR;1
 .PP
 When used with various HFS options,
 .B mkisofs
-will attempt to recognise files stored in a number of Apple/Unix file formats
+will attempt to recognise files stored in a number of Apple/UNIX file formats
 and will copy the data and resource forks as well as any
 relevant finder information. See the
 .B HFS MACINTOSH FILE FORMATS
@@ -164,7 +163,7 @@ the intermediate directories, see \-uid, \-gid, \-dir\-mode, \-file\-mode and
 will also run on Win9X/NT4 machines when compiled with Cygnus' cygwin
 (available from http://sourceware.cygnus.com/cygwin/). Therefore most
 references in this man page to
-.I Unix
+.I UNIX
 can be replaced with
 .IR Win32 .
 
@@ -197,13 +196,13 @@ This violates the ISO9660 standard, but it happens to work on many systems.
 Use with caution.
 .TP
 .B \-allow\-lowercase
-This options allows lower case characters to appear in iso9660 filenames.
+This options allows lower case characters to appear in ISO9660 file names.
 .br
 This violates the ISO9660 standard, but it happens to work on some systems.
 Use with caution.
 .TP
 .B \-allow\-multidot
-This options allows more than one dot to appear in iso9660 filenames.
+This options allows more than one dot to appear in ISO9660 filenames.
 A leading dot is not affected by this option, it
 may be allowed separately using the
 .B \-allow\-leading\-dots
@@ -329,7 +328,7 @@ relative to the source path specified to
 .BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
 Specifies a comma separated list of boot images that are needed to make
 a bootable CD for sparc systems.
-Partition 0 is used for the ISO-9660 image, the first image file is mapped
+Partition 0 is used for the ISO9660 image, the first image file is mapped
 to partition 1.
 There may be empty fields in the comma separated list.
 The maximum number of possible partitions is 8 so it is impossible to specify
@@ -341,7 +340,7 @@ or
 .B \-sparc\-boot
 option has been specified, the first sector of the resulting image will
 contain a Sun disk label. This disk label specifies slice 0 for the
-iso9660 image and slice 1 .\|.\|. slice 7 for the boot images that
+ISO9660 image and slice 1 .\|.\|. slice 7 for the boot images that
 have been specified with this option. Byte offset 512 .\|.\|. 8191
 within each of the additional boot images must contain a primary boot
 that works for the appropriate sparc architecture. The rest of each
@@ -364,7 +363,7 @@ previous partition. If
 .B mkisofs
 is called with
 .BI "\-G " image " \-B " ...
-all boot partitions are mapped to the partition that contains the iso9660
+all boot partitions are mapped to the partition that contains the ISO9660
 filesystem image and the generic boot image that is located in the first
 16 sectors of the disk is used for all architectures.
 .TP
@@ -377,7 +376,7 @@ This option is required to make an "El Torito" bootable CD.
 The boot image must be exactly the size of either a 1200, 1440, or a 2880
 kB floppy, and
 .B mkisofs
-will use this size when creating the output iso9660
+will use this size when creating the output ISO9660
 filesystem. It is assumed that the first 512 byte sector should be read
 from the boot image (it is essentially emulating a normal floppy drive).
 This will work, for example, if the boot image is a LILO based boot floppy.
@@ -3025,7 +3024,7 @@ If you have support questions, send them to:
 debburn-devel@lists.alioth.debian.org
 
 .PP
-If you are interested in using the alternative mkisofs derivate maintained in
+If you are interested in using the alternative mkisofs derivative maintained in
 the Cdrtools package, visit http://cdrecord.berlios.de/. See there for download
-and contact information for cdrtools related issues. Note that the cdrkit is
-not affiliated to cdrtools and vice versa.
+and contact information for cdrtools related issues. Note that the Cdrkit is
+not affiliated to Cdrtools and vice versa.
