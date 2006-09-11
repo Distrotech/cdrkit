@@ -1,3 +1,9 @@
+
+Following notes has been taken from the cdrecord documentation. They may be
+important for making wodim work on OpenBSD plattform.
+
+---
+
 On OpenBSD releases between December 11th and December 30th 2002
 there is a bug in /usr/include/ctype.h, it #defines EOF ignoring
 POSIX rules. As the schily make environment relies on EOF as an
@@ -9,11 +15,11 @@ you may try to include
 
 directly after #include <ctype.h>
 
-Wodim has been tested and known to work on OpenBSD, however,
+Cdrecord has been tested and known to work on OpenBSD, however,
 the current OpenBSD port will not be able to scan the SCSI bus
 for a CD-Recorder as it does on other operating systems.
 
-In other words, 'wodim -scanbus' most likely will not work.
+In other words, 'cdrecord -scanbus' most likely will not work.
 
 Both regular SCSI and ATAPI devices are supported. For ATAPI support
 you need OpenBSD-2.6 or newer.
@@ -47,5 +53,6 @@ the "hung" process may leave the device unusable until the system is rebooted
 should do all necessary housekeeping for the dead process), so just be patient.
 
 Source: README.cdtext from cdrtools package
-Edited for cdrkit by Christian Fromme <kaner@strace.org>
+Edited for cdrkit by Christian Fromme <kaner@strace.org> and Eduard Bloch
+    <blade@debian.org>
 
