@@ -356,76 +356,18 @@ login shell.
 
 .SH NOTES
 .PP
-If you don't want to allow users to become root on your system,
+Unless you want to risk getting problems,
 .B readcd
-may safely be installed suid root. This allows all users or a group of
-users with no root privileges to use 
+should be run as root. If you don't want to allow users to become root on your system,
+.B readcd
+may safely be installed suid root.
+For more information see the additional notes of your system/program
+distribution or README.suidroot which is part of the cdrkit source.
+.PP
+Documentation of the
+.B wodim
+program contains more technical details which could also apply to
 .B readcd.
-.B Readcd
-in this case will only allow access to CD-ROM type drives-
-To give all user access to use 
-.B readcd, 
-enter:
-.PP
-	chown root /usr/local/bin/readcd
-.br
-	chmod 4711 /usr/local/bin/readcd
-.PP
-To give a restricted group of users access to 
-.B readcd
-enter:
-.PP
-	chown root /usr/local/bin/readcd
-.br
-	chgrp cdburners /usr/local/bin/readcd
-.br
-	chmod 4710 /usr/local/bin/readcd
-.PP
-and add a group 
-.I cdburners
-on your system.
-.PP
-Never give write permissions for non root users to the 
-.I /dev/scg?
-devices unless you would allow anybody to read/write/format
-all your disks.
-.PP
-You should not connect old drives that do not support
-disconnect/reconnect to either the SCSI bus that is connected to the
-CD-Recorder or the source disk.
-.PP
-When using 
-.B readcd
-with the
-.B "Linux SCSI generic driver",
-you should note that 
-.B readcd
-uses a hack, that tries to emulate the functionality of the scg driver.
-Unfortunately, the sg driver on 
-.B Linux
-has several severe bugs:
-.TP
-\(bu
-It cannot see if a SCSI command could not be sent at all.
-.TP
-\(bu
-It cannot get the SCSI status byte. 
-.B Readcd
-for that reason cannot report failing SCSI commands in some
-situations.
-.TP
-\(bu
-It cannot get real DMA count of transfer. 
-.B Readcd
-cannot tell you if there is an DMA residual count.
-.TP
-\(bu
-It cannot get number of bytes valid in auto sense data.
-.B Readcd
-cannot tell you if device transfers no sense data at all.
-.TP
-\(bu
-It fetches to few data in auto request sense (CCS/SCSI-2/SCSI-3 needs >= 18).
 
 .SH DIAGNOSTICS
 .PP
@@ -485,6 +427,24 @@ and text for several error flags. The block number may not be valid.
 The eight line reports the timeout set up for this command and the time
 that the command really needed to complete.
 
+.SH BUGS
+.PP
+The 
+.B readcd
+program described here is the Cdrkit spinof from the original
+.B reacd
+application (see AUTHOR section for details). It may contain bugs not present
+in the original implementation.
+.PP
+It is definitely less portable than the original implementation.
+.PP
+The original implementation (version 2.01.01a08) and newer versions of it are available on 
+.I http://cdrecord.berlios.de/.
+See there for more information.
+.PP
+For platform specific bugs, see the corresponding README.platform file in the
+Cdrkit documentation (eg. README.linux).
+
 .SH "MAILING LISTS
 If you want to actively take part on the development of readcd,
 you may join the developer mailing list via this URL:
@@ -530,6 +490,7 @@ If you have definitely found a bug, send a mail to this list or to
 submit@bugs.debian.org
 .br
 .PP
-writing at least a short description into the Subject and "Package: cdrkit" into the first line of the mail body.
+writing at least a short description into the Subject and "Package: cdrkit"
+into the first line of the mail body.
 
 
