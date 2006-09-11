@@ -1,19 +1,15 @@
-You need to use GNUmake or my smake to compile on AIX
 
-Read the file README.compile before compiling.
+NOTE:	
 
-NOTE:	AIX seems to have a kernel bug in the mmap() part
-	that may cause kernel panics.
+ - wodim has not been tested on AIX yet. It may need porting efforts.
+ - the following information has been extracted from the cdrecord documentation
+   (cdrtools package by Joerg Schilling)
 
-If you observe this kernel panic, try to add a line:
+AIX seems to have a kernel bug in the mmap() part that may cause kernel panics.
 
-COPTS += -DUSE_USGSHM
+If you observe this kernel panic, compile with:
 
-to the file cdrecord/Makefile
-
-or compile the package using:
-
-make COPTX=-DUSE_USGSHM
+make CFLAGS=-DUSE_USGSHM
 
 It seems that SVrx style shared memory does not have this kernel bug
 In newer AIX releases, the mmap() kernel problem seems to be fixed.
@@ -26,7 +22,9 @@ If you like to create bootable CD's for AIX on the CHRP architecture:
 
 
 NOTE:	there is currently no real SCSI generic support for AIX, so 
-	cdrecord -scanbus will not work.
+	wodim -scanbus will not work.
 
 	/dev/rcd0 is mapped to dev=0,0,0
 	/dev/rcd1 is mapped to dev=0,1,0
+
+Edited by Eduard Bloch for cdrkit.
