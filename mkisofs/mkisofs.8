@@ -2746,34 +2746,42 @@ There are probably all sorts of strange results possible with
 combinations of the hide options ...
 
 .SH AUTHOR
-.B m\&kisofs
-is not based on the standard mk*fs tools for unix, because we must generate
-a complete  copy of an existing filesystem on a disk in the  iso9660
-filesystem.  The name m\&kisofs is probably a bit of a misnomer, since it
-not only creates the filesystem, but it also populates it as well.
-However, the appropriate tool name for a UNIX tool that creates populated
-filesystems - mkproto - is not well known.
 .PP
 .br
 Eric Youngdale <ericy@gnu.ai.mit.edu> or <eric@andante.org> wrote the
 first versions (1993 .\|.\|. 1998) of the m\&kisofs utility.
 The copyright for old versions of the m\&kisofs utility is held by
 Yggdrasil Computing, Incorporated.
-J\*org Schilling wrote the SCSI transport library and it's adaptation layer to
+.PP
+Major additional parts were written or contributed by the following authors. Also
+see the MAINTAINER section below for recent information.
+.PP
+J\*org Schilling 
+wrote the SCSI transport library and its adaptation layer to
 .B mkisofs
 and newer parts (starting from 1999) of the utility, this makes
 .B mkisofs
+.br
 Copyright (C) 1999, 2000, 2001 J\*org Schilling.
 .PP
-HFS hybrid code Copyright (C) James Pearson 1997, 1998, 1999, 2000, 2001
-.br
-libhfs code Copyright (C) 1996, 1997 Robert Leslie
-.br
-libfile code Copyright (C) Ian F. Darwin 1986, 1987, 1989, 1990, 1991,
-1992, 1994, 1995.
-.br
-libunls code Copyright (C) James Pearson 2000, (C) Joerg Schilling 2001-2006, (C) Jungshik Shin 2002
+HFS hybrid code, Copyright (C) James Pearson 1997, 1998, 1999, 2000, 2001
+.PP
+libhfs code, Copyright (C) 1996, 1997 Robert Leslie
+.PP
+libunls code, Copyright (C) James Pearson 2000, (C) Joerg Schilling 2001-2006, (C) Jungshik Shin 2002
+.PP
+iconv code, Copyright (C) 2003 Jungshik Shin, (C) 2003 Jaakko Heinonen
+.PP
+See MAINTAINER section for contact information.
 .SH NOTES
+.PP
+.B mkisofs
+is not based on the standard mk*fs tools for unix, because we must generate
+a complete  copy of an existing filesystem on a disk in the  iso9660
+filesystem.  The name mkisofs is probably a bit of a misnomer, since it
+not only creates the filesystem, but it also populates it.
+However, the appropriate tool name for a UNIX tool that creates populated
+filesystems - mkproto - is not well known.
 .PP
 .B Mkisofs
 may safely be installed suid root. This may be needed to allow
@@ -2965,12 +2973,13 @@ Some sort of gui interface.
 .SH AVAILABILITY
 .B m\&kisofs
 is available as part of the cdrkit package from
-http://alioth.debian.org/projects/debburn/
+http://alioth.debian.org/projects/debburn/. For other implementations/spinoffs
+of mkisofs, look at the homepage of the particular developers.
 .B hfsutils
 from ftp://ftp.mars.org/pub/hfs
 .SH "MAILING LISTS
 If you want to actively take part on the development of m\&kisofs,
-you may join the developers mailing list by following the instructions on:
+you may join the Cdrkit developers mailing list by following the instructions on:
 .nf
 .sp
 https://alioth.debian.org/mail/?group_id=31006	
@@ -2986,12 +2995,17 @@ debburn-devel@lists.alioth.debian.org
 .fi
 
 .SH MAINTAINER
+.PP
+This is the Cdrkit spinoff of the original mkisofs application. Maintained by:
 .nf
 Joerg Jaspert
 Eduard Bloch
 Steve McIntyre
+Ben Hutchings
+and other contributors
 .PP
-Previous maintainers:
+Cdrkit implementation of mkisofs is derived from the Cdrtools version (however
+now developed independently), having previous maintainers:
 .PP
 .nf
 J\*org Schilling
@@ -3009,3 +3023,9 @@ If you have support questions, send them to:
 .PP
 .B
 debburn-devel@lists.alioth.debian.org
+
+.PP
+If you are interested in using the alternative mkisofs derivate maintained in
+the Cdrtools package, visit http://cdrecord.berlios.de/. See there for download
+and contact information for cdrtools related issues. Note that the cdrkit is
+not affiliated to cdrtools and vice versa.
