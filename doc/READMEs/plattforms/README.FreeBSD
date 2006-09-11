@@ -1,6 +1,6 @@
 Important notice for ATAPI support on FreeBSD:
 
-A long time it was not possible to decently write CD's using ATAPI drives
+A long time it was not possible to decently write CDs using ATAPI drives
 on FreeBSD because ATAPI was not supported in an orthogonal way on FreeBSD.
 
 These days (in the mid of november 2001) first ATAPI support for FreeBSD is
