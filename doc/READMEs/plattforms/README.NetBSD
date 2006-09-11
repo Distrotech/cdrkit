@@ -14,9 +14,10 @@ other error/exception conditions the driver needs to be fixed.
 As a workaround you can activate a hack in the file scsi-bsd.c
 by using
 
-./Gmake COPTX=-DBSD_SCSI_SENSE_BUG
+make CFLAGS=-DBSD_SCSI_SENSE_BUG
 
-to compile wodim
+to compile cdrkit.
 
 Original author: Jörg
 Edited for cdrkit by Christian Fromme <kaner@strace.org>
+  and Eduard Bloch <blade@debian.org>
