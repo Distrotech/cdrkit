@@ -1,16 +1,38 @@
-Cdrtools carries is the official version of mkisofs.
+Cdrkit carries a version of mkisofs.
 
-To compile mkisofs correctly on all supported platforms (> 30) you
-need to use the Schily makefilesystem to get the systematic portability
-support.
+The acompanying documentation of mkisofs consists of the
+manual page mkisofs.8 and README files found in the
+following locations (shell globing used):
 
-Read the file README.multi to learn how to create multi-session
-CD-R's with this release of cdrecord and mkisofs.
+doc/:
 
-Read the file README.cdplus to learn how to create CD-plus/CD-extra
-CD-R's with this release of cdrecord and mkisofs.
+README.multi: documentation and examples for creating
+  multi-session CDs and DVDs
 
-You definitely need this release of mkisofs to 
-create multi-session CD-R's on SunOS/Solaris/SGI-IRIX OS/2 and Win32.
+README.cdplus: documentation and examples for creating
+  CD-plus (aka CD-extra) disks
 
-Jörg Schilling
+doc/mkisofs:
+
+README: release notes for older mkisofs releases
+
+README.*boot: documentation for various boot loader related
+  extensions for different architectures
+
+README.hfs*: hints and usage for HFS related features
+
+README.*: additional docs for special features
+
+
+Eduard Bloch -- Mon, 11 Sep 2006 23:05:29 +0200
+
+This describes the program as shipped with cdrkit, a spinoff from the
+cdrtools project. However, the cdrtools developers are no longer
+involved in the development of this spinoff and therefore shall not
+be made responsible for any problem caused by it. Do not try to get
+support for this program by contacting the original authors.
+
+
+Source: README.mkisofs from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+

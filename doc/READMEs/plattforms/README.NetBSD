@@ -1,6 +1,6 @@
 NOTE: you should also read README.xxxBSD
 
-Cdrecord now supports ATAPI drives on NetBSD
+wodim now supports ATAPI drives on NetBSD
 
 The sparc hostadapter driver software in NetBSD has a bug:
 
@@ -16,6 +16,7 @@ by using
 
 ./Gmake COPTX=-DBSD_SCSI_SENSE_BUG
 
-to compile cdrecord
+to compile wodim
 
-Jörg
+Original author: Jörg
+Edited for cdrkit by Christian Fromme <kaner@strace.org>

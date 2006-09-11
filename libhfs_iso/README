@@ -1,4 +1,5 @@
 # @(#)README	1.1 97/07/21 joerg
+                    06/09/11 christian
 
 Modified version of libhfs (v2.0) to work with mkhybrid.
 
@@ -14,6 +15,12 @@ Copyright information from hfsutils:
  hfsutils - tools for reading and writing Macintosh HFS volumes
  Copyright (C) 1996, 1997 Robert Leslie
 
+ This describes the program as shipped with cdrkit, a spinoff from the
+ cdrtools project. However, the cdrtools developers are no longer 
+ involved in the development of this spinoff and therefore shall not
+ be made responsible for any problem caused by it. Do not try to get 
+ support for this program by contacting the original authors.
+
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation; either version 2 of the License, or
@@ -27,4 +34,8 @@ Copyright information from hfsutils:
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+Source: lihfs_iso/README from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 

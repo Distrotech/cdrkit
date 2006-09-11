@@ -2,8 +2,8 @@
 
 	This release of mkisofs has basic support completed for
 multiple sessions.  However, we still need some interaction 
-between cdrecord and mkisofs for this to work correctly. This is needed as
-only cdrecord knows the different ways to gather these numbers for all 
+between wodim and mkisofs for this to work correctly. This is needed as
+only wodim knows the different ways to gather these numbers for all 
 different drives. It may be that future versions of mkisofs will include 
 the needed support for MMC compliant drives.
 
@@ -14,14 +14,14 @@ files need to be written in the new session. Note that there are operating
 systems that don't allow to read from CD drives with a sector size
 of 2048 bytes per sector. To use mkisofs on such an operating system, you
 will need a version of mkisofs that includes the SCSI transport library 
-from cdrecord. Simply use the dev= syntax from cdrecord with -M in
+from wodim. Simply use the dev= syntax from wodim with -M in
 such a case. It will tell mkisofs to use the SCSI transport library to 
 read from the CD instead of using the standard read() OS interface.
 
 	There is also a temporary hack in mkisofs in the form of a '-C' option.
 The -C option takes two numbers as input, which are delimited by commas.
 For example, you could specify "-C 1000,1020", but you should never just
-make up numbers to use here.  These numbers are determined from cdrecord.
+make up numbers to use here.  These numbers are determined from wodim.
 
 	Note that if you use -C and omit -M, it effectively means that
 you are writing a new session, starting at a non-zero block number,
@@ -31,7 +31,7 @@ When this session is sent to the writer, the new session effectively
 
 	In practice you should be able to do something like:
 
-mkisofs [other options] -C `cdrecord dev=b,t,l -msinfo` \
+mkisofs [other options] -C `wodim dev=b,t,l -msinfo` \
 		-M /dev/cdblkdev
 
 Replace 'b,t,l' by the aproriate numbers for SCSIbus, target and lun
@@ -41,8 +41,12 @@ Note: As of the 1.12b5 release, the multi-session technology has
 matured quite significantly.  It is entirely possible that bugs
 exists, or that further tweaks will be required somewhere along the
 way to get things working correctly.  The data gathering mode of
-cdrecord has been tested, and I believe it works correctly.  Caveat
+wodim has been tested, and I believe it works correctly.  Caveat
 Emptor.
 
 [Mar 1, 1999].
+
+
+Source: README.session from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 

@@ -17,4 +17,8 @@ The /dev/lofi/.. string may change depending on how many other loopback
 devices you have configured.
 
 It is explained quite clearly in the man page, but you may wish to update
-the README and cdrecord man page to reflect the new way of doing this.
+the README and wodim man page to reflect the new way of doing this.
+
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+

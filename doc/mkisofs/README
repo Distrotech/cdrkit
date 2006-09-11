@@ -1,4 +1,11 @@
 # @(#)README	1.7 99/11/23 joerg
+#                   06/09/11 christian
+
+This describes the program as shipped with cdrkit, a spinoff from the
+cdrtools project. However, the cdrtools developers are no longer 
+involved in the development of this spinoff and therefore shall not
+be made responsible for any problem caused by it. Do not try to get 
+support for this program by contacting the original authors.
 
 Note:
 
@@ -7,6 +14,7 @@ builds all of the directories in memory.  The exact requirements
 depend upon a lot of things, but for Rock Ridge discs 12Mb would not
 be unreasonable.  Without RockRidge and without the translation
 tables, the requirements would be considerably less.
+
 
 *****************************
 Notes for version 1.12
@@ -139,4 +147,8 @@ is now handled better by mkisofs.  The directory that cannot be opened
 is converted into a zero-length file, and processing continues normally.
 
 	A few portability things have been fixed (hopefully).
+
+
+Source: README from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 

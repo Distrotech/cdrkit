@@ -27,9 +27,9 @@ We tested the patch with a collegue today (23.11.2001), here is the result:
 	machines so you may want to test what works best for you.
 
 -	It does not run the SCSI commands in silent mode so the ATAPI low level
-	code prints unwanted kernel messages when you start cdrecord.
+	code prints unwanted kernel messages when you start wodim.
 
--	cdrecord runs without problems so far it has been tested!
+-	wodim runs without problems so far it has been tested!
 
 You need to apply the patch, change your kernel configuration to include
 
@@ -91,5 +91,5 @@ http://www.os.org.za/~khetan  * Talk/Finger khetan@chain.freebsd.os.org.za
 FreeBSD enthusiast            * http://www2.za.freebsd.org/
 Security-wise, NT is a OS with a "kick me" sign taped to it  
 
-
-
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>

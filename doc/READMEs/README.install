@@ -19,14 +19,30 @@ Install the manual page with
 
 make install first and include /opt/schily/man in your MANPATH
 
-Author:
+Original author:
 
 Joerg Schilling
 Seestr. 110
 D-13353 Berlin
 Germany
 
-Email: 	joerg@schily.isdn.cs.tu-berlin.de, js@cs.tu-berlin.de
-	schilling@fokus.fhg.de
+This file is now part of the Cdrkit project, a spinoff from the
+cdrtools project. However, the cdrtools developers are no longer
+involved in the development of this spinoff and therefore shall not
+be made responsible for any problem caused by it. Do not try to get
+support for this program by contacting the original authors.
 
-Please mail bugs and suggestions to me.
+If you have support questions, send them to
+
+debburn-devel@lists.alioth.debian.org
+
+If you have definitely found a bug, send a mail to this list or to
+
+submit@bugs.debian.org
+
+writing at least a short description into the Subject and "Package: cdrkit"
+
+
+Source: README.install from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+

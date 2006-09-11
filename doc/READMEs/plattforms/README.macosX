@@ -29,16 +29,16 @@ INSTALL to something else. (e.g. INSTALL.txt)
 Device Naming
 -------------
 
-You need to pass a device name on the command line to the cdrecord utility
+You need to pass a device name on the command line to the wodim utility
 
 CD burners: (probably) IOCompactDiscServices
 DVD burners: (probably) IODVDServices
 
-# ./cdrecord dev=IOCompactDiscServices -toc
+# ./wodim dev=IOCompactDiscServices -toc
 
 or if you have multiple drives, you can append a number to differentiate
 
-# ./cdrecord dev=IOCompactDiscServices/2 -toc
+# ./wodim dev=IOCompactDiscServices/2 -toc
 
 That should talk to the second CD-R on the system (NOT TESTED).
 
@@ -47,7 +47,7 @@ Sharing nicely with the Finder
 
 The MacOS 10.1 Finder will offer to burn any blank media you put into
 the burner.  However, you don't want to use the Finder, you want to
-use cdrecord! So, how do you get around this problem?
+use wodim! So, how do you get around this problem?
 
 When you insert the media, the Finder asks "Do you want to prepare this
 disc?". Click on the "Ignore" button.
@@ -95,4 +95,12 @@ calls to IOKit.
 
 Bugs
 ----
-Send bugs to: csapuntz@stanford.edu
+If you have definitely found a bug, send a mail to 
+
+submit@bugs.debian.org
+
+writing at least a short description into the Subject and "Package: cdrkit" 
+into the first line of the mail body.
+
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>

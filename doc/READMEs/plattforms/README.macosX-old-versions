@@ -85,7 +85,7 @@ This will tell the autoconf using code to ignore the system supplied
 IMPORTANT: Don't forget to tell the Apple support that MacOSX sucks until they
 fix such fundamental bugs in the system include files!
 
-In case you are interested in the full details: the reason why cdrecord
+In case you are interested in the full details: the reason why wodim
 does not compile is that MacOS X defines a type
 
 typedef	int *		intptr_t;
@@ -102,3 +102,7 @@ understand simple standards written in English :-(
 See: http://www.opengroup.org/onlinepubs/7908799/xsh/inttypes.h.html
 
 /*--------------------------------------------------------------------------*/
+
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+

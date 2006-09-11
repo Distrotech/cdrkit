@@ -17,7 +17,7 @@ This would cause the following changes:
 			REQUEST_SENSE
 		to be able to scan the SCSI bus for drives.
 
-NOTE: This changed with FreeBSD/cam cdrecord -scanbus works on FreeBSD/cam
+NOTE: This changed with FreeBSD/cam wodim -scanbus works on FreeBSD/cam
 
 Workaround:
 
@@ -40,16 +40,17 @@ A short form is:
 But this syntax may not work on all *BSD flavours as not all *BSD flavours
 support mapping back the target/lun numbers from a device.
 
-In any case: read the cdrecord man page and try to find the /dev/* entry for
+In any case: read the wodim man page and try to find the /dev/* entry for
 your CD-recorder that allows to be used with ioctl's.
 
 On FreeBSD/cam, you will be able to access the CD-Recorder as on other
 systems. If your CD-Recorder is on SCSI Bus 0, Target 2, lun 0
 type:
 
-cdrecord dev=0,2,0 .....
+wodim dev=0,2,0 .....
 
-Jörg
+Original author: Jörg
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 
 ------------------------- MAKEDEV.su------------------
 #!/bin/sh

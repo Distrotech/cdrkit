@@ -58,5 +58,6 @@ and to all other va-*.h files:
 
 Important: Check before if you don't have a GCC that is already patched.
 
-Joerg
+Original author: Joerg
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 

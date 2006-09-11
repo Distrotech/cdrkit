@@ -9,18 +9,18 @@ you may try to include
 
 directly after #include <ctype.h>
 
-Cdrecord has been tested and known to work on OpenBSD, however,
+Wodim has been tested and known to work on OpenBSD, however,
 the current OpenBSD port will not be able to scan the SCSI bus
 for a CD-Recorder as it does on other operating systems.
 
-In other words, 'cdrecord -scanbus' most likely will not work.
+In other words, 'wodim -scanbus' most likely will not work.
 
 Both regular SCSI and ATAPI devices are supported. For ATAPI support
 you need OpenBSD-2.6 or newer.
 
 Libscg sends Generic scsi commands that are only supported for the
-"whole disk" partition.  For example, 'cdrecord dev=/dev/rcd0c -checkdrive'.
-See the cd(4), atapiscsi(4), and cdrecord(1) manpages for more details.
+"whole disk" partition.  For example, 'wodim dev=/dev/rcd0c -checkdrive'.
+See the cd(4), atapiscsi(4), and wodim(1) manpages for more details.
 
 There are at least two ways to figure out what SCSI CD devices are
 on the machine:
@@ -39,9 +39,13 @@ system, and they should be accessed by '/dev/rcd0c' and '/dev/rcd1c',
 respectively.
 
 In December 2002 there have been reports that the atapiscsi(4) driver has
-some bugs that may cause cdrecord to hang for a while.  While this is
+some bugs that may cause wodim to hang for a while.  While this is
 annoying, it is harmless. The command will eventually timeout (the default
 timeout is 40 seconds, but can be changed with timeout=%d).  Trying to kill
 the "hung" process may leave the device unusable until the system is rebooted
 (which would be another bug of the atapiscsi(4) driver as killing a process
 should do all necessary housekeeping for the dead process), so just be patient.
+
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+

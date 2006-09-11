@@ -2,16 +2,12 @@ CDRTOOLS compiles without changes on any SCO OpenServer 5.0.4
 or later installation having the SCO DevSys or GCC-2.95 and 
 smake-1.2a04 or later installed. 
 
-You can get pre-packaged, custom installable binaries from:
- 
-   http://www.sco.com/skunkware/cdrtools
-   
-Some general notes on CDRTOOLS are available from:
+Some general notes on CDRKIT are available from:
 
-   http://www.sco.com/skunkware/cdrtools/SCO-NOTES.html
+   http://alioth.debian.org/projects/debburn/
 
 
-Limitations for CDRTOOLS-1.8 on SCO OpenServer 5:
+Limitations for CDRKIT on SCO OpenServer 5:
 
 1) SCO OpenServer 5.0.0 and 5.0.2 are unsupported!
   
@@ -20,20 +16,20 @@ Limitations for CDRTOOLS-1.8 on SCO OpenServer 5:
 3) There no support for AHA 154X scsi controllers
 
 ===================================================================
-NOTE: cdrecord now supports the -scanbus option. Therefore the 
+NOTE: wodim now supports the -scanbus option. Therefore the 
       old addressing methods are NO LONGER AVAILABLE !!!
 ===================================================================
       
-As there is no real generic SCSI driver, cdrecord uses the pass through
+As there is no real generic SCSI driver, wodim uses the pass through
 ioctl of the cdrom target driver (Srom).
 
 The correct dev= syntax on SCO Openserver 5 is:
 
     dev=scsibus,target,lun	(and scsibus is scsibus now!!!)
 
-A sample output from cdrecord -scanbus looks like:
+A sample output from wodim -scanbus looks like:
 
-#cdrecord -scanbus
+#wodim -scanbus
 Cdrecord 1.8 (i686-pc-sco3.2v5.0.5) Copyright (C) 1995-2000 Jörg Schilling
 Using libscg version 'schily-0.1'
 scsibus0:
@@ -55,21 +51,21 @@ As you can see the TEAC CD-R56S CD-Writer does have the following address:
 ===================================================================
            THE OLD ADDRESSING IS NO LONGER AVAILABLE!
 	    
-         PLEASE ADJUST YOUR /etc/default/cdrecord FILES!
+         PLEASE ADJUST YOUR /etc/default/wodim FILES!
 ===================================================================
 
-Running cdrecord with the old address method will result in an error!
+Running wodim with the old address method will result in an error!
 
-#cdrecord dev=/dev/rcd1:6,0 -inq
+#wodim dev=/dev/rcd1:6,0 -inq
 Cdrecord 1.8 (i386-pc-sco3.2v5.0.5) Copyright (C) 1995-2000 Jörg Schilling
 scsidev: '/dev/rcd1:6,0'
 devname: '/dev/rcd1'
 scsibus: 0 target: 6 lun: 0
-cdrecord: Invalid argument. Open by 'devname' no longer supported on this OS. Cannot open SCSI driver.
-cdrecord: For possible targets try 'cdrecord -scanbus'. Make sure you are root.
+wodim: Invalid argument. Open by 'devname' no longer supported on this OS. Cannot open SCSI driver.
+wodim: For possible targets try 'wodim -scanbus'. Make sure you are root.
 
 
-MAKE SURE YOU HAVE MEDIA IN YOUR CD-ROM DEVICES, SO THAT CDRECORD CAN 
+MAKE SURE YOU HAVE MEDIA IN YOUR CD-ROM DEVICES, SO THAT WODIM CAN 
 OPEN THE DEVICE FOR PASS-THROUGH ACCESS!
 
 
@@ -81,4 +77,7 @@ To compile cdrtools, you need 'smake' version 1.2a04 or later from:
 Please make sure you use smake-1.2a04 or later, cause smake-1.2 versions
 before a04 will coredump on the compilation of cdrtools on OpenServer.
 
+
+Source: README.openserver from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 

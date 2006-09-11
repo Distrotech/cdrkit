@@ -1,4 +1,4 @@
-Creating multi-session CD's Mini Howto FAQ
+Creating multi-session CDs/DVDs Mini Howto FAQ
 
 Multi-session filesystems are a trick that comes from the Kodak photo CD.
 The OS mounts the last session that contains the sum of the current session
@@ -7,7 +7,7 @@ and all previous sessions.
 To test (with Linux):
 
 Create a iso-9660 filesystem image with mkisofs-1.10 or later.
-mkisofs is included in the cdrecord release (including
+mkisofs is included in the wodim release (including
 SunOS/Solaris multi-session support)
 Use the -R flag to add Rock Ridge extensions (this is important).
 
@@ -15,7 +15,7 @@ Assuming that the CD-R drive is connected to target 2 on the SCSI bus.
 
 Write the first session with:
 
-cdrecord -v speed=2 dev=2,0 -eject -multi isoimage.raw
+wodim -v speed=2 dev=2,0 -eject -multi isoimage.raw
 
 Note that all Sony drives do no support XA2 disks in firmware - read README.sony
 for more information.
@@ -24,7 +24,7 @@ This must be a iso9660 image with Rock Ridge extensions (see above)
 
 Note the number of sectors written and check the disk, it should be mountable.
 
-Next step is to check if cdrecord is able to retrieve the following data:
+Next step is to check if wodim is able to retrieve the following data:
 
 	1) The first block (sector) number in the first track of the last session
 	   This must be '0' in our case.
@@ -43,7 +43,7 @@ Next step is to check if cdrecord is able to retrieve the following data:
 
 To get this information type:
 
-cdrecord -msinfo dev=2,0
+wodim -msinfo dev=2,0
 
 The output should be two numbers separated by a comma.
 
@@ -52,7 +52,7 @@ The output should be two numbers separated by a comma.
 The first number is (1), the second number is (2).
 
 Create the image for the next session with mkisofs-1.12 or later.
-It is included in the cdrecord distribution.
+It is included in the wodim distribution.
 
 2nd session:
 You should create a directory that contains a second directory with data in it
@@ -81,11 +81,11 @@ one previous session on the CD you may also call:
 mkisofs -o isoimage_2.raw -R  -C xx,yy -M isoimage.raw first_dir
 
 
-The argument of -C is the output of cdrecord -msinfo
+The argument of -C is the output of wodim -msinfo
 -	On Linux, the argument of -M is a device that would allow you to mount 
 	the current CD in the CD-writer
 -	On SunOS, target and lun refer to the SCSI target and lun of the 
-	CD-R device with the same notation as for cdrecord dev=xxx,yyy .
+	CD-R device with the same notation as for wodim dev=xxx,yyy .
 
 
 If you want to check, whether mkisofs make everything right, you should create 
@@ -97,7 +97,7 @@ mkisofs -o isoimage_2.raw -R  -C xx,0 -M /dev/cdwriter_blk_dev  first_dir
 On SunOS:
 mkisofs -o isoimage_2.raw -R  -C xx,0 -M target,lun first_dir
 
-Where xx is the first number of the pair returned by cdrecord -msinfo
+Where xx is the first number of the pair returned by wodim -msinfo
 
 You may check ***this** image by mounting it with my "fbk" on Solaris 
 or the loopback driver on Linux.
@@ -118,7 +118,7 @@ the second session, you will see everything correctly.
 
 To write the second session to CD, call:
 
-cdrecord -v speed=2 dev=2,0 -eject -multi isoimage_2.raw
+wodim -v speed=2 dev=2,0 -eject -multi isoimage_2.raw
 
 If you mount this CD, you should see the first session and the second directory 
 from 2nd session added to the root directory of the CD.
@@ -128,10 +128,10 @@ Additional check:
 
 call:
 
-cdrecord -msinfo dev=2,0
+wodim -msinfo dev=2,0
 
 The first number should be the first writable address which was retrieved by the
-first call to cdrecord -msinfo after creating the first session.
+first call to wodim -msinfo after creating the first session.
 The second number should be the first number + number of sectors of the second session
 + ~ 11400 sectors.
 
@@ -188,3 +188,23 @@ otherwise each "volume" will appear on the Desktop with the same name.
 
 
 Joerg Schilling
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+
+
+This describes the programs as shipped with cdrkit, a spinoff from the
+cdrtools project. However, the cdrtools developers are no longer
+involved in the development of this spinoff and therefore shall not
+be made responsible for any problem caused by it. Do not try to get
+support for this program by contacting the original authors.
+
+If you have support questions, send them to
+
+debburn-devel@lists.alioth.debian.org
+
+If you have definitely found a bug, send a mail to this list or to
+
+submit@bugs.debian.org
+
+writing at least a short description into the Subject and "Package: cdrkit" 
+
+

@@ -57,10 +57,10 @@ mapping. It may be possible that one SCSI device eats up 8 /dev/sg* entries.
 I recommend to have at least 20 /dev/sg* device nodes.
 
 In any case: first read the man page for hints how to specify the device.
-If nothing helps, first run e.g. cdrecord -scanbus. If this does not find
+If nothing helps, first run e.g. wodim -scanbus. If this does not find
 your device, the problem is in your kernel or system installation.
 If scanning the bus finds the device, you are using the wrong device name.
-If nothing help try to call e.g. strace cdrecord 
+If nothing help try to call e.g. strace wodim 
 
 Linux ATAPI hints:
 
@@ -82,29 +82,29 @@ and re-compile and re-install your kernel.
 Linux kernels past 2.0.30 will probably already have this patch included.
 
 I recommend to use Linux 2.0.35 or later or Linux 2.1.115 or later.
-These versions of Linux will include ATAPI support in a way needed by cdrecord.
+These versions of Linux will include ATAPI support in a way needed by wodim.
 Linux 2.1.115 or newer will in addition support the Parallel Port / ATAPI
 adapters found in some CD-R or CD-RW drives.
 
 IMPORTANT:
 
 -	Linux driver design oddities ******************************************
-	Although cdrecord supports to use dev=/dev/sgc, it is not recommended
+	Although wodim supports to use dev=/dev/sgc, it is not recommended
 	and it is unsupported.
 
 	The /dev/sg* device mapping in Linux is not stable! Using dev=/dev/sgc
 	in a shell script may fail after a reboot because the device you want
 	to talk to has moved to /dev/sgd. For the proper and OS independent
-	dev=<bus>,<tgt>,<lun> syntax read the man page of cdrecord.
+	dev=<bus>,<tgt>,<lun> syntax read the man page of wodim.
 
 -	Linux Kernel bug ******************************************************
 	In some architectures (at least on sparc / alpha / ppc) kernels prior
-	to 2.0.32 are not usable because the call to mlockall() kills cdrecord.
+	to 2.0.32 are not usable because the call to mlockall() kills wodim.
 
 -	You configured you kernel the wrong way *******************************
 	If you get a message like:
 
-		cdrecord: Function not implemented. shmget failed
+		wodim: Function not implemented. shmget failed
 
 	You need to look for three possible reasons:
 
@@ -140,14 +140,14 @@ IMPORTANT:
 	and /usr/src/linux/include/scsi/sg.h should be identical.
 
 	**** Never change the content of /usr/src/linux/include/scsi/sg.h without
-	properly recompiling the kernel. Cdrecord depends on the fact that
+	properly recompiling the kernel. wodim depends on the fact that
 	the value of the define SG_BIG_BUFF uses the same value as the actual
-	kernel. Use cdrecord -scanbus -debug to get the value of SG_BIG_BUFF
-	with cdrecord has been compiled. An output of:
+	kernel. Use wodim -scanbus -debug to get the value of SG_BIG_BUFF
+	with wodim has been compiled. An output of:
 
 		scsi_getbuf: 32768 bytes
 
-	indicates that cdrecord has been compiled with 32k SG_BIG_BUF
+	indicates that wodim has been compiled with 32k SG_BIG_BUF
 
 	The Linux 'sg' driver is the worst driver design, I've ever seen.
 
@@ -170,7 +170,7 @@ IMPORTANT:
 
 Joerg
 
-
+Edited for cdrkit by Eduard Bloch <blade@debian.org>
 
 
 Additional comments moved from the wodim.1 manpage (originaly cdrecord.1):

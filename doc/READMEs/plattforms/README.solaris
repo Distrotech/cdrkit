@@ -58,7 +58,7 @@ and GNU tsort/lorder.
 For CD-Recording please read the README.volmgt too.
 
 On Solaris you need to stop the volume management if you like to use the USCSI
-fallback SCSI transport code. Even things like cdrecord -scanbus
+fallback SCSI transport code. Even things like wodim -scanbus
 will not work if the volume management is running.
 
 If you run Solaris 7 FCS, install patch 107465-02 to fix a read ahead bug in the
@@ -79,4 +79,6 @@ the maximum write speed of current CD/DVD drives.
 For more information, read README.solaris-x86-ata-DMA and README.solaris-x86-ATAPI-DMA
 and take care that the locations for patching may change in future versions.
 
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 
