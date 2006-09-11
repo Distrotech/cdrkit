@@ -44,11 +44,11 @@ static	char sccsid[] =
 #include <utypes.h>
 #include "crc16.h"
 
-LOCAL	UInt16_t	updcrc		__PR((Uint p_crc, UInt8_t *cp, Uint cnt));
-/*LOCAL	UInt16_t	calcCRC		__PR((Uchar *buf, Uint bsize));*/
-EXPORT	UInt16_t	calcCRC		__PR((Uchar *buf, Uint bsize));
-EXPORT	UInt16_t	fillcrc		__PR((Uchar *buf, Uint bsize));
-EXPORT	UInt16_t	flip_crc_error_corr	__PR((Uchar *b, Uint bsize, Uint p_crc));
+static	UInt16_t	updcrc		__PR((Uint p_crc, UInt8_t *cp, Uint cnt));
+/*static	UInt16_t	calcCRC		__PR((Uchar *buf, Uint bsize));*/
+UInt16_t	calcCRC		__PR((Uchar *buf, Uint bsize));
+UInt16_t	fillcrc		__PR((Uchar *buf, Uint bsize));
+UInt16_t	flip_crc_error_corr	__PR((Uchar *b, Uint bsize, Uint p_crc));
 
 
 	/* number of bits in CRC: don't change it. */
@@ -57,7 +57,7 @@ EXPORT	UInt16_t	flip_crc_error_corr	__PR((Uchar *b, Uint bsize, Uint p_crc));
 	/* this the number of bits per char: don't change it. */
 #define	BPB	8
 
-LOCAL UInt16_t crctab[1<<BPB] = {
+static UInt16_t crctab[1<<BPB] = {
     0x0000,  0x1021,  0x2042,  0x3063,  0x4084,  0x50a5,  0x60c6,  0x70e7,
     0x8108,  0x9129,  0xa14a,  0xb16b,  0xc18c,  0xd1ad,  0xe1ce,  0xf1ef,
     0x1231,  0x0210,  0x3273,  0x2252,  0x52b5,  0x4294,  0x72f7,  0x62d6,
@@ -94,11 +94,8 @@ LOCAL UInt16_t crctab[1<<BPB] = {
 
 #define	SUBSIZE	96	/* 12 bytes with 8 bits */
 
-LOCAL UInt16_t
-updcrc(p_crc, cp, cnt)
-	Uint			p_crc;
-	register UInt8_t	*cp;
-	register Uint		cnt;
+static UInt16_t
+updcrc(Uint p_crc, register UInt8_t *cp, register Uint cnt)
 {
 	register UInt16_t	crc = p_crc;
 
@@ -108,11 +105,9 @@ updcrc(p_crc, cp, cnt)
 	return (crc);
 }
 
-/*LOCAL UInt16_t*/
-EXPORT UInt16_t
-calcCRC(buf, bsize)
-	Uchar	*buf;
-	Uint	bsize;
+/*static UInt16_t*/
+UInt16_t
+calcCRC(Uchar *buf, Uint bsize)
 {
 	return (updcrc(0x0000, (UInt8_t *)buf, bsize));
 }
@@ -120,10 +115,8 @@ calcCRC(buf, bsize)
 /*
  * CRC für Q-Sub füllen
  */
-EXPORT UInt16_t
-fillcrc(buf, bsize)
-	Uchar	*buf;
-	Uint	bsize;
+UInt16_t
+fillcrc(Uchar *buf, Uint bsize)
 {
 	UInt16_t	crc = calcCRC(buf, bsize-2);
 
@@ -137,7 +130,7 @@ fillcrc(buf, bsize)
 	return (crc);
 }
 
-LOCAL UInt8_t fliptab[BPB] = {
+static UInt8_t fliptab[BPB] = {
 	0x01,
 	0x02,
 	0x04,
@@ -148,11 +141,8 @@ LOCAL UInt8_t fliptab[BPB] = {
 	0x80,
 };
 
-EXPORT UInt16_t
-flip_crc_error_corr(b, bsize, p_crc)
-	Uchar	*b;
-	Uint	bsize;
-	Uint	p_crc;
+UInt16_t
+flip_crc_error_corr(Uchar *b, Uint bsize, Uint p_crc)
 {
 	register UInt16_t	crc = p_crc;
 	register Uint		btsize = bsize * BPB;

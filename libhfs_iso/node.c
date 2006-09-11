@@ -51,11 +51,7 @@ static	char sccsid[] =
  * NAME:	node->init()
  * DESCRIPTION:	construct an empty node
  */
-void n_init(np, bt, type, height)
-	node	*np;
-	btree	*bt;
-	int	type;
-	int	height;
+void n_init(node *np, btree *bt, int type, int height)
 {
   np->bt   = bt;
   np->nnum = -1;
@@ -77,8 +73,7 @@ void n_init(np, bt, type, height)
  * NAME:	node->new()
  * DESCRIPTION:	allocate a new b*-tree node
  */
-int n_new(np)
-	node	*np;
+int n_new(node *np)
 {
   btree *bt = np->bt;
   unsigned long num;
@@ -113,8 +108,7 @@ int n_new(np)
  * NAME:	node->free()
  * DESCRIPTION:	deallocate a b*-tree node
  */
-void n_free(np)
-	node	*np;
+void n_free(node *np)
 {
   btree *bt = np->bt;
 
@@ -128,8 +122,7 @@ void n_free(np)
  * NAME:	node->compact()
  * DESCRIPTION:	clean up a node, removing deleted records
  */
-void n_compact(np)
-	node	*np;
+void n_compact(node *np)
 {
   unsigned char *ptr;
   int offset, nrecs, i;
@@ -169,9 +162,7 @@ void n_compact(np)
  * NAME:	node->search()
  * DESCRIPTION:	locate a record in a node, or the record it should follow
  */
-int n_search(np, key)
-	node		*np;
-	unsigned char	*key;
+int n_search(node *np, unsigned char *key)
 {
   btree *bt = np->bt;
   int i, comp = -1;
@@ -200,12 +191,8 @@ int n_search(np, key)
  * NAME:	node->index()
  * DESCRIPTION:	create an index record from a key and node pointer
  */
-void n_index(bt, key, nnum, record, reclen)
-	btree		*bt;
-	unsigned char	*key;
-	unsigned long	nnum;
-	unsigned char	*record;
-	int		*reclen;
+void n_index(btree *bt, unsigned char *key, unsigned long nnum, 
+             unsigned char *record, int *reclen)
 {
   if (bt == &bt->f.vol->cat)
     {
@@ -228,10 +215,7 @@ void n_index(bt, key, nnum, record, reclen)
  * NAME:	node->split()
  * DESCRIPTION:	divide a node into two and insert a record
  */
-int n_split(left, record, reclen)
-	node		*left;
-	unsigned char	*record;
-	int		*reclen;
+int n_split(node *left, unsigned char *record, int *reclen)
 {
   node right;
   int nrecs, i, mid;
@@ -353,10 +337,7 @@ int n_split(left, record, reclen)
  * NAME:	node->insertx()
  * DESCRIPTION:	insert a record into a node (which must already have room)
  */
-void n_insertx(np, record, reclen)
-	node		*np;
-	unsigned char	*record;
-	int		reclen;
+void n_insertx(node *np, unsigned char *record, int reclen)
 {
   int rnum, i;
   unsigned char *ptr;
@@ -383,10 +364,7 @@ void n_insertx(np, record, reclen)
  * NAME:	node->insert()
  * DESCRIPTION:	insert a new record into a node; return a record for parent
  */
-int n_insert(np, record, reclen)
-	node		*np;
-	unsigned char	*record;
-	int		*reclen;
+int n_insert(node *np, unsigned char *record, int *reclen)
 {
   n_compact(np);
 
@@ -406,11 +384,7 @@ int n_insert(np, record, reclen)
  * NAME:	node->merge()
  * DESCRIPTION:	combine two nodes into a single node
  */
-int n_merge(right, left, record, flag)
-	node		*right;
-	node		*left;
-	unsigned char	*record;
-	int		*flag;
+int n_merge(node *right, node *left, unsigned char *record, int *flag)
 {
   int i, offset;
 
@@ -465,11 +439,7 @@ int n_merge(right, left, record, flag)
  * NAME:	node->delete()
  * DESCRIPTION:	remove a record from a node
  */
-int n_delete(np, record, flag)
-	node		*np;
-	unsigned char	*record;
-	int		*flag;
-
+int n_delete(node *np, unsigned char *record, int *flag)
 {
   node left;
   unsigned char *rec;

@@ -74,9 +74,7 @@ static int do_decode_L1	__PR((unsigned char in[(L1_RAW+L1_Q+L1_P)*FRAMES_PER_SEC
  */
 int scramble_L2 __PR((unsigned char *inout));
 
-int
-scramble_L2(inout)
-	unsigned char *inout;
+int scramble_L2(unsigned char *inout)
 {
 #ifndef	EDC_SCRAMBLE_NOSWAP
 	unsigned int *f = (unsigned int *)inout;
@@ -117,9 +115,7 @@ scramble_L2(inout)
 
 static int encode_L2_Q	__PR((unsigned char inout[4 + L2_RAW + 4 + 8 + L2_P + L2_Q]));
 
-static int
-encode_L2_Q(inout)
-	unsigned char inout[4 + L2_RAW + 4 + 8 + L2_P + L2_Q];
+static int encode_L2_Q(unsigned char inout[4 + L2_RAW + 4 + 8 + L2_P + L2_Q])
 {
 	unsigned char *dps;
 	unsigned char *dp;
@@ -162,9 +158,7 @@ encode_L2_Q(inout)
 
 static int encode_L2_P	__PR((unsigned char inout[4 + L2_RAW + 4 + 8 + L2_P]));
 
-static int
-encode_L2_P(inout)
-	unsigned char inout[4 + L2_RAW + 4 + 8 + L2_P];
+static int encode_L2_P(unsigned char inout[4 + L2_RAW + 4 + 8 + L2_P])
 {
 	unsigned char *dp;
 	unsigned char *P;
@@ -202,20 +196,15 @@ encode_L2_P(inout)
 
 static unsigned char bin2bcd	__PR((unsigned p));
 
-static unsigned char
-bin2bcd(p)
-	unsigned p;
+static unsigned char bin2bcd(unsigned p)
 {
 	return ((p/10)<<4)|(p%10);
 }
 
 static int build_address	__PR((unsigned char inout[], int sectortype, unsigned address));
 
-static int
-build_address(inout, sectortype, address)
-	unsigned char inout[];
-	int sectortype;
-	unsigned address;
+static int 
+build_address(unsigned char inout[], int sectortype, unsigned address)
 {
 	inout[12] = bin2bcd(address / (60*75));
 	inout[13] = bin2bcd((address / 75) % 60);
@@ -242,11 +231,7 @@ build_address(inout, sectortype, address)
  */
 unsigned int build_edc __PR((unsigned char inout[], int from, int upto));
 
-unsigned int
-build_edc(inout, from, upto)
-	unsigned char inout[];
-	int from;
-	int upto;
+unsigned int build_edc(unsigned char inout[], int from, int upto)
 {
 	unsigned char *p = inout+from;
 	unsigned int result = 0;
@@ -266,10 +251,8 @@ build_edc(inout, from, upto)
 int do_encode_L2 __PR((unsigned char inout[(12 + 4 + L2_RAW+4+8+L2_Q+L2_P)], int sectortype, unsigned address));
 
 int
-do_encode_L2(inout, sectortype, address)
-	unsigned char inout[(12 + 4 + L2_RAW+4+8+L2_Q+L2_P)];
-	int sectortype;
-	unsigned address;
+do_encode_L2(unsigned char inout[(12 + 4 + L2_RAW+4+8+L2_Q+L2_P)], 
+             int sectortype, unsigned address)
 {
 	unsigned int result;
 
@@ -338,9 +321,7 @@ do_encode_L2(inout, sectortype, address)
 
 static int encode_L1_Q	__PR((unsigned char inout[L1_RAW + L1_Q]));
 
-static int
-encode_L1_Q(inout)
-	unsigned char inout[L1_RAW + L1_Q];
+static int encode_L1_Q(unsigned char inout[L1_RAW + L1_Q])
 {
 	unsigned char *Q;
 	int	i;
@@ -368,9 +349,7 @@ encode_L1_Q(inout)
 
 static int encode_L1_P	__PR((unsigned char inout[L1_RAW + L1_Q + L1_P]));
 
-static int
-encode_L1_P(inout)
-	unsigned char inout[L1_RAW + L1_Q + L1_P];
+static int encode_L1_P(unsigned char inout[L1_RAW + L1_Q + L1_P])
 {
 	unsigned char *P;
 	int	i;
@@ -396,45 +375,35 @@ encode_L1_P(inout)
 
 static int decode_L1_Q	__PR((unsigned char inout[L1_RAW + L1_Q]));
 
-static int
-decode_L1_Q(inout)
-	unsigned char inout[L1_RAW + L1_Q];
+static int decode_L1_Q(unsigned char inout[L1_RAW + L1_Q])
 {
 	return (0);
 }
 
 static int decode_L1_P	__PR((unsigned char in[L1_RAW + L1_Q + L1_P]));
 
-static int
-decode_L1_P(in)
-	unsigned char in[L1_RAW + L1_Q + L1_P];
+static int decode_L1_P(unsigned char in[L1_RAW + L1_Q + L1_P])
 {
 	return (0);
 }
 
 int decode_L2_Q __PR((unsigned char inout[4 + L2_RAW + 12 + L2_Q]));
 
-int
-decode_L2_Q(inout)
-	unsigned char inout[4 + L2_RAW + 12 + L2_Q];
+int decode_L2_Q(unsigned char inout[4 + L2_RAW + 12 + L2_Q])
 {
 	return (0);
 }
 
 int decode_L2_P __PR((unsigned char inout[4 + L2_RAW + 12 + L2_Q + L2_P]));
 
-int
-decode_L2_P(inout)
-	unsigned char inout[4 + L2_RAW + 12 + L2_Q + L2_P];
+int decode_L2_P(unsigned char inout[4 + L2_RAW + 12 + L2_Q + L2_P])
 {
 	return (0);
 }
 
 static int encode_LSUB_Q	__PR((unsigned char inout[LSUB_RAW + LSUB_Q]));
 
-static int
-encode_LSUB_Q(inout)
-	unsigned char inout[LSUB_RAW + LSUB_Q];
+static int encode_LSUB_Q(unsigned char inout[LSUB_RAW + LSUB_Q])
 {
 	unsigned char *Q;
 	int i;
@@ -461,9 +430,7 @@ encode_LSUB_Q(inout)
 
 static int encode_LSUB_P	__PR((unsigned char inout[LSUB_RAW + LSUB_Q + LSUB_P]));
 
-static int
-encode_LSUB_P(inout)
-	unsigned char inout[LSUB_RAW + LSUB_Q + LSUB_P];
+static int encode_LSUB_P(unsigned char inout[LSUB_RAW + LSUB_Q + LSUB_P])
 {
 	unsigned char *P;
 	int i;
@@ -489,9 +456,7 @@ encode_LSUB_P(inout)
 
 int decode_LSUB_Q __PR((unsigned char inout[LSUB_QRAW + LSUB_Q]));
 
-int
-decode_LSUB_Q(inout)
-	unsigned char inout[LSUB_QRAW + LSUB_Q];
+int decode_LSUB_Q(unsigned char inout[LSUB_QRAW + LSUB_Q])
 {
 	unsigned char Q[LSUB_Q];
 	int i;
@@ -513,9 +478,7 @@ decode_LSUB_Q(inout)
 
 int decode_LSUB_P __PR((unsigned char inout[LSUB_RAW + LSUB_Q + LSUB_P]));
 
-int
-decode_LSUB_P(inout)
-	unsigned char inout[LSUB_RAW + LSUB_Q + LSUB_P];
+int decode_LSUB_P(unsigned char inout[LSUB_RAW + LSUB_Q + LSUB_P])
 {
 	unsigned char P[LSUB_P];
 	int i;
@@ -550,13 +513,9 @@ int do_encode_L1  __PR((unsigned char in[L1_RAW*FRAMES_PER_SECTOR],
 		unsigned char out[(L1_RAW+L1_Q+L1_P)*FRAMES_PER_SECTOR],
 		int delay1, int delay2, int delay3, int permute));
 
-int do_encode_L1(in, out, delay1, delay2, delay3, permute)
-	unsigned char in[L1_RAW*FRAMES_PER_SECTOR];
-	unsigned char out[(L1_RAW+L1_Q+L1_P)*FRAMES_PER_SECTOR];
-	int delay1;
-	int delay2;
-	int delay3;
-	int permute;
+int do_encode_L1(unsigned char in[L1_RAW*FRAMES_PER_SECTOR], 
+                 unsigned char out[(L1_RAW+L1_Q+L1_P)*FRAMES_PER_SECTOR], 
+                 int delay1, int delay2, int delay3, int permute)
 {
 	int i;
 
@@ -638,14 +597,9 @@ int do_decode_L1 __PR((unsigned char in[(L1_RAW+L1_Q+L1_P)*FRAMES_PER_SECTOR],
 
 static /* XXX should be non static XXX*/ 
 
-int
-do_decode_L1(in, out, delay1, delay2, delay3, permute)
-	unsigned char in[(L1_RAW+L1_Q+L1_P)*FRAMES_PER_SECTOR];
-	unsigned char out[L1_RAW*FRAMES_PER_SECTOR];
-	int delay1;
-	int delay2;
-	int delay3;
-	int permute;
+int do_decode_L1(unsigned char in[(L1_RAW+L1_Q+L1_P)*FRAMES_PER_SECTOR], 
+                 unsigned char out[L1_RAW*FRAMES_PER_SECTOR], 
+                 int delay1, int delay2, int delay3, int permute)
 {
 	int i;
 
@@ -723,10 +677,8 @@ do_decode_L1(in, out, delay1, delay2, delay3, permute)
 static int do_decode_L2	__PR((unsigned char in[(L2_RAW+L2_Q+L2_P)],
 		unsigned char out[L2_RAW]));
 
-static int
-do_decode_L2(in, out)
-	unsigned char in[(L2_RAW+L2_Q+L2_P)];
-	unsigned char out[L2_RAW];
+static int do_decode_L2(unsigned char in[(L2_RAW+L2_Q+L2_P)], 
+                        unsigned char out[L2_RAW])
 {
 	return (0);
 }
@@ -743,12 +695,9 @@ int do_encode_sub __PR((unsigned char in[LSUB_RAW*PACKETS_PER_SUBCHANNELFRAME],
 		unsigned char out[(LSUB_RAW+LSUB_Q+LSUB_P)*PACKETS_PER_SUBCHANNELFRAME],
 		int delay1, int permute));
 
-int
-do_encode_sub(in, out, delay1, permute)
-	unsigned char in[LSUB_RAW*PACKETS_PER_SUBCHANNELFRAME];
-	unsigned char out[(LSUB_RAW+LSUB_Q+LSUB_P)*PACKETS_PER_SUBCHANNELFRAME];
-	int delay1;
-	int permute;
+int do_encode_sub(unsigned char in[LSUB_RAW*PACKETS_PER_SUBCHANNELFRAME], 
+                  unsigned char out[(LSUB_RAW+LSUB_Q+LSUB_P)*PACKETS_PER_SUBCHANNELFRAME], 
+                  int delay1, int permute)
 {
 	int i;
 
@@ -797,11 +746,9 @@ do_decode_sub __PR((
 	int delay1, int permute));
 
 int 
-do_decode_sub(in, out, delay1, permute)
-	unsigned char in[(LSUB_RAW+LSUB_Q+LSUB_P)*PACKETS_PER_SUBCHANNELFRAME];
-	unsigned char out[LSUB_RAW*PACKETS_PER_SUBCHANNELFRAME];
-	int delay1;
-	int permute;
+do_decode_sub(unsigned char in[(LSUB_RAW+LSUB_Q+LSUB_P)*PACKETS_PER_SUBCHANNELFRAME], 
+              unsigned char out[LSUB_RAW*PACKETS_PER_SUBCHANNELFRAME], 
+              int delay1, int permute)
 {
 	int i;
 
@@ -849,17 +796,14 @@ static int sectortype = MODE_0;
 
 int get_sector_type __PR((void));
 
-int
-get_sector_type()
+int get_sector_type()
 {
 	return (sectortype);
 }
 
 int set_sector_type __PR((int st));
 
-int
-set_sector_type(st)
-	int st;
+int set_sector_type(int st)
 {
 	switch(st) {
 
@@ -913,10 +857,7 @@ static const unsigned sect_size[8][2] = {
 
 int main	__PR(((int argc, char **argv));
 
-int
-main(argc, argv)
-	int	argc;
-	char	**argv;
+int main(int argc, char *argv[])
 {
 	int encode = 1;
 	int mask = DO_L2;

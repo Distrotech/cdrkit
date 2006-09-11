@@ -64,32 +64,28 @@ extern	int	silent;
 extern	int	verbose;
 extern	int	lverbose;
 
-LOCAL	int	simul_load		__PR((SCSI *scgp, cdr_t *));
-LOCAL	int	simul_unload		__PR((SCSI *scgp, cdr_t *));
-LOCAL	cdr_t	*identify_simul		__PR((SCSI *scgp, cdr_t *, struct scsi_inquiry *));
-LOCAL	int	init_simul		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	getdisktype_simul	__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	speed_select_simul	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL	int	next_wr_addr_simul	__PR((SCSI *scgp, track_t *trackp, long *ap));
-LOCAL	int	cdr_write_simul		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
-LOCAL	int	open_track_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	close_track_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	open_session_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	fixate_simul		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	void	tv_sub			__PR((struct timeval *tvp1, struct timeval *tvp2));
+static	int	simul_load		__PR((SCSI *scgp, cdr_t *));
+static	int	simul_unload		__PR((SCSI *scgp, cdr_t *));
+static	cdr_t	*identify_simul		__PR((SCSI *scgp, cdr_t *, struct scsi_inquiry *));
+static	int	init_simul		__PR((SCSI *scgp, cdr_t *dp));
+static	int	getdisktype_simul	__PR((SCSI *scgp, cdr_t *dp));
+static	int	speed_select_simul	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
+static	int	next_wr_addr_simul	__PR((SCSI *scgp, track_t *trackp, long *ap));
+static	int	cdr_write_simul		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
+static	int	open_track_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	close_track_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	open_session_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	fixate_simul		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	void	tv_sub			__PR((struct timeval *tvp1, struct timeval *tvp2));
 
-LOCAL int
-simul_load(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int
+simul_load(SCSI *scgp, cdr_t *dp)
 {
 	return (0);
 }
 
-LOCAL int
-simul_unload(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int
+simul_unload(SCSI *scgp, cdr_t *dp)
 {
 	return (0);
 }
@@ -176,36 +172,29 @@ cdr_t	cdr_dvd_simul = {
 	cmd_dummy,					/* opt2		*/
 };
 
-LOCAL cdr_t *
-identify_simul(scgp, dp, ip)
-	SCSI			*scgp;
-	cdr_t			*dp;
-	struct scsi_inquiry	*ip;
+static cdr_t *
+identify_simul(SCSI *scgp, cdr_t *dp, struct scsi_inquiry *ip)
 {
 	return (dp);
 }
 
-LOCAL	long	simul_nwa;
-LOCAL	int	simul_speed = 1;
-LOCAL	int	simul_dummy;
-LOCAL	int	simul_isdvd;
-LOCAL	int	simul_bufsize = 1024;
-LOCAL	Uint	sleep_rest;
-LOCAL	Uint	sleep_max;
-LOCAL	Uint	sleep_min;
+static	long	simul_nwa;
+static	int	simul_speed = 1;
+static	int	simul_dummy;
+static	int	simul_isdvd;
+static	int	simul_bufsize = 1024;
+static	Uint	sleep_rest;
+static	Uint	sleep_max;
+static	Uint	sleep_min;
 
-LOCAL int
-init_simul(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int
+init_simul(SCSI *scgp, cdr_t *dp)
 {
 	return (speed_select_simul(scgp, dp, NULL));
 }
 
-LOCAL int
-getdisktype_simul(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int
+getdisktype_simul(SCSI *scgp, cdr_t *dp)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
 
@@ -222,11 +211,8 @@ getdisktype_simul(scgp, dp)
 }
 
 
-LOCAL int
-speed_select_simul(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	*speedp;
+static int
+speed_select_simul(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	long	val;
 	char	*p;
@@ -267,11 +253,8 @@ speed_select_simul(scgp, dp, speedp)
 	return (0);
 }
 
-LOCAL int
-next_wr_addr_simul(scgp, trackp, ap)
-	SCSI	*scgp;
-	track_t	*trackp;
-	long	*ap;
+static int
+next_wr_addr_simul(SCSI *scgp, track_t *trackp, long *ap)
 {
 	/*
 	 * This will most likely not 100% correct for TAO CDs
@@ -282,20 +265,19 @@ next_wr_addr_simul(scgp, trackp, ap)
 	return (0);
 }
 
-LOCAL int
-cdr_write_simul(scgp, bp, sectaddr, size, blocks, islast)
-	SCSI	*scgp;
-	caddr_t	bp;		/* address of buffer */
-	long	sectaddr;	/* disk address (sector) to put */
-	long	size;		/* number of bytes to transfer */
-	int	blocks;		/* sector count */
-	BOOL	islast;		/* last write for track */
+
+static int
+cdr_write_simul(SCSI *scgp, caddr_t bp /* address of buffer */, 
+                long sectaddr   /* disk address (sector) to put */, 
+                long size       /* number of bytes to transfer */, 
+                int blocks      /* sector count */, 
+                BOOL islast     /* last write for track */)
 {
 	Uint	sleep_time;
 	Uint	sleep_diff;
 
 	struct timeval	tv1;
-static	struct timeval	tv2;
+    static	struct timeval	tv2;
 
 	if (lverbose > 1 && islast)
 		printf("\nWriting last record for this track.\n");
@@ -367,21 +349,15 @@ static	struct timeval	tv2;
 	return (size);
 }
 
-LOCAL int
-open_track_simul(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t *trackp;
+static int
+open_track_simul(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	sleep_min = 999 * 1000000;
 	return (0);
 }
 
-LOCAL int
-close_track_simul(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int
+close_track_simul(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	if (lverbose) {
 		printf("Remaining reserve time in drive buffer: %d.%3.3d ms\n",
@@ -396,29 +372,21 @@ close_track_simul(scgp, dp, trackp)
 	return (0);
 }
 
-LOCAL int
-open_session_simul(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int
+open_session_simul(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	simul_nwa = 0L;
 	return (0);
 }
 
-LOCAL int
-fixate_simul(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int
+fixate_simul(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	return (0);
 }
 
-LOCAL void
-tv_sub(tvp1, tvp2)
-	struct timeval	*tvp1;
-	struct timeval	*tvp2;
+static void
+tv_sub(struct timeval *tvp1, struct timeval *tvp2)
 {
 	tvp1->tv_sec -= tvp2->tv_sec;
 	tvp1->tv_usec -= tvp2->tv_usec;

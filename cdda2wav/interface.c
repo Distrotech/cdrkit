@@ -99,9 +99,9 @@ unsigned interface;
 
 int trackindex_disp = 0;
 
-EXPORT	void	priv_init	__PR((void));
-EXPORT	void	priv_on		__PR((void));
-EXPORT	void	priv_off	__PR((void));
+void	priv_init	__PR((void));
+void	priv_on		__PR((void));
+void	priv_off	__PR((void));
 
 void     (*EnableCdda) __PR((SCSI *, int Switch, unsigned uSectorsize));
 unsigned (*doReadToc) __PR(( SCSI *scgp ));
@@ -175,10 +175,8 @@ SCSI * get_scsi_p( )
 
 static void trash_cache_SCSI __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
 
-static void trash_cache_SCSI(p, lSector, SectorBurstVal)
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static void
+trash_cache_SCSI(UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
       /* trash the cache */
       ReadCdRom(get_scsi_p(), p, find_an_off_sector(lSector, SectorBurstVal), min(global.nsectors,6));
@@ -420,8 +418,7 @@ lost_toshibas:
  * device, issue an inquiry. If they both succeed, there's a good
  * chance that the device works... */
 #if defined(__linux__)
-static int check_linux_scsi_interface(pdev_name)
-    char *pdev_name;
+static int check_linux_scsi_interface(char *pdev_name)
 {
     SCSI *dev = NULL;
     unsigned char *p = NULL;
@@ -447,9 +444,7 @@ static int check_linux_scsi_interface(pdev_name)
    adjust nsectors, overlap, and interface for the first time here.
    Any unnecessary privileges (setuid, setgid) are also dropped here.
 */
-static void Check_interface_for_device( statstruct, pdev_name)
-	struct stat *statstruct;
-	char *pdev_name;
+static void Check_interface_for_device(struct stat *statstruct, char *pdev_name)
 {
     int is_scsi = 1;
 
@@ -569,8 +564,7 @@ Setting interface to cooked_ioctl.\n", pdev_name);
 }
 
 /* open the cdrom device */
-static int OpenCdRom ( pdev_name )
-	char *pdev_name;
+static int OpenCdRom(char *pdev_name)
 {
   int retval = 0;
   struct stat fstatstruct;
@@ -721,11 +715,8 @@ static unsigned long sim_pos=0;
  * to Buffer '*p' beginning at sector 'lSector'
  */
 static int ReadCdRom_sim __PR(( SCSI *x, UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
-static int ReadCdRom_sim (x, p, lSector, SectorBurstVal )
-	SCSI *x;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static int 
+ReadCdRom_sim(SCSI *x, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
   unsigned int loop=0;
   Int16_t *q = (Int16_t *) p;
@@ -761,10 +752,7 @@ static int ReadCdRom_sim (x, p, lSector, SectorBurstVal )
 }
 
 static int Play_at_sim __PR(( SCSI *x, unsigned int from_sector, unsigned int sectors));
-static int Play_at_sim( x, from_sector, sectors)
-	SCSI *x;
-	unsigned int from_sector;
-	unsigned int sectors;
+static int Play_at_sim(SCSI *x, unsigned int from_sector, unsigned int sectors)
 {
   sim_pos = from_sector*CD_FRAMESAMPLES; 
   return 0;
@@ -775,7 +763,7 @@ static unsigned sim_indices;
 
 /* read the table of contents (toc) via the ioctl interface */
 static unsigned ReadToc_sim __PR(( SCSI *x, TOC *toc));
-static unsigned ReadToc_sim ( x, toc )
+static unsigned ReadToc_sim(SCSI *x, TOC *toc)
 	SCSI *x;
 	TOC *toc;
 {
@@ -868,10 +856,8 @@ static subq_chnl *ReadSubQ_sim __PR(( SCSI *scgp, unsigned char sq_format, unsig
 /* request sub-q-channel information. This function may cause confusion
  * for a drive, when called in the sampling process.
  */
-static subq_chnl *ReadSubQ_sim ( scgp, sq_format, track )
-	SCSI *scgp;
-	unsigned char sq_format;
-	unsigned char track;
+static subq_chnl *
+ReadSubQ_sim(SCSI *scgp, unsigned char sq_format, unsigned char track)
 {
     subq_chnl *SQp = (subq_chnl *) (SubQbuffer);
     subq_position *SQPp = (subq_position *) &SQp->data;
@@ -903,19 +889,14 @@ static subq_chnl *ReadSubQ_sim ( scgp, sq_format, track )
 
 static void SelectSpeed_sim __PR(( SCSI *x, unsigned sp));
 /* ARGSUSED */
-static void SelectSpeed_sim(x, sp)
-	SCSI *x;
-	unsigned sp;
+static void SelectSpeed_sim(SCSI *x, unsigned sp)
 {
 }
 
 static void trash_cache_sim __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
 
 /* ARGSUSED */
-static void trash_cache_sim(p, lSector, SectorBurstVal)
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static void trash_cache_sim(UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
 }
 
@@ -1019,7 +1000,7 @@ void SetupInterface( )
 #include <priv.h>
 #endif
 
-EXPORT void
+void
 priv_init()
 {
 #ifdef	HAVE_PRIV_SET
@@ -1037,7 +1018,7 @@ priv_init()
 #endif
 }
 
-EXPORT void
+void
 priv_on()
 {
 #ifdef	HAVE_PRIV_SET
@@ -1052,7 +1033,7 @@ priv_on()
 #endif
 }
 
-EXPORT void
+void
 priv_off()
 {
 #ifdef	HAVE_PRIV_SET

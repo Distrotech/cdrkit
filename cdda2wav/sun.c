@@ -47,12 +47,9 @@ static SUNHDR sunHdr;
 
 static int InitSound __PR(( int audio, long channels, unsigned long rate, long nBitsPerSample, unsigned long expected_bytes ));
 
-static int InitSound ( audio, channels, rate, nBitsPerSample, expected_bytes)
-	int audio;
-	long channels;
-	unsigned long rate;
-	long nBitsPerSample;
-	unsigned long expected_bytes;
+static int 
+InitSound(int audio, long channels, unsigned long rate, long nBitsPerSample, 
+          unsigned long expected_bytes)
 {
   unsigned long format = nBitsPerSample > 8 ? 0x03 : 0x02;
 
@@ -68,9 +65,7 @@ static int InitSound ( audio, channels, rate, nBitsPerSample, expected_bytes)
 
 static int ExitSound __PR(( int audio, unsigned long nBytesDone ));
 
-static int ExitSound ( audio, nBytesDone )
-	int audio;
-	unsigned long nBytesDone;
+static int ExitSound(int audio, unsigned long nBytesDone)
 {
   sunHdr.size = cpu_to_be32(nBytesDone);
 
@@ -90,8 +85,7 @@ static unsigned long GetHdrSize( )
 
 static unsigned long InSizeToOutSize __PR(( unsigned long BytesToDo ));
 
-static unsigned long InSizeToOutSize ( BytesToDo )
-        unsigned long BytesToDo;
+static unsigned long InSizeToOutSize(unsigned long BytesToDo)
 {
         return BytesToDo;
 }

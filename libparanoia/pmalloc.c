@@ -42,25 +42,21 @@ static	char sccsid[] =
 #include "pmalloc.h"
 
 #ifdef	PM_ADD_DEBUG
-LOCAL int madd = 8192;
-LOCAL int cadd = 8192;
-LOCAL int radd = 8192;
+static int madd = 8192;
+static int cadd = 8192;
+static int radd = 8192;
 #else
-LOCAL int madd = 0;
-/*LOCAL int cadd = 0;*/
-LOCAL int radd = 0;
+static int madd = 0;
+/*static int cadd = 0;*/
+static int radd = 0;
 #endif
 
-EXPORT void
-_pfree(ptr)
-	void	*ptr;
+void _pfree(void *ptr)
 {
 	free(ptr);
 }
 
-EXPORT void *
-_pmalloc(size)
-	size_t	size;
+void *_pmalloc(size_t size)
 {
 	void	*p;
 
@@ -70,10 +66,7 @@ _pmalloc(size)
 	return (p);
 }
 
-EXPORT void *
-_pcalloc(nelem, elsize)
-	size_t	nelem;
-	size_t	elsize;
+void *_pcalloc(size_t nelem, size_t elsize)
 {
 	void	*p;
 #ifdef	PM_ADD_DEBUG
@@ -89,10 +82,7 @@ _pcalloc(nelem, elsize)
 	return (p);
 }
 
-EXPORT void *
-_prealloc(ptr, size)
-	void	*ptr;
-	size_t	size;
+void *_prealloc(void *ptr, size_t size)
 {
 	void	*p;
 

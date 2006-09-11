@@ -220,39 +220,39 @@ struct isrc_subcode {		/* subcode for ISRC code */
 #endif
 
 
-LOCAL	int	teac_attach		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	teac_init		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	teac_getdisktype	__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	speed_select_teac	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL	int	select_secsize_teac	__PR((SCSI *scgp, track_t *trackp));
-LOCAL	int	next_wr_addr_jvc	__PR((SCSI *scgp, track_t *, long *ap));
-LOCAL	int	write_teac_xg1		__PR((SCSI *scgp, caddr_t, long, long, int, BOOL));
-LOCAL	int	cdr_write_teac		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
-LOCAL	int	open_track_jvc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	teac_fixation		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	close_track_teac	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	teac_open_session	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	initsub_teac		__PR((SCSI *scgp, int toctype, int multi));
-LOCAL	int	teac_doopc		__PR((SCSI *scgp));
-LOCAL	int	teac_opc		__PR((SCSI *scgp, caddr_t, int cnt, int doopc));
-LOCAL	int	opt_power_judge		__PR((SCSI *scgp, int judge));
-LOCAL	int	clear_subcode		__PR((SCSI *scgp));
-LOCAL	int	set_limits		__PR((SCSI *scgp, long lba, long length));
-LOCAL	int	set_subcode		__PR((SCSI *scgp, Uchar *subcode_data, int length));
-LOCAL	int	read_disk_info_teac	__PR((SCSI *scgp, Uchar *data, int length, int type));
-LOCAL	int	teac_freeze		__PR((SCSI *scgp, int bp_flag));
-LOCAL	int	teac_wr_pma		__PR((SCSI *scgp));
-LOCAL	int	teac_rd_pma		__PR((SCSI *scgp));
-LOCAL	int	next_wr_addr_teac	__PR((SCSI *scgp, long start_lba, long last_lba));
-LOCAL	int	blank_jvc		__PR((SCSI *scgp, cdr_t *dp, long addr, int blanktype));
-LOCAL	int	buf_cap_teac		__PR((SCSI *scgp, long *sp, long *fp));
-LOCAL	long	read_peak_buffer_cap_teac __PR((SCSI *scgp));
-LOCAL	int	buffer_inquiry_teac	__PR((SCSI *scgp, int fmt));
+static	int	teac_attach		__PR((SCSI *scgp, cdr_t *dp));
+static	int	teac_init		__PR((SCSI *scgp, cdr_t *dp));
+static	int	teac_getdisktype	__PR((SCSI *scgp, cdr_t *dp));
+static	int	speed_select_teac	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
+static	int	select_secsize_teac	__PR((SCSI *scgp, track_t *trackp));
+static	int	next_wr_addr_jvc	__PR((SCSI *scgp, track_t *, long *ap));
+static	int	write_teac_xg1		__PR((SCSI *scgp, caddr_t, long, long, int, BOOL));
+static	int	cdr_write_teac		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
+static	int	open_track_jvc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	teac_fixation		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	close_track_teac	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	teac_open_session	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	initsub_teac		__PR((SCSI *scgp, int toctype, int multi));
+static	int	teac_doopc		__PR((SCSI *scgp));
+static	int	teac_opc		__PR((SCSI *scgp, caddr_t, int cnt, int doopc));
+static	int	opt_power_judge		__PR((SCSI *scgp, int judge));
+static	int	clear_subcode		__PR((SCSI *scgp));
+static	int	set_limits		__PR((SCSI *scgp, long lba, long length));
+static	int	set_subcode		__PR((SCSI *scgp, Uchar *subcode_data, int length));
+static	int	read_disk_info_teac	__PR((SCSI *scgp, Uchar *data, int length, int type));
+static	int	teac_freeze		__PR((SCSI *scgp, int bp_flag));
+static	int	teac_wr_pma		__PR((SCSI *scgp));
+static	int	teac_rd_pma		__PR((SCSI *scgp));
+static	int	next_wr_addr_teac	__PR((SCSI *scgp, long start_lba, long last_lba));
+static	int	blank_jvc		__PR((SCSI *scgp, cdr_t *dp, long addr, int blanktype));
+static	int	buf_cap_teac		__PR((SCSI *scgp, long *sp, long *fp));
+static	long	read_peak_buffer_cap_teac __PR((SCSI *scgp));
+static	int	buffer_inquiry_teac	__PR((SCSI *scgp, int fmt));
 #ifdef	XXBUFFER
-LOCAL	void	check_buffer_teac	__PR((SCSI *scgp));
+static	void	check_buffer_teac	__PR((SCSI *scgp));
 #endif
 #ifdef	XXDEBUG
-LOCAL	void	xxtest_teac		__PR((SCSI *scgp));
+static	void	xxtest_teac		__PR((SCSI *scgp));
 #endif
 
 
@@ -299,18 +299,14 @@ cdr_t	cdr_teac_cdr50 = {
 	cmd_dummy,					/* opt2		*/
 };
 
-LOCAL int
-teac_init(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int
+teac_init(SCSI *scgp, cdr_t *dp)
 {
 	return (speed_select_teac(scgp, dp, NULL));
 }
 
-LOCAL int
-teac_getdisktype(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int
+teac_getdisktype(SCSI *scgp, cdr_t *dp)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
 	struct scsi_mode_data md;
@@ -336,11 +332,8 @@ teac_getdisktype(scgp, dp)
 	return (drive_getdisktype(scgp, dp));
 }
 
-LOCAL int
-speed_select_teac(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	*speedp;
+static int
+speed_select_teac(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	struct cdd_52x_mode_data md;
 	int	count;
@@ -380,10 +373,8 @@ speed_select_teac(scgp, dp, speedp)
 	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
 }
 
-LOCAL int
-select_secsize_teac(scgp, trackp)
-	SCSI	*scgp;
-	track_t	*trackp;
+static int
+select_secsize_teac(SCSI *scgp, track_t *trackp)
 {
 	struct scsi_mode_data md;
 	int	count = sizeof (struct scsi_mode_header) +
@@ -413,11 +404,8 @@ select_secsize_teac(scgp, trackp)
 	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
 }
 
-LOCAL int
-next_wr_addr_jvc(scgp, trackp, ap)
-	SCSI	*scgp;
-	track_t	*trackp;
-	long	*ap;
+static int
+next_wr_addr_jvc(SCSI *scgp, track_t *trackp, long *ap)
 {
 	if (trackp != 0 && trackp->track > 0) {
 		*ap = lba_addr;
@@ -432,14 +420,13 @@ next_wr_addr_jvc(scgp, trackp, ap)
 	return (0);
 }
 
-LOCAL int
-write_teac_xg1(scgp, bp, sectaddr, size, blocks, extwr)
-	SCSI	*scgp;
-	caddr_t	bp;		/* address of buffer */
-	long	sectaddr;	/* disk address (sector) to put */
-	long	size;		/* number of bytes to transfer */
-	int	blocks;		/* sector count */
-	BOOL	extwr;		/* is an extended write */
+static int
+write_teac_xg1(SCSI *scgp, 
+               caddr_t bp       /* address of buffer */, 
+               long sectaddr    /* disk address (sector) to put */, 
+               long size        /* number of bytes to transfer */,
+               int blocks       /* sector count */, 
+               BOOL extwr       /* is an extended write */)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -463,14 +450,13 @@ write_teac_xg1(scgp, bp, sectaddr, size, blocks, extwr)
 	return (size - scg_getresid(scgp));
 }
 
-LOCAL int
-cdr_write_teac(scgp, bp, sectaddr, size, blocks, islast)
-	SCSI	*scgp;
-	caddr_t	bp;		/* address of buffer */
-	long	sectaddr;	/* disk address (sector) to put */
-	long	size;		/* number of bytes to transfer */
-	int	blocks;		/* sector count */
-	BOOL	islast;		/* last write for track */
+static int
+cdr_write_teac(SCSI *scgp, 
+               caddr_t bp       /* address of buffer */, 
+               long sectaddr    /* disk address (sector) to put */, 
+               long size        /* number of bytes to transfer */, 
+               int blocks       /* sector count */, 
+               BOOL islast      /* last write for track */)
 {
 	int	ret;
 
@@ -488,11 +474,8 @@ cdr_write_teac(scgp, bp, sectaddr, size, blocks, islast)
 	return (ret);
 }
 
-LOCAL int
-open_track_jvc(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int
+open_track_jvc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	status;
 	long	blocks;
@@ -617,13 +600,10 @@ if (!is_last(trackp) && trackp[1].pregapsize == 0) {
 	return (status);
 }
 
-LOCAL	char	sector[3000];
+static	char	sector[3000];
 
-LOCAL int
-close_track_teac(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int
+close_track_teac(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	ret = 0;
 
@@ -708,10 +688,8 @@ static const char *sd_teac50_error_str[] = {
 	NULL
 };
 
-LOCAL int
-teac_attach(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int
+teac_attach(SCSI *scgp, cdr_t *dp)
 {
 	scg_setnonstderrs(scgp, sd_teac50_error_str);
 #ifdef	XXDEBUG
@@ -721,11 +699,8 @@ teac_attach(scgp, dp)
 	return (0);
 }
 
-LOCAL int
-teac_fixation(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int
+teac_fixation(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	long	lba;
 	int	status;
@@ -837,11 +812,8 @@ extern	char	*buf;
 
 }
 
-LOCAL int
-teac_open_session(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int
+teac_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	Uint	i;
 
@@ -860,11 +832,8 @@ teac_open_session(scgp, dp, trackp)
 				track_base(trackp)->tracktype & TOCF_MULTI));
 }
 
-LOCAL int
-initsub_teac(scgp, toctype, multi)
-	SCSI	*scgp;
-	int	toctype;
-	int	multi;
+static int
+initsub_teac(SCSI *scgp, int toctype, int multi)
 {
 	int	status;
 
@@ -880,9 +849,8 @@ initsub_teac(scgp, toctype, multi)
 	return (0);
 }
 
-LOCAL int
-teac_doopc(scgp)
-	SCSI	*scgp;
+static int
+teac_doopc(SCSI *scgp)
 {
 	int	status;
 
@@ -916,12 +884,8 @@ teac_doopc(scgp)
 	return (status);
 }
 
-LOCAL int
-teac_opc(scgp, bp, cnt, doopc)
-	SCSI	*scgp;
-	caddr_t	bp;
-	int	cnt;
-	int	doopc;
+static int
+teac_opc(SCSI *scgp, caddr_t bp, int cnt, int doopc)
 {
 	int	status;
 	int	count = 0;
@@ -951,10 +915,8 @@ teac_opc(scgp, bp, cnt, doopc)
 /*
  * Optimum power calibration for Teac Drives.
  */
-LOCAL int
-opt_power_judge(scgp, judge)
-	SCSI	*scgp;
-	int	judge;
+static int
+opt_power_judge(SCSI *scgp, int judge)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -978,9 +940,8 @@ opt_power_judge(scgp, judge)
 /*
  * Clear subcodes for Teac Drives.
  */
-LOCAL int
-clear_subcode(scgp)
-	SCSI	*scgp;
+static int
+clear_subcode(SCSI *scgp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1003,11 +964,8 @@ clear_subcode(scgp)
 /*
  * Set limits for command linking for Teac Drives.
  */
-LOCAL int
-set_limits(scgp, lba, length)
-	SCSI	*scgp;
-	long	lba;
-	long	length;
+static int
+set_limits(SCSI *scgp, long lba, long length)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1031,11 +989,8 @@ set_limits(scgp, lba, length)
 /*
  * Set subcode for Teac Drives.
  */
-LOCAL int
-set_subcode(scgp, subcode_data, length)
-	SCSI	*scgp;
-	Uchar	*subcode_data;
-	int	length;
+static int
+set_subcode(SCSI *scgp, Uchar *subcode_data, int length)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1055,12 +1010,8 @@ set_subcode(scgp, subcode_data, length)
 	return (scg_cmd(scgp));
 }
 
-LOCAL int
-read_disk_info_teac(scgp, data, length, type)
-	SCSI	*scgp;
-	Uchar	*data;
-	int	length;
-	int	type;
+static int
+read_disk_info_teac(SCSI *scgp, Uchar *data, int length, int type)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1085,10 +1036,8 @@ read_disk_info_teac(scgp, data, length, type)
 /*
  * Perform the freeze command for Teac Drives.
  */
-LOCAL int
-teac_freeze(scgp, bp_flag)
-	SCSI	*scgp;
-	int	bp_flag;
+static int
+teac_freeze(SCSI *scgp, int bp_flag)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1109,9 +1058,8 @@ teac_freeze(scgp, bp_flag)
 	return (scg_cmd(scgp));
 }
 
-LOCAL int
-teac_wr_pma(scgp)
-	SCSI	*scgp;
+static int
+teac_wr_pma(SCSI *scgp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1133,9 +1081,8 @@ teac_wr_pma(scgp)
 /*
  * Read PMA for Teac Drives.
  */
-LOCAL int
-teac_rd_pma(scgp)
-	SCSI	*scgp;
+static int
+teac_rd_pma(SCSI *scgp)
 {
 	unsigned char	xx[256];
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1180,11 +1127,8 @@ teac_rd_pma(scgp)
 /*
  * Next writable address for Teac Drives.
  */
-LOCAL int
-next_wr_addr_teac(scgp, start_lba, last_lba)
-	SCSI	*scgp;
-	long	start_lba;
-	long	last_lba;
+static int
+next_wr_addr_teac(SCSI *scgp, long start_lba, long last_lba)
 {
 	unsigned char	xx[256];
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1220,12 +1164,8 @@ next_wr_addr_teac(scgp, start_lba, last_lba)
 	return (0);
 }
 
-LOCAL int
-blank_jvc(scgp, dp, addr, blanktype)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	long	addr;
-	int	blanktype;
+static int
+blank_jvc(SCSI *scgp, cdr_t *dp, long addr, int blanktype)
 {
 	extern	char	*blank_types[];
 
@@ -1237,11 +1177,8 @@ blank_jvc(scgp, dp, addr, blanktype)
 	return (scsi_blank(scgp, addr, blanktype, FALSE));
 }
 
-LOCAL int
-buf_cap_teac(scgp, sp, fp)
-	SCSI	*scgp;
-	long	*sp;	/* Size pointer */
-	long	*fp;	/* Free pointer */
+static int
+buf_cap_teac(SCSI *scgp, long *sp, long *fp)
 {
 	Ulong	freespace;
 	Ulong	bufsize;
@@ -1271,9 +1208,8 @@ buf_cap_teac(scgp, sp, fp)
 	return (per);
 }
 
-LOCAL long
-read_peak_buffer_cap_teac(scgp)
-	SCSI	*scgp;
+static long
+read_peak_buffer_cap_teac(SCSI *scgp)
 {
 	Uchar	xx[4];
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1311,10 +1247,8 @@ read_peak_buffer_cap_teac(scgp)
 #define	BI_448_BYTE	0x40
 #define	BI_APP_CODE	0x10
 
-LOCAL int
-buffer_inquiry_teac(scgp, fmt)
-	SCSI	*scgp;
-	int	fmt;
+static int
+buffer_inquiry_teac(SCSI *scgp, int fmt)
 {
 	Uchar	xx[448];
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1363,9 +1297,8 @@ buffer_inquiry_teac(scgp, fmt)
 }
 
 #ifdef	XXBUFFER
-LOCAL void
-check_buffer_teac(scgp)
-	SCSI	*scgp;
+static void
+check_buffer_teac(SCSI *scgp)
 {
 	printf("-------\n");
 	buffer_inquiry_teac(scgp, 0);
@@ -1380,12 +1313,11 @@ check_buffer_teac(scgp)
 #ifdef	XXDEBUG
 #include "scsimmc.h"
 
-LOCAL	int	g7_teac			__PR((SCSI *scgp));
-LOCAL	int	g6_teac			__PR((SCSI *scgp));
+static	int	g7_teac			__PR((SCSI *scgp));
+static	int	g6_teac			__PR((SCSI *scgp));
 
-LOCAL int
-g7_teac(scgp)
-	SCSI	*scgp;
+static int
+g7_teac(SCSI *scgp)
 {
 	Uchar	xx[2048];
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1424,9 +1356,8 @@ g7_teac(scgp)
 	return (0);
 }
 
-LOCAL int
-g6_teac(scgp)
-	SCSI	*scgp;
+static int
+g6_teac(SCSI *scgp)
 {
 	Uchar	xx[2048];
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1464,9 +1395,8 @@ g6_teac(scgp)
 	return (0);
 }
 
-LOCAL void
-xxtest_teac(scgp)
-	SCSI	*scgp;
+static void
+xxtest_teac(SCSI *scgp)
 {
 	read_peak_buffer_cap_teac(scgp);
 

@@ -1061,7 +1061,7 @@ extern	int	drive_attach		__PR((SCSI *scgp, cdr_t *));
 extern	int	attach_unknown		__PR((void));
 #ifdef	_SCG_SCSITRANSP_H
 extern	int	blank_dummy		__PR((SCSI *scgp, cdr_t *, long addr, int blanktype));
-EXPORT	int	format_dummy		__PR((SCSI *scgp, cdr_t *, int fmtflags));
+int	format_dummy		__PR((SCSI *scgp, cdr_t *, int fmtflags));
 extern	int	drive_getdisktype	__PR((SCSI *scgp, cdr_t *dp));
 extern	int	cmd_ill			__PR((SCSI *scgp));
 extern	int	cmd_dummy		__PR((SCSI *scgp, cdr_t *));

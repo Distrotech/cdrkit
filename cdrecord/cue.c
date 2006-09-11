@@ -93,17 +93,17 @@ typedef struct keyw {
  *	Keywords (first word on line):
  *		CATALOG		- global	CATALOG		<MCN>
  *		CDTEXTFILE	- global	CDTEXTFILE	<fname>
- *		FILE		- track local	FILE		<fame> <type>
- *		FLAGS		- track local	FLAGS		<flag> ...
- *		INDEX		- track local	INDEX		<#> <mm:ss:ff>
- *		ISRC		- track local	ISRC		<ISRC>
- *		PERFORMER	- global/local	PERFORMER	<string>
+ *		FILE		- track static	FILE		<fame> <type>
+ *		FLAGS		- track static	FLAGS		<flag> ...
+ *		INDEX		- track static	INDEX		<#> <mm:ss:ff>
+ *		ISRC		- track static	ISRC		<ISRC>
+ *		PERFORMER	- global/static	PERFORMER	<string>
  *		POSTGAP		- track locak	POSTGAP		<mm:ss:ff>
- *		PREGAP		- track local	PREGAP		<mm:ss:ff>
+ *		PREGAP		- track static	PREGAP		<mm:ss:ff>
  *		REM		- anywhere	REM		<comment>
- *		SONGWRITER	- global/local	SONGWRITER	<string>
- *		TITLE		- global/local	TITLE		<string>
- *		TRACK		- track local	TRACK		<#> <datatype>
+ *		SONGWRITER	- global/static	SONGWRITER	<string>
+ *		TITLE		- global/static	TITLE		<string>
+ *		TRACK		- track static	TRACK		<#> <datatype>
  *
  *	Order of keywords:
  *		CATALOG
@@ -118,8 +118,8 @@ typedef struct keyw {
  */
 
 #define	K_G		0x10000		/* Global			*/
-#define	K_T		0x20000		/* Track local			*/
-#define	K_A		(K_T | K_G)	/* Global & Track local		*/
+#define	K_T		0x20000		/* Track static			*/
+#define	K_A		(K_T | K_G)	/* Global & Track static		*/
 
 #define	K_MCN		(0 | K_G)	/* Media catalog number 	*/
 #define	K_TEXTFILE	(1 | K_G)	/* CD-Text binary file		*/
@@ -136,7 +136,7 @@ typedef struct keyw {
 #define	K_TRACK		(12| K_T)	/* Track marker			*/
 
 
-LOCAL keyw_t	keywords[] = {
+static keyw_t	keywords[] = {
 	{ "CATALOG",	K_MCN },
 	{ "CDTEXTFILE",	K_TEXTFILE },
 	{ "FILE",	K_FILE },
@@ -172,7 +172,7 @@ LOCAL keyw_t	keywords[] = {
 #define	K_MP3		105
 #define	K_OGG		106
 
-LOCAL keyw_t	filetypes[] = {
+static keyw_t	filetypes[] = {
 	{ "BINARY",	K_BINARY },
 	{ "MOTOROLA",	K_MOTOROLA },
 	{ "AIFF",	K_AIFF },
@@ -195,7 +195,7 @@ LOCAL keyw_t	filetypes[] = {
 #define	K_PRE		1002
 #define	K_SCMS		1003
 
-LOCAL keyw_t	flags[] = {
+static keyw_t	flags[] = {
 	{ "DCP",	K_DCP },
 	{ "4CH",	K_4CH },
 	{ "PRE",	K_PRE },
@@ -220,7 +220,7 @@ LOCAL keyw_t	flags[] = {
 #define	K_MODE2		10003
 #define	K_CDI		10004
 
-LOCAL keyw_t	dtypes[] = {
+static keyw_t	dtypes[] = {
 	{ "AUDIO",	K_AUDIO },
 	{ "CDG",	K_CDG },
 	{ "MODE1",	K_MODE1 },
@@ -231,45 +231,45 @@ LOCAL keyw_t	dtypes[] = {
 
 
 #ifdef	CUE_MAIN
-EXPORT	int	main		__PR((int ac, char **av));
+int	main		__PR((int ac, char **av));
 #endif
-EXPORT	int	parsecue	__PR((char *cuefname, track_t trackp[]));
-EXPORT	void	fparsecue	__PR((FILE *f, track_t trackp[]));
-LOCAL	void	parse_mcn	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_textfile	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_file	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_flags	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_index	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_isrc	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_performer	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_postgap	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_pregap	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_songwriter __PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_title	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_track	__PR((track_t trackp[], state_t *sp));
-LOCAL	void	parse_offset	__PR((long *lp));
-LOCAL	void	newtrack	__PR((track_t trackp[], state_t *sp));
+int	parsecue	__PR((char *cuefname, track_t trackp[]));
+void	fparsecue	__PR((FILE *f, track_t trackp[]));
+static	void	parse_mcn	__PR((track_t trackp[], state_t *sp));
+static	void	parse_textfile	__PR((track_t trackp[], state_t *sp));
+static	void	parse_file	__PR((track_t trackp[], state_t *sp));
+static	void	parse_flags	__PR((track_t trackp[], state_t *sp));
+static	void	parse_index	__PR((track_t trackp[], state_t *sp));
+static	void	parse_isrc	__PR((track_t trackp[], state_t *sp));
+static	void	parse_performer	__PR((track_t trackp[], state_t *sp));
+static	void	parse_postgap	__PR((track_t trackp[], state_t *sp));
+static	void	parse_pregap	__PR((track_t trackp[], state_t *sp));
+static	void	parse_songwriter __PR((track_t trackp[], state_t *sp));
+static	void	parse_title	__PR((track_t trackp[], state_t *sp));
+static	void	parse_track	__PR((track_t trackp[], state_t *sp));
+static	void	parse_offset	__PR((long *lp));
+static	void	newtrack	__PR((track_t trackp[], state_t *sp));
 
-LOCAL	keyw_t	*lookup		__PR((char *word, keyw_t table[]));
-LOCAL	void	wdebug		__PR((void));
-LOCAL	FILE	*cueopen	__PR((char *name));
-LOCAL	char	*cuename	__PR((void));
-LOCAL	char	*nextline	__PR((FILE *f));
-LOCAL	void	ungetline	__PR((void));
-LOCAL	char	*skipwhite	__PR((const char *s));
-LOCAL	char	*peekword	__PR((void));
-LOCAL	char	*lineend	__PR((void));
-LOCAL	char	*markword	__PR((char *delim));
-LOCAL	char	getdelim	__PR((void));
-LOCAL	char	*getnextitem	__PR((char *delim));
-LOCAL	char	*neednextitem	__PR((char *delim));
-LOCAL	char	*nextword	__PR((void));
-LOCAL	char	*needword	__PR((void));
-LOCAL	char	*curword	__PR((void));
-LOCAL	char	*nextitem	__PR((void));
-LOCAL	char	*needitem	__PR((void));
-LOCAL	void	checkextra	__PR((void));
-LOCAL	void	cueabort	__PR((const char *fmt, ...));
+static	keyw_t	*lookup		__PR((char *word, keyw_t table[]));
+static	void	wdebug		__PR((void));
+static	FILE	*cueopen	__PR((char *name));
+static	char	*cuename	__PR((void));
+static	char	*nextline	__PR((FILE *f));
+static	void	ungetline	__PR((void));
+static	char	*skipwhite	__PR((const char *s));
+static	char	*peekword	__PR((void));
+static	char	*lineend	__PR((void));
+static	char	*markword	__PR((char *delim));
+static	char	getdelim	__PR((void));
+static	char	*getnextitem	__PR((char *delim));
+static	char	*neednextitem	__PR((char *delim));
+static	char	*nextword	__PR((void));
+static	char	*needword	__PR((void));
+static	char	*curword	__PR((void));
+static	char	*nextitem	__PR((void));
+static	char	*needitem	__PR((void));
+static	void	checkextra	__PR((void));
+static	void	cueabort	__PR((const char *fmt, ...));
 
 #ifdef	CUE_MAIN
 int	debug;
@@ -278,15 +278,13 @@ int	xdebug = 1;
 int write_secs	__PR((void));
 int write_secs() { return (-1); }
 
-EXPORT int
-main(ac, av)
-	int	ac;
-	char	*av[];
+int
+main(int argc, char *argv[])
 {
 	int	i;
 	track_t	track[MAX_TRACK+2];	/* Max tracks + track 0 + track AA */
 
-	save_args(ac, av);
+	save_args(argc, argv);
 
 	fillbytes(track, sizeof (track), '\0');
 	for (i = 0; i < MAX_TRACK+2; i++)
@@ -294,17 +292,15 @@ main(ac, av)
 	track[0].tracktype = TOC_MASK;
 
 
-	parsecue(av[1], track);
+	parsecue(argv[1], track);
 	return (0);
 }
 #else
 extern	int	xdebug;
 #endif
 
-EXPORT int
-parsecue(cuefname, trackp)
-	char	*cuefname;
-	track_t	trackp[];
+int
+parsecue(char *cuefname, track_t trackp[])
 {
 	FILE	*f = cueopen(cuefname);
 
@@ -312,10 +308,8 @@ parsecue(cuefname, trackp)
 	return (0);
 }
 
-EXPORT void
-fparsecue(f, trackp)
-	FILE	*f;
-	track_t	trackp[];
+void
+fparsecue(FILE *f, track_t trackp[])
 {
 	char	*word;
 	struct keyw *kp;
@@ -403,10 +397,8 @@ fparsecue(f, trackp)
 	} while (1);
 }
 
-LOCAL void
-parse_mcn(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_mcn(track_t trackp[], state_t *sp)
 {
 	char	*word;
 	textptr_t *txp;
@@ -422,10 +414,8 @@ parse_mcn(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_textfile(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_textfile(track_t trackp[], state_t *sp)
 {
 	char	*word;
 
@@ -449,10 +439,8 @@ parse_textfile(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_file(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_file(track_t trackp[], state_t *sp)
 {
 	char	cname[1024];
 	char	newname[1024];
@@ -550,10 +538,8 @@ parse_file(trackp, sp)
 #endif
 }
 
-LOCAL void
-parse_flags(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_flags(track_t trackp[], state_t *sp)
 {
 	struct keyw *kp;
 	char	*word;
@@ -584,10 +570,8 @@ parse_flags(trackp, sp)
 		printf("Track %d flags 0x%08X\n", sp->track, sp->flags);
 }
 
-LOCAL void
-parse_index(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_index(track_t trackp[], state_t *sp)
 {
 	char	*word;
 	long	l;
@@ -645,10 +629,8 @@ parse_index(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_isrc(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_isrc(track_t trackp[], state_t *sp)
 {
 	char	*word;
 	textptr_t *txp;
@@ -670,10 +652,8 @@ parse_isrc(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_performer(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_performer(track_t trackp[], state_t *sp)
 {
 	char	*word;
 	textptr_t *txp;
@@ -685,10 +665,8 @@ parse_performer(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_postgap(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_postgap(track_t trackp[], state_t *sp)
 {
 	long	l;
 
@@ -702,10 +680,8 @@ parse_postgap(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_pregap(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_pregap(track_t trackp[], state_t *sp)
 {
 	long	l;
 
@@ -720,10 +696,8 @@ parse_pregap(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_songwriter(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_songwriter(track_t trackp[], state_t *sp)
 {
 	char	*word;
 	textptr_t *txp;
@@ -735,10 +709,8 @@ parse_songwriter(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_title(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_title(track_t trackp[], state_t *sp)
 {
 	char	*word;
 	textptr_t *txp;
@@ -750,10 +722,8 @@ parse_title(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_track(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+parse_track(track_t trackp[], state_t *sp)
 {
 	struct keyw *kp;
 	char	*word;
@@ -866,9 +836,8 @@ parse_track(trackp, sp)
 	checkextra();
 }
 
-LOCAL void
-parse_offset(lp)
-	long	*lp;
+static void
+parse_offset(long *lp)
 {
 	char	*word;
 	char	*p;
@@ -904,10 +873,8 @@ parse_offset(lp)
 }
 
 /*--------------------------------------------------------------------------*/
-LOCAL void
-newtrack(trackp, sp)
-	track_t	trackp[];
-	state_t	*sp;
+static void
+newtrack(track_t trackp[], state_t *sp)
 {
 	register int	i;
 	register int	track = sp->track;
@@ -1013,10 +980,8 @@ d.h. mit Index0 oder Index 1 vom nächsten track
 }
 
 /*--------------------------------------------------------------------------*/
-LOCAL keyw_t *
-lookup(word, table)
-	char	*word;
-	keyw_t	table[];
+static keyw_t *
+lookup(char *word, keyw_t table[])
 {
 	register keyw_t	*kp = table;
 
@@ -1033,19 +998,19 @@ lookup(word, table)
  * Parser low level functions start here...
  */
 
-LOCAL	char	linebuf[4096];
-LOCAL	char	*fname;
-LOCAL	char	*linep;
-LOCAL	char	*wordendp;
-LOCAL	char	wordendc;
-LOCAL	int	olinelen;
-LOCAL	int	linelen;
-LOCAL	int	lineno;
+static	char	linebuf[4096];
+static	char	*fname;
+static	char	*linep;
+static	char	*wordendp;
+static	char	wordendc;
+static	int	olinelen;
+static	int	linelen;
+static	int	lineno;
 
-LOCAL	char	worddelim[] = "=:,/";
-LOCAL	char	nulldelim[] = "";
+static	char	worddelim[] = "=:,/";
+static	char	nulldelim[] = "";
 
-LOCAL void
+static void
 wdebug()
 {
 /*		printf("WORD: '%s' rest '%s'\n", word, peekword());*/
@@ -1054,9 +1019,8 @@ wdebug()
 			(long)linep, (long)peekword(), (long)&linebuf[linelen]);
 }
 
-LOCAL FILE *
-cueopen(name)
-	char	*name;
+static FILE *
+cueopen(char *name)
 {
 	FILE	*f;
 
@@ -1068,15 +1032,14 @@ cueopen(name)
 	return (f);
 }
 
-LOCAL char *
+static char *
 cuename()
 {
 	return (fname);
 }
 
-LOCAL char *
-nextline(f)
-	FILE	*f;
+static char *
+nextline(FILE *f)
 {
 	register int	len;
 
@@ -1101,7 +1064,7 @@ nextline(f)
 	return (linep);
 }
 
-LOCAL void
+static void
 ungetline()
 {
 	linelen = olinelen;
@@ -1111,9 +1074,8 @@ ungetline()
 	wordendc = *linep;
 }
 
-LOCAL char *
-skipwhite(s)
-	const char	*s;
+static char *
+skipwhite(const char *s)
 {
 	register const Uchar	*p = (const Uchar *)s;
 
@@ -1125,21 +1087,20 @@ skipwhite(s)
 	return ((char *)p);
 }
 
-LOCAL char *
+static char *
 peekword()
 {
 	return (&wordendp[1]);
 }
 
-LOCAL char *
+static char *
 lineend()
 {
 	return (&linebuf[linelen]);
 }
 
-LOCAL char *
-markword(delim)
-	char	*delim;
+static char *
+markword(char *delim)
 {
 	register	BOOL	quoted = FALSE;
 	register	Uchar	c;
@@ -1173,15 +1134,14 @@ linelen--;
 	return (linep);
 }
 
-LOCAL char
+static char
 getdelim()
 {
 	return (wordendc);
 }
 
-LOCAL char *
-getnextitem(delim)
-	char	*delim;
+static char *
+getnextitem(char *delim)
 {
 	*wordendp = wordendc;
 
@@ -1189,9 +1149,8 @@ getnextitem(delim)
 	return (markword(delim));
 }
 
-LOCAL char *
-neednextitem(delim)
-	char	*delim;
+static char *
+neednextitem(char *delim)
 {
 	char	*olinep = linep;
 	char	*nlinep;
@@ -1204,37 +1163,37 @@ neednextitem(delim)
 	return (nlinep);
 }
 
-LOCAL char *
+static char *
 nextword()
 {
 	return (getnextitem(worddelim));
 }
 
-LOCAL char *
+static char *
 needword()
 {
 	return (neednextitem(worddelim));
 }
 
-LOCAL char *
+static char *
 curword()
 {
 	return (linep);
 }
 
-LOCAL char *
+static char *
 nextitem()
 {
 	return (getnextitem(nulldelim));
 }
 
-LOCAL char *
+static char *
 needitem()
 {
 	return (neednextitem(nulldelim));
 }
 
-LOCAL void
+static void
 checkextra()
 {
 	if (peekword() < lineend())
@@ -1243,13 +1202,11 @@ checkextra()
 
 /* VARARGS1 */
 #ifdef	PROTOTYPES
-LOCAL void
+static void
 cueabort(const char *fmt, ...)
 #else
-LOCAL void
-cueabort(fmt, va_alist)
-	char	*fmt;
-	va_dcl
+static void
+cueabort(char *fmt, va_dcl va_alist)
 #endif
 {
 	va_list	args;

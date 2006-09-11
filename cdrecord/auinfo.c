@@ -50,21 +50,19 @@ static	char sccsid[] =
 extern	int	debug;
 extern	int	xdebug;
 
-EXPORT	BOOL	auinfosize	__PR((char *name, track_t *trackp));
-EXPORT	void	auinfo		__PR((char *name, int track, track_t *trackp));
-EXPORT	textptr_t *gettextptr	__PR((int track, track_t *trackp));
-LOCAL	char 	*savestr	__PR((char *name));
-LOCAL	char 	*readtag	__PR((char *name));
-LOCAL	char 	*readtstr	__PR((char *name));
-EXPORT	void	setmcn		__PR((char *mcn, track_t *trackp));
-LOCAL	void	isrc_illchar	__PR((char *isrc, int c));
-EXPORT	void	setisrc		__PR((char *isrc, track_t *trackp));
-EXPORT	void	setindex	__PR((char *tindex, track_t *trackp));
+BOOL	auinfosize	__PR((char *name, track_t *trackp));
+void	auinfo		__PR((char *name, int track, track_t *trackp));
+textptr_t *gettextptr	__PR((int track, track_t *trackp));
+static	char 	*savestr	__PR((char *name));
+static	char 	*readtag	__PR((char *name));
+static	char 	*readtstr	__PR((char *name));
+void	setmcn		__PR((char *mcn, track_t *trackp));
+static	void	isrc_illchar	__PR((char *isrc, int c));
+void	setisrc		__PR((char *isrc, track_t *trackp));
+void	setindex	__PR((char *tindex, track_t *trackp));
 
 #ifdef	XXX
-main(ac, av)
-	int	ac;
-	char	*av[];
+int main(int argc, char *argv[])
 {
 /*	auinfo("/etc/default/cdrecord");*/
 /*	auinfo("/mnt2/CD3/audio_01.inf");*/
@@ -72,10 +70,8 @@ main(ac, av)
 }
 #endif
 
-EXPORT BOOL
-auinfosize(name, trackp)
-	char	*name;
-	track_t	*trackp;
+BOOL
+auinfosize(char *name, track_t *trackp)
 {
 	const	char	*p;
 	const	char	*tlp;
@@ -151,11 +147,8 @@ auinfosize(name, trackp)
 	return (TRUE);
 }
 
-EXPORT void
-auinfo(name, track, trackp)
-	char	*name;
-	int	track;
-	track_t	*trackp;
+void
+auinfo(char *name, int track, track_t *trackp)
 {
 	char	infname[1024];
 	char	*p;
@@ -312,10 +305,8 @@ auinfo(name, track, trackp)
 
 }
 
-EXPORT textptr_t *
-gettextptr(track, trackp)
-	int	track;
-	track_t	*trackp;
+textptr_t *
+gettextptr(int track, track_t *trackp)
 {
 	register textptr_t *txp;
 
@@ -330,9 +321,8 @@ gettextptr(track, trackp)
 	return (txp);
 }
 
-LOCAL char *
-savestr(str)
-	char	*str;
+static char *
+savestr(char *str)
 {
 	char	*ret;
 
@@ -344,9 +334,8 @@ savestr(str)
 	return (ret);
 }
 
-LOCAL char *
-readtag(name)
-	char	*name;
+static char *
+readtag(char *name)
 {
 	register char	*p;
 
@@ -360,9 +349,8 @@ readtag(name)
 	return (p);
 }
 
-LOCAL char *
-readtstr(name)
-	char	*name;
+static char *
+readtstr(char *name)
 {
 	register char	*p;
 	register char	*p2;
@@ -384,10 +372,8 @@ readtstr(name)
 /*
  * Media catalog number is a 13 digit number.
  */
-EXPORT void
-setmcn(mcn, trackp)
-	char	*mcn;
-	track_t	*trackp;
+void
+setmcn(char *mcn, track_t *trackp)
 {
 	register char	*p;
 
@@ -406,12 +392,10 @@ setmcn(mcn, trackp)
 		printf("Track %d MCN: '%s'\n", (int)trackp->trackno, trackp->isrc);
 }
 
-LOCAL	char	upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static	char	upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-LOCAL void
-isrc_illchar(isrc, c)
-	char	*isrc;
-	int	c;
+static void
+isrc_illchar(char *isrc, int c)
 {
 	errmsgno(EX_BAD, "ISRC '%s' contains illegal character '%c'.\n", isrc, c);
 }
@@ -426,10 +410,8 @@ isrc_illchar(isrc, c)
  *
  *	CC-OOO-YY-SSSSS
  */
-EXPORT void
-setisrc(isrc, trackp)
-	char	*isrc;
-	track_t	*trackp;
+void
+setisrc(char *isrc, track_t *trackp)
 {
 	char	ibuf[13];
 	char	*ip;
@@ -506,10 +488,8 @@ illchar:
 	exit(EX_BAD);
 }
 
-EXPORT void
-setindex(tindex, trackp)
-	char	*tindex;
-	track_t	*trackp;
+void
+setindex(char *tindex, track_t *trackp)
 {
 	char	*p;
 	int	i;

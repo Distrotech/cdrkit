@@ -61,8 +61,7 @@ static unsigned ReadFullTOCSony __PR(( SCSI *scgp ));
 static unsigned ReadFullTOCMMC __PR(( SCSI *scgp ));
 
 
-int SCSI_emulated_ATAPI_on(scgp)
-	SCSI *scgp;
+int SCSI_emulated_ATAPI_on(SCSI *scgp)
 {
 /*	return is_atapi;*/
 	if (scg_isatapi(scgp) > 0)
@@ -72,8 +71,7 @@ int SCSI_emulated_ATAPI_on(scgp)
 	return (allow_atapi(scgp, TRUE));
 }
 
-int heiko_mmc(scgp)
-	SCSI *scgp;
+int heiko_mmc(SCSI *scgp)
 {
         unsigned char	mode[0x100];
 	int		was_atapi;
@@ -107,11 +105,8 @@ unsigned char orgmode10, orgmode11;
 
 /* get current sector size from SCSI cdrom drive */
 unsigned int 
-get_orig_sectorsize(scgp, m4, m10, m11)
-	SCSI *scgp;
-	unsigned char *m4;
-	unsigned char *m10; 
-	unsigned char *m11;
+get_orig_sectorsize(SCSI *scgp, unsigned char *m4, unsigned char *m10, 
+                    unsigned char *m11)
 {
       /* first get current values for density, etc. */
 
@@ -153,9 +148,7 @@ get_orig_sectorsize(scgp, m4, m10, m11)
 
 
 /* switch CDROM scsi drives to given sector size  */
-int set_sectorsize (scgp, secsize)
-	SCSI *scgp;
-	unsigned int secsize;
+int set_sectorsize(SCSI *scgp, unsigned int secsize)
 {
   static unsigned char mode [4 + 8];
   int retval;
@@ -184,10 +177,7 @@ int set_sectorsize (scgp, secsize)
 
 
 /* switch Toshiba/DEC and HP drives from/to cdda density */
-void EnableCddaModeSelect (scgp, fAudioMode, uSectorsize)
-	SCSI *scgp;
-	int fAudioMode;
-	unsigned uSectorsize;
+void EnableCddaModeSelect(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
 {
   /* reserved, Medium type=0, Dev spec Parm = 0, block descriptor len 0 oder 8,
      Density (cd format) 
@@ -237,8 +227,7 @@ void EnableCddaModeSelect (scgp, fAudioMode, uSectorsize)
 
 
 /* read CD Text information from the table of contents */
-void ReadTocTextSCSIMMC ( scgp )
-	SCSI *scgp;
+void ReadTocTextSCSIMMC(SCSI *scgp)
 {
     short datalength;
 
@@ -320,8 +309,7 @@ fprintf(stderr, "read %d bytes. sizeof(bufferTOC)=%u\n", read_, CD_FRAMESIZE);
 }
 
 /* read the full TOC */
-static unsigned ReadFullTOCSony ( scgp )
-	SCSI *scgp;
+static unsigned ReadFullTOCSony(SCSI *scgp)
 {
   /* READTOC, MSF, format, res, res, res, Start track/session, len msb,
      len lsb, control */
@@ -372,8 +360,7 @@ struct zmsf_address {
 #ifdef	WARN_FULLTOC
 static unsigned lba __PR((struct msf_address *ad));
 
-static unsigned lba(ad)
-	struct msf_address *ad;
+static unsigned lba(struct msf_address *ad)
 {
 	return	ad->mins*60*75 + ad->secs*75 + ad->frame;
 }
@@ -381,8 +368,7 @@ static unsigned lba(ad)
 
 static unsigned dvd_lba __PR((struct zmsf_address *ad));
 
-static unsigned dvd_lba(ad)
-	struct zmsf_address *ad;
+static unsigned dvd_lba(struct zmsf_address *ad)
 {
 	return	ad->zero*1053696 + ad->mins*60*75 + ad->secs*75 + ad->frame;
 }
@@ -408,10 +394,8 @@ static unsigned long first_session_leadout = 0;
 
 static unsigned collect_tracks __PR((struct outer *po, unsigned entries, BOOL bcd_flag));
 
-static unsigned collect_tracks(po, entries, bcd_flag)
-	struct outer *po;
-	unsigned entries;
-	BOOL bcd_flag;
+static unsigned collect_tracks(struct outer *po, unsigned entries, 
+                               BOOL bcd_flag)
 {
 	unsigned tracks = 0;
 	int i;
@@ -713,8 +697,7 @@ fprintf(stderr, "%02x %02x %02x %02x %02x %02x\n"
 }
 
 /* read the table of contents from the cd and fill the TOC array */
-unsigned ReadTocSony ( scgp )
-	SCSI *scgp;
+unsigned ReadTocSony(SCSI *scgp)
 {
 	unsigned tracks = 0;
 	unsigned return_length;
@@ -736,8 +719,7 @@ unsigned ReadTocSony ( scgp )
 }
 
 /* read the start of the lead-out from the first session TOC */
-unsigned ReadFirstSessionTOCSony ( scgp )
-	SCSI *scgp;
+unsigned ReadFirstSessionTOCSony(SCSI *scgp)
 {
 	unsigned return_length;
 	
@@ -772,8 +754,7 @@ unsigned ReadFirstSessionTOCSony ( scgp )
 }
 
 /* read the full TOC */
-static unsigned ReadFullTOCMMC ( scgp )
-	SCSI *scgp;
+static unsigned ReadFullTOCMMC(SCSI *scgp)
 {
 
   /* READTOC, MSF, format, res, res, res, Start track/session, len msb,
@@ -813,8 +794,7 @@ static unsigned ReadFullTOCMMC ( scgp )
 }
 
 /* read the start of the lead-out from the first session TOC */
-unsigned ReadFirstSessionTOCMMC ( scgp )
-	SCSI *scgp;
+unsigned ReadFirstSessionTOCMMC(SCSI *scgp)
 {
         unsigned off;
 	unsigned return_length;
@@ -838,8 +818,7 @@ unsigned ReadFirstSessionTOCMMC ( scgp )
 }
 
 /* read the table of contents from the cd and fill the TOC array */
-unsigned ReadTocMMC ( scgp )
-	SCSI *scgp;
+unsigned ReadTocMMC(SCSI *scgp)
 {
 	unsigned tracks = 0;
 	unsigned return_length;
@@ -855,8 +834,7 @@ unsigned ReadTocMMC ( scgp )
 }
 
 /* read the table of contents from the cd and fill the TOC array */
-unsigned ReadTocSCSI ( scgp )
-	SCSI *scgp;
+unsigned ReadTocSCSI(SCSI *scgp)
 {
     unsigned tracks;
     int	result;
@@ -982,12 +960,9 @@ fprintf(stderr, "LBA %d %02x %02x %02x %02x %02x %02x %02x %02x\n"
    via standard SCSI-2 Read(10) command */
 static int ReadStandardLowlevel __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal, unsigned secsize ));
 
-static int ReadStandardLowlevel (scgp, p, lSector, SectorBurstVal, secsize )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
-	unsigned secsize;
+static int 
+ReadStandardLowlevel(SCSI *scgp, UINT4 *p, unsigned lSector, 
+                     unsigned SectorBurstVal, unsigned secsize)
 {
   /* READ10, flags, block1 msb, block2, block3, block4 lsb, reserved, 
      transfer len msb, transfer len lsb, block addressing mode */
@@ -1015,31 +990,21 @@ static int ReadStandardLowlevel (scgp, p, lSector, SectorBurstVal, secsize )
 }
 
 
-int ReadStandard (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int 
+ReadStandard(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
 	return ReadStandardLowlevel(scgp, p, lSector, SectorBurstVal, CD_FRAMESIZE_RAW);
 }
 
-int ReadStandardData (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int 
+ReadStandardData(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
 	return ReadStandardLowlevel(scgp, p, lSector, SectorBurstVal, CD_FRAMESIZE);
 }
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via vendor-specific ReadCdda(10) command */
-int ReadCdda10 (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int ReadCdda10(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
   /* READ10, flags, block1 msb, block2, block3, block4 lsb, reserved, 
      transfer len msb, transfer len lsb, block addressing mode */
@@ -1069,11 +1034,7 @@ int ReadCdda10 (scgp, p, lSector, SectorBurstVal )
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via vendor-specific ReadCdda(12) command */
-int ReadCdda12 (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int ReadCdda12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1106,11 +1067,8 @@ int ReadCdda12 (scgp, p, lSector, SectorBurstVal )
 > normal and the number of sectors is coded in Byte 8 and 9 (begining with 0).
 */
 
-int ReadCdda12Matsushita (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int ReadCdda12Matsushita(SCSI *scgp, UINT4 *p, unsigned lSector, 
+                         unsigned SectorBurstVal)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1138,11 +1096,8 @@ int ReadCdda12Matsushita (scgp, p, lSector, SectorBurstVal )
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via MMC standard READ CD command */
-int ReadCddaMMC12 (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int ReadCddaMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, 
+                  unsigned SectorBurstVal)
 {
 	register struct	scg_cmd	*scmd;
 	scmd = scgp->scmd;
@@ -1170,11 +1125,8 @@ int ReadCddaMMC12 (scgp, p, lSector, SectorBurstVal )
 	return SectorBurstVal - scg_getresid(scgp)/CD_FRAMESIZE_RAW;
 }
 
-int ReadCddaFallbackMMC (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int ReadCddaFallbackMMC(SCSI *scgp, UINT4 *p, unsigned lSector, 
+                        unsigned SectorBurstVal)
 {
 	static int ReadCdda12_unknown = 0;
 	int retval = -999;
@@ -1202,10 +1154,8 @@ int ReadCddaFallbackMMC (scgp, p, lSector, SectorBurstVal )
 #ifdef	PROTOTYPES
 static subq_chnl *ReadSubQFallback (SCSI *scgp, unsigned char sq_format, unsigned char track)
 #else
-static subq_chnl *ReadSubQFallback ( scgp, sq_format, track )
-	SCSI *scgp;
-	unsigned char sq_format;
-	unsigned char track;
+static subq_chnl *
+ReadSubQFallback(SCSI *scgp, unsigned char sq_format, unsigned char track)
 #endif
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1250,10 +1200,8 @@ static subq_chnl *ReadSubQFallback ( scgp, sq_format, track )
 #ifdef	PROTOTYPES
 subq_chnl *ReadSubQSCSI (SCSI *scgp, unsigned char sq_format, unsigned char track)
 #else
-subq_chnl *ReadSubQSCSI ( scgp, sq_format, track )
-	SCSI *scgp;
-	unsigned char sq_format;
-	unsigned char track;
+subq_chnl *
+ReadSubQSCSI(SCSI *scgp, unsigned char sq_format, unsigned char track)
 #endif
 {
         int resp_size;
@@ -1307,8 +1255,7 @@ subq_chnl *ReadSubQSCSI ( scgp, sq_format, track )
 static subq_chnl sc;
 
 static subq_chnl* fill_subchannel __PR((unsigned char bufferwithQ[]));
-static subq_chnl* fill_subchannel(bufferwithQ)
-	unsigned char bufferwithQ[];
+static subq_chnl* fill_subchannel(unsigned char bufferwithQ[])
 {
 	sc.subq_length = 0;
 	sc.control_adr = bufferwithQ[CD_FRAMESIZE_RAW + 0];
@@ -1317,11 +1264,8 @@ static subq_chnl* fill_subchannel(bufferwithQ)
 	return &sc;
 }
 
-int ReadCddaSubSony (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int 
+ReadCddaSubSony(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1350,11 +1294,8 @@ int ReadCddaSubSony (scgp, p, lSector, SectorBurstVal )
 
 int ReadCddaSub96Sony __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal ));
 
-int ReadCddaSub96Sony (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int ReadCddaSub96Sony(SCSI *scgp, UINT4 *p, unsigned lSector, 
+                      unsigned SectorBurstVal)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1381,9 +1322,7 @@ int ReadCddaSub96Sony (scgp, p, lSector, SectorBurstVal )
 	return scg_getresid(scgp) != 0;
 }
 
-subq_chnl *ReadSubChannelsSony(scgp, lSector)
-	SCSI *scgp;
-	unsigned lSector;
+subq_chnl *ReadSubChannelsSony(SCSI *scgp, unsigned lSector)
 {
 	/*int retval = ReadCddaSub96Sony(scgp, (UINT4 *)bufferTOC, lSector, 1);*/
 	int retval = ReadCddaSubSony(scgp, (UINT4 *)bufferTOC, lSector, 1);
@@ -1394,11 +1333,7 @@ subq_chnl *ReadSubChannelsSony(scgp, lSector)
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via MMC standard READ CD command */
-int ReadCddaSubMMC12 (scgp, p, lSector, SectorBurstVal )
-	SCSI *scgp;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+int ReadCddaSubMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
 	register struct	scg_cmd	*scmd;
 	scmd = scgp->scmd;
@@ -1428,9 +1363,7 @@ int ReadCddaSubMMC12 (scgp, p, lSector, SectorBurstVal )
 }
 
 static subq_chnl *ReadSubChannelsMMC __PR((SCSI *scgp, unsigned lSector));
-static subq_chnl *ReadSubChannelsMMC(scgp, lSector)
-	SCSI *scgp;
-	unsigned lSector;
+static subq_chnl *ReadSubChannelsMMC(SCSI *scgp, unsigned lSector)
 {
 	int retval = ReadCddaSubMMC12(scgp, (UINT4 *)bufferTOC, lSector, 1);
 	if (retval != 0) return NULL;
@@ -1438,9 +1371,7 @@ static subq_chnl *ReadSubChannelsMMC(scgp, lSector)
 	return fill_subchannel(bufferTOC);
 }
 
-subq_chnl *ReadSubChannelsFallbackMMC(scgp, lSector)
-	SCSI *scgp;
-	unsigned lSector;
+subq_chnl *ReadSubChannelsFallbackMMC(SCSI *scgp, unsigned lSector)
 {
 	static int ReadSubSony_unknown = 0;
 	subq_chnl *retval = NULL;
@@ -1485,9 +1416,7 @@ fprintf(stderr, "Subchannel Sec %x: %02x %02x %02x %02x\n"
 }
 /********* non standardized speed selects ***********************/
 
-void SpeedSelectSCSIToshiba (scgp, speed)
-	SCSI *scgp;
-	unsigned speed;
+void SpeedSelectSCSIToshiba(SCSI *scgp, unsigned speed)
 {
   static unsigned char mode [4 + 3];
   unsigned char *page = mode + 4;
@@ -1508,9 +1437,7 @@ void SpeedSelectSCSIToshiba (scgp, speed)
   scgp->silent--;
 }
 
-void SpeedSelectSCSINEC (scgp, speed)
-	SCSI *scgp;
-	unsigned speed;
+void SpeedSelectSCSINEC(SCSI *scgp, unsigned speed)
 {
   static unsigned char mode [4 + 8];
   unsigned char *page = mode + 4;
@@ -1544,9 +1471,7 @@ void SpeedSelectSCSINEC (scgp, speed)
         fprintf(stderr ,"speed select NEC failed\n");
 }
 
-void SpeedSelectSCSIPhilipsCDD2600 (scgp, speed)
-	SCSI *scgp;
-	unsigned speed;
+void SpeedSelectSCSIPhilipsCDD2600(SCSI *scgp, unsigned speed)
 {
   /* MODE_SELECT, page = SCSI-2  save page disabled, reserved, reserved,
      parm list len, flags */
@@ -1567,9 +1492,7 @@ void SpeedSelectSCSIPhilipsCDD2600 (scgp, speed)
         fprintf (stderr, "speed select PhilipsCDD2600 failed\n");
 }
 
-void SpeedSelectSCSISony (scgp, speed)
-	SCSI *scgp;
-	unsigned speed;
+void SpeedSelectSCSISony(SCSI *scgp, unsigned speed)
 {
   static unsigned char mode [4 + 4];
   unsigned char *page = mode + 4;
@@ -1609,9 +1532,7 @@ void SpeedSelectSCSIYamaha (scgp, speed)
         fprintf (stderr, "speed select Yamaha failed\n");
 }
 
-void SpeedSelectSCSIMMC (scgp, speed)
-	SCSI *scgp;
-	unsigned speed;
+void SpeedSelectSCSIMMC(SCSI *scgp, unsigned speed)
 {
   int spd;
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1649,8 +1570,7 @@ void SpeedSelectSCSIMMC (scgp, speed)
 }
 
 /* request vendor brand and model */
-unsigned char *Inquiry ( scgp )
-	SCSI *scgp;
+unsigned char *Inquiry(SCSI *scgp)
 {
   static unsigned char *Inqbuffer = NULL;
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -1697,8 +1617,7 @@ unsigned char *Inquiry ( scgp )
 #define NO_MEDIA_SC 0x3a
 #define NO_MEDIA_SCQ 0x00
 
-int TestForMedium ( scgp )
-	SCSI *scgp;
+int TestForMedium(SCSI *scgp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1738,8 +1657,7 @@ int TestForMedium ( scgp )
   }
 }
 
-int StopPlaySCSI ( scgp )
-	SCSI *scgp;
+int StopPlaySCSI(SCSI *scgp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1760,10 +1678,7 @@ int StopPlaySCSI ( scgp )
   return scg_cmd(scgp) >= 0 ? 0 : -1;
 }
 
-int Play_atSCSI ( scgp, from_sector, sectors)
-	SCSI *scgp;
-	unsigned int from_sector;
-	unsigned int sectors;
+int Play_atSCSI(SCSI *scgp, unsigned int from_sector, unsigned int sectors)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1794,9 +1709,7 @@ static caddr_t scsibuffer;	/* page aligned scsi transfer buffer */
 
 void init_scsibuf __PR((SCSI *, unsigned));
 
-void init_scsibuf(scgp, amt)
-	SCSI *scgp;
-	unsigned amt;
+void init_scsibuf(SCSI *scgp, unsigned amt)
 {
 	if (scsibuffer != NULL) {
 		fprintf(stderr, "the SCSI transfer buffer has already been allocated!\n");

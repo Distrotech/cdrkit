@@ -56,8 +56,8 @@ static	char sccsid[] =
 
 /*#define	SAO_RAW*/
 
-EXPORT	void	clone_toc	__PR((track_t *trackp));
-EXPORT	void	clone_tracktype	__PR((track_t *trackp));
+void	clone_toc	__PR((track_t *trackp));
+void	clone_tracktype	__PR((track_t *trackp));
 
 extern	int	lverbose;
 extern	int	xdebug;
@@ -66,19 +66,18 @@ extern	Uchar	_subq[110][12];
 extern	int	_nsubh;
 
 
-LOCAL	int	ctrl_first;
-LOCAL	int	ctrl_last;
-LOCAL	int	sectype_first;
-LOCAL	int	sectype_last;
-LOCAL	int	disktype;
-LOCAL	long	loutstart;
+static	int	ctrl_first;
+static	int	ctrl_last;
+static	int	sectype_first;
+static	int	sectype_last;
+static	int	disktype;
+static	long	loutstart;
 
 /*
  * Read Clone TOC description from full toc file.
  */
-EXPORT void
-clone_toc(trackp)
-	track_t	*trackp;
+void
+clone_toc(track_t *trackp)
 {
 	char	filename[1024];
 	msf_t	m;
@@ -214,9 +213,8 @@ clone_toc(trackp)
  * Control 4 = data
  * Control 5 = packet data
  */
-EXPORT void
-clone_tracktype(trackp)
-	track_t	*trackp;
+void
+clone_tracktype(track_t *trackp)
 {
 	int	tracks = trackp->tracks;
 	int	sectype;

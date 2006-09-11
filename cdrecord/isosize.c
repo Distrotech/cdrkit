@@ -46,8 +46,7 @@ static	char sccsid[] =
 Llong	isosize		__PR((int f));
 
 Llong
-isosize(f)
-	int	f;
+isosize(int f)
 {
 	struct iso9660_voldesc		vd;
 	struct iso9660_pr_voldesc	*vp;

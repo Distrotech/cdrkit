@@ -58,11 +58,11 @@ static	char sccsid[] =
 #define	HAVE_NEW_LIB_EDC
 #endif
 
-EXPORT	int	encspeed	__PR((BOOL be_verbose));
-EXPORT	void	encsectors	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
-EXPORT	void	scrsectors	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
-EXPORT	void	encodesector	__PR((Uchar *sp, int sectype, int address));
-EXPORT	void	fillsector	__PR((Uchar *sp, int sectype, int address));
+int	encspeed	__PR((BOOL be_verbose));
+void	encsectors	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
+void	scrsectors	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
+void	encodesector	__PR((Uchar *sp, int sectype, int address));
+void	fillsector	__PR((Uchar *sp, int sectype, int address));
 
 /*
  * Sector types known by lib libedc_ecc:
@@ -106,9 +106,8 @@ EXPORT	void	fillsector	__PR((Uchar *sp, int sectype, int address));
 /*
  * Compute max sector encoding speed
  */
-EXPORT int
-encspeed(be_verbose)
-	BOOL	be_verbose;
+int
+encspeed(BOOL be_verbose)
 {
 	track_t	t[1];
 	Uchar	sect[2352];
@@ -145,12 +144,8 @@ encspeed(be_verbose)
 /*
  * Encode sectors according to trackp->sectype
  */
-EXPORT void
-encsectors(trackp, bp, address, nsecs)
-	track_t	*trackp;
-	Uchar	*bp;
-	int	address;
-	int	nsecs;
+void
+encsectors(track_t *trackp, Uchar *bp, int address, int nsecs)
 {
 	int	sectype = trackp->sectype;
 
@@ -177,12 +172,8 @@ encsectors(trackp, bp, address, nsecs)
 /*
  * Scramble data sectors without coding (needed for clone writing)
  */
-EXPORT void
-scrsectors(trackp, bp, address, nsecs)
-	track_t	*trackp;
-	Uchar	*bp;
-	int	address;
-	int	nsecs;
+void
+scrsectors(track_t *trackp, Uchar *bp, int address, int nsecs)
 {
 	/*
 	 * In Clone write mode, we cannot expect that the sector type
@@ -199,12 +190,8 @@ scrsectors(trackp, bp, address, nsecs)
 	}
 }
 #else
-EXPORT void
-scrsectors(trackp, bp, address, nsecs)
-	track_t	*trackp;
-	Uchar	*bp;
-	int	address;
-	int	nsecs;
+void
+scrsectors(track_t *trackp, Uchar *bp, int address, int nsecs)
 {
 	comerrno(EX_BAD, "Cannot write in clone RAW mode.\n");
 }
@@ -213,11 +200,8 @@ scrsectors(trackp, bp, address, nsecs)
 /*
  * Encode one sector according to trackp->sectype
  */
-EXPORT void
-encodesector(sp, sectype, address)
-	Uchar	*sp;
-	int	sectype;
-	int	address;
+void
+encodesector(Uchar *sp, int sectype, int address)
 {
 	if (address < -150)
 		address += 450150;
@@ -273,11 +257,8 @@ encodesector(sp, sectype, address)
 /*
  * Create one zero filles encoded sector (according to trackp->sectype)
  */
-EXPORT void
-fillsector(sp, sectype, address)
-	Uchar	*sp;
-	int	sectype;
-	int	address;
+void
+fillsector(Uchar *sp, int sectype, int address)
 {
 	fill2352(sp, '\0');
 	encodesector(sp, sectype, address);

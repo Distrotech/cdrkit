@@ -52,4 +52,4 @@ extern	int	lverbose;
 
 extern	char	*buf;			/* The transfer buffer */
 
-EXPORT	int	write_session_data __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+int	write_session_data __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));

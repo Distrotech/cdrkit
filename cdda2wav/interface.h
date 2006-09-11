@@ -126,6 +126,6 @@ extern subq_chnl *SubQbuffer;
 void SetupInterface __PR(( void ));
 int	Toshiba3401 __PR(( void ));
 
-EXPORT	void	priv_init	__PR((void));
-EXPORT	void	priv_on		__PR((void));
-EXPORT	void	priv_off	__PR((void));
+void	priv_init	__PR((void));
+void	priv_on		__PR((void));
+void	priv_off	__PR((void));

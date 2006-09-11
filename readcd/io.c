@@ -47,9 +47,9 @@ struct disk {
 	int	dummy;
 };
 
-LOCAL	char	*skipwhite	__PR((const char *));
-LOCAL	void	prt_std		__PR((char *, long, long, long, struct disk *));
-EXPORT	BOOL	cvt_std		__PR((char *, long *, long, long, struct disk *));
+static	char	*skipwhite	__PR((const char *));
+static	void	prt_std		__PR((char *, long, long, long, struct disk *));
+BOOL	cvt_std		__PR((char *, long *, long, long, struct disk *));
 extern	BOOL	getvalue	__PR((char *, long *, long, long,
 				void (*)(char *, long, long, long, struct disk *),
 				BOOL (*)(char *, long *, long, long, struct disk *),
@@ -58,7 +58,7 @@ extern	BOOL	getlong		__PR((char *, long *, long, long));
 extern	BOOL	getint		__PR((char *, int *, int, int));
 extern	BOOL	yes		__PR((char *, ...));
 
-LOCAL
+static
 char *skipwhite(s)
 		 const char	*s;
 {
@@ -73,7 +73,7 @@ char *skipwhite(s)
 }
 
 /* ARGSUSED */
-EXPORT
+
 BOOL
 cvt_std(linep, lp, mini, maxi, dp)
 	char	*linep;
@@ -121,7 +121,7 @@ cvt_std(linep, lp, mini, maxi, dp)
 }
 
 /* ARGSUSED */
-LOCAL void
+static void
 prt_std(s, l, mini, maxi, dp)
 	char	*s;
 	long	l;
@@ -132,7 +132,7 @@ prt_std(s, l, mini, maxi, dp)
 	printf("%s %ld (%ld - %ld)/<cr>:", s, l, mini, maxi);
 }
 
-EXPORT
+
 BOOL getvalue(s, lp, mini, maxi, prt, cvt, dp)
 	char	*s;
 	long	*lp;
@@ -169,7 +169,7 @@ BOOL getvalue(s, lp, mini, maxi, prt, cvt, dp)
 	/* NOTREACHED */
 }
 
-EXPORT
+
 BOOL getlong(s, lp, mini, maxi)
 	char	*s;
 	long	*lp;
@@ -179,7 +179,7 @@ BOOL getlong(s, lp, mini, maxi)
 	return (getvalue(s, lp, mini, maxi, prt_std, cvt_std, (void *)0));
 }
 
-EXPORT
+
 BOOL getint(s, ip, mini, maxi)
 	char	*s;
 	int	*ip;
@@ -196,9 +196,9 @@ BOOL getint(s, ip, mini, maxi)
 
 /* VARARGS1 */
 #ifdef	PROTOTYPES
-EXPORT BOOL yes(char *form, ...)
+BOOL yes(char *form, ...)
 #else
-EXPORT
+
 BOOL yes(form, va_alist)
 	char	*form;
 	va_dcl

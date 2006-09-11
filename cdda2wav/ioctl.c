@@ -83,10 +83,7 @@ static int err;
 
 static void EnableCdda_cooked __PR((SCSI *scgp, int fAudioMode, unsigned uSectorsize));
 /* ARGSUSED */
-static void EnableCdda_cooked (scgp, fAudioMode, uSectorsize)
-	SCSI *scgp;
-	int fAudioMode;
-	unsigned uSectorsize;
+static void EnableCdda_cooked(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
 {
 #if	(defined(__FreeBSD__) && __FreeBSD_version >= 400014) || defined(__DragonFly__)  || defined(__FreeBSD_kernel__)
 	if (scgp && scgp->verbose)
@@ -118,8 +115,7 @@ static void EnableCdda_cooked (scgp, fAudioMode, uSectorsize)
 static unsigned ReadToc_cooked __PR(( SCSI *x ));
 
 /* read the table of contents (toc) via the ioctl interface */
-static unsigned ReadToc_cooked ( x )
-	SCSI *x;
+static unsigned ReadToc_cooked(SCSI *x)
 {
     unsigned i;
     unsigned tracks;
@@ -217,10 +213,8 @@ static unsigned ReadToc_cooked ( x )
 
 static void trash_cache_cooked __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
 
-static void trash_cache_cooked(p, lSector, SectorBurstVal)
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static void trash_cache_cooked(UINT4 *p, unsigned lSector, 
+                               unsigned SectorBurstVal)
 {
       /* trash the cache */
 
@@ -265,11 +259,8 @@ static void ReadCdRomData_cooked __PR(( SCSI *x, UINT4 *p, unsigned lSector, uns
 /* read 'SectorBurst' adjacent sectors of data sectors 
  * to Buffer '*p' beginning at sector 'lSector'
  */
-static void ReadCdRomData_cooked (x, p, lSector, SectorBurstVal )
-	SCSI *x;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static void ReadCdRomData_cooked(SCSI *x, UINT4 *p, unsigned lSector, 
+                                 unsigned SectorBurstVal)
 {
 	int	retval;
 
@@ -289,11 +280,8 @@ static int ReadCdRom_cooked __PR(( SCSI *x, UINT4 *p, unsigned lSector, unsigned
 /* read 'SectorBurst' adjacent sectors of audio sectors 
  * to Buffer '*p' beginning at sector 'lSector'
  */
-static int ReadCdRom_cooked (x, p, lSector, SectorBurstVal )
-	SCSI *x;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static int ReadCdRom_cooked(SCSI *x, UINT4 *p, unsigned lSector, 
+                            unsigned SectorBurstVal)
 {
   int retry_count=0;
   static int nothing_read = 1;
@@ -381,8 +369,7 @@ static int ReadCdRom_cooked (x, p, lSector, SectorBurstVal )
 }
 
 static int StopPlay_cooked __PR(( SCSI *x));
-static int StopPlay_cooked( x )
-	SCSI *x;
+static int StopPlay_cooked(SCSI *x)
 {
     if (x && x->verbose) {
 	fprintf(stderr, "StopPlay_cooked (CDROMSTOP)...\n");
@@ -392,10 +379,8 @@ static int StopPlay_cooked( x )
 }
 
 static int Play_at_cooked __PR(( SCSI *x, unsigned int from_sector, unsigned int sectors));
-static int Play_at_cooked( x, from_sector, sectors)
-	SCSI *x;
-	unsigned int from_sector;
-	unsigned int sectors;
+static int Play_at_cooked(SCSI *x, unsigned int from_sector, 
+                          unsigned int sectors)
 {
 	struct cdrom_msf cmsf;
 	int retval;
@@ -432,10 +417,7 @@ static subq_chnl *ReadSubQ_cooked __PR(( SCSI *x, unsigned char sq_format, unsig
 /* request sub-q-channel information. This function may cause confusion
  * for a drive, when called in the sampling process.
  */
-static subq_chnl *ReadSubQ_cooked ( x, sq_format, track )
-	SCSI *x;
-	unsigned char sq_format;
-	unsigned char track;
+static subq_chnl *ReadSubQ_cooked(SCSI *x, unsigned char sq_format, unsigned char track)
 #endif
 {
     struct cdrom_subchnl sub_ch;
@@ -520,9 +502,7 @@ static subq_chnl *ReadSubQ_cooked ( x, sq_format, track )
 /* Speed control */
 static void SpeedSelect_cooked __PR(( SCSI *x, unsigned speed));
 /* ARGSUSED */
-static void SpeedSelect_cooked( x, speed )
-	SCSI *x;
-	unsigned speed;
+static void SpeedSelect_cooked(SCSI *x, unsigned speed)
 {
 	if (x && x->verbose) {
 		fprintf(stderr, "SpeedSelect_cooked (CDROM_SELECT_SPEED)...\n");
@@ -545,8 +525,7 @@ static void SpeedSelect_cooked( x, speed )
 }
 
 /* set function pointers to use the ioctl routines */
-void SetupCookedIoctl( pdev_name )
-	char *pdev_name;
+void SetupCookedIoctl(char *pdev_name)
 {
 #if (HAVE_ST_RDEV == 1)
     struct stat statstruct;

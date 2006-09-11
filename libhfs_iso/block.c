@@ -52,10 +52,7 @@ static	char sccsid[] =
  * NAME:	block->readlb()
  * DESCRIPTION:	read a logical block from a volume
  */
-int b_readlb(vol, num, bp)
-	hfsvol		*vol;
-	unsigned long	num;
-	block		*bp;
+int b_readlb(hfsvol *vol, unsigned long num, block *bp)
 {
 #ifndef APPLE_HYB
   int bytes;
@@ -118,10 +115,7 @@ int b_readlb(vol, num, bp)
  * NAME:	block->writelb()
  * DESCRIPTION:	write a logical block to a volume
  */
-int b_writelb(vol, num, bp)
-	hfsvol		*vol;
-	unsigned long	num;
-	block		*bp;
+int b_writelb(hfsvol *vol, unsigned long num, block *bp)
 {
 #ifndef APPLE_HYB
   int bytes;
@@ -182,11 +176,7 @@ int b_writelb(vol, num, bp)
  * NAME:	block->readab()
  * DESCRIPTION:	read a block from an allocation block from a volume
  */
-int b_readab(vol, anum, idx, bp)
-	hfsvol		*vol;
-	unsigned int	anum;
-	unsigned int	idx;
-	block		*bp;
+int b_readab(hfsvol *vol, unsigned int anum, unsigned int idx, block *bp)
 {
   /* verify the allocation block exists and is marked as in-use */
 
@@ -208,11 +198,7 @@ int b_readab(vol, anum, idx, bp)
  * NAME:	b->writeab()
  * DESCRIPTION:	write a block to an allocation block to a volume
  */
-int b_writeab(vol, anum, idx, bp)
-	hfsvol		*vol;
-	unsigned int	anum;
-	unsigned int	idx;
-	block		*bp;
+int b_writeab(hfsvol *vol, unsigned int anum, unsigned int idx, block *bp)
 {
   /* verify the allocation block exists and is marked as in-use */
 

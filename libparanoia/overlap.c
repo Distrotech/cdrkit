@@ -36,22 +36,19 @@ static	char sccsid[] =
 #include "overlap.h"
 #include "isort.h"
 
-EXPORT	void	paranoia_resetcache	__PR((cdrom_paranoia * p));
-EXPORT	void	paranoia_resetall	__PR((cdrom_paranoia * p));
-EXPORT	void	i_paranoia_trim		__PR((cdrom_paranoia * p,
-						long beginword, long endword));
-EXPORT	void	offset_adjust_settings	__PR((cdrom_paranoia * p,
-						void (*callback) (long, int)));
-EXPORT	void	offset_add_value	__PR((cdrom_paranoia * p,
-						offsets * o, long value,
-						void (*callback) (long, int)));
+void paranoia_resetcache    __PR((cdrom_paranoia * p));
+void paranoia_resetall      __PR((cdrom_paranoia * p));
+void i_paranoia_trim        __PR((cdrom_paranoia * p, long beginword, 
+                                  long endword));
+void offset_adjust_settings __PR((cdrom_paranoia * p, 
+                                  void (*callback)(long, int)));
+void offset_add_value       __PR((cdrom_paranoia * p, offsets * o, long value,
+						          void (*callback)(long, int)));
 
 /*
  * Internal cache management
  */
-EXPORT void
-paranoia_resetcache(p)
-	cdrom_paranoia	*p;
+void paranoia_resetcache(cdrom_paranoia *p)
 {
 	c_block		*c = c_first(p);
 	v_fragment	*v;
@@ -68,9 +65,7 @@ paranoia_resetcache(p)
 	}
 }
 
-EXPORT void
-paranoia_resetall(p)
-	cdrom_paranoia	*p;
+void paranoia_resetall(cdrom_paranoia *p)
 {
 	p->root.returnedlimit = 0;
 	p->dyndrift = 0;
@@ -83,11 +78,7 @@ paranoia_resetall(p)
 	paranoia_resetcache(p);
 }
 
-EXPORT void
-i_paranoia_trim(p, beginword, endword)
-	cdrom_paranoia	*p;
-	long		beginword;
-	long		endword;
+void i_paranoia_trim(cdrom_paranoia *p, long beginword, long endword)
 {
 	root_block	*root = &(p->root);
 
@@ -135,10 +126,7 @@ rootfree:
 /*
  * Statistical and heuristic[al? :-] management
  */
-EXPORT void
-offset_adjust_settings(p, callback)
-	cdrom_paranoia	*p;
-	void		(*callback) __PR((long, int));
+void offset_adjust_settings(cdrom_paranoia *p, void (*callback)(long, int))
 {
 	if (p->stage2.offpoints >= 10) {
 		/*
@@ -227,12 +215,8 @@ offset_adjust_settings(p, callback)
 	}
 }
 
-EXPORT void
-offset_add_value(p, o, value, callback)
-	cdrom_paranoia	*p;
-	offsets		*o;
-	long		value;
-	void		(*callback) __PR((long, int));
+void offset_add_value(cdrom_paranoia *p, offsets *o, long value, 
+                      void (*callback)(long, int))
 {
 	if (o->offpoints != -1) {
 

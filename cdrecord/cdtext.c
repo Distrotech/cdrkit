@@ -117,24 +117,23 @@ typedef struct textargs {
 } txtarg_t;
 
 
-EXPORT	Uchar	*textsub;
-EXPORT	int	textlen;
+Uchar	*textsub;
+int	textlen;
 
-EXPORT	BOOL	checktextfile	__PR((char *fname));
-LOCAL	void	setuptextdata	__PR((Uchar *bp, int len));
-LOCAL	BOOL	cdtext_crc_ok	__PR((struct textpack *p));
-EXPORT	void	packtext	__PR((int tracks, track_t *trackp));
-LOCAL	BOOL	anytext		__PR((int pack_type, int tracks, track_t *trackp));
-LOCAL	void	fillup_pack	__PR((txtarg_t *ap));
-LOCAL	void	fillpacks	__PR((txtarg_t *ap, char *from, int len, int track_no, int pack_type));
-EXPORT	int	write_cdtext	__PR((SCSI *scgp, cdr_t *dp, long startsec));
-LOCAL	void	eight2six	__PR((Uchar *in, Uchar *out));
-LOCAL	void	six2eight	__PR((Uchar *in, Uchar *out));
+BOOL	checktextfile	__PR((char *fname));
+static	void	setuptextdata	__PR((Uchar *bp, int len));
+static	BOOL	cdtext_crc_ok	__PR((struct textpack *p));
+void	packtext	__PR((int tracks, track_t *trackp));
+static	BOOL	anytext		__PR((int pack_type, int tracks, track_t *trackp));
+static	void	fillup_pack	__PR((txtarg_t *ap));
+static	void	fillpacks	__PR((txtarg_t *ap, char *from, int len, int track_no, int pack_type));
+int	write_cdtext	__PR((SCSI *scgp, cdr_t *dp, long startsec));
+static	void	eight2six	__PR((Uchar *in, Uchar *out));
+static	void	six2eight	__PR((Uchar *in, Uchar *out));
 
 
-EXPORT BOOL
-checktextfile(fname)
-	char	*fname;
+BOOL
+checktextfile(char *fname)
 {
 	FILE	*f;
 	Uchar	hbuf[4];
@@ -215,10 +214,8 @@ checktextfile(fname)
 	return (TRUE);
 }
 
-LOCAL void
-setuptextdata(bp, len)
-	Uchar	*bp;
-	int	len;
+static void
+setuptextdata(Uchar *bp, int len)
 {
 	int	n;
 	int	i;
@@ -285,9 +282,8 @@ setuptextdata(bp, len)
 #endif
 }
 
-LOCAL BOOL
-cdtext_crc_ok(p)
-	struct textpack *p;
+static BOOL
+cdtext_crc_ok(struct textpack *p)
 {
 	int		crc;
 	struct textpack	new;
@@ -306,10 +302,8 @@ cdtext_crc_ok(p)
 }
 
 
-EXPORT void
-packtext(tracks, trackp)
-	int	tracks;
-	track_t	*trackp;
+void
+packtext(int tracks, track_t *trackp)
 {
 	int	type;
 	int	i;
@@ -387,11 +381,8 @@ packtext(tracks, trackp)
 #endif
 }
 
-LOCAL BOOL
-anytext(pack_type, tracks, trackp)
-	int		pack_type;
-	int	tracks;
-	track_t	*trackp;
+static BOOL
+anytext(int pack_type, int tracks, track_t *trackp)
 {
 	register int	i;
 	register char	*p;
@@ -406,9 +397,8 @@ anytext(pack_type, tracks, trackp)
 	return (FALSE);
 }
 
-LOCAL void
-fillup_pack(ap)
-	register txtarg_t *ap;
+static void
+fillup_pack(register txtarg_t *ap)
 {
 	if (ap->p) {
 		fillbytes(ap->p, &ap->tp->text[12] - ap->p, '\0');
@@ -418,13 +408,9 @@ fillup_pack(ap)
 	}
 }
 
-LOCAL void
-fillpacks(ap, from, len, track_no, pack_type)
-	register txtarg_t	*ap;
-	register char		*from;
-	register int		len;
-	register int		track_no;
-	register int		pack_type;
+static void
+fillpacks(register txtarg_t *ap, register char *from, int len, 
+          int track_no, int pack_type)
 {
 	register int		charpos;
 	register char		*p;
@@ -462,11 +448,8 @@ fillpacks(ap, from, len, track_no, pack_type)
 	ap->p = p;
 }
 
-EXPORT int
-write_cdtext(scgp, dp, startsec)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	long	startsec;
+int
+write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
 {
 	char	*bp = (char *)textsub;
 	int	buflen = textlen;
@@ -535,10 +518,8 @@ write_cdtext(scgp, dp, startsec)
 /*
  * 3 input bytes (8 bit based) are converted into 4 output bytes (6 bit based).
  */
-LOCAL void
-eight2six(in, out)
-	register Uchar	*in;
-	register Uchar	*out;
+static void
+eight2six(register Uchar *in, register Uchar *out)
 {
 	register int	c;
 
@@ -558,10 +539,8 @@ eight2six(in, out)
 /*
  * 4 input bytes (6 bit based) are converted into 3 output bytes (8 bit based).
  */
-LOCAL void
-six2eight(in, out)
-	register Uchar	*in;
-	register Uchar	*out;
+static void
+six2eight(register Uchar *in, register Uchar *out)
 {
 	register int	c;
 

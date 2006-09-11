@@ -43,33 +43,27 @@ static	char sccsid[] =
 
 #include "cdrecord.h"
 
-EXPORT	int	from_bcd		__PR((int b));
-EXPORT	int	to_bcd			__PR((int i));
-EXPORT	long	msf_to_lba		__PR((int m, int s, int f, BOOL force_positive));
-EXPORT	BOOL	lba_to_msf		__PR((long lba, msf_t *mp));
-EXPORT	void	sec_to_msf		__PR((long sec, msf_t *mp));
-EXPORT	void	print_min_atip		__PR((long li, long lo));
+int	from_bcd		__PR((int b));
+int	to_bcd			__PR((int i));
+long	msf_to_lba		__PR((int m, int s, int f, BOOL force_positive));
+BOOL	lba_to_msf		__PR((long lba, msf_t *mp));
+void	sec_to_msf		__PR((long sec, msf_t *mp));
+void	print_min_atip		__PR((long li, long lo));
 
-EXPORT int
-from_bcd(b)
-	int	b;
+int
+from_bcd(int b)
 {
 	return ((b & 0x0F) + 10 * (((b)>> 4) & 0x0F));
 }
 
-EXPORT int
-to_bcd(i)
-	int	i;
+int
+to_bcd(int i)
 {
 	return (i % 10 | ((i / 10) % 10) << 4);
 }
 
-EXPORT long
-msf_to_lba(m, s, f, force_positive)
-	int	m;
-	int	s;
-	int	f;
-	BOOL	force_positive;
+long
+msf_to_lba(int m, int s, int f, BOOL force_positive)
 {
 	long	ret = m * 60 + s;
 
@@ -82,10 +76,8 @@ msf_to_lba(m, s, f, force_positive)
 	return (ret);
 }
 
-EXPORT BOOL
-lba_to_msf(lba, mp)
-	long	lba;
-	msf_t	*mp;
+BOOL
+lba_to_msf(long lba, msf_t *mp)
 {
 	int	m;
 	int	s;
@@ -121,10 +113,8 @@ lba_to_msf(lba, mp)
 	return (TRUE);
 }
 
-EXPORT void
-sec_to_msf(sec, mp)
-	long	sec;
-	msf_t	*mp;
+void
+sec_to_msf(long sec, msf_t *mp)
 {
 	int	m;
 	int	s;
@@ -139,10 +129,8 @@ sec_to_msf(sec, mp)
 	mp->msf_frame = f;
 }
 
-EXPORT void
-print_min_atip(li, lo)
-	long	li;
-	long	lo;
+void
+print_min_atip(long li, long lo)
 {
 	msf_t	msf;
 

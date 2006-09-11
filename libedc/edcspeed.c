@@ -17,14 +17,11 @@
 #include <timedefs.h>
 #include <strdefs.h>
 
-#define	EXPORT
 #define	Uchar	unsigned char
 
-LOCAL	int	encspeed	__PR((void));
-EXPORT	int	main		__PR(());
+static int encspeed __PR((void));
 
-LOCAL int
-encspeed()
+static int encspeed()
 {
 	register Uchar	*sect;
 	register int	i;
@@ -68,8 +65,7 @@ encspeed()
 	return ((i+74)/75) / secs ;
 }
 
-int
-main()
+int main(int argc, char *argv[])
 {
 /*	lec_init();*/
 

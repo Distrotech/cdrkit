@@ -45,25 +45,21 @@ static	char sccsid[] =
 
 #include "cdrecord.h"
 
-EXPORT int	scsi_compliant;
+int	scsi_compliant;
 
-LOCAL	BOOL	has_mode_page	__PR((SCSI *scgp, int page, char *pagename, int *lenp));
-EXPORT	BOOL	get_mode_params	__PR((SCSI *scgp, int page, char *pagename,
+static	BOOL	has_mode_page	__PR((SCSI *scgp, int page, char *pagename, int *lenp));
+BOOL	get_mode_params	__PR((SCSI *scgp, int page, char *pagename,
 					Uchar *modep, Uchar *cmodep,
 					Uchar *dmodep, Uchar *smodep,
 					int *lenp));
-EXPORT	BOOL	set_mode_params	__PR((SCSI *scgp, char *pagename, Uchar *modep,
+BOOL	set_mode_params	__PR((SCSI *scgp, char *pagename, Uchar *modep,
 					int len, int save, int secsize));
 
 #define	XXX
 
 #ifdef	XXX
-LOCAL BOOL
-has_mode_page(scgp, page, pagename, lenp)
-	SCSI	*scgp;
-	int	page;
-	char	*pagename;
-	int	*lenp;
+static BOOL
+has_mode_page(SCSI *scgp, int page, char *pagename, int *lenp)
 {
 	Uchar	mode[0x100];
 	int	hdlen;
@@ -180,16 +176,9 @@ again:
 }
 #endif
 
-EXPORT BOOL
-get_mode_params(scgp, page, pagename, modep, cmodep, dmodep, smodep, lenp)
-	SCSI	*scgp;
-	int	page;
-	char	*pagename;
-	Uchar	*modep;
-	Uchar	*cmodep;
-	Uchar	*dmodep;
-	Uchar	*smodep;
-	int	*lenp;
+BOOL
+get_mode_params(SCSI *scgp, int page, char *pagename, Uchar *modep, 
+                Uchar *cmodep, Uchar *dmodep, Uchar *smodep, int *lenp)
 {
 	int	len;
 	BOOL	ret = TRUE;
@@ -266,14 +255,9 @@ get_mode_params(scgp, page, pagename, modep, cmodep, dmodep, smodep, lenp)
 	return (ret);
 }
 
-EXPORT BOOL
-set_mode_params(scgp, pagename, modep, len, save, secsize)
-	SCSI	*scgp;
-	char	*pagename;
-	Uchar	*modep;
-	int	len;
-	int	save;
-	int	secsize;
+BOOL
+set_mode_params(SCSI *scgp, char *pagename, Uchar *modep, int len, int save, 
+                int secsize)
 {
 	int	i;
 

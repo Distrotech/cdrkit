@@ -48,7 +48,7 @@ static	char sccsid[] =
 
 #include "xio.h"
 
-LOCAL xio_t	x_stdin = {
+static xio_t	x_stdin = {
 	NULL,		/* x_next	*/
 	NULL,		/* x_name	*/
 	0,		/* x_off	*/
@@ -58,17 +58,16 @@ LOCAL xio_t	x_stdin = {
 	0		/* x_omode	*/
 };
 
-LOCAL xio_t	*x_root = &x_stdin;
-LOCAL xio_t	**x_tail = NULL;
+static xio_t	*x_root = &x_stdin;
+static xio_t	**x_tail = NULL;
 
 
-LOCAL	xio_t	*xnewnode	__PR((char *name));
-EXPORT	void	*xopen		__PR((char *name, int oflag, int mode));
-EXPORT	int	xclose		__PR((void *vp));
+static	xio_t	*xnewnode	__PR((char *name));
+void	*xopen		__PR((char *name, int oflag, int mode));
+int	xclose		__PR((void *vp));
 
-LOCAL xio_t *
-xnewnode(name)
-	char	*name;
+static xio_t *
+xnewnode(char *name)
 {
 	xio_t	*xp;
 
@@ -89,11 +88,8 @@ xnewnode(name)
 	return (xp);
 }
 
-EXPORT void *
-xopen(name, oflag, mode)
-	char	*name;
-	int	oflag;
-	int	mode;
+void *
+xopen(char *name, int oflag, int mode)
 {
 	int	f;
 	xio_t	*xp;
@@ -138,9 +134,8 @@ xopen(name, oflag, mode)
 	return ((void *)xp);
 }
 
-EXPORT int
-xclose(vp)
-	void	*vp;
+int
+xclose(void *vp)
 {
 	xio_t	*xp = vp;
 	xio_t	*pp = x_root;

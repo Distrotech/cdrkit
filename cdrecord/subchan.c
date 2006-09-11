@@ -47,26 +47,26 @@ static	char sccsid[] =
 #include "cdrecord.h"
 #include "crc16.h"
 
-EXPORT	int	do_leadin	__PR((track_t *trackp));
-EXPORT	int	write_leadin	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart));
-EXPORT	int	write_leadout	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-EXPORT	void	fillsubch	__PR((track_t *trackp, Uchar *sp, int secno, int nsecs));
-EXPORT	void	filltpoint	__PR((Uchar *sub, int ctrl_adr, int point, msf_t *mp));
-EXPORT	void	fillttime	__PR((Uchar *sub, msf_t *mp));
-LOCAL	void	filldsubq	__PR((Uchar *sub, int ca, int t, int i, msf_t *mrp, msf_t *mp));
-LOCAL	void	fillmcn		__PR((Uchar *sub, Uchar *mcn));
-LOCAL	void	fillisrc	__PR((Uchar *sub, Uchar *isrc));
-LOCAL	int	ascii2q		__PR((int c));
-LOCAL	void	qpto16		__PR((Uchar *sub, Uchar *subq, int dop));
-EXPORT	void	qpto96		__PR((Uchar *sub, Uchar *subq, int dop));
-EXPORT	void	addrw		__PR((Uchar *sub, Uchar	*subrwptr));
-EXPORT	void	qwto16		__PR((Uchar *subq, Uchar *subptr));
-EXPORT	void	subrecodesecs	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
-LOCAL	void	subinterleave	__PR((Uchar *sub));
+int	do_leadin	__PR((track_t *trackp));
+int	write_leadin	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart));
+int	write_leadout	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+void	fillsubch	__PR((track_t *trackp, Uchar *sp, int secno, int nsecs));
+void	filltpoint	__PR((Uchar *sub, int ctrl_adr, int point, msf_t *mp));
+void	fillttime	__PR((Uchar *sub, msf_t *mp));
+static	void	filldsubq	__PR((Uchar *sub, int ca, int t, int i, msf_t *mrp, msf_t *mp));
+static	void	fillmcn		__PR((Uchar *sub, Uchar *mcn));
+static	void	fillisrc	__PR((Uchar *sub, Uchar *isrc));
+static	int	ascii2q		__PR((int c));
+static	void	qpto16		__PR((Uchar *sub, Uchar *subq, int dop));
+void	qpto96		__PR((Uchar *sub, Uchar *subq, int dop));
+void	addrw		__PR((Uchar *sub, Uchar	*subrwptr));
+void	qwto16		__PR((Uchar *subq, Uchar *subptr));
+void	subrecodesecs	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
+static	void	subinterleave	__PR((Uchar *sub));
 
 /*#define	TEST_CRC*/
 #ifdef	TEST_CRC
-LOCAL	void	testcrc		__PR((void));
+static	void	testcrc		__PR((void));
 #endif
 
 /*Die 96 Bits == 12 Bytes haben folgendes Aussehen:*/
@@ -86,8 +86,8 @@ struct q {
 	Uchar crc2;	/* 11	X^16 + X^12 + X^5 + 1		*/
 };
 
-EXPORT	Uchar	_subq[110][12];
-EXPORT	int	_nsubh;
+Uchar	_subq[110][12];
+int	_nsubh;
 
 extern	int	lverbose;
 extern	int	xdebug;
@@ -95,9 +95,8 @@ extern	int	xdebug;
 /*
  * Prepare master sunchannel data for RAW TOC.
  */
-EXPORT int
-do_leadin(trackp)
-	track_t	*trackp;
+int
+do_leadin(track_t *trackp)
 {
 	int	tracks = trackp->tracks;
 	msf_t	m;
@@ -186,12 +185,8 @@ do_leadin(trackp)
  * Use previously prepared master subchannel data to create the
  * subchannel frames for the lead-in.
  */
-EXPORT int
-write_leadin(scgp, dp, trackp, leadinstart)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
-	int	leadinstart;
+int
+write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart)
 {
 	msf_t	m;
 	int	i;
@@ -299,11 +294,8 @@ write_leadin(scgp, dp, trackp, leadinstart)
 /*
  * Write Track 0xAA (lead-out)
  */
-EXPORT int
-write_leadout(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+int
+write_leadout(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	tracks = trackp->tracks;
 	msf_t	m;
@@ -407,12 +399,11 @@ write_leadout(scgp, dp, trackp)
  * This function is used to prepare the sub channels when writing
  * the data part of a CD (bewteen lead-in and lead-out).
  */
-EXPORT void
-fillsubch(trackp, sp, secno, nsecs)
-	track_t	*trackp;
-	Uchar	*sp;	/* Sector data pointer	*/
-	int	secno;	/* Starting sector #	*/
-	int	nsecs;	/* # of sectors to fill	*/
+void
+fillsubch(track_t *trackp, 
+          Uchar *sp /* Sector data pointer  */, 
+          int secno /* Starting sector #    */, 
+          int nsecs /* # of sectors to fill */)
 {
 	msf_t	m;
 	msf_t	mr;
@@ -574,12 +565,8 @@ static	Uchar	lastindex = 255;
  * Fill TOC Point
  * Ax Werte einfüllen.
  */
-EXPORT void
-filltpoint(sub, ctrl_adr, point, mp)
-	Uchar	*sub;
-	int	ctrl_adr;
-	int	point;
-	msf_t	*mp;
+void
+filltpoint(Uchar *sub, int ctrl_adr, int point, msf_t *mp)
 {
 	sub[0] = ctrl_adr;
 	sub[2] = point;
@@ -592,10 +579,8 @@ filltpoint(sub, ctrl_adr, point, mp)
  * Fill TOC time
  * Aktuelle Zeit in TOC Sub-Q einfüllen.
  */
-EXPORT void
-fillttime(sub, mp)
-	Uchar	*sub;
-	msf_t	*mp;
+void
+fillttime(Uchar *sub, msf_t *mp)
 {
 	sub[3] = to_bcd(mp->msf_min);
 	sub[4] = to_bcd(mp->msf_sec);
@@ -605,14 +590,8 @@ fillttime(sub, mp)
 /*
  * Q-Sub in Datenbereich füllen.
  */
-LOCAL void
-filldsubq(sub, ca, t, i, mrp, mp)
-	Uchar	*sub;
-	int	ca;	/* Control/Addr	*/
-	int	t;	/* Track	*/
-	int	i;	/* Index	*/
-	msf_t	*mrp;	/* Relative time*/
-	msf_t	*mp;	/* Absolute time*/
+static void
+filldsubq(Uchar *sub, int ca, int t, int i, msf_t *mrp, msf_t *mp)
 {
 	sub[0] = ca;
 	sub[1] = to_bcd(t);
@@ -630,10 +609,8 @@ filldsubq(sub, ca, t, i, mrp, mp)
  * Fill MCN
  * MCN konvertieren und in Sub-Q einfüllen.
  */
-LOCAL void
-fillmcn(sub, mcn)
-	Uchar	*sub;
-	Uchar	*mcn;
+static void
+fillmcn(Uchar *sub, Uchar *mcn)
 {
 	register int	i;
 	register int	c;
@@ -664,10 +641,8 @@ fillmcn(sub, mcn)
  * Fill ISRC
  * ISRC konvertieren und in Sub-Q einfüllen.
  */
-LOCAL void
-fillisrc(sub, isrc)
-	Uchar	*sub;
-	Uchar	*isrc;
+static void
+fillisrc(Uchar *sub, Uchar *isrc)
 {
 	register int	i;
 	register int	j;
@@ -713,9 +688,8 @@ fillisrc(sub, isrc)
 /*
  * ASCII -> Sub-Q ISRC code conversion
  */
-LOCAL int
-ascii2q(c)
-	int	c;
+static int
+ascii2q(int c)
 {
 	if (c >= '0' && c <= '9')
 		return (c - '0');
@@ -729,11 +703,8 @@ ascii2q(c)
  *
  * OUT: sub, IN: subqptr
  */
-LOCAL void
-qpto16(sub, subqptr, dop)
-	Uchar	*sub;
-	Uchar	*subqptr;
-	int	dop;
+static void
+qpto16(Uchar *sub, Uchar *subqptr, int dop)
 {
 	if (sub != subqptr)
 		movebytes(subqptr, sub, 12);
@@ -751,11 +722,8 @@ qpto16(sub, subqptr, dop)
  *
  * OUT: sub, IN: subqptr
  */
-EXPORT void
-qpto96(sub, subqptr, dop)
-	Uchar	*sub;
-	Uchar	*subqptr;
-	int	dop;
+void
+qpto96(Uchar *sub, Uchar *subqptr, int dop)
 {
 	Uchar	tmp[16];
 	Uchar	*p;
@@ -822,10 +790,8 @@ qpto96(sub, subqptr, dop)
  *
  * OUT: sub, IN: subrwptr
  */
-EXPORT void
-addrw(sub, subrwptr)
-	register Uchar	*sub;
-	register Uchar	*subrwptr;
+void
+addrw(register Uchar *sub, register Uchar *subrwptr)
 {
 	register int	i;
 
@@ -841,10 +807,8 @@ addrw(sub, subrwptr)
  *
  * OUT: subq, IN: subptr
  */
-EXPORT void
-qwto16(subq, subptr)
-	Uchar	*subq;
-	Uchar	*subptr;
+void
+qwto16(Uchar *subq, Uchar *subptr)
 {
 	register int	i;
 	register int	np = 0;
@@ -894,12 +858,8 @@ qwto16(subq, subptr)
 /*
  * Recode subchannels of sectors from 2352 + 96 bytes to 2352 + 16 bytes
  */
-EXPORT void
-subrecodesecs(trackp, bp, address, nsecs)
-	track_t	*trackp;
-	Uchar	*bp;
-	int	address;
-	int	nsecs;
+void
+subrecodesecs(track_t *trackp, Uchar *bp, int address, int nsecs)
 {
 	bp += 2352;
 	while (--nsecs >= 0) {
@@ -909,12 +869,8 @@ subrecodesecs(trackp, bp, address, nsecs)
 }
 
 #ifndef	HAVE_LIB_EDC_ECC
-EXPORT void
-encsectors(trackp, bp, address, nsecs)
-	track_t	*trackp;
-	Uchar	*bp;
-	int	address;
-	int	nsecs;
+void
+encsectors(track_t *trackp, Uchar *bp, int address, int nsecs)
 {
 	int	sectype = trackp->sectype;
 
@@ -924,12 +880,8 @@ encsectors(trackp, bp, address, nsecs)
 	comerrno(EX_BAD, "Can only write audio sectors in RAW mode.\n");
 }
 
-EXPORT void
-scrsectors(trackp, bp, address, nsecs)
-	track_t	*trackp;
-	Uchar	*bp;
-	int	address;
-	int	nsecs;
+void
+scrsectors(track_t *trackp, Uchar *bp, int address, int nsecs)
 {
 	comerrno(EX_BAD, "Cannot write in clone RAW mode.\n");
 }
@@ -957,17 +909,16 @@ Uchar	tq[12] = { 0x01, 0x00, 0xA0, 0x98, 0x06, 0x12, 0x00, 0x01, 0x00, 0x00, 0xE
 
 */
 
-LOCAL	int	b	__PR((int bcd));
+static	int	b	__PR((int bcd));
 
 
-LOCAL int
-b(bcd)
-	int	bcd;
+static int
+b(int bcd)
 {
 	return ((bcd & 0x0F) + 10 * (((bcd)>> 4) & 0x0F));
 }
 
-LOCAL void
+static void
 testcrc()
 {
 	struct q q;
@@ -1018,9 +969,8 @@ delay index mod 8
 /*
  * Sub 96 Bytes Interleave
  */
-LOCAL void
-subinterleave(sub)
-	Uchar	*sub;
+static void
+subinterleave(Uchar *sub)
 {
 	Uchar	*p;
 	int	i;

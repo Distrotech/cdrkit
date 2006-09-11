@@ -51,8 +51,7 @@ static	char sccsid[] =
  * NAME:	low->lockvol()
  * DESCRIPTION:	prevent destructive simultaneous access
  */
-int l_lockvol(vol)
-	hfsvol	*vol;
+int l_lockvol(hfsvol *vol)
 {
 # ifndef NODEVLOCKS
 
@@ -78,8 +77,7 @@ int l_lockvol(vol)
  * NAME:	low->readblock0()
  * DESCRIPTION:	read the first sector and get bearings
  */
-int l_readblock0(vol)
-	hfsvol	*vol;
+int l_readblock0(hfsvol *vol)
 {
   block b;
   unsigned char *ptr = b;
@@ -136,8 +134,7 @@ int l_readblock0(vol)
  * NAME:	low->readpm()
  * DESCRIPTION:	read the partition map and locate an HFS volume
  */
-int l_readpm(vol)
-	hfsvol	*vol;
+int l_readpm(hfsvol *vol)
 {
   block b;
   unsigned char *ptr;
@@ -226,8 +223,7 @@ int l_readpm(vol)
  * NAME:	low->readmdb()
  * DESCRIPTION:	read the master directory block into memory
  */
-int l_readmdb(vol)
-	hfsvol	*vol;
+int l_readmdb(hfsvol *vol)
 {
   block b;
   unsigned char *ptr = b;
@@ -382,8 +378,7 @@ int l_readmdb(vol)
  * NAME:	low->writemdb()
  * DESCRIPTION:	write the master directory block to disk
  */
-int l_writemdb(vol)
-	hfsvol	*vol;
+int l_writemdb(hfsvol *vol)
 {
   block b;
   unsigned char *ptr = b;
@@ -481,8 +476,7 @@ int l_writemdb(vol)
  * NAME:	low->readvbm()
  * DESCRIPTION:	read the volume bit map into memory
  */
-int l_readvbm(vol)
-	hfsvol	*vol;
+int l_readvbm(hfsvol *vol)
 {
   int vbmst = vol->mdb.drVBMSt;
   int vbmsz = (vol->mdb.drNmAlBlks + 4095) / (unsigned)4096;
@@ -521,8 +515,7 @@ int l_readvbm(vol)
  * NAME:	low->writevbm()
  * DESCRIPTION:	write the volume bit map to disk
  */
-int l_writevbm(vol)
-	hfsvol	*vol;
+int l_writevbm(hfsvol *vol)
 {
   int vbmst = vol->mdb.drVBMSt;
   int vbmsz = (vol->mdb.drNmAlBlks + 4095) / (unsigned)4096;

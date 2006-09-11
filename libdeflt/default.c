@@ -41,18 +41,16 @@ static	char sccsid[] =
 
 #define	MAXLINE	512
 
-static	FILE	*dfltfile	= (FILE *)NULL;
+static FILE *dfltfile = (FILE *)NULL;
 
-EXPORT	int	defltopen	__PR((const char *name));
-EXPORT	int	defltclose	__PR((void));
-EXPORT	void	defltfirst	__PR((void));
-EXPORT	char	*defltread	__PR((const char *name));
-EXPORT	char	*defltnext	__PR((const char *name));
-EXPORT	int	defltcntl	__PR((int cmd, int flags));
+int defltopen __PR((const char *name));
+int defltclose __PR((void));
+void defltfirst __PR((void));
+char *defltread __PR((const char *name));
+char *defltnext __PR((const char *name));
+int defltcntl __PR((int cmd, int flags));
 
-EXPORT int
-defltopen(name)
-	const char	*name;
+int defltopen(const char *name)
 {
 	if (dfltfile != (FILE *)NULL)
 		fclose(dfltfile);
@@ -69,8 +67,7 @@ defltopen(name)
 	return (0);
 }
 
-EXPORT int
-defltclose()
+int defltclose()
 {
 	int	ret;
 
@@ -82,8 +79,7 @@ defltclose()
 	return (0);
 }
 
-EXPORT void
-defltfirst()
+void defltfirst()
 {
 	if (dfltfile == (FILE *)NULL) {
 		return;
@@ -91,9 +87,7 @@ defltfirst()
 	rewind(dfltfile);
 }
 
-EXPORT char *
-defltread(name)
-	const char	*name;
+char *defltread(const char *name)
 {
 	if (dfltfile == (FILE *)NULL) {
 		return ((char *)NULL);
@@ -102,9 +96,7 @@ defltread(name)
 	return (defltnext(name));
 }
 
-EXPORT char *
-defltnext(name)
-	const char	*name;
+char *defltnext(const char *name)
 {
 	register int	len;
 	register int	namelen;
@@ -129,10 +121,7 @@ defltnext(name)
 	return ((char *)NULL);
 }
 
-EXPORT int
-defltcntl(cmd, flags)
-	int	cmd;
-	int	flags;
+int defltcntl(int cmd, int flags)
 {
 	int  oldflags = 0;
 

@@ -41,24 +41,18 @@ static	char sccsid[] =
 #include "isort.h"
 #include "pmalloc.h"
 
-EXPORT	sort_info	*sort_alloc	__PR((long size));
-EXPORT	void		sort_unsortall	__PR((sort_info * i));
-EXPORT	void		sort_free	__PR((sort_info * i));
-LOCAL	void		sort_sort	__PR((sort_info * i,
-						long sortlo, long sorthi));
-EXPORT	void		sort_setup	__PR((sort_info * i,
-						Int16_t * vector,
-						long *abspos, long size,
-						long sortlo, long sorthi));
-EXPORT	sort_link	*sort_getmatch	__PR((sort_info * i,
-						long post, long overlap,
-						int value));
-EXPORT	sort_link	*sort_nextmatch	__PR((sort_info * i, sort_link * prev));
+sort_info *sort_alloc   __PR((long size));
+void sort_unsortall     __PR((sort_info * i));
+void sort_free          __PR((sort_info * i));
+void sort_sort          __PR((sort_info * i, long sortlo, long sorthi));
+void sort_setup         __PR((sort_info * i, Int16_t * vector, long *abspos, 
+                              long size, long sortlo, long sorthi));
+sort_link *sort_getmatch __PR((sort_info * i, long post, long overlap, 
+                               int value));
+sort_link *sort_nextmatch __PR((sort_info * i, sort_link * prev));
 
 
-EXPORT sort_info *
-sort_alloc(size)
-	long	size;
+sort_info *sort_alloc(long size)
 {
 	sort_info	*ret = _pcalloc(1, sizeof (sort_info));
 
@@ -75,9 +69,7 @@ sort_alloc(size)
 	return (ret);
 }
 
-EXPORT void
-sort_unsortall(i)
-	sort_info	*i;
+void sort_unsortall(sort_info *i)
 {
 	if (i->lastbucket > 2000) {	/* a guess */
 		memset(i->head, 0, 65536 * sizeof (sort_link *));
@@ -92,9 +84,7 @@ sort_unsortall(i)
 	i->sortbegin = -1;
 }
 
-EXPORT void
-sort_free(i)
-	sort_info	*i;
+void sort_free(sort_info *i)
 {
 	_pfree(i->revindex);
 	_pfree(i->head);
@@ -102,11 +92,7 @@ sort_free(i)
 	_pfree(i);
 }
 
-LOCAL void
-sort_sort(i, sortlo, sorthi)
-	sort_info	*i;
-	long		sortlo;
-	long		sorthi;
+void sort_sort(sort_info *i, long sortlo, long sorthi)
 {
 	long	j;
 
@@ -127,14 +113,8 @@ sort_sort(i, sortlo, sorthi)
 /*
  * size *must* be less than i->maxsize
  */
-EXPORT void
-sort_setup(i, vector, abspos, size, sortlo, sorthi)
-	sort_info	*i;
-	Int16_t		*vector;
-	long		*abspos;
-	long		size;
-	long		sortlo;
-	long		sorthi;
+void sort_setup(sort_info *i, Int16_t *vector, long *abspos, long size, 
+                long sortlo, long sorthi)
 {
 	if (i->sortbegin != -1)
 		sort_unsortall(i);
@@ -147,12 +127,7 @@ sort_setup(i, vector, abspos, size, sortlo, sorthi)
 	i->hi = max(0, min(sorthi - *abspos, size));
 }
 
-EXPORT sort_link *
-sort_getmatch(i, post, overlap, value)
-	sort_info	*i;
-	long		post;
-	long		overlap;
-	int		value;
+sort_link *sort_getmatch(sort_info *i, long post, long overlap, int value)
 {
 	sort_link	*ret;
 
@@ -180,10 +155,7 @@ sort_getmatch(i, post, overlap, value)
 	return (ret);
 }
 
-EXPORT sort_link *
-sort_nextmatch(i, prev)
-	sort_info	*i;
-	sort_link	*prev;
+sort_link *sort_nextmatch(sort_info *i, sort_link *prev)
 {
 	sort_link	*ret = prev->next;
 

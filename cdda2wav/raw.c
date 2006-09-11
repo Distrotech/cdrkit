@@ -43,8 +43,7 @@ static unsigned long GetHdrSize( )
 
 static unsigned long InSizeToOutSize __PR(( unsigned long BytesToDo ));
 
-static unsigned long InSizeToOutSize ( BytesToDo )
-        unsigned long BytesToDo;
+static unsigned long InSizeToOutSize(unsigned long BytesToDo)
 {
         return BytesToDo;
 }

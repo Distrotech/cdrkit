@@ -110,8 +110,7 @@ static char     sccsid[] =
 
 static void sha_transform __PR((SHA_INFO *sha_info));
 
-static void sha_transform(sha_info)
-	SHA_INFO *sha_info;
+static void sha_transform(SHA_INFO *sha_info)
 {
     int i;
     BYTE *dp;
@@ -227,8 +226,7 @@ error Unknown byte order -- you need to add code here
 
 void sha_init __PR((SHA_INFO *sha_info));
 
-void sha_init(sha_info)
-	SHA_INFO *sha_info;
+void sha_init(SHA_INFO *sha_info)
 {
     sha_info->digest[0] = ULONG_C(0x67452301);
     sha_info->digest[1] = ULONG_C(0xefcdab89);
@@ -244,10 +242,7 @@ void sha_init(sha_info)
 
 void sha_update __PR((SHA_INFO *sha_info, BYTE *buffer, int count));
 
-void sha_update(sha_info, buffer, count)
-	SHA_INFO *sha_info;
-	BYTE *buffer;
-	int count;
+void sha_update(SHA_INFO *sha_info, BYTE *buffer, int count)
 {
     int i;
     ULONG clo;
@@ -287,9 +282,7 @@ void sha_update(sha_info, buffer, count)
 
 void sha_final __PR((unsigned char digest[20], SHA_INFO *sha_info));
 
-void sha_final(digest, sha_info)
-	unsigned char digest[20];
-	SHA_INFO *sha_info;
+void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
 {
     int count;
     ULONG lo_bit_count, hi_bit_count;
@@ -345,10 +338,7 @@ void sha_final(digest, sha_info)
 
 void sha_stream __PR((unsigned char digest[20], SHA_INFO *sha_info, FILE *fin));
 
-void sha_stream(digest, sha_info, fin)
-	unsigned char digest[20];
-	SHA_INFO *sha_info;
-	FILE *fin;
+void sha_stream(unsigned char digest[20], SHA_INFO *sha_info, FILE *fin)
 {
     int i;
     BYTE data[BLOCK_SIZE];
@@ -364,8 +354,7 @@ void sha_stream(digest, sha_info, fin)
 
 void sha_print __PR((unsigned char digest[20]));
 
-void sha_print(digest)
-	unsigned char digest[20];
+void sha_print(unsigned char digest[20])
 {
     int i, j;
 

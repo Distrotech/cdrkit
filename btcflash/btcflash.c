@@ -50,7 +50,7 @@ static	char _sccsid[] =
 unsigned char *loadfirmware(const char *);
 int getbyte(char **);
 unsigned short calcsum(unsigned char *);
-LOCAL int btcmain		__PR((SCSI *scgp, const char *fwfile));
+static int btcmain		__PR((SCSI *scgp, const char *fwfile));
 
 
 unsigned char *
@@ -198,10 +198,8 @@ calcsum(unsigned char *fwbuf)
 	return ((flashsum & 0xffff));
 }
 
-LOCAL int
-btcmain(scgp, fwfile)
-	SCSI		*scgp;
-	const char	*fwfile;
+static int
+btcmain(SCSI *scgp, const char *fwfile)
 {
 	char		confirm[5];
 	unsigned char	*fwbuf;

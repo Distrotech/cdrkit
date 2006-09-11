@@ -1,9 +1,13 @@
 cdrkit (1.0pre4) RELEASED; urgency=low
 
+  [ Christian Fromme ]
+  * big cleanup, phase I, getting rid from Cstyle function definitions in
+    applications
+  [ Eduard Bloch ]
   * added better check for capability.h and FATAL_ERROR if it's missing on Linux
   * wodim.1 updates, ie. moved suid howto to README.suidroot, Linux bashing to
     README.linux, more notes about non-root usage (corrections by Peter)
-  * better parser
+  * config parser rewrite; more user-friendly, flexibel, tolerant now
 
  -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
 

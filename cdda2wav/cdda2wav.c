@@ -138,7 +138,6 @@ static char     sccsid[] =
 #endif
 #include "defaults.h"
 
-EXPORT	int	main			__PR((int argc, char **argv));
 static void RestrictPlaybackRate	__PR((long newrate));
 static void output_indices		__PR((FILE *fp, index_list *p, unsigned trackstart));
 static int write_info_file		__PR((char *fname_baseval, unsigned int track, unsigned long SamplesDone, int numbered));
@@ -196,8 +195,7 @@ unsigned int get_current_track()
 	return current_track;
 }
 
-static void RestrictPlaybackRate( newrate )
-	long newrate;
+static void RestrictPlaybackRate(long  newrate)
 {
        global.playback_rate = newrate;
 
@@ -209,9 +207,7 @@ static void RestrictPlaybackRate( newrate )
 }
 
 
-long SamplesNeeded( amount, undersampling_val)
-	long amount;
-	long undersampling_val;
+long SamplesNeeded(long amount, long undersampling_val)
 {
   long retval = ((undersampling_val * 2 + Halved)*amount)/2;
   if (Halved && (*nSamplesToDo & 1))
@@ -231,7 +227,7 @@ static void reset_name_iterator ()
 }
 
 static char *get_next_name __PR((void));
-static char *get_next_name ()
+static char *get_next_name()
 {
 	if (argc2 > 0) {
 		argc2--;
@@ -243,9 +239,7 @@ static char *get_next_name ()
 
 static char *cut_extension __PR(( char * fname ));
 
-static char
-*cut_extension (fname)
-	char *fname;
+static char *cut_extension(char *fname)
 {
 	char *pp;
 
@@ -260,10 +254,7 @@ static char
 }
 
 #ifdef INFOFILES
-static void output_indices(fp, p, trackstart)
-	FILE *fp;
-	index_list *p;
-	unsigned trackstart;
+static void output_indices(FILE *fp, index_list *p, unsigned trackstart)
 {
   int ci;
 
@@ -297,11 +288,8 @@ static void output_indices(fp, p, trackstart)
  *
  * uglyfied for Joerg Schillings ultra dumb line parser
  */
-static int write_info_file(fname_baseval, track, SamplesDone, numbered)
-	char *fname_baseval;
-	unsigned int track;
-	unsigned long int SamplesDone;
-	int numbered;
+static int write_info_file(char *fname_baseval, unsigned int track, 
+                           unsigned long int SamplesDone, int numbered)
 {
   FILE *info_fp;
   char fname[200];
@@ -433,10 +421,8 @@ Albumtitle=\t'%s'\n"
 }
 #endif
 
-static void CloseAudio(channels_val, nSamples, audio_out)
-	int channels_val;
-	unsigned long nSamples;
-	struct soundfile *audio_out;
+static void CloseAudio(int channels_val, unsigned long nSamples, 
+                       struct soundfile *audio_out)
 {
       /* define length */
       audio_out->ExitSound( global.audio, (nSamples-global.SkippedSamples)*global.OutSampleSize*channels_val );
@@ -449,7 +435,7 @@ static unsigned int track = 1;
 
 /* On terminating:
  * define size-related entries in audio file header, update and close file */
-static void CloseAll ()
+static void CloseAll()
 {
 	WAIT_T chld_return_status;
 	int amiparent;
@@ -549,9 +535,7 @@ static void CloseAll ()
 #ifdef  PROTOTYPES
 static void usage2 (const char *szMessage, ...)
 #else
-static void usage2 (szMessage, va_alist)
-	const char *szMessage;
-	va_dcl
+static void usage2(const char *szMessage, va_dcl va_alist)
 #endif
 {
   va_list marker;
@@ -575,9 +559,7 @@ static void usage2 (szMessage, va_alist)
 #ifdef  PROTOTYPES
 void FatalError (const char *szMessage, ...)
 #else
-void FatalError (szMessage, va_alist)
-	const char *szMessage;
-	va_dcl
+void FatalError(const char *szMessage, va_dcl va_alist)
 #endif
 {
 	va_list marker;
@@ -614,13 +596,9 @@ void FatalError (szMessage, va_alist)
  * is known). So hitting the interrupt key leaves an intact
  * file.
  */
-static void OpenAudio (fname, rate, nBitsPerSample, channels_val, expected_bytes, audio_out)
-	char *fname;
-	double rate;
-	long nBitsPerSample;
-	long channels_val;
-	unsigned long expected_bytes;
-	struct soundfile * audio_out;
+static void OpenAudio(char *fname, double rate, long nBitsPerSample, 
+                      long channels_val, unsigned long expected_bytes, 
+                      struct soundfile *audio_out)
 {
   if (global.audio == -1) {
 
@@ -652,9 +630,7 @@ static void OpenAudio (fname, rate, nBitsPerSample, channels_val, expected_bytes
 
 static int RealEnd __PR((SCSI *scgp, UINT4 *buff));
 
-static int RealEnd(scgp, buff)
-	SCSI	*scgp;
-	UINT4	*buff;
+static int RealEnd(SCSI *scgp, UINT4 *buff)
 {
 	if (scg_cmd_err(scgp) != 0) {
 		int c,k,q;
@@ -689,9 +665,7 @@ static int RealEnd(scgp, buff)
 	return 0;
 }
 
-static void set_offset(p, offset)
-	myringbuff *p;
-	int offset;
+static void set_offset(myringbuff *p, int offset)
 {
 #ifdef DEBUG_SHM
   fprintf(stderr, "Write offset %d at %p\n", offset, &p->offset);
@@ -700,8 +674,7 @@ static void set_offset(p, offset)
 }
 
 
-static int get_offset(p)
-myringbuff *p;
+static int get_offset(myringbuff *p)
 {
 #ifdef DEBUG_SHM
   fprintf(stderr, "Read offset %d from %p\n", p->offset, &p->offset);
@@ -710,7 +683,7 @@ myringbuff *p;
 }
 
 
-static void usage( )
+static void usage()
 {
   fputs(
 "usage: cdda2wav [OPTIONS ...] [trackfilenames ...]\n\
@@ -878,9 +851,7 @@ static void init_globals()
 #if !defined (HAVE_STRCASECMP) || (HAVE_STRCASECMP != 1)
 #include <ctype.h>
 static int strcasecmp __PR(( const char *s1, const char *s2 ));
-static int strcasecmp(s1, s2)
-	const char *s1;
-	const char *s2;
+static int strcasecmp(const char *s1, const char *s2)
 {
   if (s1 && s2) {
     while (*s1 && *s2 && (tolower(*s1) - tolower(*s2) == 0)) {
@@ -896,8 +867,7 @@ static int strcasecmp(s1, s2)
 }
 #endif
 
-static int is_fifo(filename)
-	char * filename;
+static int is_fifo(char *filename)
 {
 #if	defined S_ISFIFO
   struct stat statstruct;
@@ -921,10 +891,7 @@ static int is_fifo(filename)
 
 #if !defined (HAVE_STRTOUL) || (HAVE_STRTOUL != 1)
 static unsigned int strtoul __PR(( const char *s1, char **s2, int base ));
-static unsigned int strtoul(s1, s2, base)
-        const char *s1;
-        char **s2;
-	int base;
+static unsigned int strtoul(const char *s1, char **s2, int base)
 {
 	long retval;
 
@@ -956,8 +923,7 @@ switch_to_realtime_priority __PR((void));
 
 #include <sys/priocntl.h>
 #include <sys/rtpriocntl.h>
-static void
-switch_to_realtime_priority()
+static void switch_to_realtime_priority()
 {
         pcinfo_t        info;
         pcparms_t       param;
@@ -997,8 +963,7 @@ prio_done:
 #ifdef	USE_POSIX_PRIORITY_SCHEDULING
 #include <sched.h>
 
-static void
-switch_to_realtime_priority()
+static void switch_to_realtime_priority()
 {
 #ifdef  _SC_PRIORITY_SCHEDULING
 	if (sysconf(_SC_PRIORITY_SCHEDULING) == -1) {
@@ -1046,8 +1011,7 @@ switch_to_realtime_priority()
 #undef format
 #undef interface
 
-static void
-switch_to_realtime_priority()
+static void switch_to_realtime_priority()
 {
    /* set priority class */
    if (FALSE == SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS)) {
@@ -1061,8 +1025,7 @@ switch_to_realtime_priority()
    }
 }
 #else
-static void
-switch_to_realtime_priority()
+static void switch_to_realtime_priority()
 {
 }
 #endif
@@ -1072,9 +1035,7 @@ switch_to_realtime_priority()
 /* SCSI cleanup */
 int on_exitscsi __PR((void *status));
 
-int
-on_exitscsi(status)
-	void *status;
+int on_exitscsi(void *status)
 {
 	exit((int)status);
 	return 0;
@@ -1083,8 +1044,7 @@ on_exitscsi(status)
 /* wrapper for signal handler exit needed for Mac-OS-X */
 static void exit_wrapper __PR((int status));
 
-static void exit_wrapper(status)
-	int status;
+static void exit_wrapper(int status)
 {
 #if defined DEBUG_CLEANUP
 	fprintf( stderr, "Exit(%d) for %s\n", status, child_pid == 0 ? "Child" : "Parent");
@@ -1108,8 +1068,7 @@ static void exit_wrapper(status)
 static void set_nonforked __PR((int status));
 
 /* ARGSUSED */
-static void set_nonforked(status)
-	int status;
+static void set_nonforked(int status)
 {
 	global.parent_died = 1;
 #if defined DEBUG_CLEANUP
@@ -1190,9 +1149,7 @@ static void paranoia_reset()
 
 static void paranoia_callback __PR((long inpos, int function));
 
-static void paranoia_callback(inpos, function)
-	long	inpos;
-	int	function;
+static void paranoia_callback(long inpos, int function)
 {
 	struct timeval thistime;
 	long	test;
@@ -1348,9 +1305,7 @@ static unsigned long calc_SectorBurst()
 #define	PERCENTAGE_PER_TRACK
 
 static int do_read __PR((myringbuff *p, unsigned *total_unsuccessful_retries));
-static int do_read (p, total_unsuccessful_retries)
-	myringbuff	*p;
-	unsigned	*total_unsuccessful_retries;
+static int do_read(myringbuff *p, unsigned *total_unsuccessful_retries)
 {
 	unsigned char *newbuf;
 	int offset;
@@ -1534,10 +1489,7 @@ fprintf(stderr, "decreasing overlap from %u to %u (jitter %d)\n", global.overlap
 static void
 print_percentage __PR((unsigned *poper, int c_offset));
 
-static void
-print_percentage(poper, c_offset)
-	unsigned *poper;
-	int	c_offset;
+static void print_percentage(unsigned *poper, int c_offset)
 {
 	unsigned per;
 #ifdef	PERCENTAGE_PER_TRACK
@@ -1570,8 +1522,7 @@ print_percentage(poper, c_offset)
 }
 
 static unsigned long do_write __PR((myringbuff *p));
-static unsigned long do_write (p)
-	myringbuff	*p;
+static unsigned long do_write(myringbuff *p)
 {
 	int current_offset;
 	unsigned int InSamples;
@@ -1807,8 +1758,7 @@ static void forked_read __PR((void));
 /* This function does all audio cdrom reads
  * until there is nothing more to do
  */
-static void
-forked_read()
+static void forked_read()
 {
    unsigned total_unsuccessful_retries = 0;
 
@@ -1834,8 +1784,7 @@ forked_read()
 
 static void forked_write __PR((void));
 
-static void
-forked_write()
+static void forked_write()
 {
 
     /* don't need these anymore.  Good security policy says we get rid
@@ -1869,8 +1818,7 @@ forked_write()
  */
 static void nonforked_loop __PR((void));
 
-static void
-nonforked_loop()
+static void nonforked_loop()
 {
     unsigned total_unsuccessful_retries = 0;
 
@@ -1929,10 +1877,7 @@ void paranoia_usage()
 int
 handle_verbose_opts __PR((char *optstr, long *flagp));
 
-int
-handle_verbose_opts(optstr, flagp)
-	char *optstr;
-	long *flagp;
+int handle_verbose_opts(char *optstr, long *flagp)
 {
 	char	*ep;
 	char	*np;
@@ -2001,10 +1946,7 @@ handle_verbose_opts(optstr, flagp)
 int
 handle_paranoia_opts __PR((char *optstr, long *flagp));
 
-int
-handle_paranoia_opts(optstr, flagp)
-	char *optstr;
-	long *flagp;
+int handle_paranoia_opts(char *optstr, long *flagp)
 {
 #ifdef	USE_PARANOIA
 	char	*ep;
@@ -2081,9 +2023,7 @@ handle_paranoia_opts(optstr, flagp)
 
 
 /* and finally: the MAIN program */
-int main( argc, argv )
-	int argc;
-	char *argv [];
+int main(int argc, char *argv[])
 {
   long lSector_p1;
   long sector_offset = 0;

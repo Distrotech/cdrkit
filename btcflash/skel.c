@@ -74,15 +74,15 @@ struct exargs {
 	char	oerr[3];
 } exargs;
 
-LOCAL	void	usage		__PR((int ret));
-EXPORT	int	main		__PR((int ac, char **av));
-LOCAL	void	intr		__PR((int sig));
-LOCAL	void	exscsi		__PR((int excode, void *arg));
-LOCAL	void	excdr		__PR((int excode, void *arg));
-LOCAL	int	prstats		__PR((void));
-LOCAL	int	prstats_silent	__PR((void));
-LOCAL	void	doit		__PR((SCSI *scgp));
-LOCAL	void	dofile		__PR((SCSI *scgp, char *filename));
+static	void	usage		__PR((int ret));
+int	main		__PR((int ac, char **av));
+static	void	intr		__PR((int sig));
+static	void	exscsi		__PR((int excode, void *arg));
+static	void	excdr		__PR((int excode, void *arg));
+static	int	prstats		__PR((void));
+static	int	prstats_silent	__PR((void));
+static	void	doit		__PR((SCSI *scgp));
+static	void	dofile		__PR((SCSI *scgp, char *filename));
 
 struct timeval	starttime;
 struct timeval	stoptime;
@@ -98,7 +98,7 @@ int	lverbose;
 int	quiet;
 BOOL	is_suid;
 
-LOCAL void
+static void
 usage(ret)
 	int	ret;
 {
@@ -121,10 +121,7 @@ usage(ret)
 
 char	opts[]   = "debug#,d+,kdebug#,kd#,timeout#,quiet,q,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,help,h,version,scanbus,dev*,ts&,f*";
 
-EXPORT int
-main(ac, av)
-	int	ac;
-	char	*av[];
+int main(argc, char *argv[])
 {
 	char	*dev = NULL;
 	int	fcount;
@@ -143,10 +140,10 @@ main(ac, av)
 	SCSI	*scgp;
 	char	*filename = NULL;
 
-	save_args(ac, av);
+	save_args(argc, argv);
 
-	cac = --ac;
-	cav = ++av;
+	cac = --arcc;
+	cav = ++argv;
 
 	if (getallargs(&cac, &cav, opts,
 			&debug, &debug,
@@ -176,8 +173,8 @@ main(ac, av)
 	}
 
 	fcount = 0;
-	cac = ac;
-	cav = av;
+	cac = argc;
+	cav = argv;
 
 	while (getfiles(&cac, &cav, opts) > 0) {
 		fcount++;
@@ -341,9 +338,8 @@ main(ac, av)
  * XXX da meistens das letzte SCSI Kommando noch laeuft.
  * XXX Eine Loesung waere ein Abort Callback in SCSI *.
  */
-LOCAL void
-intr(sig)
-	int	sig;
+static void
+intr(int sig)
 {
 	didintr++;
 	exsig = sig;
@@ -351,7 +347,7 @@ intr(sig)
 }
 
 /* ARGSUSED */
-LOCAL void
+static void
 exscsi(excode, arg)
 	int	excode;
 	void	*arg;
@@ -389,10 +385,8 @@ exscsi(excode, arg)
 	}
 }
 
-LOCAL void
-excdr(excode, arg)
-	int	excode;
-	void	*arg;
+static void
+excdr(int excode, void *arg)
 {
 	exscsi(excode, arg);
 
@@ -404,7 +398,7 @@ excdr(excode, arg)
 /*
  * Return milliseconds since start time.
  */
-LOCAL int
+static int
 prstats()
 {
 	int	sec;
@@ -432,7 +426,7 @@ prstats()
 /*
  * Return milliseconds since start time, but be silent this time.
  */
-LOCAL int
+static int
 prstats_silent()
 {
 	int	sec;
@@ -456,9 +450,8 @@ prstats_silent()
 	return (1000*sec + (usec / 1000));
 }
 
-LOCAL void
-doit(scgp)
-	SCSI	*scgp;
+static void
+doit(SCSI *scgp)
 {
 	int	i = 0;
 
@@ -482,12 +475,10 @@ doit(scgp)
 	}
 }
 
-LOCAL int btcmain		__PR((SCSI *scgp, const char *fwfile));
+static int btcmain		__PR((SCSI *scgp, const char *fwfile));
 
-LOCAL void
-dofile(scgp, filename)
-	SCSI	*scgp;
-	char	*filename;
+static void
+dofile(SCSI *scgp, char *filename)
 {
 	if (btcmain(scgp, filename) != 0)
 		exit(EX_BAD);

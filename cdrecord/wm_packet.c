@@ -55,13 +55,10 @@ extern	int	lverbose;
 
 extern	char	*buf;			/* The transfer buffer */
 
-EXPORT	int	write_packet_data __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+int	write_packet_data __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
 
-EXPORT int
-write_packet_data(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+int
+write_packet_data(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	track = trackp->trackno;
 	int	f = -1;

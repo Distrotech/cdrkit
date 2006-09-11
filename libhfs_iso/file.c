@@ -53,9 +53,7 @@ static	char sccsid[] =
  * NAME:	file->selectfork()
  * DESCRIPTION:	choose a fork for file operations
  */
-void f_selectfork(file, ffork)
-	hfsfile	*file;
-	int	ffork;
+void f_selectfork(hfsfile *file, int ffork)
 {
   if (ffork == 0)
     {
@@ -76,11 +74,8 @@ void f_selectfork(file, ffork)
  * NAME:	file->getptrs()
  * DESCRIPTION:	make pointers to the current fork's lengths and extents
  */
-void f_getptrs(file, lglen, pylen, extrec)
-	hfsfile		*file;
-	unsigned long	**lglen;
-	unsigned long	**pylen;
-	ExtDataRec 	**extrec;
+void f_getptrs(hfsfile *file, unsigned long **lglen, unsigned long **pylen, 
+               ExtDataRec **extrec)
 {
   if (file->fork == fkData)
     {
@@ -106,11 +101,8 @@ void f_getptrs(file, lglen, pylen, extrec)
  * NAME:	file->doblock()
  * DESCRIPTION:	read or write a numbered block from a file
  */
-int f_doblock(file, number, bp, func)
-	hfsfile		*file;
-	unsigned long	number;
-	block		*bp;
-	int 		(*func) __PR((hfsvol *, unsigned int, unsigned int, block *));
+int f_doblock(hfsfile *file, unsigned long number, block *bp,
+              int (*func)(hfsvol *, unsigned int, unsigned int, block *))
 {
   unsigned int abnum;
   unsigned int blnum;
@@ -174,8 +166,7 @@ int f_doblock(file, number, bp, func)
  * NAME:	file->alloc()
  * DESCRIPTION:	reserve disk blocks for a file
  */
-int f_alloc(file)
-	hfsfile	*file;
+int f_alloc(hfsfile *file)
 {
   hfsvol *vol = file->vol;
   ExtDescriptor blocks;
@@ -311,8 +302,7 @@ int f_alloc(file)
  * NAME:	file->trunc()
  * DESCRIPTION:	release disk blocks unneeded by a file
  */
-int f_trunc(file)
-	hfsfile	*file;
+int f_trunc(hfsfile *file)
 {
   ExtDataRec *extrec;
   unsigned long *lglen, *pylen, alblksz, newpylen;
@@ -458,8 +448,7 @@ int f_trunc(file)
  * NAME:	file->flush()
  * DESCRIPTION:	flush all pending changes to an open file
  */
-int f_flush(file)
-	hfsfile	*file;
+int f_flush(hfsfile *file)
 {
   hfsvol *vol = file->vol;
 
