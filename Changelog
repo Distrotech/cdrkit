@@ -1,4 +1,4 @@
-cdrkit (1.0pre4) RELEASED; urgency=low
+cdrkit (1.0pre5) UNRELEASED; urgency=low
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in

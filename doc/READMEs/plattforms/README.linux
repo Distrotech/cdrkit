@@ -1,21 +1,3 @@
-WARNING: Do not use 'mc' to extract the tar file!
-All mc versions before 4.0.14 cannot extract symbolic links correctly.
-
-Linux is the most self incompatible OS I know. If you have any problem,
-first carefully read this file.
-
-Linux includes the gnu make program by default but it is called 'make' on linux.
-You will definitely need the shell script Gmake.linux to use gmake
-on a linux system.
-
-Install it as /usr/bin/Gmake with:
-
-cp Gmake.linux /usr/bin/Gmake
-
-Then compile the system by calling:
-
-/usr/bin/Gmake
-or ./Gmake.linux
 
 NOTE for all Linux 2.5.x versions and all Linux versions before 2.6.8:
 
@@ -187,3 +169,25 @@ IMPORTANT:
 
 
 Joerg
+
+
+
+
+Additional comments moved from the wodim.1 manpage (originaly cdrecord.1):
+
+When using wodim with the broken "Linux SCSI generic driver." You should note
+that wodim uses a hack, that tries to emulate the functionality of the scg
+driver.  Unfortunately, the sg driver on Linux has several severe bugs:
+
+ - It cannot see if a SCSI command could not be sent at all.
+ - It cannot get the SCSI status byte.
+   wodim for that reason cannot report failing SCSI commands in some
+   situations.
+ - It cannot get real DMA count of transfer. wodim cannot tell you if there is
+   an DMA residual count.
+ - It cannot get number of bytes valid in auto sense data. wodim cannot tell
+   you if device transfers no sense data at all.
+ - It fetches too few data in auto request sense (CCS/SCSI-2/SCSI-3 needs
+   >= 18).
+
+ -- Reviewed by Eduard Bloch  -- Sat, 09 Sep 2006 11:49:08 +0200

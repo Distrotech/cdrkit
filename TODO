@@ -1,12 +1,12 @@
 
- - Check the readmes. Drop obsolete instructions.
+ - Check the readmes. Drop obsolete instructions. (assigned to: ???)
+ - check notes in help output, drop advisories, notes about future plans...
  - some cdda2wav defined moved from the ueber-long command line to lconfig.h ,
    make them configurable. Implement generation of cdda2wav/lconfig.h or just
-   replace with cmake macros
- - add better detection for various functions. Eg. correct checks for have_soundcard, have_mlockall and have_wait_h for cygwin.
- - add buildstuff for the doc directory? Any need?
+   replace with cmake macros (assigned to: ???)
+ - add better detection for various functions. Eg. correct checks for have_soundcard, have_mlockall and have_wait_h for cygwin. (volunteers?)
  - see http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=cdrkit and try to solve upstream related problems
- - find and eliminate remaining ".mk" ".mk*" files
+ - find and eliminate remaining ".mk" ".mk*" files (where? cleanup branch)
  - Can we rename the 'cdrecord' directory into 'wodim'?
  That may be hard on the build system, this could be the best time
  to change it.

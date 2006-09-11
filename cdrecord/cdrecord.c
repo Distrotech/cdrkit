@@ -523,9 +523,7 @@ main(int argc, char *argv[])
 		 */
 		vers = scg_version(0, SCG_VERSION);
 		auth = scg_version(0, SCG_AUTHOR);
-		/* (eb) One message is enough to teach the user, no reason to print more of them
-     printf("Using libscg version '%s-%s'.\n", auth, vers);
-     */
+    printf("Using libscg version '%s-%s'.\n", auth, vers);
 		if (auth == 0 || strcmp("schily", auth) != 0) {
 			errmsgno(EX_BAD,
 			"Warning: using inofficial version of libscg (%s-%s '%s').\n",
