@@ -27,7 +27,7 @@ If you wish to allow non-root users to write CDs then add your users to the
 cdrom group ("adduser user cdrom") and let the user completely logout and
 re-login.
 Note: with certain kernel versions wodim can fail with this message:
-"cdrecord: Operation not permitted. Cannot send SCSI cmd via ioctl"
+"wodim: Operation not permitted. Cannot send SCSI cmd via ioctl"
 In this case it still does need the suid bit - please send patches if you have
 identified the reason of that problem.
 
