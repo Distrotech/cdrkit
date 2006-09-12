@@ -7,6 +7,7 @@ INCLUDE_DIRECTORIES(../include ../libhfs_iso . ../cdrecord ${CMAKE_BINARY_DIR})
 FIND_FILE (USE_MAGIC magic.h)
 IF(USE_MAGIC)
 	ADD_DEFINITIONS(-DUSE_MAGIC)
+	SET(MAGICLIBS magic)
 ENDIF(USE_MAGIC)
 
 FIND_FILE (USE_ICONV iconv.h)
@@ -29,7 +30,7 @@ SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c d
 LINK_DIRECTORIES(../libhfs_iso ../libschily ../libscg ../libunls ../libdeflt)
 
 ADD_EXECUTABLE (mkisofs mkisofs.c ${MKISOFS_MOST_SRCS})
-TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt magic unls z ${EXTRA_LIBICONV} ${SCG_LIBS})
+TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${SCG_LIBS})
 
 # common lib set and mkisofs source parts for the rest
 LINK_LIBRARIES(${SCG_LIBS} schily deflt unls ${EXTRA_LIBICONV} )
