@@ -43,14 +43,14 @@ fi
 
 if [ -z "$LIST" ] ; then
    echo Looking for available tracks...
-   LIST="$($CDDA2WAV -v trackid -t -1 2>&1|grep T:|cut -f1 -d.|cut -f2 -d:)"
+   LIST="$( cdda2wav -J -vtoc 2>&1 | sed -e 's/^[^\ ].*//; s/\.([^)]*)/ /g;s/,//g;')"
    if [ -z "$LIST" ] ; then
       echo "ERROR: No valid audio tracks detected"
       exit 1
    fi
 fi
 
-echo Fetching `echo $LIST | wc -w` tracks in $CDDA_DEVICE, encoding with $MP_CODER.
+echo Fetching `echo $LIST | wc -w` tracks from $CDDA_DEVICE, encoding with $MP_CODER.
 echo Cancel with Ctrl-C, watch out for error messages.
 
 for TRACK in $LIST ; do
