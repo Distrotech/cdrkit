@@ -1,3 +1,9 @@
+cdrkit (5:1.0~pre5-2) unstable; urgency=low
+
+  * New upstream source snapshot
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 12 Sep 2006 11:16:34 +0200
+
 cdrkit (5:1.0~pre4-1) unstable; urgency=low
 
   [ Peter Samuelson ]

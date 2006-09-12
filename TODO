@@ -12,6 +12,10 @@
  - see http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=cdrkit and try to solve upstream related problems
  - find and eliminate remaining ".mk" ".mk*" files (where? cleanup branch)
  - Can we rename the 'cdrecord' directory into 'wodim'?
- That may be hard on the build system, this could be the best time
- to change it. (No, it isn't hard. EB.)
+ That may be hard on the build system, this could be the best time to change
+ it. (No, it isn't hard. Just needs a good moment to settle down everything and
+ then rename. EB.)
+
+ - implement -stream-file-name. Then close #157962
+
 

@@ -5,3 +5,10 @@ Q: What does "wodim" stand for?
 A: It is not a forest troll and not a winner of the inpronounceability
    contest. It was simply the next alternative to wom (Writes Optical Media)
    which was unfortunately already used by other software products.
+
+Q: Are there additional depedencies, compared to cdrtools?
+A: Yes. Libcap is required on Linux plattform. Libmagic is needed to support
+content-based creator/type tables with HFS (optional). Libiconv is needed to
+support iconv-based filename converstion, eg. from UTF-8 ins Joliet's UCS-2
+unicode (optional, on plattform where iconv is not already included in the libc
+system library).
