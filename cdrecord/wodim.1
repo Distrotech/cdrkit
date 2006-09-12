@@ -788,7 +788,8 @@ it is interpreted as an label name that may be found in the file
 .BI gracetime= #
 Set the grace time before starting to write to
 .IR # " seconds.
-Values below 2 seconds are not allowed.
+Values below 2 seconds are not recommended to give the kernel or volume
+management a chance to learn the new state.
 .TP
 .BI timeout= #
 Set the default SCSI command timeout value to 
