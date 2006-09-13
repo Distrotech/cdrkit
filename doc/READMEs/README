@@ -17,6 +17,16 @@ CD/DVD recording within the cdrkit suite.
 
 The same applies to most README.<topic> files found in this directory.
 
+Wodim has been successfully tested on the following drives:
+
+BENQ DVD DD DW1640
+Philips CDD 3610
+Lite-ON LTR-24102B
+
+It seems that all drives manufactured in this millenium are MMC compliant and
+therefore they should be supported by wodim. When problems appear, you may have
+found a firmware bug in this drive. Try upgrading the firmware in this case.
+
  -- Eduard Bloch <blade@debian.org> Wed, 06 Sep 2006 18:08:08 +0200
 
 # @(#)README	1.25 02/12/25 Copyright 1996-2002 J. Schilling
