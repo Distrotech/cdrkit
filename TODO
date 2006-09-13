@@ -1,5 +1,6 @@
 
  - Check the readmes. Drop obsolete instructions. (assigned to: ???)
+ - check libparanoia, we may link dynamicaly with it. Quality? Portability?
  - POSIX checks for sys/wait.h rather than pure existence check
  - proper getnameinfo/inet_ntoa checks, see include/CMakeLists.txt
  - find out why spawn.c breaks in WAIT_H while the WAIT_UNION check works quite well on sys/wait.h. See include/CMakeLists.txt comments.
