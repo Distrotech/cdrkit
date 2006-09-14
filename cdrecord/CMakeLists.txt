@@ -1,5 +1,5 @@
 PROJECT (CDRECORD)
-INCLUDE_DIRECTORIES(../include . ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../libedc . ${CMAKE_BINARY_DIR})
 INCLUDE(../include/AddScgBits.cmake)
 
 AUX_SOURCE_DIRECTORY(. CDRECORD_SRCS)
@@ -13,9 +13,12 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
    MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
 endif(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
 
-LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)
+LINK_DIRECTORIES(../libschily ../libscg ../libdeflt ../libedc)
+
+ADD_DEFINITIONS(-DHAVE_LIB_EDC_ECC)
+
 ADD_EXECUTABLE (wodim ${CDRECORD_SRCS})
-TARGET_LINK_LIBRARIES(wodim ${SCG_LIBS} schily deflt ${CAPLINK})
+TARGET_LINK_LIBRARIES(wodim ${SCG_LIBS} schily deflt libedc ${CAPLINK})
 SET_TARGET_PROPERTIES(wodim PROPERTIES SKIP_BUILD_RPATH TRUE)
 
 INSTALL(TARGETS wodim DESTINATION bin)
