@@ -43,7 +43,7 @@ fi
 
 if [ -z "$LIST" ] ; then
    echo Looking for available tracks...
-   LIST="$( cdda2wav -J -vtoc 2>&1 | sed -e 's/^[^\ ].*//; s/\.([^)]*)/ /g;s/,//g;')"
+   LIST="$( cdda2wav -J -vtoc -H 2>&1 | sed -e 's/^[^\ ].*//; s/\.([^)]*)/ /g;s/,//g;')"
    if [ -z "$LIST" ] ; then
       echo "ERROR: No valid audio tracks detected"
       exit 1
