@@ -154,13 +154,13 @@ main(argc, argv)
 	 * don't contribute work and don't give support, they are causing extra
 	 * work for me and this way slow down the development.
 	 */
-	if (defltopen("/etc/default/rscsi") < 0) {
+	if (cfg_open("/etc/default/rscsi") < 0) {
 		rscsierror(geterrno(), errmsgstr(geterrno()),
 			"Remote configuration error: Cannot open /etc/default/rscsi");
 /*		rscsirespond(-1, geterrno());*/
 		exit(EX_BAD);
 	}
-	debug_name=defltread("DEBUG=");
+	debug_name=cfg_get("DEBUG");
 #ifdef	FORCE_DEBUG
 	if (debug_name == NULL && argc <= 0)
 		debug_name = "/tmp/RSCSI";
@@ -228,8 +228,8 @@ checkuser()
 	username = pw->pw_name;
 	DEBUG2("rscsid: user id %ld, name %s\n", (long)uid, username);
 
-	defltfirst();
-	while ((uname = defltnext("USER=")) != NULL) {
+	cfg_restart();
+	while ((uname = cfg_get_next("USER")) != NULL) {
 		if (strmatch(username, uname))
 			return;
 	}
@@ -346,8 +346,8 @@ checktarget()
 
 	if (peername == NULL)
 		return (FALSE);
-	defltfirst();
-	while ((target = defltnext("ACCESS=")) != NULL) {
+  cfg_restart();
+	while ((target = cfg_get_next("ACCESS")) != NULL) {
 		p = target;
 		while (*p == '\t')
 			p++;

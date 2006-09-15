@@ -107,15 +107,15 @@ auinfosize(char *name, track_t *trackp)
 	if (sb.st_size > 10000)		/* Too large for a *.inf file	*/
 		return (FALSE);
 
-	if (defltopen(name) < 0)	/* Cannot open *.inf file	*/
+	if (cfg_open(name) < 0)	/* Cannot open *.inf file	*/
 		return (FALSE);
 
-	tlp = p = readtag("Tracklength=");
+	tlp = p = readtag("Tracklength");
 	if (p == NULL) {		/* Tracklength= Tag not found	*/
 		errmsgno(EX_BAD,
 			"WARNING: %s does not contain a 'Tracklength=' tag.\n",
 			name);
-		defltclose();
+		cfg_close();
 		return (FALSE);
 	}
 
@@ -124,7 +124,7 @@ auinfosize(char *name, track_t *trackp)
 		errmsgno(EX_BAD,
 			"WARNING: %s: 'Tracklength=' contains illegal parameter '%s'.\n",
 			name, tlp);
-		defltclose();
+		cfg_close();
 		return (FALSE);
 	}
 	if (*p == ',')
@@ -134,7 +134,7 @@ auinfosize(char *name, track_t *trackp)
 		errmsgno(EX_BAD,
 			"WARNING: %s: 'Tracklength=' contains illegal parameter '%s'.\n",
 			name, tlp);
-		defltclose();
+		cfg_close();
 		return (FALSE);
 	}
 	tracksize = (secs * 2352) + (nsamples * 4);
@@ -143,7 +143,7 @@ auinfosize(char *name, track_t *trackp)
 			name, tracksize, secs, nsamples);
 	}
 	trackp->itracksize = tracksize;
-	defltclose();
+	cfg_close();
 	return (TRUE);
 }
 
@@ -165,81 +165,81 @@ auinfo(char *name, int track, track_t *trackp)
 		strcpy(&p[1], "inf");
 	}
 
-	if (defltopen(infname) == 0) {
+	if (cfg_open(infname) == 0) {
 
-		p = readtstr("CDINDEX_DISCID=");
-		p = readtag("CDDB_DISKID=");
+		p = readtstr("CDINDEX_DISCID");
+		p = readtag("CDDB_DISKID");
 
-		p = readtag("MCN=");
+		p = readtag("MCN");
 		if (p && *p) {
 			setmcn(p, &trackp[0]);
 			txp = gettextptr(0, trackp); /* MCN is isrc for trk 0*/
 			txp->tc_isrc = savestr(p);
 		}
 
-		p = readtag("ISRC=");
+		p = readtag("ISRC");
 		if (p && *p) {
 			setisrc(p, &trackp[track]);
 			txp = gettextptr(track, trackp);
 			txp->tc_isrc = savestr(p);
 		}
 
-		p = readtstr("Albumperformer=");
+		p = readtstr("Albumperformer");
 		if (p && *p) {
 			txp = gettextptr(0, trackp); /* Album perf. in trk 0*/
 			txp->tc_performer = savestr(p);
 		}
-		p = readtstr("Performer=");
+		p = readtstr("Performer");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_performer = savestr(p);
 		}
-		p = readtstr("Albumtitle=");
+		p = readtstr("Albumtitle");
 		if (p && *p) {
 			txp = gettextptr(0, trackp); /* Album title in trk 0*/
 			txp->tc_title = savestr(p);
 		}
-		p = readtstr("Tracktitle=");
+		p = readtstr("Tracktitle");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_title = savestr(p);
 		}
-		p = readtstr("Songwriter=");
+		p = readtstr("Songwriter");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_songwriter = savestr(p);
 		}
-		p = readtstr("Composer=");
+		p = readtstr("Composer");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_composer = savestr(p);
 		}
-		p = readtstr("Arranger=");
+		p = readtstr("Arranger");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_arranger = savestr(p);
 		}
-		p = readtstr("Message=");
+		p = readtstr("Message");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_message = savestr(p);
 		}
-		p = readtstr("Diskid=");
+		p = readtstr("Diskid");
 		if (p && *p) {
 			txp = gettextptr(0, trackp); /* Disk id is in trk 0*/
 			txp->tc_title = savestr(p);
 		}
-		p = readtstr("Closed_info=");
+		p = readtstr("Closed_info");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_closed_info = savestr(p);
 		}
 
-		p = readtag("Tracknumber=");
+		p = readtag("Tracknumber");
 		if (p && isdao)
 			astol(p, &tno);
 
-		p = readtag("Trackstart=");
+		p = readtag("Trackstart");
 		if (p && isdao) {
 			l = -1L;
 			astol(p, &l);
@@ -249,9 +249,9 @@ auinfo(char *name, int track, track_t *trackp)
 			}
 		}
 
-		p = readtag("Tracklength=");
+		p = readtag("Tracklength");
 
-		p = readtag("Pre-emphasis=");
+		p = readtag("Pre-emphasis");
 		if (p && *p) {
 			if (strncmp(p, "yes", 3) == 0) {
 				tp->flags |= TI_PREEMP;
@@ -265,8 +265,8 @@ auinfo(char *name, int track, track_t *trackp)
 			}
 		}
 
-		p = readtag("Channels=");
-		p = readtag("Copy_permitted=");
+		p = readtag("Channels");
+		p = readtag("Copy_permitted");
 		if (p && *p) {
 			/*
 			 * -useinfo always wins
@@ -280,12 +280,12 @@ auinfo(char *name, int track, track_t *trackp)
 			else if (strncmp(p, "once", 2) == 0)
 				tp->flags &= ~(TI_COPY|TI_SCMS);
 		}
-		p = readtag("Endianess=");
-		p = readtag("Index=");
+		p = readtag("Endianess");
+		p = readtag("Index");
 		if (p && *p && isdao)
 			setindex(p, &trackp[track]);
 
-		p = readtag("Index0=");
+		p = readtag("Index0");
 		if (p && isdao) {
 			Llong ts;
 			Llong ps;
@@ -339,14 +339,10 @@ readtag(char *name)
 {
 	register char	*p;
 
-	p = defltread(name);
-	if (p) {
-		while (*p == ' ' || *p == '\t')
-			p++;
-		if (debug)
-			printf("%s	'%s'\n", name, p);
-	}
-	return (p);
+  p = cfg_get(name);
+  if (debug)
+     printf("%s	'%s'\n", name, p);
+  return (p);
 }
 
 static char *

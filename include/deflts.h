@@ -1,20 +1,12 @@
 /*
- * This file has been modified for the cdrkit suite.
+ *	Copyright (c) 2006 Eduard Bloch
  *
- * The behaviour and appearence of the program code below can differ to a major
- * extent from the version distributed by the original author(s).
+ *	Config parsing code, with interface similar to basic libdeflt interface
+ *	from J.  Schilling but with different semantics
  *
- * For details, see Changelog file distributed with the cdrkit package. If you
- * received this file from another source then ask the distributing person for
- * a log of modifications.
+ *	get_value uses a static buffer (warning, non-reentrant)
+ *	cfg_open and cfg_close maintain a static FILE pointer (warning, non-reentrant)
  *
- */
-
-/* @(#)deflts.h	1.6 02/08/26 Copyright 1997 J. Schilling */
-/*
- *	Definitions for reading program defaults.
- *
- *	Copyright (c) 1997 J. Schilling
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -34,54 +26,25 @@
 #ifndef	_DEFLTS_H
 #define	_DEFLTS_H
 
-#ifndef _MCONFIG_H
-#include <mconfig.h>
-#endif
-#ifndef _PROTOTYP_H
-#include <prototyp.h>
-#endif
-
 #ifdef	__cplusplus
 extern "C" {
 #endif
 
-#define	DEFLT	"/etc/default"
+/* FIXME: use inline trough an INLINE macro wrapper */
+extern int	cfg_open	(const char *name);
+extern int	cfg_close	(void);
 
-/*
- * cmd's to defltcntl()
- */
-#define	DC_GETFLAGS	0	/* Get actual flags	*/
-#define	DC_SETFLAGS	1	/* Set new flags	*/
-
-/*
- * flags to defltcntl()
- *
- * Make sure that when adding features, the default behaviour
- * is the same as old behaviour.
- */
-#define	DC_CASE		0x0001	/* Don't ignore case	*/
-
-#define	DC_STD		DC_CASE	/* Default flags	*/
-
-/*
- * Macros to handle flags
- */
-#ifndef	TURNON
-#define	TURNON(flags, mask)	flags |= mask
-#define	TURNOFF(flags, mask)	flags &= ~(mask)
-#define	ISON(flags, mask)	(((flags) & (mask)) == (mask))
-#define	ISOFF(flags, mask)	(((flags) & (mask)) != (mask))
-#endif
-
-extern	int	defltopen	__PR((const char *name));
-extern	int	defltclose	__PR((void));
-extern	void	defltfirst	__PR((void));
-extern	char	*defltread	__PR((const char *name));
-extern	char	*defltnext	__PR((const char *name));
-extern	int	defltcntl	__PR((int cmd, int flags));
+/* reset the position in FILE */
+extern void	cfg_restart	(void);
+/* returns the next value found after the current position */
+extern char	*cfg_get_next	(const char *name);
+/* equivalent to cfg_restart(); cfg_get_next(...) */
+extern char *cfg_get(const char *key);
+/* function wrapped by those above */
+extern char *get_value(FILE *srcfile, const char *key, int dorewind);
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* _DEFLTS_H */
+#endif

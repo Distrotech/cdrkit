@@ -25,7 +25,7 @@
 #include <mconfig.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "defaults.h"
+#include <deflts.h>
 #include <ctype.h>
 #include <string.h>
 
@@ -33,130 +33,23 @@
 /* The better way would be exporting the meta functions to getnum.h or so */
 extern int	getnum		(char *arg, long *valp);
 
-enum parstate {
-	KEYBEGINSEARCH,
-	KEYCOMPARE,
-	EQSIGNSEARCH,
-	VALBEGINSEARCH,
-	LASTCHARSEARCH
-};
-#define GETVAL_BUF_LEN 256
-#define isUspace(x) isspace( (int) (unsigned char) x)
-
-/*
- * Warning, uses static line buffer, not reentrant. NULL returned if the key isn't found.
- */
-static char *get_value(FILE *srcfile, char *key) {
-	static char linebuf[GETVAL_BUF_LEN];
-
-	if(!srcfile)
-		return NULL;
-
-	rewind(srcfile);
-next_line:
-	while(fgets(linebuf, sizeof(linebuf)-1, srcfile)) {
-		int i;
-		int keybeg;
-		int s=KEYBEGINSEARCH;
-		char *ret=NULL;
-		int lastchar=0;
-
-		/* simple state machine, char position moved by the states (or not),
-		 * state change is done by the state (or not) */
-		for( i=0 ; i<sizeof(linebuf) ; ) {
-			/* printf("key: %s, %s, s: %d\n", key,  linebuf, s); */
-			switch(s) {
-				case(KEYBEGINSEARCH):
-					{
-						if(isUspace(linebuf[i]))
-							i++;
-						else if(linebuf[i] == '#' || linebuf[i]=='\0')
-							goto next_line;
-						else {
-							s=KEYCOMPARE;
-							keybeg=i;
-						}
-					}
-					break;
-				case(KEYCOMPARE): /* compare the key */
-					{
-						if(key[i-keybeg]=='\0') 
-							/* end of key, next state decides what to do on this position */
-							s=EQSIGNSEARCH;
-						else {
-							if(linebuf[i-keybeg]!=key[i-keybeg])
-								goto next_line;
-							else
-								i++;
-						}
-					}
-					break;
-				case(EQSIGNSEARCH): /* skip whitespace, stop on =, break on anything else */
-					{
-						if(isUspace(linebuf[i]))
-							i++;
-						else if(linebuf[i]=='=') {
-							s=VALBEGINSEARCH;
-							i++;
-						}
-						else
-							goto next_line;
-					}
-					break;
-				case(VALBEGINSEARCH):
-					{
-						if(isUspace(linebuf[i]))
-							i++;
-						else {
-							/* possible at EOF */
-							if(linebuf[i] == '\0')
-								return NULL;
-
-							lastchar=i-1; /* lastchar can be a space, see below */
-							ret= & linebuf[i];
-							s=LASTCHARSEARCH;
-						}
-					}
-					break;
-				case(LASTCHARSEARCH):
-					{
-						if(linebuf[i]) {
-							if(!isUspace(linebuf[i]))
-								lastchar=i;
-						}
-						else { /* got string end, terminate after the last seen char */
-							if(linebuf+lastchar < ret) /* no non-space found */
-								return NULL;
-							linebuf[lastchar+1]='\0';
-							return ret;
-						}
-						i++;
-					}
-					break;
-			}
-		}
-	}
-	return NULL;
-}
-
-void
-cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opts) {
+void cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opts) {
 	FILE *stream;
 	char *t; /* tmp */
 	int wc=0;
 	char loc[256], sSpeed[11], sFs[11], sOpts[81];
 	char *devcand=NULL;
 
-	stream=fopen(CFGPATH, "r");
+  cfg_open(CFGPATH);
 
 	if(p_dev_name && *p_dev_name)
 		devcand=*p_dev_name;
 	else if(NULL!=(t=getenv("CDR_DEVICE")))
 		devcand=t;
-	else if(NULL!=(t=get_value(stream, "CDR_DEVICE")))
+	else if(NULL!=(t=cfg_get("CDR_DEVICE")))
 		devcand=strdup(t); // needs to use it as a key later, same stat. memory
 
-	if(devcand && NULL != (t=get_value(stream,devcand))) {
+	if(devcand && NULL != (t=cfg_get(devcand))) {
 		/* extract them now, may be used later */
 		wc=sscanf(t, "%255s %10s %10s %80s", loc, sSpeed, sFs, sOpts);
 	}
@@ -172,7 +65,7 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opt
 		int cfg_speed=-1;
 
 		/* that value may be used twice */
-		if(NULL!=(t=get_value(stream, "CDR_SPEED"))) {
+		if(NULL!=(t=cfg_get("CDR_SPEED"))) {
 			cfg_speed=strtol(t,&bad,10);
 			if(*bad || cfg_speed<-1) {
 				fprintf(stderr, "Bad default CDR_SPEED setting (%s).\n", t);
@@ -219,7 +112,7 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opt
 				exit(EXIT_FAILURE);
 			}
 		}
-		else if(NULL!=(t=get_value(stream, "CDR_FIFOSIZE"))) {
+		else if(NULL!=(t=cfg_get("CDR_FIFOSIZE"))) {
 			if(getnum(t, p_fifosize)!=1 || *p_fifosize<-1) {
 				fprintf(stderr, "Bad speed default setting (%s).\n", t);
 				exit(EXIT_FAILURE);
@@ -228,7 +121,7 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opt
 		/* undocumented option. Most likely to prevent killing Schily's
 		 * underpowered machines (see docs) by allocating too much memory after
 		 * doing a mistake in the config. */
-		if(NULL!=(t=get_value(stream, "CDR_MAXFIFOSIZE"))) {
+		if(NULL!=(t=cfg_get("CDR_MAXFIFOSIZE"))) {
 			long max;
 			if(getnum(t, &max)!=1 || *p_fifosize<-1) {
 				fprintf(stderr, "Bad CDR_MAXFIFOSIZE setting (%s).\n", t);
@@ -242,7 +135,6 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opt
 	if(p_drv_opts && !*p_drv_opts && wc>3 && strcmp(sOpts, "\"\""))
 		*p_drv_opts=strdup(sOpts);
 
-	if(stream != (FILE*)NULL)
-		fclose(stream);
+  cfg_close();
 
 }
