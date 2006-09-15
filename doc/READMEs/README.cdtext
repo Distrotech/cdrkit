@@ -1,16 +1,16 @@
 CD-Text Usage (to copy CD-Text from master CD):
 
 	cdda2wav -D 6,0 -vall -B	# To extract audio information
-	cdrecord dev=6,0 -vv -toc	# To extract CD-Text information
+	wodim dev=6,0 -vv -toc	# To extract CD-Text information
 
 	and then
 
-	cdrecord dev=6,0 -v -dao textfile=cdtext.dat -useinfo *.wav
+	wodim dev=6,0 -v -dao textfile=cdtext.dat -useinfo *.wav
 	or
-	cdrecord dev=6,0 -v -raw96r textfile=cdtext.dat -useinfo *.wav
+	wodim dev=6,0 -v -raw96r textfile=cdtext.dat -useinfo *.wav
 
 	If the CD-Text information contains more CRC errors than
-	cdrecord can correct, you need to reload the CD and to
+	wodim can correct, you need to reload the CD and to
 	re-read the CD-Text information from the master disk.
 
 	Writing of CD-Text is supported for all drives that support
@@ -42,9 +42,9 @@ Creating a CD with CD-Text based on CDDB information from freedb.freedb.org:
 
 	and then call
 
-	cdrecord dev=6,0 -v -dao -text -useinfo *.wav
+	wodim dev=6,0 -v -dao -text -useinfo *.wav
 	or
-	cdrecord dev=6,0 -v -raw96r -text -useinfo *.wav
+	wodim dev=6,0 -v -raw96r -text -useinfo *.wav
 
 
 If you like to create your own CD-text data for a CD use the
@@ -54,8 +54,12 @@ following method:
 
 	then edit the *.inf Files and add album and song titles.
 
-	Now call cdrecord as if the *.nf files contain CD-Text 
+	Now call wodim as if the *.nf files contain CD-Text 
 	information.
 
 	Note that it is recommended to use less that 160 characters
 	for a single string.
+
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+

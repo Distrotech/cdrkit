@@ -1,5 +1,5 @@
 PROJECT (RSCSI)
-INCLUDE_DIRECTORIES(../include ../cdrecord . ${CMAKE_BINARY_DIR} )
+INCLUDE_DIRECTORIES(../include ../cdrecord ${CMAKE_BINARY_DIR} )
 INCLUDE(../include/AddScgBits.cmake)
 
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)

@@ -43,7 +43,7 @@
 #include "diskmbr.h"
 #include "bootinfo.h"
 #include <schily.h>
-#include "endian.h"
+#include "endianconv.h"
 
         int     add_boot_alpha_filename   __PR((char *filename));
 static  int     boot_alpha_write          __PR((FILE *outfile));

@@ -19,12 +19,12 @@ NOTE:	All CD-R's written in Track At Once mode end in two unreadable
 For this reason, you will not be able to read such a CD correctly with 'dd'.
 
 I recommend to write all disks in Disk at Once mode if your drive
-is supported in DAO mode with cdrecord. In addition, you may wish to 
-add padding (see cdrecord / mkisofs man pages).
+is supported in DAO mode with wodim. In addition, you may wish to 
+add padding (see wodim / mkisofs man pages).
 
-If you want to copy such a CD directly with cdrecord, you may call:
+If you want to copy such a CD directly with wodim, you may call:
 
-	cdrecord -v dev=... -isosize /dev/rdsk/c0t6d0s0
+	wodim -v dev=... -isosize /dev/rdsk/c0t6d0s0
 
 But this may fail if the master gives read errors. To copy such a CD to a file
 you may use the program 'readcd' from this package
@@ -45,8 +45,11 @@ If you like to copy audio CD's in a way that preserves as much accuracy as
 possible, use:
 
 cdda2wav -vall -D... -B
-cdrecord -v dev=... -dao -useinfo *.wav
+wodim -v dev=... -dao -useinfo *.wav
 
 This will preserve pre-gap sizes, indices ...
 
+
+Source: README.copy from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 

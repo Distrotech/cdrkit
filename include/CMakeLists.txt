@@ -35,6 +35,24 @@ TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
 TRY_RUN(BITFIELDS_HTOL TEST_DUMMY ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_BITFIELDS_HTOL.c)
 
+FIND_FILE(HAVE_WAIT_H "wait.h")
+FIND_FILE(HAVE_SYS_WAIT_H "sys/wait.h")
+TRY_COMPILE(HAVE_UNION_WAIT ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_UNION_WAIT.c )
+# disabled, though the alternative works on cygwin and both headers are present
+# there.
+#IF(NOT HAVE_UNION_WAIT)
+#	TRY_COMPILE(HAVE_UNION_WAIT ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_SYS_UNION_WAIT.c )
+#MESSAGE("syswait: ${HAVE_UNION_WAIT}")
+#ENDIF(NOT HAVE_UNION_WAIT)
+
+SET(HAVE_GETNAMEINFO true)
+SET(HAVE_INET_NTOA true)
+IF (WIN32) # workaround for cygwin 
+SET(HAVE_GETNAMEINFO false)
+SET(HAVE_INET_NTOA false)
+ENDIF (WIN32) # workaround for cygwin 
+
+
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 
 # FIXME! Does not work as expected. Not important for out-of-source builds but

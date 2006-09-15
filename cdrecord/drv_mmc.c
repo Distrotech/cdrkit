@@ -60,7 +60,7 @@ static	char sccsid[] =
 #include <scg/scsireg.h>
 #include <scg/scsitransp.h>
 
-#include <scsimmc.h>
+#include "scsimmc.h"
 #include "mmcvendor.h"
 #include "cdrecord.h"
 

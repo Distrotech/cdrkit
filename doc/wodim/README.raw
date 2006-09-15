@@ -22,28 +22,28 @@ Tips for MMC RAW mode writing.
 	If you find other problems in RAW mode or if you find
 	new bugs introduced in old write modes, please send a bug report.
 
-	Cdrecord now checks the properties of the writer. If a specific write
-	mode is not supported by the writer, cdrecord warns you and makes
+	wodim now checks the properties of the writer. If a specific write
+	mode is not supported by the writer, wodim warns you and makes
 	a suggestion for a similar alternate write mode.
 
-	With the curent structure of cdrecord, it is not possible to silently
+	With the curent structure of wodim, it is not possible to silently
 	e.g. change the write mode from -dao to -raw96r
 
 	MMC compliant drives are automatically scanned for supported write modes.
-	This should help to make cdrecord work without manual static configuration.
+	This should help to make wodim work without manual static configuration.
 	My hope is still to have no need to know all drive properties in 
 	advance, so new drives will continue to work as long as they
-	are standard compliant enough for cdrecord.
+	are standard compliant enough for wodim.
 
 EXAMPLES:
 
-	cdrecord dev=1,0 -v -raw96r *.wav
+	wodim dev=1,0 -v -raw96r *.wav
 
 	will write a audio CD in raw mode using (computed) 2448 byte sectors 
 	with raw P-W subchannels. This works e.g. with Plextor drives.
 
 
-	cdrecord dev=1,0 -v -raw16 *.wav
+	wodim dev=1,0 -v -raw16 *.wav
 
 	will write a audio CD in raw mode using (computed) 2368 byte sectors 
 	with raw P+Q subchannels. This works e.g. with Philips drives.
@@ -67,3 +67,5 @@ IMPORTANT:
 		For this reason, it is important to select the raw writing
 		mode accoding to the notes above.
 
+Source: README.raw from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>

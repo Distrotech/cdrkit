@@ -320,6 +320,9 @@ main(int argc, char *argv[])
         "Copyright (C) 2006 cdrkit maintainers, (C) 1994-2006 Joerg Schilling\n\n"
 	      );
 
+  if(strcmp(av[0], "cdrecord") == 0)
+     strcpy(av[0], "wodim");
+
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
 	_wildcard(&argc, &argv);

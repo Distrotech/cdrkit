@@ -60,8 +60,10 @@
 /* #undef HAVE_SYS_MNTENT_H */	/* if sys/mntent.h is present */
 /* #undef HAVE_SYS_MNTTAB_H */	/* if sys/mnttab.h is present */
 #define HAVE_SYS_MOUNT_H 1		/* if sys/mount.h is present */
-#define HAVE_WAIT_H 1		/* to use wait.h for prototypes and union wait */
-#define HAVE_SYS_WAIT_H 1		/* else use sys/wait.h */
+/* to use wait.h for prototypes and union wait */
+#cmakedefine HAVE_WAIT_H
+/* else use sys/wait.h */
+#cmakedefine define HAVE_SYS_WAIT_H
 #define HAVE_SYS_RESOURCE_H 1	/* to use sys/resource.h for rlimit() and wait3() */
 /* #undef HAVE_PROCFS_H */		/* to use procfs.h instead of sys/procfs.h (Solaris forces profcs-2) */
 #define HAVE_SYS_PROCFS_H 1	/* to use sys/procfs.h for wait3() emulation */
@@ -313,9 +315,11 @@
 #define HAVE_SOCKET 1		/* socket() is present in libc/libsocket */
 #define HAVE_SOCKETPAIR 1		/* socketpair() is present in libc/libsocket */
 #define HAVE_GETSERVBYNAME 1	/* getservbyname() is present in libc/libsocket */
-#define HAVE_INET_NTOA 1		/* inet_ntoa() is present in libc/libsocket */
+/* inet_ntoa() is present in libc/libsocket */
+#cmakedefine HAVE_INET_NTOA
 #define HAVE_GETADDRINFO 1		/* getaddrinfo() is present in libc/libsocket */
-#define HAVE_GETNAMEINFO 1		/* getnameinfo() is present in libc/libsocket */
+/* getnameinfo() is present in libc/libsocket */
+#cmakedefine define HAVE_GETNAMEINFO
 
 #if	defined(HAVE_QUOTACTL) || defined(HAVE_QUOTAIOCTL)
 #	define HAVE_QUOTA	/* The system inludes quota */
@@ -358,7 +362,8 @@
 #define HAVE_STRUCT_RUSAGE 1	/* have struct rusage in sys/resource.h */
 /* #undef HAVE_SI_UTIME */		/* if struct siginfo contains si_utime */
 /* #undef HAVE_UNION_SEMUN */		/* have an illegal definition for union semun in sys/sem.h */
-#define HAVE_UNION_WAIT 1		/* have union wait in wait.h */
+/* have union wait in wait.h */
+#cmakedefine HAVE_UNION_WAIT
 /*
  * SCO UnixWare has st_atim.st__tim.tv_nsec but the st_atim.tv_nsec tests also
  * succeeds. If you use st_atim.tv_nsec on UnixWare, you get a warning about

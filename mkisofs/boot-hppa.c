@@ -51,7 +51,7 @@
 #include "diskmbr.h"
 #include "bootinfo.h"
 #include <schily.h>
-#include "endian.h"
+#include "endianconv.h"
 
 int     add_boot_hppa_cmdline     __PR((char *cmdline));
 int     add_boot_hppa_kernel_32   __PR((char *filename));

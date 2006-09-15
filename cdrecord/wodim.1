@@ -1,3 +1,5 @@
+.\" @(#)wodim.1	 06/09/10 Copyright 2006 Cdrkit maintainers
+.\" derived from:
 .\" @(#)cdrecord.1	1.106 06/02/09 Copyright 1996 J. Schilling
 .\" 
 .\" This program is free software; you can redistribute it and/or modify
@@ -63,12 +65,12 @@ The
 .I device
 is the device file offered by the operating system to access the recorder. On
 .I Linux
-systems it is usualy 
+systems it is usually 
 .IR /dev/hd...
 for IDE/ATAPI based devices and 
 .IR /dev/sg...
 for SCSI based defices. Note that sg... devices represent the access trough the
-SCSI GENERIC interface and therefore the differ from the device files generaly
+SCSI GENERIC interface and therefore the differ from the device files generally
 used to open block devices (/dev/scd... or /dev/sr...).
 .PP
 In any case, the user running 
@@ -703,7 +705,7 @@ It is not wise to use too much space for the FIFO. If you need more
 than 8 MB to write a CD at a speed less than 20x from an image on a
 local file system on an idle machine, your machine is either underpowered,
 has hardware problems or is mis-configured.
-If you like to write DVDs or to write CDs at higher speed, it makes sense
+If you like to write DVDs or CDs at higher speed, it makes sense
 to use at least 16\ MB for the FIFO.
 .sp
 On old and small machines, you need to be more careful with the FIFO size.
@@ -788,7 +790,8 @@ it is interpreted as an label name that may be found in the file
 .BI gracetime= #
 Set the grace time before starting to write to
 .IR # " seconds.
-Values below 2 seconds are not allowed.
+Values below 2 seconds are not recommended to give the kernel or volume
+management a chance to learn the new state.
 .TP
 .BI timeout= #
 Set the default SCSI command timeout value to 
@@ -2346,7 +2349,7 @@ debburn-devel@lists.alioth.debian.org
 
 .SH AUTHORS
 .B wodim
-is currently maintained as part of the cdrkit project by its developers. Most of the code and this manual page was originaly written by:
+is currently maintained as part of the cdrkit project by its developers. Most of the code and this manual page was originally written by:
 .PP
 .nf
 Joerg Schilling

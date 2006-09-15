@@ -16,11 +16,12 @@ Step 1 (read master CD):
 
 Step 2 (write copy):
 
-	Call "cdrecord dev=b,t,l -raw96r -clone -v somefile"
+	Call "wodim dev=b,t,l -raw96r -clone -v somefile"
 
-If cdrecord complains that your drive does not support -raw96r, but the
-drive is able to do clone writing at all, then cdrecord will propose you
+If wodim complains that your drive does not support -raw96r, but the
+drive is able to do clone writing at all, then wodim will propose you
 a different write mode that works with the drive.
 
-
+Source: README.clone from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
 

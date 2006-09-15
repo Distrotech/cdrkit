@@ -48,8 +48,12 @@ in case of a FreeCom Traveller this is:
    # modprobe -r pg
    # modprobe pg drive0=0x378,0,0,-1,-1,0
 
-5.) Check for optimum delay using for maximum speed using cdrecord -dummy 
+5.) Check for optimum delay using for maximum speed using wodim -dummy 
 
 6.) Use the file rc.pp and modify for your needs
 
 7.) Your CD drive now appears as /dev/pcd?
+
+Source: README.cdtext from cdrtools package
+Edited for cdrkit by Christian Fromme <kaner@strace.org>
+

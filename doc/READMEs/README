@@ -5,9 +5,10 @@ contents pulled from the cdrtools package (as created by Joerg Schilling) are
 attached below.
 
 Most of the installation instructions mentioned below are void in context of
-cdrkit. Don't rely on them. Read the INSTALL file to learn to install cdrkit.
+cdrkit. Don't rely on them. Read the INSTALL file for instructions on how to
+install cdrkit.
 
-Many of compatibility and portability descriptions below are void in context of
+Many compatibility and portability descriptions below are void in context of
 cdrkit. Cdrkit is less portable than cdrtools and may support fewer devices.
 Cdrkit maintainers encourage to submit results from users of non-Linux
 platforms.
@@ -16,6 +17,16 @@ Application name(s) have been changed. The wodim executable is the one used for
 CD/DVD recording within the cdrkit suite.
 
 The same applies to most README.<topic> files found in this directory.
+
+Wodim has been successfully tested on the following drives:
+
+BENQ DVD DD DW1640
+Philips CDD 3610
+Lite-ON LTR-24102B
+
+It seems that all drives manufactured in this millenium are MMC compliant and
+therefore they should be supported by wodim. When problems appear, you may have
+found a firmware bug in this drive. Try upgrading the firmware in this case.
 
  -- Eduard Bloch <blade@debian.org> Wed, 06 Sep 2006 18:08:08 +0200
 

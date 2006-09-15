@@ -31,7 +31,7 @@
 #include "dvd_file.h"
 #include "ifo_read.h"
 #include "md5.h"
-#include "endian.h"
+#include "endianconv.h"
 #endif
 #ifdef APPLE_HYB
 #include <ctype.h>

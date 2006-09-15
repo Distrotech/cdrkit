@@ -112,7 +112,7 @@
  * start writing.
  */
 #ifndef	MIN_GRACE_TIME
-#define	MIN_GRACE_TIME	0		/* 3 seconds */
+#define	MIN_GRACE_TIME	0		/* changed to 0, there is no point in forcing it in this application. Fix your volume management if it breaks because it could not read the medium. */
 #endif
 #ifndef	GRACE_TIME
 #define	GRACE_TIME	9		/* 9 seconds */

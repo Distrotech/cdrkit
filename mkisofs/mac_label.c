@@ -58,7 +58,7 @@ static	char sccsid[] =
 
 #include <mconfig.h>
 #include "mkisofs.h"
-#include <mac_label.h>
+#include "mac_label.h"
 #include "apple.h"
 
 #ifdef PREP_BOOT

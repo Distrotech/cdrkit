@@ -58,7 +58,7 @@ static	char sccsid[] =
 #include <utypes.h>
 #include <ctype.h>
 #include <netinet/in.h>
-#include <apple.h>
+#include "apple.h"
 #include <schily.h>
 
 #ifdef USE_MAGIC

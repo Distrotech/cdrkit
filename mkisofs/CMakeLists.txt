@@ -2,11 +2,12 @@ PROJECT (MKISOFS)
 
 INCLUDE(../include/AddScgBits.cmake)
 
-INCLUDE_DIRECTORIES(../include ../libhfs_iso . ../cdrecord ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../libhfs_iso ../cdrecord ${CMAKE_BINARY_DIR})
 
 FIND_FILE (USE_MAGIC magic.h)
 IF(USE_MAGIC)
 	ADD_DEFINITIONS(-DUSE_MAGIC)
+	SET(MAGICLIBS magic)
 ENDIF(USE_MAGIC)
 
 FIND_FILE (USE_ICONV iconv.h)
@@ -29,11 +30,11 @@ SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c d
 LINK_DIRECTORIES(../libhfs_iso ../libschily ../libscg ../libunls ../libdeflt)
 
 ADD_EXECUTABLE (mkisofs mkisofs.c ${MKISOFS_MOST_SRCS})
-TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt magic unls z ${EXTRA_LIBICONV} ${SCG_LIBS})
+TARGET_LINK_LIBRARIES(mkisofs schily hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${SCG_LIBS})
 
 # common lib set and mkisofs source parts for the rest
 LINK_LIBRARIES(${SCG_LIBS} schily deflt unls ${EXTRA_LIBICONV} )
-SET(MI_COMMON diag/scsi.c diag/scsi_cdr.c diag/cd_misc.c diag/modes.c diag/defaults.c diag/getnum.c)
+SET(MI_COMMON scsi.c scsi_cdr.c cd_misc.c modes.c defaults.c getnum.c)
 ADD_EXECUTABLE(devdump diag/dump.c  ${MI_COMMON})
 ADD_EXECUTABLE(isodebug	diag/isodebug.c   ${MI_COMMON})
 ADD_EXECUTABLE(isodump	diag/isodump.c    ${MI_COMMON})

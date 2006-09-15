@@ -64,7 +64,7 @@
 #include "diskmbr.h"
 #include "bootinfo.h"
 #include <schily.h>
-#include "endian.h"
+#include "endianconv.h"
 #include <errno.h>
 #include <elf.h>
 
