@@ -193,7 +193,7 @@ struct volume_header {
 #include "diskmbr.h"
 #include "bootinfo.h"
 #include <schily.h>
-#include "endian.h"
+#include "endianconv.h"
 
 int     add_boot_mips_filename    __PR((char *filename));
 

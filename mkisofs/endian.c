@@ -11,7 +11,7 @@
  */
 
 #include <mconfig.h>
-#include "endian.h"
+#include "endianconv.h"
 
 /* Write a 64-bit quantity out into memory in BIG ENDIAN order */
 void write_be64(in, out)
