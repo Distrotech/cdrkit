@@ -4,6 +4,7 @@ cdrkit (5:1.0~pre5-2) unstable; urgency=low
     + typos in wodim.1 fixes, thanks to J. Alto (closes: #386898)
     + enabled libedc support (closes: #387429)
   * fixed installation of FAQ and FORK files (closes: #386735)
+  * remove . from the include list, patch by Modestas Vainius (closes: 358497)
 
  -- Eduard Bloch <blade@debian.org>  Tue, 12 Sep 2006 11:16:34 +0200
 

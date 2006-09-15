@@ -35,12 +35,12 @@ along with this program; if not, write to the Free Software
 Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif
 
 #include <errno.h>
 #include <utypes.h>
-#include <fnmatch.h>
+#include "fnmatch.h"
 
 #ifndef	__STDC__
 #define	const

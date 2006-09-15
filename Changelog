@@ -11,6 +11,10 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
   * better track numbers extraction command in cdda2ogg/cdda2mp3
   * reenabled (forgotten) support for libedc
 
+  [ Modestas Vainius ]
+  * dropped . from the include path and fixed mkisofs source to use the local
+    headers
+
   [ Christian Fromme ]
   * detailed review and correction of author related data in manpages and
     README files

@@ -1,5 +1,5 @@
 PROJECT (READECD)
-INCLUDE_DIRECTORIES(../include ../cdrecord . ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../cdrecord ${CMAKE_BINARY_DIR})
 INCLUDE(../include/AddScgBits.cmake)
 
 AUX_SOURCE_DIRECTORY(. READCD_SRCS)

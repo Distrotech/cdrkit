@@ -1,5 +1,5 @@
 PROJECT (SCGCHECK)
-INCLUDE_DIRECTORIES(../include ../cdrecord . )
+INCLUDE_DIRECTORIES(../include ../cdrecord )
 INCLUDE(../include/AddScgBits.cmake)
 
 
