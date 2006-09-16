@@ -86,7 +86,7 @@ static	char sccsid[] =
 struct directory *root = NULL;
 int		path_ind;
 
-char	version_string[] = "mkisofs 2.01.01a05-unofficial-iconv";
+char	version_string[] = "mkisofs 2.01.01a05+ck1, cdrkit edition";
 
 char		*outfile;
 FILE		*discimage;
