@@ -118,8 +118,18 @@ else {
 # check for pointless requests
 my $testsize=0;
 for(@sizes) {
-   die "Too large object(s) ($_) for the given max size: @{$names{$_}}\n" if($_>$max);
-
+   if($_>$max) {
+      print STDERR "Too large object(s) ($_) for the given max size($max):\n";
+      foreach my $item (@{$names{$_}}) {
+        if(ref($item) eq "ARRAY") {
+           print ("{\n\t".join("\n\t",@{$item})."\n}\n");
+        }
+        else {
+           print "$item\n";
+        }
+      }
+      die "Aborting...\n";
+   }
    $testsize+=$_;
 }
 
@@ -459,7 +469,7 @@ dirsplit [options] [advanced options] < directory >
  -a|--accuracy NUMBER (1=faster, large number=better efficiency, default: 500)
  -S|--simple   Simple/stupid/alphabetic mode
  -T|--input    FILENAME (or - for STDIN):  List with sizes and paths, try:
-               find dir -type f -printf \"%s %p\n\"
+               find dir -type f -printf \"%s %p\\n\"
                to get an example. Avoid duplicates! Unit suffixes are allowed.
  -h|--help     Show this option summary
  -v|--verbose  More verbosity
