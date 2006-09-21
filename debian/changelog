@@ -1,13 +1,23 @@
-cdrkit (5:1.0~pre5-2) unstable; urgency=low
+cdrkit (5:1.0~pre5-1) unstable; urgency=low
 
   * New upstream source snapshot
     + typos in wodim.1 fixes, thanks to J. Alto (closes: #386898)
     + enabled libedc support (closes: #387429)
   * fixed installation of FAQ and FORK files (closes: #386735)
-  * remove . from the include list, patch by Modestas Vainius (closes: 358497)
+  * remove . from the include list, patch by Modestas Vainius
+    (closes: #358497, confirming fix by Steinar H. Gunderson)
   * readded mkzftree to the mkisofs files (closes: #387927)
 
  -- Eduard Bloch <blade@debian.org>  Tue, 12 Sep 2006 11:16:34 +0200
+
+cdrkit (5:1.0~pre4-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Don't build with -I. -- fixes include of wrong endian.h, which in turn
+    makes sure mkisofs capitalizes filenames correctly; patch from 
+    Modestas Vainius. (Closes: #358497)
+
+ -- Steinar H. Gunderson <sesse@debian.org>  Thu, 21 Sep 2006 13:58:12 +0200
 
 cdrkit (5:1.0~pre4-1) unstable; urgency=low
 
