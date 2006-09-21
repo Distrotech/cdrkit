@@ -1274,7 +1274,7 @@ scg_sense_table(scgp)
 		return (0);
 
 	if (cp->sense.code >= 0x70)
-	return &(cp->sense);
+	return (Uchar*) &(cp->sense);
 }
 
 
