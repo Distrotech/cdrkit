@@ -1,16 +1,8 @@
 #! /bin/sh
-# Demo script for processing all audio tracks with a mp3 decoder
+# Script for processing all audio tracks with an ogg or mp3 decoder
 # based on a news article by Tom Kludy
 # This variant uses named pipes in order to save space.
-# There is another variant of this script, which uses temporary
-# wav files (see cdda2mp3.new).
-#
-# usage: cdda2ogg <name prefix for all ogg files>
-#
-# list_audio_tracks is a (symbolic) link to cdda2wav
-# and used to generate a list of audio track numbers and start
-# sectors, which in turn are used in a loop to spawn cdda2wav
-# and the post processor on a track by track basis.
+# usage: cdda2ogg <name prefix for all ogg/mp3 files>
 
 # specify the sampling program and its options
 # do not specify the track option here!
@@ -20,15 +12,37 @@ CDDA2WAV_OPTS=${CDDA2WAV_OPTS:-'-H -P0 -q'}
 # for normal use, comment out the next line
 #DEBUG='-d1'
 
+suffix=`basename $0 | cut -c6-`  # suffix: ogg or mp3
+
 # the post processor is fed through a pipe to avoid space waste
 # specify the post processing program and its options
-MP_CODER=${MP_CODER:-oggenc}
+case "$suffix" in
+   ogg|OGG|Ogg)
+   # ensure the right suffix for suffixes later
+   suffix=ogg
+   missmsg="Encoder not found. Install one first! (eg. vorbis-tools)"
+   MP_CODER=${MP_CODER:-oggenc}
+   outopt="-o"
+   ;;
+   mp3|MP3|mpeg3|MPEG3|Mp3)
+   suffix=mp3
+   missmsg="Encoder not found. Install one first! (eg. lame)"
+   MP_CODER=${MP_CODER:-lame}
+   outopt=""
+   ;;
+   *)
+   echo Unknown target file type: $suffix. Valid names for this application are: cdda2mp3, cdda2ogg.
+   exit 1
+   ;;
+esac
+
 MP_OPTIONS=${MP_OPTIONS:-''}
 
 export MP_CODER
+
 MP_CODER=$(which $MP_CODER 2>/dev/null)
 if [ ! -x "$MP_CODER" ] ; then
-   echo "Encoder not found. Install one first! (eg. vorbis-tools)"
+   echo $missmsg
    exit 1
 fi
 
@@ -37,12 +51,14 @@ export CDDA_DEVICE
 
 FILEPREFIX=${1:-audiotrack}
 
-if [ -e /etc/default/cdda2ogg ]; then
-	. /etc/default/cdda2ogg
+if [ -e /etc/default/cdda2$suffix ]; then
+	. /etc/default/cdda2$suffix
 fi
 
 if [ -z "$LIST" ] ; then
    echo Looking for available tracks...
+   # could use list_audio_tracks instead but that would need an extra filter as
+   # well, and this way we do not depend on that symlink
    LIST="$( cdda2wav -J -vtoc -H 2>&1 | sed -e 's/^[^\ ].*//; s/\.([^)]*)/ /g;s/,//g;')"
    if [ -z "$LIST" ] ; then
       echo "ERROR: No valid audio tracks detected"
@@ -54,11 +70,11 @@ echo Fetching `echo $LIST | wc -w` tracks from $CDDA_DEVICE, encoding with $MP_C
 echo Cancel with Ctrl-C, watch out for error messages.
 
 for TRACK in $LIST ; do
-   NAME="`printf "%02d" $TRACK`-$FILEPREFIX.ogg"
+   NAME="`printf "%02d" $TRACK`-$FILEPREFIX.$suffix"
    echo
    echo "############ Starting with Track Nr. $TRACK -> $NAME ############"
   $CDDA2WAV $CDDA2WAV_OPTS -t$TRACK $DEBUG - | \
-  $MP_CODER $MP_OPTIONS - > "$NAME"
+  $MP_CODER $MP_OPTIONS - $outopt "$NAME"
 
   # check result code
   RES=$?
