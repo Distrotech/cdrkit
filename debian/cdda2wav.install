@@ -1,5 +1,4 @@
 debian/tmp/usr/bin/cdda2wav
-debian/tmp/usr/bin/cdda2mp3
 debian/tmp/usr/bin/cdda2ogg
 debian/tmp/usr/bin/readmult
 debian/tmp/usr/bin/pitchplay

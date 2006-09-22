@@ -2,8 +2,9 @@ cdrkit (5:1.0~pre5-1) unstable; urgency=low
 
   * New upstream source snapshot
     + typos in wodim.1 fixes, thanks to J. Alto (closes: #386898)
-    + enabled libedc support (closes: #387429)
+    + reenabled libedc support (closes: #387429)
   * fixed installation of FAQ and FORK files (closes: #386735)
+  * cdda2ogg/cdda2mp3 are unified, installing cdda2mp3 as symlink
   * remove . from the include list, patch by Modestas Vainius
     (closes: #358497, confirming fix by Steinar H. Gunderson)
   * readded mkzftree to the mkisofs files (closes: #387927)
