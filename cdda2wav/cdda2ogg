@@ -12,19 +12,17 @@ CDDA2WAV_OPTS=${CDDA2WAV_OPTS:-'-H -P0 -q'}
 # for normal use, comment out the next line
 #DEBUG='-d1'
 
-suffix=`basename $0 | cut -c6-`  # suffix: ogg or mp3
-
 # the post processor is fed through a pipe to avoid space waste
 # specify the post processing program and its options
-case "$suffix" in
-   ogg|OGG|Ogg)
+case $0 in
+   *ogg|*OGG|*Ogg)
    # ensure the right suffix for suffixes later
    suffix=ogg
    missmsg="Encoder not found. Install one first! (eg. vorbis-tools)"
    MP_CODER=${MP_CODER:-oggenc}
    outopt="-o"
    ;;
-   mp3|MP3|mpeg3|MPEG3|Mp3)
+   *mp3|*MP3|*mpeg3|*MPEG3|*Mp3)
    suffix=mp3
    missmsg="Encoder not found. Install one first! (eg. lame)"
    MP_CODER=${MP_CODER:-lame}
@@ -37,8 +35,6 @@ case "$suffix" in
 esac
 
 MP_OPTIONS=${MP_OPTIONS:-''}
-
-export MP_CODER
 
 MP_CODER=$(which $MP_CODER 2>/dev/null)
 if [ ! -x "$MP_CODER" ] ; then
@@ -82,6 +78,5 @@ for TRACK in $LIST ; do
     echo File $NAME failed \(result $RES\). Aborted. >&2
     break
   fi
-  TRACK=`echo $(($TRACK+1))`
 done
 
