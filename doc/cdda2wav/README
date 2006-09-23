@@ -4,7 +4,7 @@ This README describes hardware related matters as well as the installation of
 cdda2wav, the sampling utility. 
 
 This cdda2wav utility comes with the Cdrkit project. Cdrkit is a spinoff from 
-cdrtools. However, the cdrtools developers are no longer involved in the 
+cdrtools. However, the cdrtools developers are not involved in the 
 development of this spinoff and therefore shall not be made responsible for 
 any problem caused by it. Please do not try to get support for this program by 
 contacting the original authors.
