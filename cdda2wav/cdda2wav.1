@@ -258,19 +258,28 @@ prints verbose information about the CD.
 .B Level
 is a list of comma separated suboptions. Each suboption controls the type of information to be reported.
 .TS H
-center box;
-r | l.
+allbox;
+c cw(1i)
+r l.
 Suboption	Description
-_
 disable	no information is given, warnings appear however
 all	all information is given
 toc	show table of contents
 summary	show a summary of the recording parameters
 indices	determine and display index offsets
 catalog	retrieve and display the media catalog number MCN
-trackid	retrieve and display all Intern. Standard Recording Codes ISRC
-sectors	show the table of contents in start sector notation
-titles	show the table of contents with track titles (when available)
+trackid	T{
+.na
+retrieve and display all International Standard Recording Codes ISRC
+T}
+sectors	T{
+.na
+show the table of contents in start sector notation
+T}
+titles	T{
+.na
+show the table of contents with track titles (when available)
+T}
 .TE
 .TP
 .B \-N " --no-write"
