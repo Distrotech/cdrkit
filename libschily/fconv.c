@@ -40,10 +40,7 @@
 #include <strdefs.h>
 #include <schily.h>
 
-#if	!defined(HAVE_STDLIB_H) || defined(HAVE_DTOA)
-extern	char	*ecvt __PR((double, int, int *, int *));
-extern	char	*fcvt __PR((double, int, int *, int *));
-#endif
+#include "cvt.h"
 
 #if	defined(HAVE_ISNAN) && defined(HAVE_ISINF)
 /*
@@ -109,10 +106,6 @@ extern	char	*fcvt __PR((double, int, int *, int *));
 #define	isinf(val)	(0)
 #endif
 
-#if !defined(HAVE_ECVT) || !defined(HAVE_FCVT) || !defined(HAVE_GCVT)
-#include "cvt.c"
-#endif
-
 static	char	_js_nan[] = "(NaN)";
 static	char	_js_inf[] = "(Infinity)";
 
@@ -125,7 +118,7 @@ static	int	_ferr __PR((char *, double));
 
 EXPORT int
 ftoes(s, val, fieldwidth, ndigits)
-	register	char 	*s;
+	register	char	*s;
 			double	val;
 	register	int	fieldwidth;
 	register	int	ndigits;
@@ -134,7 +127,7 @@ ftoes(s, val, fieldwidth, ndigits)
 	register	char	*rs;
 	register	int	len;
 	register	int	rdecpt;
-			int 	decpt;
+			int	decpt;
 			int	sign;
 
 	if ((len = _ferr(s, val)) > 0)

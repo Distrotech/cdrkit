@@ -41,15 +41,9 @@
 #include <utypes.h>
 #include <standard.h>
 
-#ifdef	HAVE_DTOA	/* 4.4BSD floating point implementation */
-#ifdef	HAVE_DTOA_R
-extern	char *__dtoa	__PR((double value, int mode, int ndigit, int *decpt, int *sign, char **ep, char **resultp));
-#else
-extern	char *__dtoa	__PR((double value, int mode, int ndigit, int *decpt, int *sign, char **ep));
-#endif
-#else
+#include "cvt.h"
 
-#if	!defined(HAVE_ECVT)
+#ifndef	HAVE_DTOA	/* 4.4BSD floating point implementation */
 /*
  * As a hint from Thomas Langer <Langer.Thomas@gmx.net>, we use strtod.c in
  * hope that we then will be able to print floating point numbers on all
@@ -66,23 +60,10 @@ extern	char *__dtoa	__PR((double value, int mode, int ndigit, int *decpt, int *s
  * If at least ecvt() is present, we don't need __dtoa() from strtod.c
  */
 #include "strtod.c"
-#define	HAVE_DTOA
-#endif	/* !defined(HAVE_ECVT) */
+//#define	HAVE_DTOA
+#endif	/* !defined(HAVE_DTOA) */
 
-#endif	/* HAVE_DTOA */
-
-#ifndef	HAVE_ECVT
-EXPORT	char *ecvt	__PR((double value, int ndigit, int *decpt, int *sign));
-#endif
-#ifndef	HAVE_FCVT
-EXPORT	char *fcvt	__PR((double value, int ndigit, int *decpt, int *sign));
-#endif
-#ifndef	HAVE_GCVT
-EXPORT	char *gcvt	__PR((double value, int ndigit, char *buf));
-#endif
-
-#if	!defined(HAVE_ECVT) && defined(HAVE_DTOA)
-#define	HAVE_ECVT
+#if !defined(HAVE_ECVT)
 char *
 ecvt(value, ndigit, decpt, sign)
 	double	value;
@@ -139,8 +120,7 @@ static	char	*result;
 }
 #endif
 
-#if	!defined(HAVE_FCVT) && defined(HAVE_DTOA)
-#define	HAVE_FCVT
+#if !defined(HAVE_FCVT)
 char *
 fcvt(value, ndigit, decpt, sign)
 	double	value;
@@ -199,7 +179,6 @@ static	char	*result;
 #endif
 
 #ifndef	HAVE_GCVT
-#define	HAVE_GCVT
 char *
 gcvt(number, ndigit, buf)
 	double	number;

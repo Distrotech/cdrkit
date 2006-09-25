@@ -1,12 +1,13 @@
 PROJECT (READECD)
 INCLUDE_DIRECTORIES(../include ../cdrecord ${CMAKE_BINARY_DIR})
 INCLUDE(../include/AddScgBits.cmake)
+INCLUDE(../include/AddSchilyBits.cmake)
 
 AUX_SOURCE_DIRECTORY(. READCD_SRCS)
 
 LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)
 ADD_EXECUTABLE (readcd ${READCD_SRCS})
-TARGET_LINK_LIBRARIES(readcd ${SCG_LIBS} schily deflt)
+TARGET_LINK_LIBRARIES(readcd ${EXTRA_LIBS} deflt)
 SET_TARGET_PROPERTIES(readcd PROPERTIES  SKIP_BUILD_RPATH TRUE)
 
 INSTALL(TARGETS readcd DESTINATION bin)

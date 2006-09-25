@@ -66,7 +66,7 @@
 #include <schily.h>
 #include "endianconv.h"
 #include <errno.h>
-#include <elf.h>
+#include <glibc_elf.h>
 
 int             add_boot_mipsel_filename  __PR((char *filename));
 static  int     boot_mipsel_write         __PR((FILE *outfile));

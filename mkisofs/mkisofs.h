@@ -548,12 +548,11 @@ extern int get_session_start __PR((int *));
 #   ifdef USE_ICONV
 extern	size_t	convert_to_unicode	__PR((unsigned char *buffer,
 			int size, char *source, struct unls_table *inls));
-extern	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
 #   else
 extern	void	convert_to_unicode	__PR((unsigned char *buffer,
 			int size, char *source, struct unls_table *inls));
-extern	int	joliet_strlen		__PR((const char *string));
 #   endif
+extern	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
 #endif
 extern unsigned char conv_charset __PR((unsigned char, struct unls_table *,
 				struct unls_table *));

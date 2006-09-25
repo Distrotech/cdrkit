@@ -43,9 +43,10 @@ them. That is and always was our point.
 
 
 For our fork we used the last GPL-licensed version of the program code
-and killed the incompatibly licensed build system. It is now replaced by
-a cmake system, and the whole source we distribute should be free of
-other incompatibilities, as to the best of our current knowledge.
+from Cdrtools 2.01.01a08 (May 2006) and killed the incompatibly licensed
+build system. It is now replaced by a cmake system, and the whole source
+we distribute should be free of other incompatibilities, as to the best
+of our current knowledge.
 
 
 Anyone who wants to help with this fork, particularly developers of

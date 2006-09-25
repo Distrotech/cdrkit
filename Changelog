@@ -11,6 +11,7 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
   * better track numbers extraction command in cdda2ogg/cdda2mp3
   * reenabled (forgotten) support for libedc
   * table formating fixes in cdda2wav.1, helps small terminals
+  * AIX 5l port
 
   [ Eugen Dedu ]
   * corrections and constructive help on cdda2ogg
@@ -18,6 +19,11 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
   [ Modestas Vainius ]
   * dropped . from the include path and fixed mkisofs source to use the local
     headers
+
+  [ Lorenz Minder ]
+  * Fix of the joliet_strlen signature
+  * Code refactoring around *cvt* declarations to make the conditional
+    compilation more reliable, especially on BSD and AIX
 
   [ Christian Fromme ]
   * detailed review and correction of author related data in manpages and
