@@ -60,7 +60,7 @@
  * If at least ecvt() is present, we don't need __dtoa() from strtod.c
  */
 #include "strtod.c"
-//#define	HAVE_DTOA
+/* #define	HAVE_DTOA */
 #endif	/* !defined(HAVE_DTOA) */
 
 #if !defined(HAVE_ECVT)
