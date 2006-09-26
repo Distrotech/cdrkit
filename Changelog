@@ -12,6 +12,7 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
   * reenabled (forgotten) support for libedc
   * table formating fixes in cdda2wav.1, helps small terminals
   * AIX 5l port
+  * killing FIFO process on ungraceful termination
 
   [ Eugen Dedu ]
   * corrections and constructive help on cdda2ogg

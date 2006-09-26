@@ -417,7 +417,7 @@ LOCAL	int	buf_idx = 0;		/* Initialize to fix an Amiga bug   */
 LOCAL	int	buf_idx_reader = 0;	/* Separate var to allow vfork()    */
 					/* buf_idx_reader is for the process */
 					/* that fills the FIFO		    */
-LOCAL	pid_t	faio_pid;
+LOCAL	pid_t	faio_pid = -1;
 LOCAL	BOOL	faio_didwait;
 
 #ifdef AMIGA
@@ -589,6 +589,7 @@ kill_faio()
 {
 	if (faio_pid > 0)
 		kill(faio_pid, SIGKILL);
+  faio_pid=-1;
 }
 
 EXPORT int

@@ -1321,7 +1321,8 @@ if (lverbose > 2)
    The real information is from read disk info command*/
    if((dp->cdr_dstat->ds_disktype&DT_DVD) && (dp->cdr_dstat->ds_trlast>0)){
       trackno=dp->cdr_dstat->ds_trlast-1;
-      printf("trackno=%d\n",trackno);
+	  if (lverbose > 2)
+		  printf("trackno=%d\n",trackno);
    }
 
 	if ((tracks + trackno) > MAX_TRACK) {
@@ -1488,6 +1489,7 @@ restore_it:
 	/*
 	 * Try to restore the old sector size and stop FIFO.
 	 */
+	kill_faio();
 	comexit(errs?-2:0);
 	return (0);
 }
@@ -1524,13 +1526,6 @@ gracewait(dp, didgracep)
 	signal(SIGINT, intr);
 	signal(SIGHUP, intr);
 	signal(SIGTERM, intr);
-	/*
-	 * Note to people who like to change this: I am geting patch requests
-	 * for an option to reduce the grace_time two times a year. I am not
-	 * willing to change things with respect to grace_time because it would
-	 * not reduce the needed time in a significant amount and because it
-	 * would break other things.
-	 */
 
 	for (i = gracetime; --i >= 0; ) {
 		sleep(1);
