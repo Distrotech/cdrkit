@@ -3,7 +3,8 @@ SCSI transport has not been tested yet because of missing hardware.
 
  - install cmake either from source or from binaries downloadable on cmake.org.
    Make sure the cmake is in your PATH.
- - install GCC compiler available on gcc.org
+ - GCC compiler (available on gcc.org) is recommended, however the native xlc
+   compiler should work as well.
 
 Follow instructions from the INSTALL file.
 
