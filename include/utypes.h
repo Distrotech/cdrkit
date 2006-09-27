@@ -426,9 +426,6 @@ typedef	unsigned char		UInt8_t;
 #define	NLINK_T_MIN	TYPE_MINVAL(nlink_t)
 #define	NLINK_T_MAX	TYPE_MAXVAL(nlink_t)
 
-#define	BLKSIZE_T_MIN	TYPE_MINVAL(blksize_t)
-#define	BLKSIZE_T_MAX	TYPE_MAXVAL(blksize_t)
-
 #define	BLKCNT_T_MIN	TYPE_MINVAL(blkcnt_t)
 #define	BLKCNT_T_MAX	TYPE_MAXVAL(blkcnt_t)
 

@@ -52,19 +52,19 @@ SET(HAVE_GETNAMEINFO false)
 SET(HAVE_INET_NTOA false)
 ENDIF (WIN32) # workaround for cygwin 
 
-INCLUDE(CheckCSourceCompiles)
-SET(TESTSRC "
-#include <sys/types.h>
-int main() { return sizeof(blksize_t); }
-")
-CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_NATIVE_BLKSIZE_T)
-IF(HAVE_NATIVE_BLKSIZE_T)
-   SET(HAVE_NATIVE_BLKSIZE_T "/* <sys/types.h> provides blksize_t*/")
-ELSE(HAVE_NATIVE_BLKSIZE_T)
-   SET(HAVE_NATIVE_BLKSIZE_T "
-#define blksize_t long
-")
-ENDIF(HAVE_NATIVE_BLKSIZE_T)
+##INCLUDE(CheckCSourceCompiles)
+##SET(TESTSRC "
+###include <sys/types.h>
+##int main() { return sizeof(blksize_t); }
+##")
+##CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_NATIVE_BLKSIZE_T)
+##IF(HAVE_NATIVE_BLKSIZE_T)
+##   SET(HAVE_NATIVE_BLKSIZE_T "/* <sys/types.h> provides blksize_t*/")
+##ELSE(HAVE_NATIVE_BLKSIZE_T)
+##   SET(HAVE_NATIVE_BLKSIZE_T "
+###define blksize_t long
+##")
+##ENDIF(HAVE_NATIVE_BLKSIZE_T)
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 
