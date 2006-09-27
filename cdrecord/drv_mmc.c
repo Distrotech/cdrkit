@@ -243,13 +243,13 @@ cdr_t   cdr_mdvd = {
          scsi_unload,
          read_buff_cap,
          cmd_dummy,                              /* recovery_needed      */
-         (int(*)__PR((SCSI *, int)))cmd_dummy,   /* recover              */
+         (int(*)__PR((SCSI *, struct cdr_cmd*,int)))cmd_dummy,   /* recover              */
          speed_select_mdvd,
          select_secsize,
          next_wr_addr_mdvd,
          (int(*)__PR((SCSI *, Ulong)))cmd_ill,   /* reserve_track        */
          scsi_cdr_write,
-         (int(*)__PR((SCSI *scgp, int, track_t *)))cmd_dummy, /* gen_cue */
+         (int(*)__PR((struct track*,void*,int)))cmd_dummy, /* gen_cue */
 	 (int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
  	 write_leadin_mmc,
          open_track_mdvd,
@@ -2105,7 +2105,7 @@ speed_select_mdvd(scgp, dp, speedp)
   perf_desc[26] = 1000 >> 8;
   perf_desc[27] = 1000 & 0xFF;  
   
-  //retcode = scsi_set_streaming(scgp, NULL, 0);
+  /* retcode = scsi_set_streaming(scgp, NULL, 0); */
   retcode = scsi_set_streaming(scgp, &perf_desc, sizeof(perf_desc));
   if (retcode == -1) return retcode;
   retcode = speed_select_mmc(scgp, dp, speedp);
@@ -2866,10 +2866,10 @@ extern	char	*buf;
 		printf("Error: disk already formated, ignoring.\n");
 	        return ret;
         }
-	addr[0] = 0;           // "Reserved"
-	addr[1] = 2;           // "IMMED" flag
-	addr[2] = 0;           // "Descriptor Length" (MSB)
-	addr[3] = 8;           // "Descriptor Length" (LSB)
+	addr[0] = 0;           /* "Reserved" */
+	addr[1] = 2;           /* "IMMED" flag */
+	addr[2] = 0;           /* "Descriptor Length" (MSB) */
+	addr[3] = 8;           /* "Descriptor Length" (LSB) */
 	addr[4+0] = 0xff;
 	addr[4+1] = 0xff;
 	addr[4+2] = 0xff;
