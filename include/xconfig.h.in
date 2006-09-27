@@ -431,7 +431,7 @@
 /* #undef dev_t */			/* To be used if dev_t is not present */
 /* #undef ino_t */			/* To be used if ino_t is not present */
 /* #undef nlink_t */			/* To be used if nlink_t is not present */
-@HAVE_NATIVE_BLKSIZE_T@
+/* @HAVE_NATIVE_BLKSIZE_T@ */
 /* #undef blkcnt_t */			/* To be used if blkcnt_t is not present */
 /*
  * Important:	Next Step needs time.h for clock_t (because of a bug)
