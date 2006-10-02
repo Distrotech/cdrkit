@@ -13,6 +13,8 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
   * table formating fixes in cdda2wav.1, helps small terminals
   * AIX 5l port
   * killing FIFO process on ungraceful termination
+  * scsi-linux-sg.c: skipping unallowed devices, cleanup/consolidation of the
+    old workaround(s) for ATA now for SCSI too
 
   [ Eugen Dedu ]
   * corrections and constructive help on cdda2ogg
