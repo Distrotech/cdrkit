@@ -554,20 +554,20 @@ static void usage2 (szMessage, va_alist)
 	va_dcl
 #endif
 {
-  va_list marker;
+	va_list marker;
 
 #ifdef  PROTOTYPES
-  va_start(marker, szMessage);
+	va_start(marker, szMessage);
 #else
-  va_start(marker);
+	va_start(marker);
 #endif
 
-  error("%r", szMessage, marker);
+	vfprintf(stderr, szMessage, marker);
 
-  va_end(marker);
-  fprintf(stderr, "\nPlease use -help or consult the man page for help.\n");
+	va_end(marker);
+	fprintf(stderr, "\nPlease use -help or consult the man page for help.\n");
 
-  exit (1);
+	exit (1);
 }
 
 
@@ -588,7 +588,7 @@ void FatalError (szMessage, va_alist)
 	va_start(marker);
 #endif
 
-	error("%r", szMessage, marker);
+	vfprintf(stderr, szMessage, marker);
 
 	va_end(marker);
 
