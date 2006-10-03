@@ -2672,7 +2672,7 @@ Rate   Divider      Rate   Divider      Rate   Divider      Rate   Divider\n\
 
 #if	0
   if (!global.paranoia_selected) {
-    error("NICE\n");
+    fprintf(stderr, "NICE\n");
     /* try to get some extra kicks */
     priv_on();
     needroot(0);
@@ -3102,7 +3102,7 @@ Rate   Divider      Rate   Divider      Rate   Divider      Rate   Divider\n\
 		global.have_forked = 0;
 #if	0
 		if (!global.paranoia_selected) {
-			error("REAL\n");
+			fprintf(stderr, "REAL\n");
 			switch_to_realtime_priority();
 		}
 #endif

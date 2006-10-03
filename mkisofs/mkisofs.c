@@ -2490,7 +2490,7 @@ parse_input_files:
 	 */
 	if (dvd_video && use_Joliet) {
 		use_Joliet = 0;
-		error("Warning: Disabling Joliet support for DVD-Video.\n");
+		fprintf(stderr, "Warning: Disabling Joliet support for DVD-Video.\n");
 	}
 	if (use_udf && !use_Joliet)
 		jlen = 255;
@@ -2499,27 +2499,27 @@ parse_input_files:
 		iso9660_namelen = MAX_ISONAME_V2_RR;
 
 	if (warn_violate)
-		error("Warning: creating filesystem that does not conform to ISO-9660.\n");
+		fprintf(stderr, "Warning: creating filesystem that does not conform to ISO-9660.\n");
 	if (iso9660_level > 3)
-		error("Warning: Creating ISO-9660:1999 (version 2) filesystem.\n");
+		fprintf(stderr, "Warning: Creating ISO-9660:1999 (version 2) filesystem.\n");
 	if (iso9660_namelen > LEN_ISONAME)
-		error("Warning: ISO-9660 filenames longer than %d may cause buffer overflows in the OS.\n",
+		fprintf(stderr, "Warning: ISO-9660 filenames longer than %d may cause buffer overflows in the OS.\n",
 			LEN_ISONAME);
 	if (use_Joliet && !use_RockRidge) {
-		error("Warning: creating filesystem with (nonstandard) Joliet extensions\n");
-		error("         but without (standard) Rock Ridge extensions.\n");
-		error("         It is highly recommended to add Rock Ridge\n");
+		fprintf(stderr, "Warning: creating filesystem with (nonstandard) Joliet extensions\n");
+		fprintf(stderr, "         but without (standard) Rock Ridge extensions.\n");
+		fprintf(stderr, "         It is highly recommended to add Rock Ridge\n");
 	}
 	if (transparent_compression) {
-		error("Warning: using transparent compression. This is a nonstandard Rock Ridge\n");
-		error("         extension. The resulting filesystem can only be transparently\n");
-		error("         read on Linux. On other operating systems you need to call\n");
-		error("         mkzftree by hand to decompress the files.\n");
+		fprintf(stderr, "Warning: using transparent compression. This is a nonstandard Rock Ridge\n");
+		fprintf(stderr, "         extension. The resulting filesystem can only be transparently\n");
+		fprintf(stderr, "         read on Linux. On other operating systems you need to call\n");
+		fprintf(stderr, "         mkzftree by hand to decompress the files.\n");
 	}
 	if (transparent_compression && !use_RockRidge) {
-		error("Warning: transparent decompression is a Linux Rock Ridge extension, but\n");
-		error("         creating filesystem without Rock Ridge attributes; files\n");
-		error("         will not be transparently decompressed.\n");
+		fprintf(stderr, "Warning: transparent decompression is a Linux Rock Ridge extension, but\n");
+		fprintf(stderr, "         creating filesystem without Rock Ridge attributes; files\n");
+		fprintf(stderr, "         will not be transparently decompressed.\n");
 	}
 	init_unls();		/* Initialize UNICODE tables */
 
@@ -3162,7 +3162,7 @@ if (check_session == 0)
 				}
 			}
 			if (debug)
-				error("GRAFT:'%s'\n", xpnt);
+				fprintf(stderr, "GRAFT:'%s'\n", xpnt);
 			/*
 			 * Loop down deeper and deeper until we find the
 			 * correct insertion spot.
@@ -3190,7 +3190,7 @@ if (check_session == 0)
 				}
 				*pnt = '\0';
 				if (debug) {
-					error("GRAFT Point:'%s' in '%s : %s' (%s)\n",
+					fprintf(stderr, "GRAFT Point:'%s' in '%s : %s' (%s)\n",
 						xpnt,
 						graft_dir->whole_name,
 						graft_dir->de_name,
@@ -3232,7 +3232,7 @@ if (check_session == 0)
 		} else {
 			if (S_ISDIR(st.st_mode)) {
 				if (debug) {
-					error("graft_dir: '%s : %s', node: '%s', (scan)\n",
+					fprintf(stderr, "graft_dir: '%s : %s', node: '%s', (scan)\n",
 						graft_dir->whole_name,
 						graft_dir->de_name, node);
 				}
@@ -3241,7 +3241,7 @@ if (check_session == 0)
 					exit(1);
 				}
 				if (debug) {
-					error("scan done\n");
+					fprintf(stderr, "scan done\n");
 				}
 			} else {
 				if (short_name == NULL) {
@@ -3255,7 +3255,7 @@ if (check_session == 0)
 					}
 				}
 				if (debug) {
-					error("graft_dir: '%s : %s', node: '%s', short_name: '%s'\n",
+					fprintf(stderr, "graft_dir: '%s : %s', node: '%s', short_name: '%s'\n",
 						graft_dir->whole_name,
 						graft_dir->de_name, node,
 						short_name);
@@ -3733,7 +3733,7 @@ escstrcpy(to, from)
 	char	*p = to;
 
 	if (debug)
-		error("FROM: '%s'\n", from);
+		fprintf(stderr, "FROM: '%s'\n", from);
 
 	while ((*p = *from++) != '\0') {
 		if (*p == '\\') {
@@ -3747,7 +3747,7 @@ escstrcpy(to, from)
 		p++;
 	}
 	if (debug)
-		error("ESC:  '%s'\n", to);
+		fprintf(stderr, "ESC:  '%s'\n", to);
 	return (to);
 }
 

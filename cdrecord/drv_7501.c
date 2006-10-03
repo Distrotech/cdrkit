@@ -316,7 +316,7 @@ static const char *sd_cw7501_error_str[] = {
 	"\305\000Buffer error during recording",		/* C5 00 */
 	"\307\000Disk Style mismatch",				/* C7 00 */
 	"\312\000Power Calibration error",			/* CA 00 */
-	"\313\000Write error (Fatal Error/Time out)",		/* CB 00 */
+	"\313\000Write fprintf(stderr, Fatal Error/Time out)",		/* CB 00 */
 	"\314\000Not enough space (Leadin/Leadout space)",	/* CC 00 */
 	"\315\000No track present to finalize",			/* CD 00 */
 	"\317\000Unable to recover damaged disk",		/* CF 00 */

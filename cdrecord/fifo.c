@@ -630,7 +630,7 @@ faio_reader(trackp)
 			/* XXX This should be fixed soon */
 #endif
 	if (debug)
-		error("\nfaio_reader _exit(0)\n");
+		fprintf(stderr, "\nfaio_reader _exit(0)\n");
 	_exit(0);
 }
 

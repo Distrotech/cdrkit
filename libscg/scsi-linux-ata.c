@@ -130,7 +130,7 @@ LOCAL void
 sglog(const char *fmt, ...)
 #else
 LOCAL void
-error(fmt, va_alist)
+fprintf(stderr, fmt, va_alist)
 	char	*fmt;
 	va_dcl
 #endif
@@ -210,10 +210,10 @@ scgo_aopen(scgp, device)
 		int	nopen = 0;
 
 	if (scgp->overbose)
-		error("Warning: Using ATA Packet interface.\n");
+		fprintf(stderr, "Warning: Using ATA Packet interface.\n");
 	if (scgp->overbose) {
-		error("Warning: The related Linux kernel interface code seems to be unmaintained.\n");
-		error("Warning: There is absolutely NO DMA, operations thus are slow.\n");
+		fprintf(stderr, "Warning: The related Linux kernel interface code seems to be unmaintained.\n");
+		fprintf(stderr, "Warning: There is absolutely NO DMA, operations thus are slow.\n");
 	}
 
 	log(("\n<<<<<<<<<<<<<<<<  LOGGING ON >>>>>>>>>>>>>>>>>\n"));

@@ -409,7 +409,7 @@ scg_cmd(scgp)
 
 	if (scgp->running) {
 		if (scgp->curcmdname) {
-			error("Currently running '%s' command.\n",
+			fprintf(stderr, "Currently running '%s' command.\n",
 							scgp->curcmdname);
 		}
 		raisecond("SCSI ALREADY RUNNING !!", 0L);

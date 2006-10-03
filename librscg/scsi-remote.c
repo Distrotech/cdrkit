@@ -286,7 +286,7 @@ scgo_ropen(scgp, device)
 	char		*p;
 
 	if (scgp->overbose)
-		error("Warning: Using remote SCSI interface.\n");
+		fprintf(stderr, "Warning: Using remote SCSI interface.\n");
 
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
@@ -999,7 +999,7 @@ rscsigetstatus(scgp, fd, name)
 	if (code != 'A') {
 		/* XXX Hier kommt evt Command not found ... */
 		if (scgp->debug > 0)
-			errmsgno(EX_BAD, "Protocol error (got %s).\n", cbuf);
+			errmsgno(EX_BAD, "Protocol fprintf(stderr, got %s).\n", cbuf);
 		return (rscsiaborted(scgp, fd));
 	}
 	return (number);

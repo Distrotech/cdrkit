@@ -195,7 +195,7 @@ conv_charset(c, inls, onls)
 		 */
 		static BOOL iconv_warned = FALSE;
 		if(!iconv_warned) {
-			error("Warning: Iconv conversion not supported in conv_charset.\n");
+			fprintf(stderr, "Warning: Iconv conversion not supported in conv_charset.\n");
 			iconv_warned = TRUE;
 		}
 		return (c);

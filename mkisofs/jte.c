@@ -927,7 +927,7 @@ void jtwrite(buffer, size, count, submode, islast)
 {
 #ifdef	JTWRITE_DEBUG
 	if (count != 1 || (size % 2048) != 0)
-		error("Count: %d, size: %d\n", count, size);
+		fprintf(stderr, "Count: %d, size: %d\n", count, size);
 #endif
 
     if (!jtemplate_out)

@@ -818,23 +818,23 @@ usage(excode)
 {
 	errmsgno(EX_BAD, "Usage: %s [options] -i filename\n", get_progname());
 
-	error("Options:\n");
-	error("\t-help,-h	Print this help\n");
-	error("\t-version	Print version info and exit\n");
-	error("\t-debug		Print additional debug info\n");
-	error("\t-d		Print information from the primary volume descriptor\n");
-	error("\t-f		Generate output similar to 'find .  -print'\n");
-	error("\t-J		Print information from Joliet extensions\n");
-	error("\t-j charset	Use charset to display Joliet file names\n");
-	error("\t-l		Generate output similar to 'ls -lR'\n");
-	error("\t-p		Print Path Table\n");
-	error("\t-R		Print information from Rock Ridge extensions\n");
-	error("\t-s		Print file size infos in multiples of sector size (%ld bytes).\n", (long)PAGE);
-	error("\t-N sector	Sector number where ISO image should start on CD\n");
-	error("\t-T sector	Sector number where actual session starts on CD\n");
-	error("\t-i filename	Filename to read ISO-9660 image from\n");
-	error("\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
-	error("\t-x pathname	Extract specified file to stdout\n");
+	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "\t-help,-h	Print this help\n");
+	fprintf(stderr, "\t-version	Print version info and exit\n");
+	fprintf(stderr, "\t-debug		Print additional debug info\n");
+	fprintf(stderr, "\t-d		Print information from the primary volume descriptor\n");
+	fprintf(stderr, "\t-f		Generate output similar to 'find .  -print'\n");
+	fprintf(stderr, "\t-J		Print information from Joliet extensions\n");
+	fprintf(stderr, "\t-j charset	Use charset to display Joliet file names\n");
+	fprintf(stderr, "\t-l		Generate output similar to 'ls -lR'\n");
+	fprintf(stderr, "\t-p		Print Path Table\n");
+	fprintf(stderr, "\t-R		Print information from Rock Ridge extensions\n");
+	fprintf(stderr, "\t-s		Print file size infos in multiples of sector size (%ld bytes).\n", (long)PAGE);
+	fprintf(stderr, "\t-N sector	Sector number where ISO image should start on CD\n");
+	fprintf(stderr, "\t-T sector	Sector number where actual session starts on CD\n");
+	fprintf(stderr, "\t-i filename	Filename to read ISO-9660 image from\n");
+	fprintf(stderr, "\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
+	fprintf(stderr, "\t-x pathname	Extract specified file to stdout\n");
 	exit(excode);
 }
 
@@ -1065,7 +1065,7 @@ main(argc, argv)
 			while ((Uchar)jpd.type[0] != ISO_VD_END) {
 
 				if (debug && (Uchar) jpd.type[0] == ISO_VD_SUPPLEMENTARY)
-					error("Joliet escape sequence 0: '%c' 1: '%c' 2: '%c' 3: '%c'\n",
+					fprintf(stderr, "Joliet escape sequence 0: '%c' 1: '%c' 2: '%c' 3: '%c'\n",
 						jpd.escape_sequences[0],
 						jpd.escape_sequences[1],
 						jpd.escape_sequences[2],
@@ -1132,7 +1132,7 @@ main(argc, argv)
 		movebytes(&ipd, &jpd, sizeof (ipd));
 		while ((unsigned char) jpd.type[0] != ISO_VD_END) {
 			if (debug && (unsigned char) jpd.type[0] == ISO_VD_SUPPLEMENTARY)
-				error("Joliet escape sequence 0: '%c' 1: '%c' 2: '%c' 3: '%c'\n",
+				fprintf(stderr, "Joliet escape sequence 0: '%c' 1: '%c' 2: '%c' 3: '%c'\n",
 					jpd.escape_sequences[0],
 					jpd.escape_sequences[1],
 					jpd.escape_sequences[2],

@@ -1658,7 +1658,7 @@ mode_select_g0(scgp, dp, cnt, smp, pf)
 	scmd->cdb.g0_cdb.count = cnt;
 
 	if (scgp->verbose) {
-		error("%s ", smp?"Save":"Set ");
+		fprintf(stderr, "%s ", smp?"Save":"Set ");
 		scg_prbytes("Mode Parameters", dp, cnt);
 	}
 

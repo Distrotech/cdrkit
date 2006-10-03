@@ -280,7 +280,7 @@ xfwrite(buffer, size, count, file, submode, islast)
 
 #ifdef	XFWRITE_DEBUG
 	if (count != 1 || (size % 2048) != 0)
-		error("Count: %d, size: %d\n", count, size);
+		fprintf(stderr, "Count: %d, size: %d\n", count, size);
 #endif
 
 	if (split_output != 0 &&

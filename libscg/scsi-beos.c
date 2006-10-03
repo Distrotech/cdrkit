@@ -386,17 +386,17 @@ scgo_send(scgp)
 	sp->resid		= 0;
 
 	if (scgp->debug > 0) {
-		error("SEND(%d): cmd %02x, cdblen = %d, datalen = %ld, senselen = %ld\n",
+		fprintf(stderr, "SEND(%d): cmd %02x, cdblen = %d, datalen = %ld, senselen = %ld\n",
 			scgp->fd, rdc.command[0], rdc.command_length,
 			rdc.data_length, rdc.sense_data_length);
 	}
 	e = ioctl(scgp->fd, B_RAW_DEVICE_COMMAND, &rdc, sizeof (rdc));
 	if (scgp->debug > 0) {
-		error("SEND(%d): -> %d CAM Status %02X SCSI status %02X\n", e, rdc.cam_status, rdc.scsi_status);
+		fprintf(stderr, "SEND(%d): -> %d CAM Status %02X SCSI status %02X\n", e, rdc.cam_status, rdc.scsi_status);
 	}
 	sp->ux_errno = 0;
 #ifdef	DEBUG
-	error("err %d errno %x CAM %X SL %d DL %d/%d FL %X\n",
+	fprintf(stderr, "err %d errno %x CAM %X SL %d DL %d/%d FL %X\n",
 		e, geterrno(), rdc.cam_status,
 		rdc.sense_data_length, rdc.data_length, sp->size, rdc.flags);
 #endif

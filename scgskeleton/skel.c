@@ -103,20 +103,20 @@ LOCAL void
 usage(ret)
 	int	ret;
 {
-	error("Usage:\tscgskeleton [options]\n");
-	error("options:\n");
-	error("\t-version	print version information and exit\n");
-	error("\tdev=target	SCSI target to use\n");
-	error("\tf=filename	Name of file to read/write\n");
-	error("\tts=#		set maximum transfer size for a single SCSI command\n");
-	error("\ttimeout=#	set the default SCSI command timeout to #.\n");
-	error("\tdebug=#,-d	Set to # or increment misc debug level\n");
-	error("\tkdebug=#,kd=#	do Kernel debugging\n");
-	error("\t-quiet,-q	be more quiet in error retry mode\n");
-	error("\t-verbose,-v	increment general verbose level by one\n");
-	error("\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
-	error("\t-silent,-s	do not print status of failed SCSI commands\n");
-	error("\t-scanbus	scan the SCSI bus and exit\n");
+	fprintf(stderr, "Usage:\tscgskeleton [options]\n");
+	fprintf(stderr, "options:\n");
+	fprintf(stderr, "\t-version	print version information and exit\n");
+	fprintf(stderr, "\tdev=target	SCSI target to use\n");
+	fprintf(stderr, "\tf=filename	Name of file to read/write\n");
+	fprintf(stderr, "\tts=#		set maximum transfer size for a single SCSI command\n");
+	fprintf(stderr, "\ttimeout=#	set the default SCSI command timeout to #.\n");
+	fprintf(stderr, "\tdebug=#,-d	Set to # or increment misc debug level\n");
+	fprintf(stderr, "\tkdebug=#,kd=#	do Kernel debugging\n");
+	fprintf(stderr, "\t-quiet,-q	be more quiet in error retry mode\n");
+	fprintf(stderr, "\t-verbose,-v	increment general verbose level by one\n");
+	fprintf(stderr, "\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
+	fprintf(stderr, "\t-silent,-s	do not print status of failed SCSI commands\n");
+	fprintf(stderr, "\t-scanbus	scan the SCSI bus and exit\n");
 	exit(ret);
 }	
 
@@ -211,7 +211,7 @@ main(ac, av)
 		cac--;
 		cav++;
 	}
-/*error("dev: '%s'\n", dev);*/
+/*fprintf(stderr, "dev: '%s'\n", dev);*/
 
 	cdr_defaults(&dev, NULL, NULL, NULL);
 	if (debug) {
@@ -421,7 +421,7 @@ prstats()
 		usec += 1000000;
 	}
 
-	error("Time total: %d.%03dsec\n", sec, usec/1000);
+	fprintf(stderr, "Time total: %d.%03dsec\n", sec, usec/1000);
 	return (1000*sec + (usec / 1000));
 }
 
@@ -473,7 +473,7 @@ doit(scgp)
 
 /*		case 1:		read_disk(scgp, 0);	break;*/
 
-		default:	error("Unimplemented selection %d\n", i);
+		default:	fprintf(stderr, "Unimplemented selection %d\n", i);
 		}
 	}
 }

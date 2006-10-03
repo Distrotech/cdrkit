@@ -220,39 +220,39 @@ LOCAL void
 usage(ret)
 	int	ret;
 {
-	error("Usage:\treadcd [options]\n");
-	error("options:\n");
-	error("\t-version	print version information and exit\n");
-	error("\tdev=target	SCSI target to use\n");
-	error("\tf=filename	Name of file to read/write\n");
-	error("\tsectors=range	Range of sectors to read/write\n");
-	error("\tspeed=#		set speed of drive (MMC only)\n");
-	error("\tts=#		set maximum transfer size for a single SCSI command\n");
-	error("\t-w		Switch to write mode\n");
-	error("\t-c2scan		Do a C2 error scan\n");
+	fprintf(stderr, "Usage:\treadcd [options]\n");
+	fprintf(stderr, "options:\n");
+	fprintf(stderr, "\t-version	print version information and exit\n");
+	fprintf(stderr, "\tdev=target	SCSI target to use\n");
+	fprintf(stderr, "\tf=filename	Name of file to read/write\n");
+	fprintf(stderr, "\tsectors=range	Range of sectors to read/write\n");
+	fprintf(stderr, "\tspeed=#		set speed of drive (MMC only)\n");
+	fprintf(stderr, "\tts=#		set maximum transfer size for a single SCSI command\n");
+	fprintf(stderr, "\t-w		Switch to write mode\n");
+	fprintf(stderr, "\t-c2scan		Do a C2 error scan\n");
 #ifdef	CLONE_WRITE
-	error("\t-fulltoc	Retrieve the full TOC\n");
-	error("\t-clone		Retrieve the full TOC and all data\n");
+	fprintf(stderr, "\t-fulltoc	Retrieve the full TOC\n");
+	fprintf(stderr, "\t-clone		Retrieve the full TOC and all data\n");
 #endif
-	error("\ttimeout=#	set the default SCSI command timeout to #.\n");
-	error("\tdebug=#,-d	Set to # or increment misc debug level\n");
-	error("\tkdebug=#,kd=#	do Kernel debugging\n");
-	error("\t-quiet,-q	be more quiet in error retry mode\n");
-	error("\t-verbose,-v	increment general verbose level by one\n");
-	error("\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
-	error("\t-silent,-s	do not print status of failed SCSI commands\n");
-	error("\t-scanbus	scan the SCSI bus and exit\n");
-	error("\t-noerror	do not abort on error\n");
+	fprintf(stderr, "\ttimeout=#	set the default SCSI command timeout to #.\n");
+	fprintf(stderr, "\tdebug=#,-d	Set to # or increment misc debug level\n");
+	fprintf(stderr, "\tkdebug=#,kd=#	do Kernel debugging\n");
+	fprintf(stderr, "\t-quiet,-q	be more quiet in error retry mode\n");
+	fprintf(stderr, "\t-verbose,-v	increment general verbose level by one\n");
+	fprintf(stderr, "\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
+	fprintf(stderr, "\t-silent,-s	do not print status of failed SCSI commands\n");
+	fprintf(stderr, "\t-scanbus	scan the SCSI bus and exit\n");
+	fprintf(stderr, "\t-noerror	do not abort on error\n");
 #ifdef	CLONE_WRITE
-	error("\t-nocorr		do not apply error correction in drive\n");
+	fprintf(stderr, "\t-nocorr		do not apply error correction in drive\n");
 #endif
-	error("\t-notrunc	do not truncate outputfile in read mode\n");
-	error("\tretries=#	set retry count (default is %d)\n", retries);
-	error("\t-overhead	meter SCSI command overhead times\n");
-	error("\tmeshpoints=#	print read-speed at # locations\n");
-	error("\t-factor		try to use speed factor with meshpoints=# if possible\n");
-	error("\n");
-	error("sectors=0-0 will read nothing, sectors=0-1 will read one sector starting from 0\n");
+	fprintf(stderr, "\t-notrunc	do not truncate outputfile in read mode\n");
+	fprintf(stderr, "\tretries=#	set retry count (default is %d)\n", retries);
+	fprintf(stderr, "\t-overhead	meter SCSI command overhead times\n");
+	fprintf(stderr, "\tmeshpoints=#	print read-speed at # locations\n");
+	fprintf(stderr, "\t-factor		try to use speed factor with meshpoints=# if possible\n");
+	fprintf(stderr, "\n");
+	fprintf(stderr, "sectors=0-0 will read nothing, sectors=0-1 will read one sector starting from 0\n");
 	exit(ret);
 }	
 
@@ -356,7 +356,7 @@ main(ac, av)
 		cac--;
 		cav++;
 	}
-/*error("dev: '%s'\n", dev);*/
+/*fprintf(stderr, "dev: '%s'\n", dev);*/
 	if (!scanbus)
 		cdr_defaults(&dev, NULL, NULL, NULL);
 	if (debug) {
@@ -505,9 +505,9 @@ main(ac, av)
 			speed = 0xFFFF;
 		scsi_set_speed(scgp, speed, speed, ROTCTL_CLV);
 		if (scsi_get_speed(scgp, &rspeed, &wspeed) >= 0) {
-			error("Read  speed: %5d kB/s (CD %3dx, DVD %2dx).\n",
+			fprintf(stderr, "Read  speed: %5d kB/s (CD %3dx, DVD %2dx).\n",
 				rspeed, rspeed/176, rspeed/1385);
-			error("Write speed: %5d kB/s (CD %3dx, DVD %2dx).\n",
+			fprintf(stderr, "Write speed: %5d kB/s (CD %3dx, DVD %2dx).\n",
 				wspeed, wspeed/176, wspeed/1385);
 		}
 	}
@@ -626,7 +626,7 @@ prstats()
 		usec += 1000000;
 	}
 
-	error("Time total: %d.%03dsec\n", sec, usec/1000);
+	fprintf(stderr, "Time total: %d.%03dsec\n", sec, usec/1000);
 	return (1000*sec + (usec / 1000));
 }
 
@@ -942,7 +942,7 @@ read_ftoc(scgp, parmp, do_sectype)
 		return (-1);
 	}
 	len = a_to_u_2_byte(tp->len) + sizeof (struct tocheader)-2;
-	error("TOC len: %d. First Session: %d Last Session: %d.\n", len, tp->first, tp->last);
+	fprintf(stderr, "TOC len: %d. First Session: %d Last Session: %d.\n", len, tp->first, tp->last);
 
 	if (read_toc(scgp, xxb, 0, len, 0, FMT_FULLTOC) < 0) {
 		if (len & 1) {
@@ -976,8 +976,8 @@ itworked:
 	p = &xxb[4];
 	for (; p < &xxb[len]; p += 11) {
 		for (i = 0; i < 11; i++)
-			error("%02X ", p[i] & 0xFF);
-		error("\n");
+			fprintf(stderr, "%02X ", p[i] & 0xFF);
+		fprintf(stderr, "\n");
 	}
 	/*
 	 * List all lead out start times to give information about multi
@@ -986,7 +986,7 @@ itworked:
 	p = &xxb[4];
 	for (; p < &xxb[len]; p += 11) {
 		if ((p[3] & 0xFF) == 0xA2) {
-			error("Lead out %d: %ld\n", p[0], msf_to_lba(p[8], p[9], p[10], TRUE));
+			fprintf(stderr, "Lead out %d: %ld\n", p[0], msf_to_lba(p[8], p[9], p[10], TRUE));
 		}
 	}
 	return (0);
@@ -1012,7 +1012,7 @@ read_sectypes(scgp, f)
 		filewrite(f, &sect, 1);
 	if (xdebug) {
 		scg_prbytes("sec E", (Uchar *)Sbuf, 16);
-		error("baddr: %ld\n", (long)scgp->cap->c_baddr);
+		fprintf(stderr, "baddr: %ld\n", (long)scgp->cap->c_baddr);
 	}
 }
 
@@ -1037,59 +1037,59 @@ get_sectype(scgp, addr, st)
 	}
 	scgp->silent--;
 	if (i >= _MAX_TRY_) {
-		error("Sectype (%ld) is CANNOT\n", addr);
+		fprintf(stderr, "Sectype (%ld) is CANNOT\n", addr);
 		return;
 	} else if (i > 0) {
-		error("Sectype (%ld) needed %d retries\n", addr, i);
+		fprintf(stderr, "Sectype (%ld) needed %d retries\n", addr, i);
 	}
 #undef	_MAX_TRY_
 
 	if (cmpbytes(Sbuf, synchdr, 12) < 12) {
 		if (xdebug)
-			error("Sectype (%ld) is AUDIO\n", addr);
+			fprintf(stderr, "Sectype (%ld) is AUDIO\n", addr);
 		if (st)
 			*st = SECT_AUDIO;
 		return;
 	}
 	if (xdebug)
-		error("Sectype (%ld) is DATA\n", addr);
+		fprintf(stderr, "Sectype (%ld) is DATA\n", addr);
 	if (Sbuf[15] == 0) {
 		if (xdebug)
-			error("Sectype (%ld) is MODE 0\n", addr);
+			fprintf(stderr, "Sectype (%ld) is MODE 0\n", addr);
 		sectype = SECT_MODE_0;
 
 	} else if (Sbuf[15] == 1) {
 		if (xdebug)
-			error("Sectype (%ld) is MODE 1\n", addr);
+			fprintf(stderr, "Sectype (%ld) is MODE 1\n", addr);
 		sectype = SECT_ROM;
 
 	} else if (Sbuf[15] == 2) {
 		if (xdebug)
-			error("Sectype (%ld) is MODE 2\n", addr);
+			fprintf(stderr, "Sectype (%ld) is MODE 2\n", addr);
 
 		if ((Sbuf[16+2]  & 0x20) == 0 &&
 		    (Sbuf[16+4+2]  & 0x20) == 0) {
 			if (xdebug)
-				error("Sectype (%ld) is MODE 2 form 1\n", addr);
+				fprintf(stderr, "Sectype (%ld) is MODE 2 form 1\n", addr);
 			sectype = SECT_MODE_2_F1;
 
 		} else if ((Sbuf[16+2]  & 0x20) != 0 &&
 		    (Sbuf[16+4+2]  & 0x20) != 0) {
 			if (xdebug)
-				error("Sectype (%ld) is MODE 2 form 2\n", addr);
+				fprintf(stderr, "Sectype (%ld) is MODE 2 form 2\n", addr);
 			sectype = SECT_MODE_2_F2;
 		} else {
 			if (xdebug)
-				error("Sectype (%ld) is MODE 2 formless\n", addr);
+				fprintf(stderr, "Sectype (%ld) is MODE 2 formless\n", addr);
 			sectype = SECT_MODE_2;
 		}
 	} else {
-		error("Sectype (%ld) is UNKNOWN\n", addr);
+		fprintf(stderr, "Sectype (%ld) is UNKNOWN\n", addr);
 	}
 	if (st)
 		*st = sectype;
 	if (xdebug)
-		error("Sectype (%ld) is 0x%02X\n", addr, sectype);
+		fprintf(stderr, "Sectype (%ld) is 0x%02X\n", addr, sectype);
 }
 
 #endif	/* CLONE_WRITE */
@@ -1544,7 +1544,7 @@ read_retry(scgp, bp, addr, cnt, rfunc, rp)
 
 	errmsgno(EX_BAD, "Retrying from sector %ld.\n", addr);
 	while (cnt > 0) {
-		error(".");
+		fprintf(stderr, ".");
 
 		do {
 			if (didintr)
@@ -1552,17 +1552,17 @@ read_retry(scgp, bp, addr, cnt, rfunc, rp)
 			wait_unit_ready(scgp, 120);
 			if (try >= 10) {		/* First 10 retries without seek */
 				if ((try % 8) == 0) {
-					error("+");	/* Read last sector */
+					fprintf(stderr, "+");	/* Read last sector */
 					scgp->silent++;
 					(*rfunc)(scgp, rp, dummybuf, scgp->cap->c_baddr, 1);
 					scgp->silent--;
 				} else if ((try % 4) == 0) {
-					error("-");	/* Read first sector */
+					fprintf(stderr, "-");	/* Read first sector */
 					scgp->silent++;
 					(*rfunc)(scgp, rp, dummybuf, 0, 1);
 					scgp->silent--;
 				} else {
-					error("~");	/* Read random sector */
+					fprintf(stderr, "~");	/* Read random sector */
 					scgp->silent++;
 					(*rfunc)(scgp, rp, dummybuf, choice(scgp->cap->c_baddr), 1);
 					scgp->silent--;
@@ -1582,11 +1582,11 @@ read_retry(scgp, bp, addr, cnt, rfunc, rp)
 
 			if (err < 0) {
 				err = scgp->scmd->ux_errno;
-/*				error("\n");*/
+/*				fprintf(stderr, "\n");*/
 /*				errmsgno(err, "Cannot read source disk\n");*/
 			} else {
 				if (scg_getresid(scgp)) {
-					error("\nresid: %d\n", scg_getresid(scgp));
+					fprintf(stderr, "\nresid: %d\n", scg_getresid(scgp));
 					return (-1);
 				}
 				break;
@@ -1594,7 +1594,7 @@ read_retry(scgp, bp, addr, cnt, rfunc, rp)
 		} while (++try < retries);
 
 		if (try >= retries) {
-			error("\n");
+			fprintf(stderr, "\n");
 			errmsgno(err, "Error on sector %ld not corrected. Total of %d errors.\n",
 					addr, ++rp->errors);
 
@@ -1611,7 +1611,7 @@ read_retry(scgp, bp, addr, cnt, rfunc, rp)
 				maxtry = try;
 
 			if (try > 1) {
-				error("\n");
+				fprintf(stderr, "\n");
 				errmsgno(EX_BAD,
 				"Error on sector %ld corrected after %d tries. Total of %d errors.\n",
 					addr, try, rp->errors);
@@ -1677,7 +1677,7 @@ read_generic(scgp, parmp, rfunc, rp, dfunc)
 		if (parmp->name)
 			defname = parmp->name;
 		if (defname != NULL) {
-			error("Copy from SCSI (%d,%d,%d) disk to file '%s'\n",
+			fprintf(stderr, "Copy from SCSI (%d,%d,%d) disk to file '%s'\n",
 					scg_scsibus(scgp), scg_target(scgp), scg_lun(scgp),
 					defname);
 		}
@@ -1690,9 +1690,9 @@ read_generic(scgp, parmp, rfunc, rp, dfunc)
 
 	if (defname == NULL) {
 		defname = "disk.out";
-		error("Copy from SCSI (%d,%d,%d) disk to file\n",
+		fprintf(stderr, "Copy from SCSI (%d,%d,%d) disk to file\n",
 					scg_scsibus(scgp), scg_target(scgp), scg_lun(scgp));
-		error("Enter filename [%s]: ", defname); flush();
+		fprintf(stderr, "Enter filename [%s]: ", defname); flush();
 		(void) getline(filename, sizeof (filename));
 	}
 
@@ -1726,7 +1726,7 @@ read_generic(scgp, parmp, rfunc, rp, dfunc)
 	} else if ((f = fileopen(filename, notrunc?"wcub":"wctub")) == NULL)
 		comerr("Cannot open '%s'.\n", filename);
 
-	error("end:  %8ld\n", end);
+	fprintf(stderr, "end:  %8ld\n", end);
 	if (gettimeofday(&starttime, (struct timezone *)0) < 0)
 		comerr("Cannot get start time\n");
 
@@ -1759,9 +1759,9 @@ read_generic(scgp, parmp, rfunc, rp, dfunc)
 					else if (is_dvd)
 						speed /= 1385.0;
 				}
-				error("addr: %8ld cnt: %ld", addr, cnt);
+				fprintf(stderr, "addr: %8ld cnt: %ld", addr, cnt);
 				printf("%8ld %8.2f\n", addr, speed);
-				error("\r");
+				fprintf(stderr, "\r");
 				next_point += secs_per_point;
 				old_addr = addr;
 				old_msec = msec;
@@ -1772,14 +1772,14 @@ read_generic(scgp, parmp, rfunc, rp, dfunc)
 					flush();
 			}
 		}
-		error("addr: %8ld cnt: %ld\r", addr, cnt);
+		fprintf(stderr, "addr: %8ld cnt: %ld\r", addr, cnt);
 
 		scgp->silent++;
 		if ((*rfunc)(scgp, rp, Sbuf, addr, cnt) < 0) {
 			scgp->silent--;
 			err = scgp->scmd->ux_errno;
 			if (quiet) {
-				error("\n");
+				fprintf(stderr, "\n");
 			} else if (scgp->silent == 0) {
 				scg_printerr(scgp);
 			}
@@ -1790,30 +1790,30 @@ read_generic(scgp, parmp, rfunc, rp, dfunc)
 		} else {
 			scgp->silent--;
 			if (scg_getresid(scgp)) {
-				error("\nresid: %d\n", scg_getresid(scgp));
+				fprintf(stderr, "\nresid: %d\n", scg_getresid(scgp));
 				goto out;
 			}
 		}
 		(*dfunc)(rp, Sbuf, addr, cnt);
 		if (filewrite(f, Sbuf, cnt * secsize) < 0) {
 			err = geterrno();
-			error("\n");
+			fprintf(stderr, "\n");
 			errmsgno(err, "Cannot write '%s'\n", filename);
 			break;
 		}
 	}
-	error("addr: %8ld", addr);
+	fprintf(stderr, "addr: %8ld", addr);
 out:
-	error("\n");
+	fprintf(stderr, "\n");
 	msec = prstats();
 	if (msec == 0)		/* Avoid division by zero */
 		msec = 1;
 #ifdef	OOO
-	error("Read %.2f kB at %.1f kB/sec.\n",
+	fprintf(stderr, "Read %.2f kB at %.1f kB/sec.\n",
 		(double)(addr - start)/(1024.0/scgp->cap->c_bsize),
 		(double)((addr - start)/(1024.0/scgp->cap->c_bsize)) / (0.001*msec));
 #else
-	error("Read %.2f kB at %.1f kB/sec.\n",
+	fprintf(stderr, "Read %.2f kB at %.1f kB/sec.\n",
 		(double)(addr - start)/(1024.0/secsize),
 		(double)((addr - start)/(1024.0/secsize)) / (0.001*msec));
 #endif
@@ -1850,7 +1850,7 @@ write_disk(scgp, parmp)
 	if (parmp) {
 		if (parmp->name)
 			defname = parmp->name;
-		error("Copy from file '%s' to SCSI (%d,%d,%d) disk\n",
+		fprintf(stderr, "Copy from file '%s' to SCSI (%d,%d,%d) disk\n",
 					defname,
 					scg_scsibus(scgp), scg_target(scgp), scg_lun(scgp));
 
@@ -1859,11 +1859,11 @@ write_disk(scgp, parmp)
 			end = parmp->end;
 		cnt = Sbufsize / scgp->cap->c_bsize;
 	} else {
-		error("Copy from file to SCSI (%d,%d,%d) disk\n",
+		fprintf(stderr, "Copy from file to SCSI (%d,%d,%d) disk\n",
 					scg_scsibus(scgp), scg_target(scgp), scg_lun(scgp));
-		error("Enter filename [%s]: ", defname); flush();
+		fprintf(stderr, "Enter filename [%s]: ", defname); flush();
 		(void) getline(filename, sizeof (filename));
-		error("Notice: reading from file always starts at file offset 0.\n");
+		fprintf(stderr, "Notice: reading from file always starts at file offset 0.\n");
 
 		getlong("Enter starting sector for copy:", &addr, 0L, end-1);
 		start = addr;
@@ -1873,7 +1873,7 @@ write_disk(scgp, parmp)
 
 		cnt = Sbufsize / scgp->cap->c_bsize;
 		getlong("Enter number of sectors per copy:", &cnt, 1L, cnt);
-/*		error("end:  %8ld\n", end);*/
+/*		fprintf(stderr, "end:  %8ld\n", end);*/
 	}
 
 	if (filename[0] == '\0')
@@ -1887,7 +1887,7 @@ write_disk(scgp, parmp)
 	} else if ((f = fileopen(filename, "rub")) == NULL)
 		comerr("Cannot open '%s'.\n", filename);
 
-	error("end:  %8ld\n", end);
+	fprintf(stderr, "end:  %8ld\n", end);
 	if (gettimeofday(&starttime, (struct timezone *)0) < 0)
 		comerr("Cannot get start time\n");
 
@@ -1898,7 +1898,7 @@ write_disk(scgp, parmp)
 		if ((addr + cnt) > end)
 			cnt = end - addr;
 
-		error("addr: %8ld cnt: %ld\r", addr, cnt);
+		fprintf(stderr, "addr: %8ld cnt: %ld\r", addr, cnt);
 
 		if ((amt = fileread(f, Sbuf, cnt * scgp->cap->c_bsize)) < 0)
 			comerr("Cannot read '%s'\n", filename);
@@ -1910,11 +1910,11 @@ write_disk(scgp, parmp)
 			comerrno(scgp->scmd->ux_errno,
 					"Cannot write destination disk\n");
 	}
-	error("addr: %8ld\n", addr);
+	fprintf(stderr, "addr: %8ld\n", addr);
 	msec = prstats();
 	if (msec == 0)		/* Avoid division by zero */
 		msec = 1;
-	error("Wrote %.2f kB at %.1f kB/sec.\n",
+	fprintf(stderr, "Wrote %.2f kB at %.1f kB/sec.\n",
 		(double)(addr - start)/(1024.0/scgp->cap->c_bsize),
 		(double)((addr - start)/(1024.0/scgp->cap->c_bsize)) / (0.001*msec));
 }
@@ -2108,7 +2108,7 @@ domode(scgp, err, retr)
 		p[2] = i;
 	} else {
 		if (xdebug)
-			error("Error handling set from %02X to %02X\n",
+			fprintf(stderr, "Error handling set from %02X to %02X\n",
 		p[2], err);
 		p[2] = err;
 	}
@@ -2119,7 +2119,7 @@ domode(scgp, err, retr)
 		p[3] = i;
 	} else {
 		if (xdebug)
-			error("Retry count set from %d to %d\n",
+			fprintf(stderr, "Retry count set from %d to %d\n",
 		p[3] & 0xFF, retr);
 		p[3] = retr;
 	}
@@ -2302,8 +2302,8 @@ print_bad()
 	if (nbad == 0)
 		return;
 
-	error("Max corected retry count was %d (limited to %d).\n", maxtry, retries);
-	error("The following %d sector(s) could not be read correctly:\n", nbad);
+	fprintf(stderr, "Max corected retry count was %d (limited to %d).\n", maxtry, retries);
+	fprintf(stderr, "The following %d sector(s) could not be read correctly:\n", nbad);
 	for (i = 0; i < nbad; i++)
-		error("%ld\n", badsecs[i]);
+		fprintf(stderr, "%ld\n", badsecs[i]);
 }

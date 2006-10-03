@@ -136,7 +136,7 @@ static const char *sd_ccs_error_str[] = {
 	"\010\000logical unit communication failure",		/* 08 00 */
 	"\010\001logical unit communication time-out",		/* 08 01 */
 	"\010\002logical unit communication parity error",	/* 08 02 */
-	"\010\003logical unit communication crc error (ultra-dma/32)",	/* 08 03 */
+	"\010\003logical unit communication crc fprintf(stderr, ultra-dma/32)",	/* 08 03 */
 	"\010\004unreachable copy target",			/* 08 04 */
 	"\011\000track following error",			/* 09 00 */
 	"\011\001tracking servo failure",			/* 09 01 */
