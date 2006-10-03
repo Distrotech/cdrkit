@@ -37,6 +37,8 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
 
   [ Peter Samuelson, Tollef Fog Heen ]
   * typo and grammar fixes in mkisofs.8
+  * Remove several instances of %r in printf-like statements, in
+    preparation for removing the libschily format-string implementation
 
  -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
 

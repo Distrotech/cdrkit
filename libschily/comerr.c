@@ -208,7 +208,8 @@ _comerr(exflg, err, msg, args)
 	char	*prognam = get_progname();
 
 	if (silent_schily_error(err)) {
-		schily_error("%s: %r", prognam, msg, args);
+		fprintf(stderr, "%s: ", prognam);
+		vfprintf(stderr, msg, args);
 	} else {
 		errnam = errmsgstr(err);
 		if (errnam == NULL) {
@@ -216,7 +217,8 @@ _comerr(exflg, err, msg, args)
 						"Error %d", err);
 			errnam = errbuf;
 		}
-		schily_error("%s: %s. %r", prognam, errnam, msg, args);
+		fprintf(stderr, "%s: %s. ", prognam, errnam);
+		vfprintf(stderr, msg, args);
 	}
 	if (exflg) {
 		comexit(err);

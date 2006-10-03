@@ -146,7 +146,7 @@ error(fmt, va_alist)
 #else
 	va_start(args);
 #endif
-	js_fprintf(f, "%r", fmt, args);
+	vfprintf(f, fmt, args);
 	va_end(args);
 	fclose(f);
 }

@@ -213,7 +213,7 @@ again:
 #else
 	va_start(args);
 #endif
-	printf("%r", form, args);
+	vprintf(form, args);
 	va_end(args);
 	flush();
 	if (getline(okbuf, sizeof(okbuf)) == EOF)

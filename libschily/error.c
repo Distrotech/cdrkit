@@ -56,7 +56,7 @@ schily_error(fmt, va_alist)
 #else
 	va_start(args);
 #endif
-	ret = js_fprintf(stderr, "%r", fmt, args);
+	ret = vfprintf(stderr, fmt, args);
 	va_end(args);
 	return (ret);
 }
