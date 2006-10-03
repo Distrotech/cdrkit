@@ -115,7 +115,7 @@ FILE	*ef;
 #define	USDEBUG1
 #define	USDEBUG2
 #endif
-#define	EDEBUG(a)	if (debug) error a
+#define EDEBUG(a)   if (debug) schily_error a
 #else
 #define	EDEBUG(a)
 #define	USDEBUG1
