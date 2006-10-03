@@ -193,7 +193,7 @@ extern	int	serrmsgno __PR((int, char *, size_t, const char *, ...)) __printflike
 extern	void	comexit	__PR((int));
 extern	char	*errmsgstr __PR((int));
 /*PRINTFLIKE1*/
-extern	int	error __PR((const char *, ...)) __printflike__(1, 2);
+extern	int	schily_error __PR((const char *, ...)) __printflike__(1, 2);
 extern	char	*fillbytes __PR((void *, int, char));
 extern	char	*findbytes __PR((const void *, int, char));
 extern	int	findline __PR((const char *, char, const char *,

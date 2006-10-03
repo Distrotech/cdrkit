@@ -40,10 +40,10 @@
 /* VARARGS1 */
 #ifdef	PROTOTYPES
 EXPORT int
-error(const char *fmt, ...)
+schily_error(const char *fmt, ...)
 #else
 EXPORT int
-error(fmt, va_alist)
+schily_error(fmt, va_alist)
 	char	*fmt;
 	va_dcl
 #endif
