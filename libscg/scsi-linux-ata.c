@@ -130,7 +130,7 @@ LOCAL void
 sglog(const char *fmt, ...)
 #else
 LOCAL void
-fprintf(stderr, fmt, va_alist)
+sglog(fmt, va_alist)
 	char	*fmt;
 	va_dcl
 #endif
