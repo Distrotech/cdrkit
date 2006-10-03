@@ -2546,7 +2546,7 @@ parse_input_files:
 
 		if(icharset && verbose > 0)
 			fprintf(stderr, "I: -input-charset not specified, using %s (detected in locale settings)\n",
-			icharset, icharset);
+			icharset);
 	}
 
 	if(iconv_possible) {
