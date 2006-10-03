@@ -21,6 +21,9 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
   [ Eugen Dedu ]
   * corrections and constructive help on cdda2ogg
 
+  [ Vladimir Nadvornik ]
+  * enabled CLONE feature in wodim's config
+
   [ Modestas Vainius ]
   * dropped . from the include path and fixed mkisofs source to use the local
     headers
