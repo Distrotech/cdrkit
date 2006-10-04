@@ -451,8 +451,9 @@ static void Check_interface_for_device( statstruct, pdev_name)
 	struct stat *statstruct;
 	char *pdev_name;
 {
+#if defined(__linux__)
     int is_scsi = 1;
-
+#endif
 #if !defined (STAT_MACROS_BROKEN) || (STAT_MACROS_BROKEN != 1)
     if (!S_ISCHR(statstruct->st_mode) &&
 	!S_ISBLK(statstruct->st_mode)) {

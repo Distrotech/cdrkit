@@ -4773,7 +4773,6 @@ set_wrmode(dp, wmode, tflags)
 	int	tflags;
 {
 	dstat_t	*dsp = dp->cdr_dstat;
-	int	profile;
 
 	if ((tflags & TI_PACKET) != 0) {
 		dsp->ds_wrmode = WM_PACKET;

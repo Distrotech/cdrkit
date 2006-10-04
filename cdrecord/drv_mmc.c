@@ -201,7 +201,7 @@ cdr_t	cdr_mmc = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -242,14 +242,14 @@ cdr_t   cdr_mdvd = {
          scsi_load,
          scsi_unload,
          read_buff_cap,
-         cmd_dummy,                              /* recovery_needed      */
-         (int(*)__PR((SCSI *, struct cdr_cmd*,int)))cmd_dummy,   /* recover              */
+         cmd_dummy,                                       /* check_recovery */
+         (int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,   /* recover     */
          speed_select_mdvd,
          select_secsize,
          next_wr_addr_mdvd,
          (int(*)__PR((SCSI *, Ulong)))cmd_ill,   /* reserve_track        */
          scsi_cdr_write,
-         (int(*)__PR((struct track*,void*,int)))cmd_dummy, /* gen_cue */
+         (int(*)__PR((track_t *, void *, BOOL)))cmd_dummy, /* gen_cue */
 	 (int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
  	 write_leadin_mmc,
          open_track_mdvd,
@@ -287,7 +287,7 @@ cdr_t	cdr_mmc_sony = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -331,7 +331,7 @@ cdr_t	cdr_cd = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -375,7 +375,7 @@ cdr_t	cdr_oldcd = {
 	scsi_load,
 	scsi_unload,
 	buf_dummy,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -420,7 +420,7 @@ cdr_t	cdr_cd_dvd = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -635,7 +635,7 @@ identify_mmc(scgp, dp, ip)
 	if (profile >= 0) {
 		if (lverbose)
 			print_profiles(scgp);
-		if (profile == 0 || profile >= 0x10 && profile <= 0x15 || profile > 0x19) {
+		if (profile == 0 || (profile >= 0x10 && profile <= 0x15) || profile > 0x19) {
 		    /*
 		     * 10h DVD-ROM
 		     * 11h DVD-R
@@ -2059,10 +2059,8 @@ speed_select_mdvd(scgp, dp, speedp)
 	int	*speedp;
 {
   int retcode;
-  unsigned char perf_desc[28];
+  char perf_desc[28];
   int write_speed = *speedp * 1385;
-  int val = 0, val2 = 0;
-  int i;
    
   /* For the moment we just divide the CD speed by 7*/
 
@@ -2106,7 +2104,7 @@ speed_select_mdvd(scgp, dp, speedp)
   perf_desc[27] = 1000 & 0xFF;  
   
   /* retcode = scsi_set_streaming(scgp, NULL, 0); */
-  retcode = scsi_set_streaming(scgp, &perf_desc, sizeof(perf_desc));
+  retcode = scsi_set_streaming(scgp, perf_desc, sizeof(perf_desc));
   if (retcode == -1) return retcode;
   retcode = speed_select_mmc(scgp, dp, speedp);
   if(speedp!=NULL)
@@ -2557,7 +2555,6 @@ open_session_mdvd(scgp, dp, trackp)
 	struct	cd_mode_page_05 *mp;
 	Ulong totalsize;
 	int i;
-	struct	track_info	track_info;
 	int profile;
 
 	fillbytes((caddr_t)mode, sizeof(mode), '\0');
@@ -2809,7 +2806,6 @@ blank_mmc(scgp, dp, addr, blanktype)
 	BOOL	cdrrw	 = FALSE;	/* Read CD-RW	*/
 	BOOL	cdwrw	 = FALSE;	/* Write CD-RW	*/
 	int	ret;
-	int 	profile;
 
 	mmc_check(scgp, &cdrr, &cdwr, &cdrrw, &cdwrw, NULL, NULL);
 	if (!cdwrw)
@@ -4444,7 +4440,6 @@ dvd_dual_layer_split(scgp, dp, tsize)
 	long 	tsize;
 {
     unsigned char	xb[12];
-    int		i;
     long 	l0_size;
     
     /* Get the Layer 0 defined data zone*/
@@ -4462,10 +4457,10 @@ dvd_dual_layer_split(scgp, dp, tsize)
 	    fprintf(stderr, "track size smaller than one layer, use --force to force burning.");
 	    return 0;
 	}
-	printf("L0 size: %l (track size %l)\n", l0_size, tsize);
+	printf("L0 size: %ld (track size %ld)\n", l0_size, tsize);
 	l0_size = tsize / 2;
 	l0_size = l0_size - 1 + 16 - (l0_size - 1) % 16;
-	printf("New L0 size: %l\n", l0_size);
+	printf("New L0 size: %ld\n", l0_size);
 
 	memset (xb, 0, sizeof(xb));
 	xb[1]  = sizeof(xb) - 2;
