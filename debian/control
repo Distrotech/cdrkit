@@ -13,13 +13,14 @@ Recommends: mkisofs
 Replaces: cdrtools-doc (<< 5:1.0~pre1-0), cdrecord (<< 5:1.0~pre1-0)
 Suggests: cdrkit-doc
 Conflicts: cdrecord (<< 5:1.0~pre1-1)
-Description: command line CD writing tool
- wodim allows you to create CDs on a CD recorder.
- It supports writing data, audio, mixed, multi-session, and CD+
- discs, on just about every type of CD recorder out there.
+Description: command line CD/DVD writing tool
+ wodim allows you to create CDs or DVDs on a CD/DVD recorder.
+ It supports writing data, audio, mixed, multi-session, and CD+ disc and DVD
+ data and video disks on DVD capable devices, on just about every type of
+ CD/DVD recorder out there.
  .
  Please install cdrkit-doc if you want most of the documentation and
- Readme-files.
+ README files.
 
 Package: cdrecord
 Architecture: all
