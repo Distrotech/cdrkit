@@ -120,20 +120,19 @@ typedef struct textargs {
 Uchar	*textsub;
 int	textlen;
 
-BOOL	checktextfile	__PR((char *fname));
-static	void	setuptextdata	__PR((Uchar *bp, int len));
-static	BOOL	cdtext_crc_ok	__PR((struct textpack *p));
-void	packtext	__PR((int tracks, track_t *trackp));
-static	BOOL	anytext		__PR((int pack_type, int tracks, track_t *trackp));
-static	void	fillup_pack	__PR((txtarg_t *ap));
-static	void	fillpacks	__PR((txtarg_t *ap, char *from, int len, int track_no, int pack_type));
-int	write_cdtext	__PR((SCSI *scgp, cdr_t *dp, long startsec));
-static	void	eight2six	__PR((Uchar *in, Uchar *out));
-static	void	six2eight	__PR((Uchar *in, Uchar *out));
+BOOL			checktextfile(char *fname);
+static void	setuptextdata(Uchar *bp, int len);
+static BOOL	cdtext_crc_ok(struct textpack *p);
+void			packtext(int tracks, track_t *trackp);
+static BOOL	anytext(int pack_type, int tracks, track_t *trackp);
+static void	fillup_pack(txtarg_t *ap);
+static void	fillpacks(txtarg_t *ap, char *from, int len, int track_no, int pack_type);
+int			write_cdtext(SCSI *scgp, cdr_t *dp, long startsec);
+static void	eight2six(Uchar *in, Uchar *out);
+static void	six2eight(Uchar *in, Uchar *out);
 
 
-BOOL
-checktextfile(char *fname)
+BOOL checktextfile(char *fname)
 {
 	FILE	*f;
 	Uchar	hbuf[4];
@@ -214,8 +213,7 @@ checktextfile(char *fname)
 	return (TRUE);
 }
 
-static void
-setuptextdata(Uchar *bp, int len)
+static void setuptextdata(Uchar *bp, int len)
 {
 	int	n;
 	int	i;
@@ -282,8 +280,7 @@ setuptextdata(Uchar *bp, int len)
 #endif
 }
 
-static BOOL
-cdtext_crc_ok(struct textpack *p)
+static BOOL cdtext_crc_ok(struct textpack *p)
 {
 	int		crc;
 	struct textpack	new;
@@ -302,8 +299,7 @@ cdtext_crc_ok(struct textpack *p)
 }
 
 
-void
-packtext(int tracks, track_t *trackp)
+void packtext(int tracks, track_t *trackp)
 {
 	int	type;
 	int	i;
@@ -381,8 +377,7 @@ packtext(int tracks, track_t *trackp)
 #endif
 }
 
-static BOOL
-anytext(int pack_type, int tracks, track_t *trackp)
+static BOOL anytext(int pack_type, int tracks, track_t *trackp)
 {
 	register int	i;
 	register char	*p;
@@ -397,8 +392,7 @@ anytext(int pack_type, int tracks, track_t *trackp)
 	return (FALSE);
 }
 
-static void
-fillup_pack(register txtarg_t *ap)
+static void fillup_pack(register txtarg_t *ap)
 {
 	if (ap->p) {
 		fillbytes(ap->p, &ap->tp->text[12] - ap->p, '\0');
@@ -408,9 +402,8 @@ fillup_pack(register txtarg_t *ap)
 	}
 }
 
-static void
-fillpacks(register txtarg_t *ap, register char *from, int len, 
-          int track_no, int pack_type)
+static void fillpacks(register txtarg_t *ap, register char *from, int len, 
+          				 int track_no, int pack_type)
 {
 	register int		charpos;
 	register char		*p;
@@ -448,8 +441,7 @@ fillpacks(register txtarg_t *ap, register char *from, int len,
 	ap->p = p;
 }
 
-int
-write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
+int write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
 {
 	char	*bp = (char *)textsub;
 	int	buflen = textlen;
@@ -518,8 +510,7 @@ write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
 /*
  * 3 input bytes (8 bit based) are converted into 4 output bytes (6 bit based).
  */
-static void
-eight2six(register Uchar *in, register Uchar *out)
+static void eight2six(register Uchar *in, register Uchar *out)
 {
 	register int	c;
 
@@ -539,8 +530,7 @@ eight2six(register Uchar *in, register Uchar *out)
 /*
  * 4 input bytes (6 bit based) are converted into 3 output bytes (8 bit based).
  */
-static void
-six2eight(register Uchar *in, register Uchar *out)
+static void six2eight(register Uchar *in, register Uchar *out)
 {
 	register int	c;
 

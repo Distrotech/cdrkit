@@ -30,8 +30,8 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-int b_readlb		__PR((hfsvol *, unsigned long, block *));
-int b_writelb		__PR((hfsvol *, unsigned long, block *));
+int b_readlb(hfsvol *, unsigned long, block *);
+int b_writelb(hfsvol *, unsigned long, block *);
 
-int b_readab		__PR((hfsvol *, unsigned int, unsigned int, block *));
-int b_writeab		__PR((hfsvol *, unsigned int, unsigned int, block *));
+int b_readab(hfsvol *, unsigned int, unsigned int, block *);
+int b_writeab(hfsvol *, unsigned int, unsigned int, block *);

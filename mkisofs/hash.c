@@ -68,21 +68,20 @@ static	char sccsid[] =
 
 static struct file_hash *hash_table[NR_HASH] = {0, };
 
-EXPORT	void		add_hash	__PR((struct directory_entry *spnt));
-EXPORT	struct file_hash *find_hash	__PR((dev_t dev, ino_t inode));
-EXPORT	void		flush_hash	__PR((void));
-EXPORT	void		add_directory_hash __PR((dev_t dev, ino_t inode));
-EXPORT	struct file_hash *find_directory_hash __PR((dev_t dev, ino_t inode));
-LOCAL	unsigned int	name_hash	__PR((const char *name));
-EXPORT	void		add_file_hash	__PR((struct directory_entry *de));
-EXPORT	struct directory_entry *find_file_hash __PR((char *name));
-LOCAL	BOOL		isoname_endsok	__PR((char *name));
-EXPORT	int		delete_file_hash __PR((struct directory_entry *de));
-EXPORT	void		flush_file_hash	__PR((void));
+void		add_hash(struct directory_entry *spnt);
+struct file_hash *find_hash(dev_t dev, ino_t inode);
+void		flush_hash(void);
+void		add_directory_hash(dev_t dev, ino_t inode);
+struct file_hash *find_directory_hash(dev_t dev, ino_t inode);
+static	unsigned int	name_hash(const char *name);
+void		add_file_hash(struct directory_entry *de);
+struct directory_entry *find_file_hash(char *name);
+static	BOOL		isoname_endsok(char *name);
+int		delete_file_hash(struct directory_entry *de);
+void		flush_file_hash(void);
 
-EXPORT void
-add_hash(spnt)
-	struct directory_entry	*spnt;
+void
+add_hash(struct directory_entry *spnt)
 {
 	struct file_hash *s_hash;
 	unsigned int    hash_number;
@@ -126,15 +125,8 @@ add_hash(spnt)
 	hash_table[hash_number] = s_hash;
 }
 
-#ifdef	PROTOTYPES
-EXPORT struct file_hash *
+struct file_hash *
 find_hash(dev_t dev, ino_t inode)
-#else
-EXPORT struct file_hash *
-find_hash(dev, inode)
-	dev_t	dev;
-	ino_t	inode;
-#endif
 {
 	unsigned int    hash_number;
 	struct file_hash *spnt;
@@ -158,7 +150,7 @@ find_hash(dev, inode)
  * based on flush_file_hash() below - needed as we want to re-use the
  * file hash table.
  */
-EXPORT void
+void
 flush_hash()
 {
 	struct file_hash	*fh;
@@ -178,15 +170,8 @@ flush_hash()
 
 static struct file_hash *directory_hash_table[NR_HASH] = {0, };
 
-#ifdef	PROTOTYPES
-EXPORT void
+void
 add_directory_hash(dev_t dev, ino_t inode)
-#else
-EXPORT void
-add_directory_hash(dev, inode)
-	dev_t	dev;
-	ino_t	inode;
-#endif
 {
 	struct file_hash *s_hash;
 	unsigned int    hash_number;
@@ -205,15 +190,8 @@ add_directory_hash(dev, inode)
 	directory_hash_table[hash_number] = s_hash;
 }
 
-#ifdef	PROTOTYPES
-EXPORT struct file_hash *
+struct file_hash *
 find_directory_hash(dev_t dev, ino_t inode)
-#else
-EXPORT struct file_hash *
-find_directory_hash(dev, inode)
-	dev_t	dev;
-	ino_t	inode;
-#endif
 {
 	unsigned int    hash_number;
 	struct file_hash *spnt;
@@ -245,9 +223,8 @@ static struct name_hash *name_hash_table[NR_NAME_HASH] = {0, };
 /*
  * Find the hash bucket for this name.
  */
-LOCAL unsigned int
-name_hash(name)
-	const char	*name;
+static unsigned int
+name_hash(const char *name)
 {
 	unsigned int	hash = 0;
 	const char	*p;
@@ -268,9 +245,8 @@ name_hash(name)
 	return (hash % NR_NAME_HASH);
 }
 
-EXPORT void
-add_file_hash(de)
-	struct directory_entry	*de;
+void
+add_file_hash(struct directory_entry *de)
 {
 	struct name_hash	*new;
 	int			hash;
@@ -285,9 +261,8 @@ add_file_hash(de)
 	name_hash_table[hash] = new;
 }
 
-EXPORT struct directory_entry *
-find_file_hash(name)
-	register char			*name;
+struct directory_entry *
+find_file_hash(register char *name)
 {
 	register char			*p1;
 	register char			*p2;
@@ -352,9 +327,8 @@ find_file_hash(name)
 		((p)[0] == ';' && (p)[1] == '1' && (p)[2] == '\0') || \
 		isoname_endsok(p))
 
-LOCAL BOOL
-isoname_endsok(name)
-	char	*name;
+static BOOL
+isoname_endsok(char *name)
 {
 	int	i;
 	char	*p;
@@ -374,9 +348,8 @@ isoname_endsok(name)
 	return (TRUE);
 }
 
-EXPORT int
-delete_file_hash(de)
-	struct directory_entry	*de;
+int
+delete_file_hash(struct directory_entry *de)
 {
 	struct name_hash	*nh;
 	struct name_hash	*prev;
@@ -399,7 +372,7 @@ delete_file_hash(de)
 	return (0);
 }
 
-EXPORT void
+void
 flush_file_hash()
 {
 	struct name_hash	*nh;

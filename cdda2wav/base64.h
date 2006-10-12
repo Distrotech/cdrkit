@@ -78,6 +78,6 @@
 #ifndef BASE64_H
 #define BASE64_H
 
-unsigned char *rfc822_binary __PR((char *src,unsigned long srcl,unsigned long *len));
+unsigned char *rfc822_binary(char *src,unsigned long srcl,unsigned long *len);
 
 #endif

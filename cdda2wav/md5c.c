@@ -66,11 +66,11 @@ documentation and/or software.
 
 typedef unsigned char * POINTER;
 
-static void MD5Transform __PR((UINT4 [4], unsigned char [64]));
-static void Encode __PR((unsigned char *, UINT4 *, unsigned int));
-static void Decode __PR((UINT4 *, unsigned char *, unsigned int));
-static void MD5_memcpy __PR((POINTER, POINTER, unsigned int));
-static void MD5_memset __PR((POINTER, int, unsigned int));
+static void MD5Transform(UINT4 [4], unsigned char [64]);
+static void Encode(unsigned char *, UINT4 *, unsigned int);
+static void Decode(UINT4 *, unsigned char *, unsigned int);
+static void MD5_memcpy(POINTER, POINTER, unsigned int);
+static void MD5_memset(POINTER, int, unsigned int);
 
 static unsigned char PADDING[64] = {
   0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

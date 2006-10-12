@@ -80,8 +80,8 @@ char	cdr_version[] = "2.01.01a05";
 #define	CONCAT(a, b)	a/**/b
 #endif
 
-extern	BOOL	getlong		__PR((char *, long *, long, long));
-extern	BOOL	getint		__PR((char *, int *, int, int));
+extern	BOOL	getlong(char *, long *, long, long);
+extern	BOOL	getint(char *, int *, int, int);
 
 typedef struct {
 	long	start;
@@ -109,76 +109,82 @@ struct exargs {
 	char	oerr[3];
 } exargs;
 
-EXPORT	BOOL	cvt_cyls	__PR((void));
-EXPORT	BOOL	cvt_bcyls	__PR((void));
-EXPORT	void	print_defect_list __PR((void));
-LOCAL	void	usage		__PR((int ret));
-EXPORT	int	main		__PR((int ac, char **av));
-LOCAL	void	intr		__PR((int sig));
-LOCAL	void	exscsi		__PR((int excode, void *arg));
-LOCAL	void	excdr		__PR((int excode, void *arg));
-LOCAL	int	prstats		__PR((void));
-LOCAL	int	prstats_silent	__PR((void));
-LOCAL	void	dorw		__PR((SCSI *scgp, char *filename, char *sectors));
-LOCAL	void	doit		__PR((SCSI *scgp));
-LOCAL	void	read_disk	__PR((SCSI *scgp, parm_t *parmp));
+BOOL	cvt_cyls(void);
+BOOL	cvt_bcyls(void);
+void	print_defect_list(void);
+static	void	usage(int ret);
+static	void	intr(int sig);
+static	void	exscsi(int excode, void *arg);
+static	void	excdr(int excode, void *arg);
+static	int	prstats(void);
+static	int	prstats_silent(void);
+static	void	dorw(SCSI *scgp, char *filename, char *sectors);
+static	void	doit(SCSI *scgp);
+static	void	read_disk(SCSI *scgp, parm_t *parmp);
 #ifdef	CLONE_WRITE
-LOCAL	void	readcd_disk	__PR((SCSI *scgp, parm_t *parmp));
-LOCAL	void	read_lin	__PR((SCSI *scgp, parm_t *parmp));
-LOCAL	int	read_secheader	__PR((SCSI *scgp, long addr));
-LOCAL	int	read_ftoc	__PR((SCSI *scgp, parm_t *parmp, BOOL do_sectype));
-LOCAL	void	read_sectypes	__PR((SCSI *scgp, FILE *f));
-LOCAL	void	get_sectype	__PR((SCSI *scgp, long addr, char *st));
+static	void	readcd_disk(SCSI *scgp, parm_t *parmp);
+static	void	read_lin(SCSI *scgp, parm_t *parmp);
+static	int	read_secheader(SCSI *scgp, long addr);
+static	int	read_ftoc(SCSI *scgp, parm_t *parmp, BOOL do_sectype);
+static	void	read_sectypes(SCSI *scgp, FILE *f);
+static	void	get_sectype(SCSI *scgp, long addr, char *st);
 #endif
 
-LOCAL	void	readc2_disk	__PR((SCSI *scgp, parm_t *parmp));
-LOCAL	int	fread_data	__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
+static	void	readc2_disk(SCSI *scgp, parm_t *parmp);
+static	int	fread_data(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, 
+								  int cnt);
 #ifdef	CLONE_WRITE
-LOCAL	int	fread_2448	__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
-LOCAL	int	fread_2448_16	__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
-LOCAL	int	fread_2352	__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
-LOCAL	int	fread_lin	__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
+static	int	fread_2448(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, 
+								  int cnt);
+static	int	fread_2448_16(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, 
+									  int cnt);
+static	int	fread_2352(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, 
+								  int cnt);
+static	int	fread_lin(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, 
+								 int cnt);
 #endif
-LOCAL	int	bits		__PR((int c));
-LOCAL	int	bitidx		__PR((int c));
-LOCAL	int	fread_c2	__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
+static	int	bits(int c);
+static	int	bitidx(int c);
+static	int	fread_c2(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, 
+								int cnt);
 
-LOCAL	int	fdata_null	__PR((rparm_t *rp, caddr_t bp, long addr, int cnt));
-LOCAL	int	fdata_c2	__PR((rparm_t *rp, caddr_t bp, long addr, int cnt));
+static	int	fdata_null(rparm_t *rp, caddr_t bp, long addr, int cnt);
+static	int	fdata_c2(rparm_t *rp, caddr_t bp, long addr, int cnt);
 
 #ifdef	used
-LOCAL	int read_scsi_g1	__PR((SCSI *scgp, caddr_t bp, long addr, int cnt));
+static	int read_scsi_g1(SCSI *scgp, caddr_t bp, long addr, int cnt);
 #endif
 
-EXPORT	int	write_scsi	__PR((SCSI *scgp, caddr_t bp, long addr, int cnt));
-EXPORT	int	write_g0	__PR((SCSI *scgp, caddr_t bp, long addr, int cnt));
-EXPORT	int	write_g1	__PR((SCSI *scgp, caddr_t bp, long addr, int cnt));
+int	write_scsi(SCSI *scgp, caddr_t bp, long addr, int cnt);
+int	write_g0(SCSI *scgp, caddr_t bp, long addr, int cnt);
+int	write_g1(SCSI *scgp, caddr_t bp, long addr, int cnt);
 
 #ifdef	used
-LOCAL	void	Xrequest_sense	__PR((SCSI *scgp));
+static	void	Xrequest_sense(SCSI *scgp);
 #endif
-LOCAL	int	read_retry	__PR((SCSI *scgp, caddr_t bp, long addr, long cnt,
-					int (*rfunc)(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt),
-					rparm_t *rp));
-LOCAL	void	read_generic	__PR((SCSI *scgp, parm_t *parmp,
-					int (*rfunc)(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt),
-					rparm_t *rp,
-					int (*dfunc)(rparm_t *rp, caddr_t bp, long addr, int cnt)
-));
-LOCAL	void	write_disk	__PR((SCSI *scgp, parm_t *parmp));
-LOCAL	int	choice		__PR((int n));
-LOCAL	void	ra		__PR((SCSI *scgp));
+static	int	read_retry(SCSI *scgp, caddr_t bp, long addr, long cnt,
+								  int (*rfunc)(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt),
+								  rparm_t *rp);
+static	void	read_generic(SCSI *scgp, parm_t *parmp,
+									 int (*rfunc)(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt),
+									 rparm_t *rp,
+									 int (*dfunc)(rparm_t *rp, caddr_t bp, long addr, int cnt));
+static	void	write_disk(SCSI *scgp, parm_t *parmp);
+static	int	choice(int n);
+static	void	ra(SCSI *scgp);
 
-EXPORT	int	read_da		__PR((SCSI *scgp, caddr_t bp, long addr, int cnt, int framesize, int subcode));
-EXPORT	int	read_cd		__PR((SCSI *scgp, caddr_t bp, long addr, int cnt, int framesize, int data, int subch));
+int	read_da(SCSI *scgp, caddr_t bp, long addr, int cnt, int framesize, 
+				  int subcode);
+int	read_cd(SCSI *scgp, caddr_t bp, long addr, int cnt, int framesize, 
+				  int data, int subch);
 
-LOCAL	void	oldmode		__PR((SCSI *scgp, int *errp, int *retrp));
-LOCAL	void	domode		__PR((SCSI *scgp, int err, int retr));
+static	void	oldmode(SCSI *scgp, int *errp, int *retrp);
+static	void	domode(SCSI *scgp, int err, int retr);
 
-LOCAL	void	qpto96		__PR((Uchar *sub, Uchar *subq, int dop));
-LOCAL	void	ovtime		__PR((SCSI *scgp));
-LOCAL	void	add_bad		__PR((long addr));
-LOCAL	void	print_bad	__PR((void));
+static	void	qpto96(Uchar *sub, Uchar *subq, int dop);
+static	void	ovtime(SCSI *scgp);
+static	void	add_bad(long addr);
+static	void	print_bad(void);
 
 struct timeval	starttime;
 struct timeval	stoptime;
@@ -216,9 +222,8 @@ struct	scsi_format_data fmt;
 /*XXX*/EXPORT	BOOL cvt_bcyls() { return (FALSE); }
 /*XXX*/EXPORT	void print_defect_list() {}
 
-LOCAL void
-usage(ret)
-	int	ret;
+static void
+usage(int ret)
 {
 	error("Usage:\treadcd [options]\n");
 	error("options:\n");
@@ -259,10 +264,8 @@ usage(ret)
 /* CSTYLED */
 char	opts[]   = "debug#,d+,kdebug#,kd#,timeout#,quiet,q,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,help,h,version,scanbus,dev*,sectors*,w,c2scan,fulltoc,clone,noerror,nocorr,notrunc,retries#,factor,f*,speed#,ts&,overhead,meshpoints#";
 
-EXPORT int
-main(ac, av)
-	int	ac;
-	char	*av[];
+int
+main(int argc, char *argv[])
 {
 	char	*dev = NULL;
 	int	fcount;
@@ -284,10 +287,10 @@ main(ac, av)
 	char	*filename = NULL;
 	char	*sectors = NULL;
 
-	save_args(ac, av);
+	save_args(argc, argv);
 
-	cac = --ac;
-	cav = ++av;
+	cac = --argc;
+	cav = ++argv;
 
 	if (getallargs(&cac, &cav, opts,
 			&debug, &debug,
@@ -321,8 +324,8 @@ main(ac, av)
 	}
 
 	fcount = 0;
-	cac = ac;
-	cav = av;
+	cac = argc;
+	cav = argv;
 
 	while (getfiles(&cac, &cav, opts) > 0) {
 		fcount++;
@@ -547,9 +550,8 @@ main(ac, av)
  * XXX da meistens das letzte SCSI Kommando noch laeuft.
  * XXX Eine Loesung waere ein Abort Callback in SCSI *.
  */
-LOCAL void
-intr(sig)
-	int	sig;
+static void
+intr(int sig)
 {
 	didintr++;
 	exsig = sig;
@@ -557,10 +559,8 @@ intr(sig)
 }
 
 /* ARGSUSED */
-LOCAL void
-exscsi(excode, arg)
-	int	excode;
-	void	*arg;
+static void
+exscsi(int excode, void *arg)
 {
 	struct exargs	*exp = (struct exargs *)arg;
 		int	i;
@@ -590,10 +590,8 @@ exscsi(excode, arg)
 	}
 }
 
-LOCAL void
-excdr(excode, arg)
-	int	excode;
-	void	*arg;
+static void
+excdr(int excode, void *arg)
 {
 	exscsi(excode, arg);
 
@@ -605,7 +603,7 @@ excdr(excode, arg)
 /*
  * Return milliseconds since start time.
  */
-LOCAL int
+static int
 prstats()
 {
 	int	sec;
@@ -633,7 +631,7 @@ prstats()
 /*
  * Return milliseconds since start time, but be silent this time.
  */
-LOCAL int
+static int
 prstats_silent()
 {
 	int	sec;
@@ -657,11 +655,8 @@ prstats_silent()
 	return (1000*sec + (usec / 1000));
 }
 
-LOCAL void
-dorw(scgp, filename, sectors)
-	SCSI	*scgp;
-	char	*filename;
-	char	*sectors;
+static void
+dorw(SCSI *scgp, char *filename, char *sectors)
 {
 	parm_t	params;
 	char	*p = NULL;
@@ -720,9 +715,8 @@ dorw(scgp, filename, sectors)
 		read_disk(scgp, &params);
 }
 
-LOCAL void
-doit(scgp)
-	SCSI	*scgp;
+static void
+doit(SCSI *scgp)
 {
 	int	i = 0;
 	parm_t	params;
@@ -765,10 +759,8 @@ doit(scgp)
 	}
 }
 
-LOCAL void
-read_disk(scgp, parmp)
-	SCSI	*scgp;
-	parm_t	*parmp;
+static void
+read_disk(SCSI *scgp, parm_t *parmp)
 {
 	rparm_t	rp;
 
@@ -786,16 +778,14 @@ read_disk(scgp, parmp)
 }
 
 #ifdef	CLONE_WRITE
-LOCAL void
-readcd_disk(scgp, parmp)
-	SCSI	*scgp;
-	parm_t	*parmp;
+static void
+readcd_disk(SCSI *scgp, parm_t *parmp)
 {
 	rparm_t	rp;
 	int	osecsize = 2048;
 	int	oerr = 0;
 	int	oretr = 10;
-	int	(*funcp)__PR((SCSI *_scgp, rparm_t *_rp, caddr_t bp, long addr, int cnt));
+	int	(*funcp)(SCSI *_scgp, rparm_t *_rp, caddr_t bp, long addr, int cnt);
 
 	scgp->silent++;
 	if (read_capacity(scgp) >= 0)
@@ -843,10 +833,8 @@ readcd_disk(scgp, parmp)
 }
 
 /* ARGSUSED */
-LOCAL void
-read_lin(scgp, parmp)
-	SCSI	*scgp;
-	parm_t	*parmp;
+static void
+read_lin(SCSI *scgp, parm_t *parmp)
 {
 	parm_t	parm;
 	rparm_t	rp;
@@ -869,10 +857,8 @@ read_lin(scgp, parmp)
 	read_generic(scgp, &parm, fread_lin, &rp, fdata_null);
 }
 
-LOCAL int
-read_secheader(scgp, addr)
-	SCSI	*scgp;
-	long	addr;
+static int
+read_secheader(SCSI *scgp, long addr)
 {
 	rparm_t	rp;
 	int	osecsize = 2048;
@@ -907,11 +893,8 @@ read_secheader(scgp, addr)
 }
 
 /* ARGSUSED */
-LOCAL int
-read_ftoc(scgp, parmp, do_sectype)
-	SCSI	*scgp;
-	parm_t	*parmp;
-	BOOL	do_sectype;
+static int
+read_ftoc(SCSI *scgp, parm_t *parmp, BOOL do_sectype)
 {
 	FILE	*f;
 	int	i;
@@ -992,10 +975,8 @@ itworked:
 	return (0);
 }
 
-LOCAL void
-read_sectypes(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static void
+read_sectypes(SCSI *scgp, FILE *f)
 {
 	char	sect;
 
@@ -1016,11 +997,8 @@ read_sectypes(scgp, f)
 	}
 }
 
-LOCAL void
-get_sectype(scgp, addr, st)
-	SCSI	*scgp;
-	long	addr;
-	char	*st;
+static void
+get_sectype(SCSI *scgp, long addr, char *st)
 {
 	char	*synchdr = "\0\377\377\377\377\377\377\377\377\377\377\0";
 	int	sectype = SECT_AUDIO;
@@ -1096,10 +1074,8 @@ get_sectype(scgp, addr, st)
 
 char	zeroblk[512];
 
-LOCAL void
-readc2_disk(scgp, parmp)
-	SCSI	*scgp;
-	parm_t	*parmp;
+static void
+readc2_disk(SCSI *scgp, parm_t *parmp)
 {
 	rparm_t	rp;
 	int	osecsize = 2048;
@@ -1143,25 +1119,15 @@ readc2_disk(scgp, parmp)
 }
 
 /* ARGSUSED */
-LOCAL int
-fread_data(scgp, rp, bp, addr, cnt)
-	SCSI	*scgp;
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fread_data(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 	return (read_g1(scgp, bp, addr, cnt));
 }
 
 #ifdef	CLONE_WRITE
-LOCAL int
-fread_2448(scgp, rp, bp, addr, cnt)
-	SCSI	*scgp;
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fread_2448(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 	if (rp->ismmc) {
 		return (read_cd(scgp, bp, addr, cnt, rp->secsize,
@@ -1176,13 +1142,8 @@ fread_2448(scgp, rp, bp, addr, cnt)
 	}
 }
 
-LOCAL int
-fread_2448_16(scgp, rp, bp, addr, cnt)
-	SCSI	*scgp;
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fread_2448_16(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 
 	if (rp->ismmc) {
@@ -1224,13 +1185,8 @@ fread_2448_16(scgp, rp, bp, addr, cnt)
 	}
 }
 
-LOCAL int
-fread_2352(scgp, rp, bp, addr, cnt)
-	SCSI	*scgp;
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fread_2352(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 	if (rp->ismmc) {
 		return (read_cd(scgp, bp, addr, cnt, rp->secsize,
@@ -1247,13 +1203,8 @@ fread_2352(scgp, rp, bp, addr, cnt)
 	}
 }
 
-LOCAL int
-fread_lin(scgp, rp, bp, addr, cnt)
-	SCSI	*scgp;
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fread_lin(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 	if (addr != ULONG_C(0xF0000000))
 		addr = ULONG_C(0xFFFFFFFF);
@@ -1266,9 +1217,8 @@ fread_lin(scgp, rp, bp, addr, cnt)
 }
 #endif	/* CLONE_WRITE */
 
-LOCAL int
-bits(c)
-	int	c;
+static int
+bits(int c)
 {
 	int	n = 0;
 
@@ -1291,9 +1241,8 @@ bits(c)
 	return (n);
 }
 
-LOCAL int
-bitidx(c)
-	int	c;
+static int
+bitidx(int c)
 {
 	if (c & 0x80)
 		return (0);
@@ -1314,13 +1263,8 @@ bitidx(c)
 	return (-1);
 }
 
-LOCAL int
-fread_c2(scgp, rp, bp, addr, cnt)
-	SCSI	*scgp;
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fread_c2(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 	if (rp->ismmc) {
 		return (read_cd(scgp, bp, addr, cnt, rp->secsize,
@@ -1337,22 +1281,14 @@ fread_c2(scgp, rp, bp, addr, cnt)
 }
 
 /* ARGSUSED */
-LOCAL int
-fdata_null(rp, bp, addr, cnt)
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fdata_null(rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 	return (0);
 }
 
-LOCAL int
-fdata_c2(rp, bp, addr, cnt)
-	rparm_t	*rp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+fdata_c2(rparm_t *rp, caddr_t bp, long addr, int cnt)
 {
 	int	i;
 	int	j;
@@ -1382,12 +1318,8 @@ fdata_c2(rp, bp, addr, cnt)
 }
 
 #ifdef	used
-LOCAL int
-read_scsi_g1(scgp, bp, addr, cnt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+static int
+read_scsi_g1(SCSI *scgp, caddr_t bp, long addr, int cnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1411,12 +1343,8 @@ read_scsi_g1(scgp, bp, addr, cnt)
 
 #define	G0_MAXADDR	0x1FFFFFL
 
-EXPORT int
-write_scsi(scgp, bp, addr, cnt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+int
+write_scsi(SCSI *scgp, caddr_t bp, long addr, int cnt)
 {
 	if (addr <= G0_MAXADDR)
 		return (write_g0(scgp, bp, addr, cnt));
@@ -1424,12 +1352,8 @@ write_scsi(scgp, bp, addr, cnt)
 		return (write_g1(scgp, bp, addr, cnt));
 }
 
-EXPORT int
-write_g0(scgp, bp, addr, cnt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+int
+write_g0(SCSI *scgp, caddr_t bp, long addr, int cnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1452,12 +1376,8 @@ write_g0(scgp, bp, addr, cnt)
 	return (scg_cmd(scgp));
 }
 
-EXPORT int
-write_g1(scgp, bp, addr, cnt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
+int
+write_g1(SCSI *scgp, caddr_t bp, long addr, int cnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1481,9 +1401,8 @@ write_g1(scgp, bp, addr, cnt)
 }
 
 #ifdef	used
-LOCAL void
-Xrequest_sense(scgp)
-	SCSI	*scgp;
+static void
+Xrequest_sense(SCSI *scgp)
 {
 	char	sense_buf[32];
 	struct	scg_cmd ocmd;
@@ -1522,14 +1441,10 @@ Xrequest_sense(scgp)
 }
 #endif
 
-LOCAL int
-read_retry(scgp, bp, addr, cnt, rfunc, rp)
-	SCSI	*scgp;
-	caddr_t	bp;
-	long	addr;
-	long	cnt;
-	int	(*rfunc)__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
-	rparm_t	*rp;
+static int
+read_retry(SCSI *scgp, caddr_t bp, long addr, long cnt, 
+			  int (*rfunc)(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt), 
+			  rparm_t *rp)
 {
 /*	int	secsize = scgp->cap->c_bsize;*/
 	int	secsize = rp->secsize;
@@ -1625,13 +1540,11 @@ read_retry(scgp, bp, addr, cnt, rfunc, rp)
 	return (0);
 }
 
-LOCAL void
-read_generic(scgp, parmp, rfunc, rp, dfunc)
-	SCSI	*scgp;
-	parm_t	*parmp;
-	int	(*rfunc)__PR((SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt));
-	rparm_t	*rp;
-	int	(*dfunc)__PR((rparm_t *rp, caddr_t bp, long addr, int cnt));
+static void
+read_generic(SCSI *scgp, parm_t *parmp, 
+				 int (*rfunc)(SCSI *scgp, rparm_t *rp, caddr_t bp, long addr, int cnt),
+				 rparm_t *rp,
+				 int (*dfunc)(rparm_t *rp, caddr_t bp, long addr, int cnt))
 {
 	char	filename[512];
 	char	*defname = NULL;
@@ -1820,10 +1733,8 @@ out:
 	print_bad();
 }
 
-LOCAL void
-write_disk(scgp, parmp)
-	SCSI	*scgp;
-	parm_t	*parmp;
+static void
+write_disk(SCSI *scgp, parm_t *parmp)
 {
 	char	filename[512];
 	char	*defname = "disk.out";
@@ -1919,17 +1830,16 @@ write_disk(scgp, parmp)
 		(double)((addr - start)/(1024.0/scgp->cap->c_bsize)) / (0.001*msec));
 }
 
-LOCAL int
-choice(n)
-	int	n;
+static int
+choice(int n)
 {
 #if	defined(HAVE_DRAND48)
-	extern	double	drand48 __PR((void));
+	extern	double	drand48(void);
 
 	return (drand48() * n);
 #else
 #	if	defined(HAVE_RAND)
-	extern	int	rand __PR((void));
+	extern	int	rand(void);
 
 	return (rand() % n);
 #	else
@@ -1938,9 +1848,8 @@ choice(n)
 #endif
 }
 
-LOCAL void
-ra(scgp)
-	SCSI	*scgp;
+static void
+ra(SCSI *scgp)
 {
 /*	char	filename[512];*/
 	FILE	*f;
@@ -1967,14 +1876,8 @@ ra(scgp)
 				(cdb)->count[1] = ((len) >> 8L) & 0xFF,\
 				(cdb)->count[2] = (len) & 0xFF)
 
-EXPORT int
-read_da(scgp, bp, addr, cnt, framesize, subcode)
-	SCSI	*scgp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
-	int	framesize;
-	int	subcode;
+int
+read_da(SCSI *scgp, caddr_t bp, long addr, int cnt, int framesize, int subcode)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1998,15 +1901,9 @@ read_da(scgp, bp, addr, cnt, framesize, subcode)
 	return (scg_cmd(scgp));
 }
 
-EXPORT int
-read_cd(scgp, bp, addr, cnt, framesize, data, subch)
-	SCSI	*scgp;
-	caddr_t	bp;
-	long	addr;
-	int	cnt;
-	int	framesize;
-	int	data;
-	int	subch;
+int
+read_cd(SCSI *scgp, caddr_t bp, long addr, int cnt, int framesize, int data, 
+		  int subch)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -2030,11 +1927,8 @@ read_cd(scgp, bp, addr, cnt, framesize, data, subch)
 	return (scg_cmd(scgp));
 }
 
-LOCAL void
-oldmode(scgp, errp, retrp)
-	SCSI	*scgp;
-	int	*errp;
-	int	*retrp;
+static void
+oldmode(SCSI *scgp, int *errp, int *retrp)
 {
 	Uchar	mode[0x100];
 	Uchar	cmode[0x100];
@@ -2070,11 +1964,8 @@ oldmode(scgp, errp, retrp)
 		*retrp = i;
 }
 
-LOCAL void
-domode(scgp, err, retr)
-	SCSI	*scgp;
-	int	err;
-	int	retr;
+static void
+domode(SCSI *scgp, int err, int retr)
 {
 	Uchar	mode[0x100];
 	Uchar	cmode[0x100];
@@ -2131,19 +2022,16 @@ domode(scgp, err, retr)
 
 
 /*--------------------------------------------------------------------------*/
-LOCAL	void	qpto96		__PR((Uchar *sub, Uchar *subq, int dop));
+static	void	qpto96(Uchar *sub, Uchar *subq, int dop);
 /*EXPORT	void	qpto96		__PR((Uchar *sub, Uchar *subq, int dop));*/
 /*
  * Q-Sub auf 96 Bytes blähen und P-Sub addieren
  *
  * OUT: sub, IN: subqptr
  */
-LOCAL void
+static void
 /*EXPORT void*/
-qpto96(sub, subqptr, dop)
-	Uchar	*sub;
-	Uchar	*subqptr;
-	int	dop;
+qpto96(Uchar *sub, Uchar *subqptr, int dop)
 {
 	Uchar	tmp[16];
 	Uchar	*p;
@@ -2200,9 +2088,8 @@ qpto96(sub, subqptr, dop)
 
 /*--------------------------------------------------------------------------*/
 
-LOCAL void
-ovtime(scgp)
-	SCSI	*scgp;
+static void
+ovtime(SCSI *scgp)
 {
 	register int	i;
 
@@ -2275,9 +2162,8 @@ long	*badsecs;
 int	nbad;
 int	maxbad;
 
-LOCAL void
-add_bad(addr)
-	long	addr;
+static void
+add_bad(long addr)
 {
 	if (maxbad == 0) {
 		maxbad = BAD_INC;
@@ -2294,7 +2180,7 @@ add_bad(addr)
 	badsecs[nbad++] = addr;
 }
 
-LOCAL void
+static void
 print_bad()
 {
 	int	i;

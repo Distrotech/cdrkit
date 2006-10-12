@@ -55,7 +55,7 @@ extern	int	lverbose;
 
 extern	char	*buf;			/* The transfer buffer */
 
-int	write_packet_data __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+int	write_packet_data(SCSI *scgp, cdr_t *dp, track_t *trackp);
 
 int
 write_packet_data(SCSI *scgp, cdr_t *dp, track_t *trackp)

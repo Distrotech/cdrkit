@@ -212,37 +212,41 @@ struct sony_cue {
 
 #define	strbeg(s1, s2)	(strstr((s2), (s1)) == (s2))
 
-static	int	write_start_sony	__PR((SCSI *scgp, caddr_t bp, int size));
-static	int	write_continue_sony	__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
-static	int	discontinue_sony	__PR((SCSI *scgp));
-static	int	write_track_sony	__PR((SCSI *scgp, long track, int sectype));
-static	int	close_track_sony	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	flush_sony		__PR((SCSI *scgp, int track));
-static	int	finalize_sony		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	recover_sony		__PR((SCSI *scgp, cdr_t *dp, int track));
-static	int	set_wr_parameter_sony	__PR((SCSI *scgp, caddr_t bp, int size));
-static	int	next_wr_addr_sony	__PR((SCSI *scgp, track_t *trackp, long *ap));
-static	int	reserve_track_sony	__PR((SCSI *scgp, unsigned long len));
-static	int	init_sony		__PR((SCSI *scgp, cdr_t *dp));
-static	int	getdisktype_sony	__PR((SCSI *scgp, cdr_t *dp));
-static	void	di_to_dstat_sony	__PR((struct sony_924_mode_page_22 *dip, dstat_t *dsp));
-static	int	speed_select_sony	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-static	int	next_writable_address_sony __PR((SCSI *scgp, long *ap, int track, int sectype, int tracktype));
-static	int	new_track_sony		__PR((SCSI *scgp, int track, int sectype, int tracktype));
-static	int	open_track_sony		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	open_session_sony	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	abort_session_sony	__PR((SCSI *scgp, cdr_t *dp));
-static	int	get_page22_sony		__PR((SCSI *scgp, char *mode));
-static	int	gen_cue_sony		__PR((track_t *trackp, void *vcuep, BOOL needgap));
-static	void	fillcue			__PR((struct sony_cue *cp, int ca, int tno, int idx, int dataform, int scms, msf_t *mp));
-static	int	send_cue_sony		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	write_leadin_sony	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	sony_attach		__PR((SCSI *scgp, cdr_t *dp));
+static	int	write_start_sony(SCSI *scgp, caddr_t bp, int size);
+static	int	write_continue_sony(SCSI *scgp, caddr_t bp, long sectaddr, 
+											  long size, int blocks, BOOL islast);
+static	int	discontinue_sony(SCSI *scgp);
+static	int	write_track_sony(SCSI *scgp, long track, int sectype);
+static	int	close_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	flush_sony(SCSI *scgp, int track);
+static	int	finalize_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	recover_sony(SCSI *scgp, cdr_t *dp, int track);
+static	int	set_wr_parameter_sony(SCSI *scgp, caddr_t bp, int size);
+static	int	next_wr_addr_sony(SCSI *scgp, track_t *trackp, long *ap);
+static	int	reserve_track_sony(SCSI *scgp, unsigned long len);
+static	int	init_sony(SCSI *scgp, cdr_t *dp);
+static	int	getdisktype_sony(SCSI *scgp, cdr_t *dp);
+static	void	di_to_dstat_sony(struct sony_924_mode_page_22 *dip, 
+										  dstat_t *dsp);
+static	int	speed_select_sony(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	next_writable_address_sony(SCSI *scgp, long *ap, int track, 
+														int sectype, int tracktype);
+static	int	new_track_sony(SCSI *scgp, int track, int sectype, 
+										int tracktype);
+static	int	open_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	open_session_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	abort_session_sony(SCSI *scgp, cdr_t *dp);
+static	int	get_page22_sony(SCSI *scgp, char *mode);
+static	int	gen_cue_sony(track_t *trackp, void *vcuep, BOOL needgap);
+static	void	fillcue(struct sony_cue *cp, int ca, int tno, int idx, int dataform, int scms, msf_t *mp);
+static	int	send_cue_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	write_leadin_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	sony_attach(SCSI *scgp, cdr_t *dp);
 #ifdef	SONY_DEBUG
-static	void	print_sony_mp22		__PR((struct sony_924_mode_page_22 *xp, int len));
-static	void	print_sony_mp23		__PR((struct sony_924_mode_page_23 *xp, int len));
+static	void	print_sony_mp22(struct sony_924_mode_page_22 *xp, int len);
+static	void	print_sony_mp23(struct sony_924_mode_page_23 *xp, int len);
 #endif
-static	int	buf_cap_sony		__PR((SCSI *scgp, long *, long *));
+static	int	buf_cap_sony(SCSI *scgp, long *, long *);
 
 cdr_t	cdr_sony_cdu924 = {
 	0, 0,
@@ -280,7 +284,7 @@ cdr_t	cdr_sony_cdu924 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };

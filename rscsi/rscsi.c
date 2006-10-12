@@ -72,49 +72,48 @@ static	char sccsid[] =
 #include <netdb.h>
 #endif
 
-EXPORT	int	main		__PR((int argc, char **argv));
 #ifdef	USE_REMOTE
-LOCAL	void	checkuser	__PR((void));
-LOCAL	char	*getpeer	__PR((void));
-LOCAL	BOOL	checktarget	__PR((void));
-LOCAL	BOOL	strmatch	__PR((char *str, char *pat));
-LOCAL	void	dorscsi		__PR((void));
-LOCAL	void	scsiversion	__PR((void));
-LOCAL	void	openscsi	__PR((void));
-LOCAL	void	closescsi	__PR((void));
-LOCAL	void	maxdma		__PR((void));
-LOCAL	void	getbuf		__PR((void));
-LOCAL	void	freebuf		__PR((void));
-LOCAL	void	havebus		__PR((void));
-LOCAL	void	scsifileno	__PR((void));
-LOCAL	void	initiator_id	__PR((void));
-LOCAL	void	isatapi		__PR((void));
-LOCAL	void	scsireset	__PR((void));
-LOCAL	void	sendcmd		__PR((void));
+static	void	checkuser(void);
+static	char	*getpeer(void);
+static	BOOL	checktarget(void);
+static	BOOL	strmatch(char *str, char *pat);
+static	void	dorscsi(void);
+static	void	scsiversion(void);
+static	void	openscsi(void);
+static	void	closescsi(void);
+static	void	maxdma(void);
+static	void	getbuf(void);
+static	void	freebuf(void);
+static	void	havebus(void);
+static	void	scsifileno(void);
+static	void	initiator_id(void);
+static	void	isatapi(void);
+static	void	scsireset(void);
+static	void	sendcmd(void);
 
-LOCAL	int	fillrdbuf	__PR((void));
-LOCAL	int	readchar	__PR((char *cp));
+static	int	fillrdbuf(void);
+static	int	readchar(char *cp);
 
-LOCAL	void	readbuf		__PR((char *buf, int n));
-LOCAL	void	voidarg		__PR((int n));
-LOCAL	void	readarg		__PR((char *buf, int n));
-LOCAL	char *	preparebuffer	__PR((int size));
-LOCAL	int	checkscsi	__PR((char *decive));
-LOCAL	void	rscsirespond	__PR((int ret, int err));
-LOCAL	void	rscsireply	__PR((int ret));
-LOCAL	void	rscsierror	__PR((int err, char *str, char *xstr));
+static	void	readbuf(char *buf, int n);
+static	void	voidarg(int n);
+static	void	readarg(char *buf, int n);
+static	char *preparebuffer(int size);
+static	int	checkscsi(char *decive);
+static	void	rscsirespond(int ret, int err);
+static	void	rscsireply(int ret);
+static	void	rscsierror(int err, char *str, char *xstr);
 
 #define	CMD_SIZE	80
 
-LOCAL	SCSI	*scsi_ptr = NULL;
-LOCAL	char	*Sbuf;
-LOCAL	long	Sbufsize;
+static	SCSI	*scsi_ptr = NULL;
+static	char	*Sbuf;
+static	long	Sbufsize;
 
-LOCAL	char	*username;
-LOCAL	char	*peername;
+static	char	*username;
+static	char	*peername;
 
-LOCAL	char	*debug_name;
-LOCAL	FILE	*debug_file;
+static	char	*debug_name;
+static	FILE	*debug_file;
 
 #define	DEBUG(fmt)		if (debug_file) js_fprintf(debug_file, fmt)
 #define	DEBUG1(fmt,a)		if (debug_file) js_fprintf(debug_file, fmt, a)
@@ -125,10 +124,8 @@ LOCAL	FILE	*debug_file;
 #define	DEBUG6(fmt,a1,a2,a3,a4,a5,a6)	if (debug_file) js_fprintf(debug_file, fmt, a1, a2, a3, a4, a5, a6)
 #endif	/* USE_REMOTE */
 
-EXPORT int
-main(argc, argv)
-	int	argc;
-	char	**argv;
+int
+main(int argc, char *argv[])
 {
 	save_args(argc, argv);
 #ifndef	USE_REMOTE
@@ -209,7 +206,7 @@ main(argc, argv)
 }
 
 #ifdef	USE_REMOTE
-LOCAL void
+static void
 checkuser()
 {
 	uid_t	uid = getuid();
@@ -248,7 +245,7 @@ notfound:
 #endif
 #endif
 
-LOCAL char *
+static char *
 getpeer()
 {
 #ifdef	HAVE_GETNAMEINFO
@@ -332,7 +329,7 @@ static	char		buffer[NI_MAXHOST];
 	}
 }
 
-LOCAL BOOL
+static BOOL
 checktarget()
 {
 	char	*target;
@@ -395,10 +392,8 @@ checktarget()
 	return (FALSE);
 }
 
-LOCAL BOOL
-strmatch(str, pat)
-	char	*str;
-	char	*pat;
+static BOOL
+strmatch(char *str, char *pat)
 {
 	int	*aux;
 	int	*state;
@@ -433,7 +428,7 @@ strmatch(str, pat)
 	return (FALSE);
 }
 
-LOCAL void
+static void
 dorscsi()
 {
 	char	c;
@@ -489,7 +484,7 @@ dorscsi()
 	exit(0);
 }
 
-LOCAL void
+static void
 scsiversion()
 {
 	int	ret;
@@ -509,7 +504,7 @@ scsiversion()
 	_nixwrite(STDOUT_FILENO, str, ret);
 }
 
-LOCAL void
+static void
 openscsi()
 {
 	char	device[CMD_SIZE];
@@ -564,7 +559,7 @@ openscsi()
 	(void) _nixwrite(STDOUT_FILENO, rbuf, ret);
 }
 
-LOCAL void
+static void
 closescsi()
 {
 	int	ret;
@@ -577,7 +572,7 @@ closescsi()
 	scsi_ptr = NULL;
 }
 
-LOCAL void
+static void
 maxdma()
 {
 	int	ret;
@@ -593,7 +588,7 @@ maxdma()
 	rscsirespond(ret, geterrno());
 }
 
-LOCAL void
+static void
 getbuf()
 {
 	int	ret = 0;
@@ -611,7 +606,7 @@ getbuf()
 	rscsirespond(ret, geterrno());
 }
 
-LOCAL void
+static void
 freebuf()
 {
 	int	ret = 0;
@@ -628,7 +623,7 @@ freebuf()
 	rscsirespond(ret, geterrno());
 }
 
-LOCAL void
+static void
 havebus()
 {
 	int	ret;
@@ -646,7 +641,7 @@ havebus()
 	rscsirespond(ret, geterrno());
 }
 
-LOCAL void
+static void
 scsifileno()
 {
 	int	ret;
@@ -676,7 +671,7 @@ scsifileno()
 		rscsireply(ret);
 }
 
-LOCAL void
+static void
 initiator_id()
 {
 	int	ret;
@@ -696,7 +691,7 @@ initiator_id()
 		rscsireply(ret);
 }
 
-LOCAL void
+static void
 isatapi()
 {
 	int	ret;
@@ -716,7 +711,7 @@ isatapi()
 		rscsireply(ret);
 }
 
-LOCAL void
+static void
 scsireset()
 {
 	int	ret;
@@ -732,7 +727,7 @@ scsireset()
 	rscsirespond(ret, geterrno());
 }
 
-LOCAL void
+static void
 sendcmd()
 {
 	register struct	scg_cmd	*scmd;
@@ -854,11 +849,11 @@ sendcmd()
 }
 
 #define	READB_SIZE	128
-LOCAL	char		readb[READB_SIZE];
-LOCAL	char		*readbptr;
-LOCAL	int		readbcnt;
+static	char		readb[READB_SIZE];
+static	char		*readbptr;
+static	int		readbcnt;
 
-LOCAL int
+static int
 fillrdbuf()
 {
 	readbptr = readb;
@@ -866,9 +861,8 @@ fillrdbuf()
 	return (readbcnt = _niread(STDIN_FILENO, readb, READB_SIZE));
 }
 
-LOCAL int
-readchar(cp)
-	char	*cp;
+static int
+readchar(char *cp)
 {
 	if (--readbcnt < 0) {
 		if (fillrdbuf() <= 0)
@@ -879,10 +873,8 @@ readchar(cp)
 	return (1);
 }
 
-LOCAL void
-readbuf(buf, n)
-	register char	*buf;
-	register int	n;
+static void
+readbuf(register char *buf, register int n)
 {
 	register int	i = 0;
 	register int	amt;
@@ -907,9 +899,8 @@ readbuf(buf, n)
 	}
 }
 
-LOCAL void
-voidarg(n)
-	register int	n;
+static void
+voidarg(register int n)
 {
 	register int	i;
 	register int	amt;
@@ -923,10 +914,8 @@ voidarg(n)
 	}
 }
 
-LOCAL void
-readarg(buf, n)
-	char	*buf;
-	int	n;
+static void
+readarg(char *buf, int n)
 {
 	int	i;
 
@@ -939,9 +928,8 @@ readarg(buf, n)
 	buf[i] = '\0';
 }
 
-LOCAL char *
-preparebuffer(size)
-	int	size;
+static char *
+preparebuffer(int size)
 {
 	Sbufsize = size;
 	if ((Sbuf = scg_getbuf(scsi_ptr, Sbufsize)) == NULL) {
@@ -965,9 +953,8 @@ preparebuffer(size)
 	return (Sbuf);
 }
 
-LOCAL int
-checkscsi(device)
-	char	*device;
+static int
+checkscsi(char *device)
 {
 #ifdef	CHECKTAPE
 	if (strncmp(device, "/dev/rst", 8) == 0 ||
@@ -981,10 +968,8 @@ checkscsi(device)
 #endif
 }
 
-LOCAL void
-rscsirespond(ret, err)
-	int	ret;
-	int	err;
+static void
+rscsirespond(int ret, int err)
 {
 	if (ret < 0) {
 		rscsierror(err, errmsgstr(err), NULL);
@@ -993,9 +978,8 @@ rscsirespond(ret, err)
 	}
 }
 
-LOCAL void
-rscsireply(ret)
-	int	ret;
+static void
+rscsireply(int ret)
 {
 	char	rbuf[CMD_SIZE];
 
@@ -1004,11 +988,8 @@ rscsireply(ret)
 	(void) _nixwrite(STDOUT_FILENO, rbuf, strlen(rbuf));
 }
 
-LOCAL void
-rscsierror(err, str, xstr)
-	int	err;
-	char	*str;
-	char	*xstr;
+static void
+rscsierror(int err, char *str, char *xstr)
 {
 	char	rbuf[1600];
 	int	xlen = 0;

@@ -55,7 +55,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-mac-iokit.c-1.10";	/* The version for this transport */
+static	char	_scg_trans_version[] = "scsi-mac-iokit.c-1.10";	/* The version for this transport */
 
 #define	MAX_SCG		16	/* Max # of SCSI controllers */
 #define	MAX_TGT		16
@@ -86,10 +86,8 @@ struct scg_local {
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -109,10 +107,8 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "SCSITaskDeviceInterface", "Apple SCSI",
 		"", "Mac Prom device name", "IOCompactDiscServices/0",
@@ -131,10 +127,8 @@ scgo_help(scgp, f)
  * more than the first device (e.g. IOCompactDiscServices/5 for the 5th
  * compact disc attached)
  */
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	mach_port_t masterPort = NULL;
 	io_iterator_t scsiObjectIterator = NULL;
@@ -327,9 +321,8 @@ out:
 	return (err);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	SCSITaskDeviceInterface	**sc;
 	MMCDeviceInterface	**mmc;
@@ -354,10 +347,8 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	long maxdma = MAX_DMA_NEXT;
 #ifdef	SGIOCMAXDMA
@@ -374,10 +365,8 @@ scgo_maxdma(scgp, amt)
 	return (maxdma);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -387,54 +376,42 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	if (busno == 0)
 		return (TRUE);
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
-
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	if (what == SCG_RESET_NOP)
 		return (0);
@@ -447,9 +424,8 @@ scgo_reset(scgp, what)
 	return (-1);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd		*sp = scgp->scmd;
 	SCSITaskDeviceInterface	**sc = NULL;

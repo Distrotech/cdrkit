@@ -60,18 +60,15 @@ static	char sccsid[] =
  */
 #define	BUF_SIZE	(62*1024)	/* Must be a multiple of 2048	   */
 
-LOCAL	SCSI	*scgp;
-LOCAL	long	bufsize;		/* The size of the transfer buffer */
+static	SCSI	*scgp;
+static	long	bufsize;		/* The size of the transfer buffer */
 
-EXPORT	int	readsecs	__PR((int startsecno, void *buffer, int sectorcount));
-EXPORT	int	scsidev_open	__PR((char *path));
-EXPORT	int	scsidev_close	__PR((void));
+int	readsecs(int startsecno, void *buffer, int sectorcount);
+int	scsidev_open(char *path);
+int	scsidev_close(void);
 
-EXPORT int
-readsecs(startsecno, buffer, sectorcount)
-	int	startsecno;
-	void	*buffer;
-	int	sectorcount;
+int
+readsecs(int startsecno, void *buffer, int sectorcount)
 {
 	int	f;
 	int	secsize;	/* The drive's SCSI sector size		*/
@@ -144,9 +141,8 @@ readsecs(startsecno, buffer, sectorcount)
 	return (sectorcount * SECTOR_SIZE);
 }
 
-EXPORT int
-scsidev_open(path)
-	char	*path;
+int
+scsidev_open(char *path)
 {
 	char	errstr[80];
 	char	*buf;	/* ignored, bit OS/2 ASPI layer needs memory which */
@@ -190,7 +186,7 @@ scsidev_open(path)
 	return (1);
 }
 
-EXPORT int
+int
 scsidev_close()
 {
 	if (in_image == NULL) {

@@ -70,22 +70,19 @@ static	char sccsid[] =
 #define	TF_SIZE (5 + 3 * 7)
 #endif
 
-LOCAL	void	rstrncpy			__PR((char *t, char *f, int c,
+static	void	rstrncpy(char *t, char *f, int c,
 							struct unls_table *inls,
-							struct unls_table *onls));
-LOCAL	void	add_CE_entry			__PR((char *field, int line));
-LOCAL	int	gen_xa_attr			__PR((mode_t attr));
-LOCAL	void	gen_xa				__PR((struct stat *lstatbuf));
-EXPORT	int	generate_xa_rr_attributes	__PR((char *whole_name,
-							char *name,
-							struct directory_entry * s_entry,
-							struct stat * statbuf,
-							struct stat * lstatbuf,
-							int deep_opt));
-	char *	generate_rr_extension_record	__PR((char *id,
-							char *descriptor,
-							char *source,
-							int *size));
+							struct unls_table *onls);
+static	void	add_CE_entry(char *field, int line);
+static	int	gen_xa_attr(mode_t attr);
+static	void	gen_xa(struct stat *lstatbuf);
+int generate_xa_rr_attributes(char *whole_name, char *name,
+									 	struct directory_entry *s_entry,
+										struct stat *statbuf,
+										struct stat *lstatbuf,
+										int deep_opt);
+char *generate_rr_extension_record(char *id, char *descriptor, char *source,
+											  int *size);
 /*
  * If we need to store this number of bytes, make sure we
  * do not box ourselves in so that we do not have room for
@@ -99,22 +96,18 @@ EXPORT	int	generate_xa_rr_attributes	__PR((char *whole_name,
 /*
  * Buffer to build RR attributes
  */
-LOCAL	Uchar	Rock[16384];
-LOCAL	Uchar	symlink_buff[PATH_MAX+1];
-LOCAL	int	ipnt = 0;	/* Current "write" offset in Rock[]	*/
-LOCAL	int	recstart = 0;	/* Start offset in Rock[] for this area	*/
-LOCAL	int	currlen = 0;	/* # of non RR bytes used in this area	*/
-LOCAL	int	mainrec = 0;	/* # of RR bytes use in main dir area	*/
-LOCAL	int	reclimit;	/* Max. # of bytes usable in this area	*/
+static	Uchar	Rock[16384];
+static	Uchar	symlink_buff[PATH_MAX+1];
+static	int	ipnt = 0;	/* Current "write" offset in Rock[]	*/
+static	int	recstart = 0;	/* Start offset in Rock[] for this area	*/
+static	int	currlen = 0;	/* # of non RR bytes used in this area	*/
+static	int	mainrec = 0;	/* # of RR bytes use in main dir area	*/
+static	int	reclimit;	/* Max. # of bytes usable in this area	*/
 
 /* if we are using converted filenames, we don't want the '/' character */
-LOCAL void
-rstrncpy(t, f, c, inls, onls)
-	char	*t;
-	char	*f;
-	int	c;
-	struct unls_table *inls;
-	struct unls_table *onls;
+static void
+rstrncpy(char *t, char *f, int c, struct unls_table *inls, 
+			struct unls_table *onls)
 {
 	while (c-- && *f) {
 		*t = conv_charset(*f, inls, onls);
@@ -126,10 +119,8 @@ rstrncpy(t, f, c, inls, onls)
 	}
 }
 
-LOCAL void
-add_CE_entry(field, line)
-	char	*field;
-	int	line;
+static void
+add_CE_entry(char *field, int line)
 {
 	if (MAYBE_ADD_CE_ENTRY(0)) {
 		errmsgno(EX_BAD,
@@ -161,14 +152,8 @@ add_CE_entry(field, line)
 	reclimit = SECTOR_SIZE - 8;	/* Limit to one sector */
 }
 
-#ifdef	PROTOTYPES
-LOCAL int
+static int
 gen_xa_attr(mode_t attr)
-#else
-LOCAL int
-gen_xa_attr(attr)
-	mode_t	attr;
-#endif
 {
 	int	ret = 0;
 
@@ -195,9 +180,8 @@ gen_xa_attr(attr)
 	return (ret);
 }
 
-LOCAL void
-gen_xa(lstatbuf)
-	struct stat	*lstatbuf;
+static void
+gen_xa(struct stat *lstatbuf)
 {
 		/*
 		 * Group ID
@@ -227,27 +211,12 @@ gen_xa(lstatbuf)
 
 }
 
-#ifdef PROTOTYPES
-EXPORT int
+int
 generate_xa_rr_attributes(char *whole_name, char *name,
-			struct directory_entry * s_entry,
-			struct stat * statbuf,
-			struct stat * lstatbuf,
-			int deep_opt)
-#else
-EXPORT int
-generate_xa_rr_attributes(whole_name, name,
-			s_entry,
-			statbuf,
-			lstatbuf,
-			deep_opt)
-	char		*whole_name;
-	char		*name;
-	struct directory_entry *s_entry;
-	struct stat	*statbuf,
-			*lstatbuf;
-	int		deep_opt;
-#endif
+								  struct directory_entry *s_entry,
+								  struct stat *statbuf,
+								  struct stat *lstatbuf,
+								  int deep_opt)
 {
 	int		flagpos;
 	int		flagval;
@@ -852,12 +821,9 @@ xa_only:
 /*
  * Guaranteed to  return a single sector with the relevant info
  */
-EXPORT char *
-generate_rr_extension_record(id, descriptor, source, size)
-	char	*id;
-	char	*descriptor;
-	char	*source;
-	int	*size;
+char *
+generate_rr_extension_record(char *id, char *descriptor, char *source, 
+									  int *size)
 {
 	int		lipnt = 0;
 	char		*pnt;

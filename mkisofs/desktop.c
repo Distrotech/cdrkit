@@ -70,18 +70,16 @@ static	char sccsid[] =
 /*
  * from "data.h" - libhfs routines
  */
-extern	void d_putw	__PR((unsigned char *, short));
-extern	void d_putl	__PR((unsigned char *, long));
+extern	void d_putw(unsigned char *, short);
+extern	void d_putl(unsigned char *, long);
 
-int	make_desktop	__PR((hfsvol *vol, int end));
+int	make_desktop(hfsvol *vol, int end);
 
 
 extern	hce_mem *hce;	/* libhfs/mkisofs extras */
 
 int
-make_desktop(vol, end)
-	hfsvol	*vol;
-	int	end;
+make_desktop(hfsvol *vol, int end)
 {
 	hfsfile		*hfp;			/* Mac file */
 	hfsdirent	ent;			/* Mac finderinfo */

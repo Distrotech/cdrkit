@@ -63,8 +63,8 @@ static	char sccsid[] =
 
 char	skel_version[] = "1.1";
 
-extern	BOOL	getlong		__PR((char *, long *, long, long));
-extern	BOOL	getint		__PR((char *, int *, int, int));
+extern	BOOL	getlong(char *, long *, long, long);
+extern	BOOL	getint(char *, int *, int, int);
 
 struct exargs {
 	SCSI	*scgp;
@@ -74,15 +74,15 @@ struct exargs {
 	char	oerr[3];
 } exargs;
 
-static	void	usage		__PR((int ret));
-int	main		__PR((int ac, char **av));
-static	void	intr		__PR((int sig));
-static	void	exscsi		__PR((int excode, void *arg));
-static	void	excdr		__PR((int excode, void *arg));
-static	int	prstats		__PR((void));
-static	int	prstats_silent	__PR((void));
-static	void	doit		__PR((SCSI *scgp));
-static	void	dofile		__PR((SCSI *scgp, char *filename));
+static	void	usage(int ret);
+static	void	intr(int sig);
+static	void	exscsi(int excode, void *arg);
+static	void	excdr(int excode, void *arg);
+static	int	prstats(void);
+static	int	prstats_silent(void);
+static	void	doit(SCSI *scgp);
+static	void	dofile(SCSI *scgp, char *filename);
+static 	int 	btcmain(SCSI *scgp, const char *fwfile);
 
 struct timeval	starttime;
 struct timeval	stoptime;
@@ -475,7 +475,6 @@ doit(SCSI *scgp)
 	}
 }
 
-static int btcmain		__PR((SCSI *scgp, const char *fwfile));
 
 static void
 dofile(SCSI *scgp, char *filename)

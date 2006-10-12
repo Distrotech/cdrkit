@@ -60,7 +60,7 @@ static	char sccsid[] =
 #include "scsimmc.h"
 #include "cdrecord.h"
 
-void	print_capabilities_mmc4 __PR((SCSI *scgp));
+void	print_capabilities_mmc4(SCSI *scgp);
 
 #define	DOES(what, flag)	printf("  Does %s%s\n", flag?"":"not ", what)
 

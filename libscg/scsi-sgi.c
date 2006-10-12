@@ -56,7 +56,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-sgi.c-1.36";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-sgi.c-1.36";	/* The version for this transport*/
 
 #ifdef	USE_DSLIB
 
@@ -80,7 +80,7 @@ struct scg_local {
 
 
 #ifndef	USE_DSLIB
-LOCAL	int	scg_sendreq	__PR((SCSI *scgp, struct scg_cmd *sp, struct dsreq *dsp));
+static	int	scg_sendreq(SCSI *scgp, struct scg_cmd *sp, struct dsreq *dsp);
 #endif
 
 
@@ -89,10 +89,8 @@ LOCAL	int	scg_sendreq	__PR((SCSI *scgp, struct scg_cmd *sp, struct dsreq *dsp));
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -112,20 +110,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "DS", "Generic SCSI",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -210,9 +204,8 @@ scgo_open(scgp, device)
 	return (nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 #ifndef	USE_DSLIB
 	register int	f;
@@ -239,18 +232,14 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	return (MAX_DMA_SGI);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -260,19 +249,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -291,12 +277,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 #ifdef	USE_DSLIB
 	if (dsp == NULL)
@@ -315,24 +297,20 @@ scgo_fileno(scgp, busno, tgt, tlun)
 #endif
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	/*
 	 * Do we have a SCSI reset on SGI?
@@ -354,11 +332,8 @@ scgo_reset(scgp, what)
 }
 
 #ifndef	USE_DSLIB
-LOCAL int
-scg_sendreq(scgp, sp, dsp)
-	SCSI		*scgp;
-	struct scg_cmd	*sp;
-	struct dsreq	*dsp;
+static int
+scg_sendreq(SCSI *scgp, struct scg_cmd *sp, struct dsreq *dsp)
 {
 	int	ret;
 	int	retries = 4;
@@ -416,9 +391,8 @@ scg_sendreq(scgp, sp, dsp)
 }
 #endif
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	int	ret;

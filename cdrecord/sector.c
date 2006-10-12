@@ -58,11 +58,11 @@ static	char sccsid[] =
 #define	HAVE_NEW_LIB_EDC
 #endif
 
-int	encspeed	__PR((BOOL be_verbose));
-void	encsectors	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
-void	scrsectors	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
-void	encodesector	__PR((Uchar *sp, int sectype, int address));
-void	fillsector	__PR((Uchar *sp, int sectype, int address));
+int	encspeed(BOOL be_verbose);
+void	encsectors(track_t *trackp, Uchar *bp, int address, int nsecs);
+void	scrsectors(track_t *trackp, Uchar *bp, int address, int nsecs);
+void	encodesector(Uchar *sp, int sectype, int address);
+void	fillsector(Uchar *sp, int sectype, int address);
 
 /*
  * Sector types known by lib libedc_ecc:

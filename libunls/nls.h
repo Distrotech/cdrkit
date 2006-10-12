@@ -83,48 +83,48 @@
 #define	CONFIG_NLS_CODEPAGE_10079
 #define	CONFIG_NLS_CODEPAGE_10081
 
-extern int init_unls_iso8859_1	__PR((void));
-extern int init_unls_iso8859_2	__PR((void));
-extern int init_unls_iso8859_3	__PR((void));
-extern int init_unls_iso8859_4	__PR((void));
-extern int init_unls_iso8859_5	__PR((void));
-extern int init_unls_iso8859_6	__PR((void));
-extern int init_unls_iso8859_7	__PR((void));
-extern int init_unls_iso8859_8	__PR((void));
-extern int init_unls_iso8859_9	__PR((void));
-extern int init_unls_iso8859_14	__PR((void));
-extern int init_unls_iso8859_15	__PR((void));
-extern int init_unls_cp437	__PR((void));
-extern int init_unls_cp737	__PR((void));
-extern int init_unls_cp775	__PR((void));
-extern int init_unls_cp850	__PR((void));
-extern int init_unls_cp852	__PR((void));
-extern int init_unls_cp855	__PR((void));
-extern int init_unls_cp857	__PR((void));
-extern int init_unls_cp860	__PR((void));
-extern int init_unls_cp861	__PR((void));
-extern int init_unls_cp862	__PR((void));
-extern int init_unls_cp863	__PR((void));
-extern int init_unls_cp864	__PR((void));
-extern int init_unls_cp865	__PR((void));
-extern int init_unls_cp866	__PR((void));
-extern int init_unls_cp869	__PR((void));
-extern int init_unls_cp874	__PR((void));
-extern int init_unls_cp1250	__PR((void));
-extern int init_unls_cp1251	__PR((void));
-extern int init_unls_koi8_r	__PR((void));
-extern int init_unls_koi8_u	__PR((void));
+extern int init_unls_iso8859_1(void);
+extern int init_unls_iso8859_2(void);
+extern int init_unls_iso8859_3(void);
+extern int init_unls_iso8859_4(void);
+extern int init_unls_iso8859_5(void);
+extern int init_unls_iso8859_6(void);
+extern int init_unls_iso8859_7(void);
+extern int init_unls_iso8859_8(void);
+extern int init_unls_iso8859_9(void);
+extern int init_unls_iso8859_14(void);
+extern int init_unls_iso8859_15(void);
+extern int init_unls_cp437(void);
+extern int init_unls_cp737(void);
+extern int init_unls_cp775(void);
+extern int init_unls_cp850(void);
+extern int init_unls_cp852(void);
+extern int init_unls_cp855(void);
+extern int init_unls_cp857(void);
+extern int init_unls_cp860(void);
+extern int init_unls_cp861(void);
+extern int init_unls_cp862(void);
+extern int init_unls_cp863(void);
+extern int init_unls_cp864(void);
+extern int init_unls_cp865(void);
+extern int init_unls_cp866(void);
+extern int init_unls_cp869(void);
+extern int init_unls_cp874(void);
+extern int init_unls_cp1250(void);
+extern int init_unls_cp1251(void);
+extern int init_unls_koi8_r(void);
+extern int init_unls_koi8_u(void);
 
-extern int init_unls_cp10000	__PR((void));
-extern int init_unls_cp10006	__PR((void));
-extern int init_unls_cp10007	__PR((void));
-extern int init_unls_cp10029	__PR((void));
-extern int init_unls_cp10079	__PR((void));
-extern int init_unls_cp10081	__PR((void));
-extern int init_unls_file	__PR((char * name));
+extern int init_unls_cp10000(void);
+extern int init_unls_cp10006(void);
+extern int init_unls_cp10007(void);
+extern int init_unls_cp10029(void);
+extern int init_unls_cp10079(void);
+extern int init_unls_cp10081(void);
+extern int init_unls_file(char *name);
 
 #ifdef USE_ICONV
-extern int init_nls_iconv     __PR((char * name));
+extern int init_nls_iconv(char *name);
 #endif
 
 #endif	/* _NLS_H */

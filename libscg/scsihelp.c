@@ -43,23 +43,12 @@ static	char sccsid[] =
 
 #include <scg/scsitransp.h>
 
-EXPORT	void	__scg_help	__PR((FILE *f, char *name, char *tcomment,
-					char *tind,
-					char *tspec,
-					char *texample,
-					BOOL mayscan,
-					BOOL bydev));
+void	__scg_help(FILE *f, char *name, char *tcomment, char *tind, char *tspec,
+					  char *texample, BOOL mayscan, BOOL bydev);
 
-EXPORT void
-__scg_help(f, name, tcomment, tind, tspec, texample, mayscan, bydev)
-	FILE	*f;
-	char	*name;
-	char	*tcomment;
-	char	*tind;
-	char	*tspec;
-	char	*texample;
-	BOOL	mayscan;
-	BOOL	bydev;
+void
+__scg_help(FILE *f, char *name, char *tcomment, char *tind, char *tspec, 
+			  char *texample, BOOL mayscan, BOOL bydev)
 {
 	fprintf(f, "\nTransport name:		%s\n", name);
 	fprintf(f, "Transport descr.:	%s\n", tcomment);

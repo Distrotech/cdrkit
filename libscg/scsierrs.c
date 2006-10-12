@@ -56,12 +56,9 @@ static	char sccsid[] =
 
 #define	SMO_C501
 
-EXPORT	const char	*scg_sensemsg	__PR((int, int, int,
-						const char **, char *, int maxcnt));
-EXPORT	int		scg__errmsg	__PR((SCSI *scgp, char *obuf, int maxcnt,
-						struct scsi_sense *,
-						struct scsi_status *,
-						int));
+const char	*scg_sensemsg(int, int, int, const char **, char *, int maxcnt);
+int scg__errmsg(SCSI *scgp, char *obuf, int maxcnt, struct scsi_sense *, 
+					 struct scsi_status *, int);
 /*
  * Map old non extended sense to sense key.
  */
@@ -695,15 +692,9 @@ static char *sd_cmds[] = {
 	NULL
 };
 
-EXPORT
 const char *
-scg_sensemsg(ctype, code, qual, vec, sbuf, maxcnt)
-	register 	int	ctype;
-	register 	int	code;
-	register 	int	qual;
-	register const char	**vec;
-			char	*sbuf;
-			int	maxcnt;
+scg_sensemsg(register int ctype, register int code, register int qual, 
+				 register const char **vec, char *sbuf, int maxcnt)
 {
 	register int i;
 
@@ -776,14 +767,10 @@ scg_sensemsg(ctype, code, qual, vec, sbuf, maxcnt)
 }
 
 #undef	sense	/*XXX JS Hack, solange scgio.h noch nicht fertig ist */
-EXPORT int
-scg__errmsg(scgp, obuf, maxcnt, sense, status, sense_code)
-	SCSI	*scgp;
-	char	*obuf;
-	int	maxcnt;
-	register struct scsi_sense	*sense;
-	register struct scsi_status	*status;
-	int				sense_code;
+int
+scg__errmsg(SCSI *scgp, char *obuf, int maxcnt, 
+				register struct scsi_sense *sense, 
+				register struct scsi_status *status, int sense_code)
 {
 	char	sbuf[80];
 	const char *sensemsg, *cmdname, *sensekey;
@@ -996,7 +983,7 @@ print_err(code, ctype)
 }
 
 
-main()
+int main(int argc, char *argv[])
 {
 	int	i;
 

@@ -35,27 +35,23 @@ static	char sccsid[] =
 #include "cdda_paranoia.h"
 #include "gap.h"
 
-long i_paranoia_overlap_r   __PR((Int16_t * buffA, Int16_t * buffB, 
-                                  long offsetA, long offsetB));
-long i_paranoia_overlap_f   __PR((Int16_t * buffA, Int16_t * buffB,
-                                  long offsetA, long offsetB,
-                                  long sizeA, long sizeB));
-int i_stutter_or_gap        __PR((Int16_t * A, Int16_t * B, long offA, 
-                                  long offB, long gap));
-void i_analyze_rift_f       __PR((Int16_t * A, Int16_t * B,
-                                  long sizeA, long sizeB,
-                                  long aoffset, long boffset,
-                                  long *matchA, long *matchB,
-                                  long *matchC));
-void i_analyze_rift_r       __PR((Int16_t * A, Int16_t * B,
-                                  long sizeA, long sizeB,
-                                  long aoffset, long boffset,
-                                  long *matchA, long *matchB,
-                                  long *matchC));
-void analyze_rift_silence_f __PR((Int16_t * A, Int16_t * B,
-                                  long sizeA, long sizeB,
-                                  long aoffset, long boffset,
-                                  long *matchA, long *matchB));
+long i_paranoia_overlap_r(Int16_t * buffA, Int16_t * buffB, long offsetA, 
+								  long offsetB);
+long i_paranoia_overlap_f(Int16_t * buffA, Int16_t * buffB, long offsetA, 
+								  long offsetB, long sizeA, long sizeB);
+int i_stutter_or_gap(Int16_t * A, Int16_t * B, long offA, long offB, long gap);
+void i_analyze_rift_f(Int16_t * A, Int16_t * B, 
+						    long sizeA, long sizeB, 
+							 long aoffset, long boffset, 
+							 long *matchA, long *matchB, long *matchC);
+void i_analyze_rift_r(Int16_t * A, Int16_t * B,
+                      long sizeA, long sizeB,
+                      long aoffset, long boffset,
+                      long *matchA, long *matchB, long *matchC);
+void analyze_rift_silence_f(Int16_t * A, Int16_t * B,
+                            long sizeA, long sizeB,
+                            long aoffset, long boffset,
+                            long *matchA, long *matchB);
 
 /*
  * Gap analysis code

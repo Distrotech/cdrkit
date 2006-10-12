@@ -46,7 +46,7 @@ static	char sccsid[] =
 #include "record.h"
 #include "volume.h"
 
-static	void	markexts	__PR((block *vbm, ExtDataRec *exts));
+static	void	markexts(block *vbm, ExtDataRec *exts);
 
 
 /*

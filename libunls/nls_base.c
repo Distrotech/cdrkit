@@ -52,8 +52,7 @@ static	char sccsid[] =
 static struct unls_table *tables = (struct unls_table *) NULL;
 
 int
-register_unls(unls)
-	struct unls_table	*unls;
+register_unls(struct unls_table *unls)
 {
 	struct unls_table ** tmp = &tables;
 
@@ -73,8 +72,7 @@ register_unls(unls)
 }
 
 int
-unregister_unls(unls)
-	struct unls_table	*unls;
+unregister_unls(struct unls_table *unls)
 {
 	struct unls_table ** tmp = &tables;
 
@@ -89,8 +87,7 @@ unregister_unls(unls)
 }
 
 struct unls_table *
-find_unls(charset)
-	char	*charset;
+find_unls(char *charset)
 {
 	struct unls_table *unls = tables;
 	while (unls) {
@@ -112,8 +109,7 @@ list_unls()
 }
 
 struct unls_table *
-load_unls(charset)
-	char	*charset;
+load_unls(char *charset)
 {
 	struct unls_table *unls;
 
@@ -126,8 +122,7 @@ load_unls(charset)
 }
 
 void
-unload_unls(nls)
-	struct unls_table	*nls;
+unload_unls(struct unls_table *nls)
 {
 }
 

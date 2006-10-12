@@ -48,6 +48,6 @@ extern struct output_fragment udf_pad_to_sector_32_frag;
 extern struct output_fragment udf_pad_to_sector_256_frag;
 extern struct output_fragment udf_padend_avdp_frag;
 
-int assign_dvd_weights __PR((char *name, struct directory *this_dir, int val));
+int assign_dvd_weights(char *name, struct directory *this_dir, int val);
 
 #endif	/* _UDF_H */

@@ -67,99 +67,96 @@ static	char sccsid[] =
 
 /* Counters for statistics */
 
-LOCAL int	table_size = 0;
-LOCAL int	total_dir_size = 0;
-LOCAL int	rockridge_size = 0;
-LOCAL struct directory **pathlist;
-LOCAL int	next_path_index = 1;
-LOCAL int	sort_goof;
+static int	table_size = 0;
+static int	total_dir_size = 0;
+static int	rockridge_size = 0;
+static struct directory **pathlist;
+static int	next_path_index = 1;
+static int	sort_goof;
 
-LOCAL int	is_rr_dir = 0;
+static int	is_rr_dir = 0;
 
 struct output_fragment *out_tail;
 struct output_fragment *out_list;
 
 struct iso_primary_descriptor vol_desc;
 
-EXPORT	void	set_721		__PR((char *pnt, unsigned int i));
-EXPORT	void	set_722		__PR((char *pnt, unsigned int i));
-EXPORT	void	set_723		__PR((char *pnt, unsigned int i));
-EXPORT	void	set_731		__PR((char *pnt, unsigned int i));
-EXPORT	void	set_732		__PR((char *pnt, unsigned int i));
-EXPORT	void	set_733		__PR((char *pnt, unsigned int i));
-EXPORT	int	get_731		__PR((char *p));
-EXPORT	int	get_732		__PR((char *p));
-EXPORT	int	get_733		__PR((char *p));
-LOCAL	int	xawrite		__PR((void *buffer, int size, int count,
-					FILE *file, int submode, BOOL islast));
-EXPORT	void	xfwrite		__PR((void *buffer, int size, int count,
-					FILE *file, int submode, BOOL islast));
-LOCAL 	int	assign_directory_addresses __PR((struct directory *node));
+void	set_721(char *pnt, unsigned int i);
+void	set_722(char *pnt, unsigned int i);
+void	set_723(char *pnt, unsigned int i);
+void	set_731(char *pnt, unsigned int i);
+void	set_732(char *pnt, unsigned int i);
+void	set_733(char *pnt, unsigned int i);
+int	get_731(char *p);
+int	get_732(char *p);
+int	get_733(char *p);
+static	int	xawrite(void *buffer, int size, int count, FILE *file, 
+							  int submode, BOOL islast);
+void	xfwrite(void *buffer, int size, int count, FILE *file, int submode, 
+				  BOOL islast);
+static 	int	assign_directory_addresses(struct directory *node);
 #ifdef APPLE_HYB
-LOCAL 	void	write_one_file	__PR((char *filename, off_t size,
-					FILE *outfile, off_t off));
+static 	void	write_one_file(char *filename, off_t size, FILE *outfile, 
+										off_t off);
 #else
-LOCAL 	void	write_one_file	__PR((char *filename, off_t size,
-					FILE *outfile));
+static 	void	write_one_file(char *filename, off_t size, FILE *outfile);
 #endif
-LOCAL 	void	write_files	__PR((FILE *outfile));
+static 	void	write_files(FILE *outfile);
 #if 0
-LOCAL 	void	dump_filelist	__PR((void));
+static 	void	dump_filelist	__PR((void));
 #endif
-LOCAL 	int	compare_dirs	__PR((const void *rr, const void *ll));
-EXPORT	int	sort_directory	__PR((struct directory_entry **sort_dir,
-						int rr));
-LOCAL 	int	root_gen	__PR((void));
-LOCAL 	BOOL	assign_file_addresses __PR((struct directory *dpnt));
-LOCAL 	void	free_one_directory  __PR((struct directory *dpnt));
-LOCAL 	void	free_directories __PR((struct directory *dpnt));
-EXPORT	void	generate_one_directory __PR((struct directory *dpnt,
-						FILE *outfile));
-LOCAL 	void	build_pathlist	__PR((struct directory *node));
-LOCAL 	int	compare_paths	__PR((void const *r, void const *l));
-LOCAL 	int	generate_path_tables __PR((void));
-EXPORT	void	memcpy_max	__PR((char *to, char *from, int max));
-EXPORT	void	outputlist_insert __PR((struct output_fragment *frag));
-LOCAL 	int	file_write	__PR((FILE *outfile));
-LOCAL 	int	pvd_write	__PR((FILE *outfile));
-LOCAL 	int	xpvd_write	__PR((FILE *outfile));
-LOCAL 	int	evd_write	__PR((FILE *outfile));
-LOCAL 	int	vers_write	__PR((FILE *outfile));
-LOCAL 	int	graftcp		__PR((char *to, char *from, char *ep));
-LOCAL 	int	pathcp		__PR((char *to, char *from, char *ep));
-LOCAL 	int	pathtab_write	__PR((FILE *outfile));
-LOCAL 	int	exten_write	__PR((FILE *outfile));
-EXPORT	int	oneblock_size	__PR((int starting_extent));
-LOCAL 	int	pathtab_size	__PR((int starting_extent));
-LOCAL 	int	startpad_size	__PR((int starting_extent));
-LOCAL 	int	interpad_size	__PR((int starting_extent));
-LOCAL 	int	endpad_size	__PR((int starting_extent));
-LOCAL 	int	file_gen	__PR((void));
-LOCAL 	int	dirtree_dump	__PR((void));
-LOCAL 	int	dirtree_fixup	__PR((int starting_extent));
-LOCAL 	int	dirtree_size	__PR((int starting_extent));
-LOCAL 	int	ext_size	__PR((int starting_extent));
-LOCAL 	int	dirtree_write	__PR((FILE *outfile));
-LOCAL 	int	dirtree_cleanup	__PR((FILE *outfile));
-LOCAL 	int	startpad_write	__PR((FILE *outfile));
-LOCAL 	int	interpad_write	__PR((FILE *outfile));
-LOCAL 	int	endpad_write	__PR((FILE *outfile));
+static 	int	compare_dirs(const void *rr, const void *ll);
+int	sort_directory(struct directory_entry **sort_dir, int rr);
+static 	int	root_gen(void);
+static 	BOOL	assign_file_addresses(struct directory *dpnt);
+static 	void	free_one_directory(struct directory *dpnt);
+static 	void	free_directories(struct directory *dpnt);
+void	generate_one_directory(struct directory *dpnt, FILE *outfile);
+static 	void	build_pathlist(struct directory *node);
+static 	int	compare_paths(void const *r, void const *l);
+static 	int	generate_path_tables(void);
+void	memcpy_max(char *to, char *from, int max);
+void	outputlist_insert(struct output_fragment *frag);
+static 	int	file_write(FILE *outfile);
+static 	int	pvd_write(FILE *outfile);
+static 	int	xpvd_write(FILE *outfile);
+static 	int	evd_write(FILE *outfile);
+static 	int	vers_write(FILE *outfile);
+static 	int	graftcp(char *to, char *from, char *ep);
+static 	int	pathcp(char *to, char *from, char *ep);
+static 	int	pathtab_write(FILE *outfile);
+static 	int	exten_write(FILE *outfile);
+int	oneblock_size(int starting_extent);
+static 	int	pathtab_size(int starting_extent);
+static 	int	startpad_size(int starting_extent);
+static 	int	interpad_size(int starting_extent);
+static 	int	endpad_size(int starting_extent);
+static 	int	file_gen(void);
+static 	int	dirtree_dump(void);
+static 	int	dirtree_fixup(int starting_extent);
+static 	int	dirtree_size(int starting_extent);
+static 	int	ext_size(int starting_extent);
+static 	int	dirtree_write(FILE *outfile);
+static 	int	dirtree_cleanup(FILE *outfile);
+static 	int	startpad_write(FILE *outfile);
+static 	int	interpad_write(FILE *outfile);
+static 	int	endpad_write(FILE *outfile);
 #ifdef APPLE_HYB
-LOCAL 	int	hfs_pad;
-LOCAL 	int	hfs_get_parms	__PR((char * key));
-LOCAL 	void	hfs_file_gen	__PR((int start_extent));
-LOCAL 	void	gen_prepboot	__PR((void));
-EXPORT	Ulong	get_adj_size	__PR((int Csize));
-EXPORT	int	adj_size	__PR((int Csize, int start_extent, int extra));
-EXPORT	void	adj_size_other	__PR((struct directory *dpnt));
-LOCAL 	int	hfs_hce_write	__PR((FILE * outfile));
-EXPORT	int	insert_padding_file __PR((int size));
+static 	int	hfs_pad;
+static 	int	hfs_get_parms(char *key);
+static 	void	hfs_file_gen(int start_extent);
+static 	void	gen_prepboot(void);
+Ulong	get_adj_size(int Csize);
+int	adj_size(int Csize, int start_extent, int extra);
+void	adj_size_other(struct directory *dpnt);
+static 	int	hfs_hce_write(FILE * outfile);
+int	insert_padding_file(int size);
 #endif	/* APPLE_HYB */
 
 #ifdef SORTING
-LOCAL 	int	compare_sort	__PR((const void * rr, const void * ll));
-LOCAL 	void	reassign_link_addresses	__PR((struct directory * dpnt));
-LOCAL 	int	sort_file_addresses __PR((void));
+static 	int	compare_sort(const void * rr, const void * ll);
+static 	void	reassign_link_addresses(struct directory * dpnt);
+static 	int	sort_file_addresses(void);
 #endif /* SORTING */
 
 /*
@@ -168,37 +165,29 @@ LOCAL 	int	sort_file_addresses __PR((void));
  */
 #define	FILL_SPACE(X)	memset(vol_desc.X, ' ', sizeof (vol_desc.X))
 
-EXPORT void
-set_721(pnt, i)
-	char		*pnt;
-	unsigned int	i;
+void
+set_721(char *pnt, unsigned int i)
 {
 	pnt[0] = i & 0xff;
 	pnt[1] = (i >> 8) & 0xff;
 }
 
-EXPORT void
-set_722(pnt, i)
-	char		*pnt;
-	unsigned int	i;
+void
+set_722(char *pnt, unsigned int i)
 {
 	pnt[0] = (i >> 8) & 0xff;
 	pnt[1] = i & 0xff;
 }
 
-EXPORT void
-set_723(pnt, i)
-	char		*pnt;
-	unsigned int	i;
+void
+set_723(char *pnt, unsigned int i)
 {
 	pnt[3] = pnt[0] = i & 0xff;
 	pnt[2] = pnt[1] = (i >> 8) & 0xff;
 }
 
-EXPORT void
-set_731(pnt, i)
-	char		*pnt;
-	unsigned int	i;
+void
+set_731(char *pnt, unsigned int i)
 {
 	pnt[0] = i & 0xff;
 	pnt[1] = (i >> 8) & 0xff;
@@ -206,10 +195,8 @@ set_731(pnt, i)
 	pnt[3] = (i >> 24) & 0xff;
 }
 
-EXPORT void
-set_732(pnt, i)
-	char		*pnt;
-	unsigned int	i;
+void
+set_732(char *pnt, unsigned int i)
 {
 	pnt[3] = i & 0xff;
 	pnt[2] = (i >> 8) & 0xff;
@@ -217,10 +204,8 @@ set_732(pnt, i)
 	pnt[0] = (i >> 24) & 0xff;
 }
 
-EXPORT void
-set_733(pnt, i)
-	char		*pnt;
-	unsigned int	i;
+void
+set_733(char *pnt, unsigned int i)
 {
 	pnt[7] = pnt[0] = i & 0xff;
 	pnt[6] = pnt[1] = (i >> 8) & 0xff;
@@ -228,9 +213,8 @@ set_733(pnt, i)
 	pnt[4] = pnt[3] = (i >> 24) & 0xff;
 }
 
-EXPORT int
-get_731(p)
-	char	*p;
+int
+get_731(char *p)
 {
 	return ((p[0] & 0xff)
 		| ((p[1] & 0xff) << 8)
@@ -238,9 +222,8 @@ get_731(p)
 		| ((p[3] & 0xff) << 24));
 }
 
-EXPORT int
-get_732(p)
-	char	*p;
+int
+get_732(char *p)
 {
 	return ((p[3] & 0xff)
 		| ((p[2] & 0xff) << 8)
@@ -248,9 +231,8 @@ get_732(p)
 		| ((p[0] & 0xff) << 24));
 }
 
-EXPORT int
-get_733(p)
-	char	*p;
+int
+get_733(char *p)
 {
 	return ((p[0] & 0xff)
 		| ((p[1] & 0xff) << 8)
@@ -258,14 +240,8 @@ get_733(p)
 		| ((p[3] & 0xff) << 24));
 }
 
-EXPORT void
-xfwrite(buffer, size, count, file, submode, islast)
-	void	*buffer;
-	int	size;
-	int	count;
-	FILE	*file;
-	int	submode;
-	BOOL	islast;
+void
+xfwrite(void *buffer, int size, int count, FILE *file, int submode, BOOL islast)
 {
 	/*
 	 * This is a hack that could be made better.
@@ -333,14 +309,8 @@ xfwrite(buffer, size, count, file, submode, islast)
 	}
 }
 
-LOCAL int
-xawrite(buffer, size, count, file, submode, islast)
-	void	*buffer;
-	int	size;
-	int	count;
-	FILE	*file;
-	int	submode;
-	BOOL	islast;
+static int
+xawrite(void *buffer, int size, int count, FILE *file, int submode, BOOL islast)
 {
 	register char	*p = buffer;
 	register int	amt = size * count;
@@ -391,24 +361,23 @@ xawrite(buffer, size, count, file, submode, islast)
 /*
  * use the deferred_write struct to store info about the hfs_boot_file
  */
-LOCAL struct deferred_write mac_boot;
+static struct deferred_write mac_boot;
 
 #endif	/* APPLE_HYB */
-LOCAL struct deferred_write	*dw_head = NULL,
+static struct deferred_write	*dw_head = NULL,
 				*dw_tail = NULL;
 
 unsigned int	last_extent_written = 0;
-LOCAL	Uint	path_table_index;
-EXPORT	time_t	begun;
+static	Uint	path_table_index;
+time_t	begun;
 
 /*
  * We recursively walk through all of the directories and assign extent
  * numbers to them.  We have already assigned extent numbers to everything that
  * goes in front of them
  */
-LOCAL int
-assign_directory_addresses(node)
-	struct directory	*node;
+static int
+assign_directory_addresses(struct directory *node)
 {
 	int		dir_size;
 	struct directory *dpnt;
@@ -450,18 +419,11 @@ assign_directory_addresses(node)
 }
 
 #ifdef APPLE_HYB
-LOCAL void
-write_one_file(filename, size, outfile, off)
-	char		*filename;
-	off_t		size;
-	FILE		*outfile;
-	off_t		off;
+static void
+write_one_file(char *filename, off_t size, FILE *outfile, off_t off)
 #else
-LOCAL void
-write_one_file(filename, size, outfile)
-	char		*filename;
-	off_t		size;
-	FILE		*outfile;
+static void
+write_one_file(char *filename, off_t size, FILE *outfile)
 #endif	/* APPLE_HYB */
 {
 	/*
@@ -580,9 +542,8 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 	fclose(infile);
 }/* write_one_file(... */
 
-LOCAL void
-write_files(outfile)
-	FILE	*outfile;
+static void
+write_files(FILE *outfile)
 {
 	struct deferred_write	*dwpnt,
 				*dwnext;
@@ -658,7 +619,7 @@ write_files(outfile)
 }/* write_files(... */
 
 #if 0
-LOCAL void
+static void
 dump_filelist()
 {
 	struct deferred_write *dwpnt;
@@ -673,10 +634,8 @@ dump_filelist()
 
 #endif
 
-LOCAL int
-compare_dirs(rr, ll)
-	const void	*rr;
-	const void	*ll;
+static int
+compare_dirs(const void *rr, const void *ll)
 {
 	char		*rpnt,
 			*lpnt;
@@ -808,10 +767,8 @@ compare_dirs(rr, ll)
  *
  * Notes:		Returns 0 if OK, returns > 0 if an error occurred.
  */
-EXPORT int
-sort_directory(sort_dir, rr)
-	struct directory_entry **sort_dir;
-	int		rr;
+int
+sort_directory(struct directory_entry **sort_dir, int rr)
 {
 	int		dcount = 0;
 	int		xcount = 0;
@@ -896,7 +853,7 @@ sort_directory(sort_dir, rr)
 	return (sort_goof);
 }
 
-LOCAL int
+static int
 root_gen()
 {
 	init_fstatbuf();
@@ -919,10 +876,8 @@ root_gen()
 /*
  *	sorts deferred_write entries based on the sort weight
  */
-LOCAL int
-compare_sort(rr, ll)
-	const void	*rr;
-	const void	*ll;
+static int
+compare_sort(const void *rr, const void *ll)
 {
 	struct deferred_write	**r;
 	struct deferred_write	**l;
@@ -944,9 +899,8 @@ compare_sort(rr, ll)
  *	reassign start extents to files that are "hard links" to
  *	files that may have been sorted
  */
-LOCAL void
-reassign_link_addresses(dpnt)
-	struct directory	*dpnt;
+static void
+reassign_link_addresses(struct directory *dpnt)
 {
 	struct directory_entry	*s_entry;
 	struct file_hash	*s_hash;
@@ -976,7 +930,7 @@ reassign_link_addresses(dpnt)
 /*
  *	sort files in order of the given sort weight
  */
-LOCAL int
+static int
 sort_file_addresses()
 {
 	struct deferred_write	*dwpnt;
@@ -1056,9 +1010,8 @@ sort_file_addresses()
 
 
 
-LOCAL BOOL
-assign_file_addresses(dpnt)
-	struct directory	*dpnt;
+static BOOL
+assign_file_addresses(struct directory *dpnt)
 {
 	struct directory *finddir;
 	struct directory_entry *s_entry;
@@ -1360,9 +1313,8 @@ assign_file_addresses(dpnt)
 	return (ret);
 }/* assign_file_addresses(... */
 
-LOCAL void
-free_one_directory(dpnt)
-	struct directory	*dpnt;
+static void
+free_one_directory(struct directory *dpnt)
 {
 	struct directory_entry *s_entry;
 	struct directory_entry *s_entry_d;
@@ -1395,9 +1347,8 @@ free_one_directory(dpnt)
 	dpnt->contents = NULL;
 }/* free_one_directory(... */
 
-LOCAL void
-free_directories(dpnt)
-	struct directory	*dpnt;
+static void
+free_directories(struct directory *dpnt)
 {
 	while (dpnt) {
 		free_one_directory(dpnt);
@@ -1407,10 +1358,8 @@ free_directories(dpnt)
 	}
 }
 
-EXPORT void
-generate_one_directory(dpnt, outfile)
-	struct directory	*dpnt;
-	FILE			*outfile;
+void
+generate_one_directory(struct directory *dpnt, FILE *outfile)
 {
 	unsigned int	ce_address = 0;
 	char		*ce_buffer;
@@ -1597,9 +1546,8 @@ generate_one_directory(dpnt, outfile)
 	}
 }/* generate_one_directory(... */
 
-LOCAL void
-build_pathlist(node)
-	struct directory	*node;
+static void
+build_pathlist(struct directory *node)
 {
 	struct directory *dpnt;
 
@@ -1616,10 +1564,8 @@ build_pathlist(node)
 	}
 }/* build_pathlist(... */
 
-LOCAL int
-compare_paths(r, l)
-	void const	*r;
-	void const	*l;
+static int
+compare_paths(void const *r, void const *l)
 {
 	struct directory const *ll = *(struct directory * const *) l;
 	struct directory const *rr = *(struct directory * const *) r;
@@ -1634,7 +1580,7 @@ compare_paths(r, l)
 
 }/* compare_paths(... */
 
-LOCAL int
+static int
 generate_path_tables()
 {
 	struct directory_entry *de = NULL;
@@ -1772,11 +1718,8 @@ generate_path_tables()
 	return (0);
 }/* generate_path_tables(... */
 
-EXPORT void
-memcpy_max(to, from, max)
-	char	*to;
-	char	*from;
-	int	max;
+void
+memcpy_max(char *to, char *from, int max)
 {
 	int	n = strlen(from);
 
@@ -1787,9 +1730,8 @@ memcpy_max(to, from, max)
 
 }/* memcpy_max(... */
 
-EXPORT void
-outputlist_insert(frag)
-	struct output_fragment *frag;
+void
+outputlist_insert(struct output_fragment *frag)
 {
 	struct output_fragment *nfrag;
 
@@ -1805,9 +1747,8 @@ outputlist_insert(frag)
 	}
 }
 
-LOCAL int
-file_write(outfile)
-	FILE	*outfile;
+static int
+file_write(FILE *outfile)
 {
 	Uint	should_write;
 
@@ -1931,9 +1872,8 @@ file_write(outfile)
 /*
  * Function to write the PVD for the disc.
  */
-LOCAL int
-pvd_write(outfile)
-	FILE	*outfile;
+static int
+pvd_write(FILE *outfile)
 {
 	char		iso_time[17];
 	int		should_write;
@@ -2059,9 +1999,8 @@ pvd_write(outfile)
 /*
  * Function to write the Extended PVD for the disc.
  */
-LOCAL int
-xpvd_write(outfile)
-	FILE	*outfile;
+static int
+xpvd_write(FILE *outfile)
 {
 	vol_desc.type[0] = ISO_VD_SUPPLEMENTARY;
 	vol_desc.version[0] = 2;
@@ -2077,9 +2016,8 @@ xpvd_write(outfile)
 /*
  * Function to write the EVD for the disc.
  */
-LOCAL int
-evd_write(outfile)
-	FILE	*outfile;
+static int
+evd_write(FILE *outfile)
 {
 	struct iso_primary_descriptor evol_desc;
 
@@ -2100,9 +2038,8 @@ evd_write(outfile)
 /*
  * Function to write the version information for the disc.
  */
-LOCAL int
-vers_write(outfile)
-	FILE	*outfile;
+static int
+vers_write(FILE *outfile)
 {
 	char		vers[SECTOR_SIZE+1];
 	int		X_ac;
@@ -2160,11 +2097,8 @@ vers_write(outfile)
 /*
  * Avoid to write unwanted information into the version info string.
  */
-LOCAL int
-graftcp(to, from, ep)
-	char	*to;
-	char	*from;
-	char	*ep;
+static int
+graftcp(char *to, char *from, char *ep)
 {
 	int	len = strlen(from);
 	char	*node = NULL;
@@ -2186,11 +2120,8 @@ graftcp(to, from, ep)
 	return (len + pathcp(to, node, ep));
 }
 
-LOCAL int
-pathcp(to, from, ep)
-	char	*to;
-	char	*from;
-	char	*ep;
+static int
+pathcp(char *to, char *from, char *ep)
 {
 	int	len = strlen(from);
 	char	*p;
@@ -2222,9 +2153,8 @@ pathcp(to, from, ep)
 /*
  * Function to write the path table for the disc.
  */
-LOCAL int
-pathtab_write(outfile)
-	FILE	*outfile;
+static int
+pathtab_write(FILE *outfile)
 {
 	/* Next we write the path tables */
 	jtwrite(path_table_l, path_blocks << 11, 1, 0, FALSE);
@@ -2240,9 +2170,8 @@ pathtab_write(outfile)
 	return (0);
 }
 
-LOCAL int
-exten_write(outfile)
-	FILE	*outfile;
+static int
+exten_write(FILE *outfile)
 {
 	jtwrite(extension_record, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(extension_record, SECTOR_SIZE, 1, outfile, 0, FALSE);
@@ -2253,9 +2182,8 @@ exten_write(outfile)
 /*
  * Functions to describe padding block at the start of the disc.
  */
-EXPORT int
-oneblock_size(starting_extent)
-	int	starting_extent;
+int
+oneblock_size(int starting_extent)
 {
 	last_extent++;
 	return (0);
@@ -2264,9 +2192,8 @@ oneblock_size(starting_extent)
 /*
  * Functions to describe path table size.
  */
-LOCAL int
-pathtab_size(starting_extent)
-	int	starting_extent;
+static int
+pathtab_size(int starting_extent)
 {
 	path_table[0] = starting_extent;
 
@@ -2280,9 +2207,8 @@ pathtab_size(starting_extent)
 /*
  * Functions to describe padding blocks before PVD.
  */
-LOCAL int
-startpad_size(starting_extent)
-	int	starting_extent;
+static int
+startpad_size(int starting_extent)
 {
 	last_extent = session_start + 16;
 	return (0);
@@ -2291,9 +2217,8 @@ startpad_size(starting_extent)
 /*
  * Functions to describe padding blocks between sections.
  */
-LOCAL int
-interpad_size(starting_extent)
-	int	starting_extent;
+static int
+interpad_size(int starting_extent)
 {
 	int	emod = 0;
 
@@ -2310,16 +2235,15 @@ interpad_size(starting_extent)
 /*
  * Functions to describe padding blocks at end of disk.
  */
-LOCAL int
-endpad_size(starting_extent)
-	int	starting_extent;
+static int
+endpad_size(int starting_extent)
 {
 	starting_extent += 150;			/* 150 pad blocks (post gap) */
 	last_extent = starting_extent;
 	return (0);
 }
 
-LOCAL int
+static int
 file_gen()
 {
 #ifdef APPLE_HYB
@@ -2366,7 +2290,7 @@ file_gen()
 	return (0);
 }
 
-LOCAL int
+static int
 dirtree_dump()
 {
 	if (verbose > 2) {
@@ -2375,9 +2299,8 @@ dirtree_dump()
 	return (0);
 }
 
-LOCAL int
-dirtree_fixup(starting_extent)
-	int	starting_extent;
+static int
+dirtree_fixup(int starting_extent)
 {
 	if (use_RockRidge && reloc_dir)
 		finish_cl_pl_entries();
@@ -2387,17 +2310,15 @@ dirtree_fixup(starting_extent)
 	return (0);
 }
 
-LOCAL int
-dirtree_size(starting_extent)
-	int	starting_extent;
+static int
+dirtree_size(int starting_extent)
 {
 	assign_directory_addresses(root);
 	return (0);
 }
 
-LOCAL int
-ext_size(starting_extent)
-	int	starting_extent;
+static int
+ext_size(int starting_extent)
 {
 	extern int		extension_record_size;
 	struct directory_entry *s_entry;
@@ -2412,25 +2333,22 @@ ext_size(starting_extent)
 	return (0);
 }
 
-LOCAL int
-dirtree_write(outfile)
-	FILE	*outfile;
+static int
+dirtree_write(FILE *outfile)
 {
 	generate_iso9660_directories(root, outfile);
 	return (0);
 }
 
-LOCAL int
-dirtree_cleanup(outfile)
-	FILE	*outfile;
+static int
+dirtree_cleanup(FILE *outfile)
 {
 	free_directories(root);
 	return (0);
 }
 
-LOCAL int
-startpad_write(outfile)
-	FILE	*outfile;
+static int
+startpad_write(FILE *outfile)
 {
 	char	buffer[SECTOR_SIZE];
 	int	i;
@@ -2449,9 +2367,8 @@ startpad_write(outfile)
 	return (0);
 }
 
-LOCAL int
-interpad_write(outfile)
-	FILE	*outfile;
+static int
+interpad_write(FILE *outfile)
 {
 	char	buffer[SECTOR_SIZE];
 	int	i;
@@ -2474,9 +2391,8 @@ interpad_write(outfile)
 	return (0);
 }
 
-LOCAL int
-endpad_write(outfile)
-	FILE	*outfile;
+static int
+endpad_write(FILE *outfile)
 {
 	char	buffer[SECTOR_SIZE];
 	int	i;
@@ -2498,9 +2414,8 @@ endpad_write(outfile)
  *	hfs_get_parms:	get HFS parameters from the command line
  */
 
-LOCAL int
-hfs_get_parms(key)
-	char	*key;
+static int
+hfs_get_parms(char *key)
 {
 	int	ret = 0;
 	char	*p;
@@ -2519,9 +2434,8 @@ hfs_get_parms(key)
 /*
  *	hfs_file_gen:	set up "fake" HFS volume using the ISO9660 tree
  */
-LOCAL void
-hfs_file_gen(start_extent)
-	int	start_extent;
+static void
+hfs_file_gen(int start_extent)
 {
 	int	Csize;	/* clump size for HFS vol */
 	int	loop;
@@ -2664,7 +2578,7 @@ hfs_file_gen(start_extent)
 }
 
 #ifdef PREP_BOOT
-LOCAL void
+static void
 gen_prepboot()
 {
 	/*
@@ -2689,9 +2603,8 @@ gen_prepboot()
  *	get_adj_size:	get the ajusted size of the volume with the HFS
  *			allocation block size for each file
  */
-EXPORT Ulong
-get_adj_size(Csize)
-	int	Csize;
+Ulong
+get_adj_size(int Csize)
 {
 	struct deferred_write *dw;
 	Ulong		size = 0;
@@ -2719,11 +2632,8 @@ get_adj_size(Csize)
  *	adj_size:	adjust the ISO record entries for all files
  *			based on the HFS allocation block size
  */
-EXPORT int
-adj_size(Csize, start_extent, extra)
-	int	Csize;
-	int	start_extent;
-	int	extra;
+int
+adj_size(int Csize, int start_extent, int extra)
 {
 	struct deferred_write *dw;
 	struct directory_entry *s_entry;
@@ -2774,9 +2684,8 @@ adj_size(Csize, start_extent, extra)
  *			to an existing file (i.e. not have a deferred_write
  *			entry of it's own
  */
-EXPORT void
-adj_size_other(dpnt)
-	struct directory	*dpnt;
+void
+adj_size_other(struct directory *dpnt)
 {
 	struct directory_entry *s_entry;
 	struct file_hash *s_hash;
@@ -2819,9 +2728,8 @@ adj_size_other(dpnt)
 /*
  *	hfs_hce_write:	write out the HFS header stuff
  */
-LOCAL int
-hfs_hce_write(outfile)
-	FILE	*outfile;
+static int
+hfs_hce_write(FILE *outfile)
 {
 	char	buffer[SECTOR_SIZE];
 	int	n = 0;
@@ -2863,9 +2771,8 @@ hfs_hce_write(outfile)
  *
  *	XXX If we ever need to write more then 2 GB, make size off_t
  */
-EXPORT int
-insert_padding_file(size)
-	int	size;
+int
+insert_padding_file(int size)
 {
 	struct deferred_write *dwpnt;
 

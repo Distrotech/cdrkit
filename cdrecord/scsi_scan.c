@@ -53,9 +53,9 @@ static	char sccsid[] =
 #include "scsi_scan.h"
 #include "cdrecord.h"
 
-static	void	print_product		__PR((FILE *f, struct scsi_inquiry *ip));
-int	select_target		__PR((SCSI *scgp, FILE *f));
-static	int	select_unit		__PR((SCSI *scgp, FILE *f));
+static	void	print_product(FILE *f, struct scsi_inquiry *ip);
+int	select_target(SCSI *scgp, FILE *f);
+static	int	select_unit(SCSI *scgp, FILE *f);
 
 static void
 print_product(FILE *f, struct  scsi_inquiry *ip)

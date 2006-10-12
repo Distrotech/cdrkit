@@ -34,8 +34,8 @@
 #ifndef	_DVD_FILE_H
 #define	_DVD_FILE_H
 
-extern	void		DVDFreeFileSet		__PR((title_set_info_t * title_set_info));
-extern	title_set_info_t *DVDGetFileSet		__PR((char * dvd));
-extern	int		DVDGetFilePad		__PR((title_set_info_t * title_set_info, char * name));
+extern	void		DVDFreeFileSet(title_set_info_t *title_set_info);
+extern	title_set_info_t *DVDGetFileSet(char *dvd);
+extern	int		DVDGetFilePad(title_set_info_t *title_set_info, char *name);
 
 #endif	/* _DVD_FILE_H */

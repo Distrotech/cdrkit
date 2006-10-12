@@ -120,45 +120,42 @@ static	char	ucs_codes[] = {
 };
 
 #ifdef	UDF
-#     ifdef USE_ICONV
-       size_t
-#     else
-       void
-#     endif
-		convert_to_unicode	__PR((unsigned char *buffer,
-		int size, char *source, struct unls_table *inls));
-	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
+#ifdef USE_ICONV
+size_t
 #else
-#     ifdef USE_ICONV
-       static size_t
-#     else
-       static void
+void
 #endif
-       convert_to_unicode	__PR((unsigned char *buffer,
-		int size, char *source, struct unls_table *inls));
-static int	joliet_strlen		__PR((const char *string, struct nls_table *inls));
+convert_to_unicode(unsigned char *buffer, int size, char *source, 
+						 struct unls_table *inls);
+int	joliet_strlen(const char *string, struct unls_table *inls);
+#else
+#ifdef USE_ICONV
+static size_t
+#else
+static void
 #endif
-static void	get_joliet_vol_desc	__PR((struct iso_primary_descriptor *jvol_desc));
-static void	assign_joliet_directory_addresses __PR((struct directory *node));
-static void	build_jpathlist		__PR((struct directory *node));
-static int	joliet_compare_paths	__PR((void const *r, void const *l));
-static int	generate_joliet_path_tables __PR((void));
-static void	generate_one_joliet_directory __PR((struct directory *dpnt,
-						FILE *outfile));
-static int	joliet_sort_n_finish	__PR((struct directory *this_dir));
-
-static int	joliet_compare_dirs	__PR((const void *rr, const void *ll));
-
-static int	joliet_sort_directory	__PR((struct directory_entry **sort_dir));
-	int	joliet_sort_tree	__PR((struct directory *node));
-static void	generate_joliet_directories __PR((struct directory *node,
-						FILE *outfile));
-static int	jpathtab_write		__PR((FILE *outfile));
-static int	jdirtree_size		__PR((int starting_extent));
-static int	jroot_gen		__PR((void));
-static int	jdirtree_write		__PR((FILE *outfile));
-static int	jvd_write		__PR((FILE *outfile));
-static int	jpathtab_size		__PR((int starting_extent));
+convert_to_unicode(unsigned char *buffer, int size, char *source, 
+						 struct unls_table *inls);
+static int	joliet_strlen(const char *string, struct nls_table *inls);
+#endif
+static void	get_joliet_vol_desc(struct iso_primary_descriptor *jvol_desc);
+static void	assign_joliet_directory_addresses(struct directory *node);
+static void	build_jpathlist(struct directory *node);
+static int	joliet_compare_paths(void const *r, void const *l);
+static int	generate_joliet_path_tables(void);
+static void	generate_one_joliet_directory(struct directory *dpnt, 
+														FILE *outfile);
+static int	joliet_sort_n_finish(struct directory *this_dir);
+static int	joliet_compare_dirs(const void *rr, const void *ll);
+static int	joliet_sort_directory(struct directory_entry **sort_dir);
+int	joliet_sort_tree(struct directory *node);
+static void	generate_joliet_directories(struct directory *node, FILE *outfile);
+static int	jpathtab_write(FILE *outfile);
+static int	jdirtree_size(int starting_extent);
+static int	jroot_gen(void);
+static int	jdirtree_write(FILE *outfile);
+static int	jvd_write(FILE *outfile);
+static int	jpathtab_size(int starting_extent);
 
 /*
  *	conv_charset: convert to/from charsets via Unicode.
@@ -166,18 +163,10 @@ static int	jpathtab_size		__PR((int starting_extent));
  *	Any unknown character is set to '_'
  *
  */
-#ifdef	PROTOTYPES
 unsigned char
 conv_charset(unsigned char c,
 	struct unls_table *inls,
 	struct unls_table *onls)
-#else
-unsigned char
-conv_charset(c, inls, onls)
-	unsigned char c;
-	struct unls_table *inls;
-	struct unls_table *onls;
-#endif
 {
 	unsigned char	uh;
 	unsigned char	ul;
@@ -240,11 +229,8 @@ void
 static void
 #	endif
 #endif
-convert_to_unicode(buffer, size, source, inls)
-	unsigned char	*buffer;
-	int		size;
-	char		*source;
-	struct unls_table *inls;
+convert_to_unicode(unsigned char *buffer, int size, char *source, 
+						 struct unls_table *inls)
 {
 	unsigned char	*tmpbuf;
 	int		i;
@@ -384,9 +370,7 @@ int
 #else
 static int
 #endif
-joliet_strlen(string, inls)
-	const char	*string;
-	struct unls_table *inls;
+joliet_strlen(const char *string, struct unls_table *inls)
 {
 	int		rtn;
 
@@ -451,8 +435,7 @@ joliet_strlen(string, inls)
  *			appropriate fields.
  */
 static void
-get_joliet_vol_desc(jvol_desc)
-	struct iso_primary_descriptor	*jvol_desc;
+get_joliet_vol_desc(struct iso_primary_descriptor *jvol_desc)
 {
 	jvol_desc->type[0] = ISO_VD_SUPPLEMENTARY;
 
@@ -502,8 +485,7 @@ get_joliet_vol_desc(jvol_desc)
 }
 
 static void
-assign_joliet_directory_addresses(node)
-	struct directory	*node;
+assign_joliet_directory_addresses(struct directory *node)
 {
 	int		dir_size;
 	struct directory *dpnt;
@@ -533,8 +515,7 @@ assign_joliet_directory_addresses(node)
 }
 
 static void
-build_jpathlist(node)
-	struct directory	*node;
+build_jpathlist(struct directory *node)
 {
 	struct directory	*dpnt;
 
@@ -551,9 +532,7 @@ build_jpathlist(node)
 }/* build_jpathlist(... */
 
 static int
-joliet_compare_paths(r, l)
-	void const	*r;
-	void const	*l;
+joliet_compare_paths(void const *r, void const *l)
 {
 	struct directory const *ll = *(struct directory * const *) l;
 	struct directory const *rr = *(struct directory * const *) r;
@@ -826,9 +805,7 @@ generate_joliet_path_tables()
 }/* generate_path_tables(... */
 
 static void
-generate_one_joliet_directory(dpnt, outfile)
-	struct directory	*dpnt;
-	FILE			*outfile;
+generate_one_joliet_directory(struct directory *dpnt, FILE *outfile)
 {
 	unsigned int		dir_index;
 	char			*directory_buffer;
@@ -1008,8 +985,7 @@ generate_one_joliet_directory(dpnt, outfile)
 }/* generate_one_joliet_directory(... */
 
 static int
-joliet_sort_n_finish(this_dir)
-	struct directory	*this_dir;
+joliet_sort_n_finish(struct directory *this_dir)
 {
 	struct directory_entry	*s_entry;
 	int			status = 0;
@@ -1131,9 +1107,7 @@ joliet_sort_n_finish(this_dir)
  * regular name of the file, not the 8.3 version.
  */
 static int
-joliet_compare_dirs(rr, ll)
-	const void	*rr;
-	const void	*ll;
+joliet_compare_dirs(const void *rr, const void *ll)
 {
 	char		*rpnt,
 			*lpnt;
@@ -1292,8 +1266,7 @@ joliet_compare_dirs(rr, ll)
  * Notes:		Returns 0 if OK, returns > 0 if an error occurred.
  */
 static int
-joliet_sort_directory(sort_dir)
-	struct directory_entry	**sort_dir;
+joliet_sort_directory(struct directory_entry **sort_dir)
 {
 	int			dcount = 0;
 	int			i;
@@ -1345,8 +1318,7 @@ joliet_sort_directory(sort_dir)
 }
 
 int
-joliet_sort_tree(node)
-	struct directory	*node;
+joliet_sort_tree(struct directory *node)
 {
 	struct directory	*dpnt;
 	int			ret = 0;
@@ -1369,9 +1341,7 @@ joliet_sort_tree(node)
 }
 
 static void
-generate_joliet_directories(node, outfile)
-	struct directory	*node;
-	FILE			*outfile;
+generate_joliet_directories(struct directory *node, FILE *outfile)
 {
 	struct directory *dpnt;
 
@@ -1402,8 +1372,7 @@ generate_joliet_directories(node, outfile)
  * Function to write the EVD for the disc.
  */
 static int
-jpathtab_write(outfile)
-	FILE	*outfile;
+jpathtab_write(FILE *outfile)
 {
 	/* Next we write the path tables */
 	jtwrite(jpath_table_l, jpath_blocks << 11, 1, 0, FALSE);
@@ -1420,8 +1389,7 @@ jpathtab_write(outfile)
 }
 
 static int
-jdirtree_size(starting_extent)
-	int	starting_extent;
+jdirtree_size(int starting_extent)
 {
 	assign_joliet_directory_addresses(root);
 	return (0);
@@ -1445,8 +1413,7 @@ jroot_gen()
 }
 
 static int
-jdirtree_write(outfile)
-	FILE	*outfile;
+jdirtree_write(FILE *outfile)
 {
 	generate_joliet_directories(root, outfile);
 	return (0);
@@ -1456,8 +1423,7 @@ jdirtree_write(outfile)
  * Function to write the EVD for the disc.
  */
 static int
-jvd_write(outfile)
-	FILE	*outfile;
+jvd_write(FILE *outfile)
 {
 	struct iso_primary_descriptor jvol_desc;
 
@@ -1474,8 +1440,7 @@ jvd_write(outfile)
  * Functions to describe padding block at the start of the disc.
  */
 static int
-jpathtab_size(starting_extent)
-	int	starting_extent;
+jpathtab_size(int starting_extent)
 {
 	jpath_table[0] = starting_extent;
 	jpath_table[1] = 0;

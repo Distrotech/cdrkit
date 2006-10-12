@@ -143,14 +143,14 @@ extern	XDEV_T	_dev_mask[];
 #define	_dev_make(mbits, majo, mino)	((((XDEV_T)(majo)) << (mbits) | \
 							((XDEV_T)(mino)))
 
-extern	void	dev_init	__PR((BOOL debug));
+extern	void	dev_init(BOOL debug);
 #ifndef	dev_major
-extern	XDEV_T	dev_major	__PR((XDEV_T dev));
-extern	XDEV_T	_dev_major	__PR((int mbits, XDEV_T dev));
-extern	XDEV_T	dev_minor	__PR((XDEV_T dev));
-extern	XDEV_T	_dev_minor	__PR((int mbits, XDEV_T dev));
-extern	XDEV_T	dev_make	__PR((XDEV_T majo, XDEV_T mino));
-extern	XDEV_T	_dev_make	__PR((int mbits, XDEV_T majo, XDEV_T mino));
+extern	XDEV_T	dev_major(XDEV_T dev);
+extern	XDEV_T	_dev_major(int mbits, XDEV_T dev);
+extern	XDEV_T	dev_minor(XDEV_T dev);
+extern	XDEV_T	_dev_minor(int mbits, XDEV_T dev);
+extern	XDEV_T	dev_make(XDEV_T majo, XDEV_T mino);
+extern	XDEV_T	_dev_make(int mbits, XDEV_T majo, XDEV_T mino);
 #endif
 
 #endif	/* __XDEV__ */

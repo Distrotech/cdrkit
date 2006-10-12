@@ -24,9 +24,9 @@ extern char *end_of_shm;
 extern int sem_id;
 #else
 #define sem_id 42	/* nearly any other number would do it too */
-void init_pipes __PR((void));
-void init_parent __PR((void));
-void init_child __PR((void));
+void init_pipes(void);
+void init_parent(void);
+void init_child(void);
 #endif
 
 
@@ -35,9 +35,9 @@ void init_child __PR((void));
 #define	AREA_NAME	"shmfifo"
 #endif
 
-void free_sem __PR((void));
-int semrequest __PR((int semid, int semnum));
-int semrelease __PR((int semid, int semnum, int amount));
-int flush_buffers __PR((void));
-void * request_shm_sem __PR((unsigned amount_of_sh_mem, unsigned char **pointer));
+void free_sem(void);
+int semrequest(int semid, int semnum);
+int semrelease(int semid, int semnum, int amount);
+int flush_buffers(void);
+void * request_shm_sem(unsigned amount_of_sh_mem, unsigned char **pointer);
 

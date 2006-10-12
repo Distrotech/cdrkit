@@ -62,9 +62,9 @@ static xio_t	*x_root = &x_stdin;
 static xio_t	**x_tail = NULL;
 
 
-static	xio_t	*xnewnode	__PR((char *name));
-void	*xopen		__PR((char *name, int oflag, int mode));
-int	xclose		__PR((void *vp));
+static	xio_t	*xnewnode(char *name);
+void	*xopen(char *name, int oflag, int mode);
+int	xclose(void *vp);
 
 static xio_t *
 xnewnode(char *name)

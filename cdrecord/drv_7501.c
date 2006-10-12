@@ -225,28 +225,31 @@ struct cw7501_cue {
 };
 
 
-static	int	cw7501_attach		__PR((SCSI *scgp, cdr_t *dp));
-static	int	cw7501_init		__PR((SCSI *scgp, cdr_t *dp));
-static	int	cw7501_getdisktype	__PR((SCSI *scgp, cdr_t *dp));
-static	int	cw7501_speed_select	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-static	int	cw7501_next_wr_addr	__PR((SCSI *scgp, track_t *trackp, long *ap));
-static	int	cw7501_write		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
-static	int	cw7501_write_leadin	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	cw7501_open_track	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	cw7501_close_track	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	cw7501_open_session	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	cw7501_gen_cue		__PR((track_t *trackp, void *vcuep, BOOL needgap));
-static	void	fillcue			__PR((struct cw7501_cue *cp, int ca, int tno, int idx, int dataform, int scms, msf_t *mp));
-static	int	cw7501_send_cue		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	cw7501_fixate		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	cw7501_rezero		__PR((SCSI *scgp, int reset, int dwreset));
-static	int	cw7501_read_trackinfo	__PR((SCSI *scgp, Uchar *bp, int count, int track, int mode));
-static	int	cw7501_write_dao	__PR((SCSI *scgp, Uchar *bp, int len, int disktype));
-static	int	cw7501_reserve_track	__PR((SCSI *scgp, unsigned long));
-static	int	cw7501_set_mode		__PR((SCSI *scgp, int phys_form, int control,
+static	int	cw7501_attach(SCSI *scgp, cdr_t *dp);
+static	int	cw7501_init(SCSI *scgp, cdr_t *dp);
+static	int	cw7501_getdisktype(SCSI *scgp, cdr_t *dp);
+static	int	cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	cw7501_next_wr_addr(SCSI *scgp, track_t *trackp, long *ap);
+static	int	cw7501_write(SCSI *scgp, caddr_t bp, long sectaddr, long size, 
+									 int blocks, BOOL islast);
+static	int	cw7501_write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_close_track(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_gen_cue(track_t *trackp, void *vcuep, BOOL needgap);
+static	void	fillcue(struct cw7501_cue *cp, int ca, int tno, int idx, 
+							  int dataform, int scms, msf_t *mp);
+static	int	cw7501_send_cue(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_fixate(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_rezero(SCSI *scgp, int reset, int dwreset);
+static	int	cw7501_read_trackinfo(SCSI *scgp, Uchar *bp, int count, 
+												 int track, int mode);
+static	int	cw7501_write_dao(SCSI *scgp, Uchar *bp, int len, int disktype);
+static	int	cw7501_reserve_track(SCSI *scgp, unsigned long);
+static	int	cw7501_set_mode(SCSI *scgp, int phys_form, int control,
 						int subc, int alt, int trackno, int tindex,
-						int packet_size, int write_mode));
-static	int	cw7501_finalize		__PR((SCSI *scgp, int pad, int fixed));
+						int packet_size, int write_mode);
+static	int	cw7501_finalize(SCSI *scgp, int pad, int fixed);
 
 
 cdr_t	cdr_cw7501 = {
@@ -269,7 +272,7 @@ cdr_t	cdr_cw7501 = {
 	scsi_unload,
 	buf_dummy,				/* RD buffer cap not supp. */
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	cw7501_speed_select,
 	select_secsize,
 	cw7501_next_wr_addr,
@@ -288,7 +291,7 @@ cdr_t	cdr_cw7501 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -328,20 +331,20 @@ static const char *sd_cw7501_error_str[] = {
 	NULL
 };
 
-static int
+static int 
 cw7501_attach(SCSI *scgp, cdr_t *dp)
 {
 	scg_setnonstderrs(scgp, sd_cw7501_error_str);
 	return (0);
 }
 
-static int
+static int 
 cw7501_init(SCSI *scgp, cdr_t *dp)
 {
 	return (cw7501_speed_select(scgp, dp, NULL));
 }
 
-static int
+static int 
 cw7501_getdisktype(SCSI *scgp, cdr_t *dp)
 {
 	Ulong	maxb = 0;
@@ -404,7 +407,7 @@ cw7501_getdisktype(SCSI *scgp, cdr_t *dp)
 }
 
 
-static int
+static int 
 cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	struct	scsi_mode_page_header	*mp;
@@ -461,7 +464,7 @@ cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp)
 	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
 }
 
-static int
+static int 
 cw7501_next_wr_addr(SCSI *scgp, track_t *trackp, long *ap)
 {
 	struct cw7501_nwa	*nwa;
@@ -506,7 +509,7 @@ cw7501_next_wr_addr(SCSI *scgp, track_t *trackp, long *ap)
 	return (0);
 }
 
-static int
+static int 
 cw7501_write(SCSI *scgp, 
              caddr_t bp     /* address of buffer */, 
              long sectaddr  /* disk address (sector) to put */, 
@@ -520,7 +523,7 @@ cw7501_write(SCSI *scgp,
 	return (write_xg0(scgp, bp, 0, size, blocks));
 }
 
-static int
+static int 
 cw7501_write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	Uint	i;
@@ -572,7 +575,7 @@ static Uchar	db2phys[] = {
 	0xFF,			/* 15 -    Vendor specific			*/
 };
 
-static int
+static int 
 cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	struct	scsi_mode_page_header	*mp;
@@ -632,7 +635,7 @@ cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 }
 
 
-static int
+static int 
 cw7501_close_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	if (!is_tao(trackp) && !is_packet(trackp)) {
@@ -641,7 +644,7 @@ cw7501_close_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (scsi_flush_cache(scgp, FALSE));
 }
 
-static int
+static int 
 cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	struct cw7501_mode_data		md;
@@ -695,7 +698,7 @@ cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
 }
 
-static int
+static int 
 cw7501_fixate(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	if (!is_tao(trackp) && !is_packet(trackp)) {
@@ -711,7 +714,7 @@ cw7501_fixate(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 /*--------------------------------------------------------------------------*/
 
-static int
+static int 
 cw7501_gen_cue(track_t *trackp, void *vcuep, BOOL needgap)
 {
 	int	tracks = trackp->tracks;
@@ -814,14 +817,14 @@ cw7501_gen_cue(track_t *trackp, void *vcuep, BOOL needgap)
 	return (ncue);
 }
 
-static void
-fillcue(struct cw7501_cue *cp   /* The target cue entry */, 
-        int ca                  /* Control/adr for this entry */, 
-        int tno                 /* Track number for this entry */, 
-        int idx                 /* Index for this entry */, 
-        int dataform            /* Data format for this entry */, 
-        int scms                /* Serial copy management */, 
-        msf_t *mp               /* MSF value for this entry */)
+static void 
+fillcue(struct cw7501_cue *cp	/* The target cue entry */, 
+        int ca					/* Control/adr for this entry */, 
+        int tno					/* Track number for this entry */, 
+        int idx					/* Index for this entry */, 
+        int dataform			/* Data format for this entry */, 
+        int scms					/* Serial copy management */, 
+        msf_t *mp				/* MSF value for this entry */)
 {
 	cp->cs_ctladr = ca;
 	if (tno <= 99)
@@ -838,7 +841,7 @@ fillcue(struct cw7501_cue *cp   /* The target cue entry */,
 	cp->cs_frame = to_bcd(mp->msf_frame);
 }
 
-static int
+static int 
 cw7501_send_cue(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	struct cw7501_cue *cp;
@@ -882,7 +885,7 @@ cw7501_send_cue(SCSI *scgp, cdr_t *dp, track_t *trackp)
 }
 
 /*--------------------------------------------------------------------------*/
-static int
+static int 
 cw7501_rezero(SCSI *scgp, int reset, int dwreset)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -929,7 +932,7 @@ cw7501_read_trackinfo(SCSI *scgp, Uchar *bp, int count, int track, int mode)
 	return (0);
 }
 
-static int
+static int 
 cw7501_write_dao(SCSI *scgp, Uchar *bp, int len, int disktype)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -956,7 +959,7 @@ cw7501_write_dao(SCSI *scgp, Uchar *bp, int len, int disktype)
  * XXX CW-7501 also needs "control", so we need to make a different
  * XXX driver interface.
  */
-static int
+static int 
 cw7501_reserve_track(SCSI *scgp, unsigned long len)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -979,9 +982,10 @@ cw7501_reserve_track(SCSI *scgp, unsigned long len)
 	return (0);
 }
 
-static int
-cw7501_set_mode(SCSI *scgp, int phys_form, int control, int subc, int alt, 
-                int trackno, int tindex, int packet_size, int write_mode)
+static int 
+cw7501_set_mode(SCSI *scgp, int phys_form, int control, int subc, 
+						int alt, int trackno, int tindex, int packet_size, 
+						int write_mode)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1007,7 +1011,7 @@ cw7501_set_mode(SCSI *scgp, int phys_form, int control, int subc, int alt,
 	return (0);
 }
 
-static int
+static int 
 cw7501_finalize(SCSI *scgp, int pad, int fixed)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;

@@ -50,12 +50,10 @@ static	char sccsid[] =
 
 #define	NUM	256
 
-static void	free_mem __PR((struct unls_unicode *, unsigned char **));
+static void	free_mem(struct unls_unicode *, unsigned char **);
 
 static void
-free_mem(charset2uni, page_uni2charset)
-	struct unls_unicode *charset2uni;
-	unsigned char **page_uni2charset;
+free_mem(struct unls_unicode *charset2uni, unsigned char **page_uni2charset)
 {
 	int	i;
 
@@ -73,8 +71,7 @@ free_mem(charset2uni, page_uni2charset)
 }
 
 int
-init_unls_file(filename)
-	char	*filename;
+init_unls_file(char *filename)
 {
 	FILE	*fp;
 	struct unls_unicode *charset2uni = NULL;

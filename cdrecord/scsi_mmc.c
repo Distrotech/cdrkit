@@ -66,14 +66,16 @@ extern	int	xdebug;
 
 
 
-int	get_configuration	__PR((SCSI *scgp, caddr_t bp, int cnt, int st_feature, int rt));
-static	int	get_conflen		__PR((SCSI *scgp, int st_feature, int rt));
-int	get_curprofile		__PR((SCSI *scgp));
-static	int	get_profiles		__PR((SCSI *scgp, caddr_t bp, int cnt));
-int	print_profiles		__PR((SCSI *scgp));
-int	get_proflist		__PR((SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp));
-int	get_wproflist		__PR((SCSI *scgp, BOOL *cdp, BOOL *dvdp,
-							BOOL *dvdplusp, BOOL *ddcdp));
+int	get_configuration(SCSI *scgp, caddr_t bp, int cnt, int st_feature, 
+								int rt);
+static	int	get_conflen(SCSI *scgp, int st_feature, int rt);
+int	get_curprofile(SCSI *scgp);
+static	int	get_profiles(SCSI *scgp, caddr_t bp, int cnt);
+int	print_profiles(SCSI *scgp);
+int	get_proflist(SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
+						 BOOL *ddcdp);
+int	get_wproflist(SCSI *scgp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, 
+						  BOOL *ddcdp);
 
 /*
  * Get feature codes

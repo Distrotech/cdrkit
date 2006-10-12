@@ -51,15 +51,14 @@ typedef struct sort_info {
 
 } sort_info;
 
-extern sort_info	*sort_alloc	__PR((long size));
-extern void		sort_unsortall	__PR((sort_info * i));
-extern void		sort_setup	__PR((sort_info * i, Int16_t * vector,
-						long *abspos, long size,
-						long sortlo, long sorthi));
-extern void		sort_free	__PR((sort_info * i));
-extern sort_link	*sort_getmatch	__PR((sort_info * i, long post,
-						long overlap, int value));
-extern sort_link	*sort_nextmatch	__PR((sort_info * i, sort_link * prev));
+extern sort_info	*sort_alloc(long size);
+extern void		sort_unsortall(sort_info * i);
+extern void		sort_setup(sort_info * i, Int16_t * vector, long *abspos, 
+								  long size, long sortlo, long sorthi);
+extern void		sort_free(sort_info * i);
+extern sort_link	*sort_getmatch(sort_info * i, long post, long overlap, 
+											int value);
+extern sort_link	*sort_nextmatch(sort_info * i, sort_link * prev);
 
 #define	is(i)		((i)->size)
 #define	ib(i)		(*(i)->abspos)

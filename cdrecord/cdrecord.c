@@ -196,80 +196,71 @@ struct timeval	fixtime;
 
 static	long	fs = -1L;	/* fifo (ring buffer) size */
 
-static	int	gracewait	__PR((cdr_t *dp, BOOL *didgracep));
-static	void	cdrstats	__PR((cdr_t *dp));
-static	void	susage		__PR((int));
-static	void	usage		__PR((int));
-static	void	blusage		__PR((int));
-static	void	formattypeusage	__PR((int));
-static	void	intr		__PR((int sig));
-static	void	catchsig	__PR((int sig));
-static	int	scsi_cb		__PR((void *arg));
-static	void	intfifo		__PR((int sig));
-static	void	exscsi		__PR((int excode, void *arg));
-static	void	excdr		__PR((int excode, void *arg));
-int	read_buf	__PR((int f, char *bp, int size));
-int	fill_buf	__PR((int f, track_t *trackp, long secno,
-							char *bp, int size));
-int	get_buf		__PR((int f, track_t *trackp, long secno,
-							char **bpp, int size));
-int	write_secs	__PR((SCSI *scgp, cdr_t *dp, char *bp,
-						long startsec, int bytespt,
-						int secspt, BOOL islast));
-static	int	write_track_data __PR((SCSI *scgp, cdr_t *, track_t *));
-int	pad_track	__PR((SCSI *scgp, cdr_t *dp,
-					track_t *trackp,
-					long startsec, Llong amt,
-					BOOL dolast, Llong *bytesp));
-int	write_buf	__PR((SCSI *scgp, cdr_t *dp,
-					track_t *trackp,
-					char *bp, long startsec, Llong amt,
-					int secsize,
-					BOOL dolast, Llong *bytesp));
-static	void	printdata	__PR((int, track_t *));
-static	void	printaudio	__PR((int, track_t *));
-static	void	checkfile	__PR((int, track_t *));
-static	int	checkfiles	__PR((int, track_t *));
-static	void	setleadinout	__PR((int, track_t *));
-static	void	setpregaps	__PR((int, track_t *));
-static	long	checktsize	__PR((int, track_t *));
-static	void	opentracks	__PR((track_t *));
-static	void	checksize	__PR((track_t *));
-static	BOOL	checkdsize	__PR((SCSI *scgp, cdr_t *dp,
-					long tsize, int flags));
-static	void	raise_fdlim	__PR((void));
-static	void	raise_memlock	__PR((void));
-static	int	gargs		__PR((int, char **, int *, track_t *, char **,
-					int *, cdr_t **,
-					int *, long *, int *, int *));
-static	void	set_trsizes	__PR((cdr_t *, int, track_t *));
-void	load_media	__PR((SCSI *scgp, cdr_t *, BOOL));
-void	unload_media	__PR((SCSI *scgp, cdr_t *, int));
-void	reload_media	__PR((SCSI *scgp, cdr_t *));
-void	set_secsize	__PR((SCSI *scgp, int secsize));
-static	int	get_dmaspeed	__PR((SCSI *scgp, cdr_t *));
-static	BOOL	do_opc		__PR((SCSI *scgp, cdr_t *, int));
-static	void	check_recovery	__PR((SCSI *scgp, cdr_t *, int));
-	void	audioread	__PR((SCSI *scgp, cdr_t *, int));
-static	void	print_msinfo	__PR((SCSI *scgp, cdr_t *));
-static	void	print_toc	__PR((SCSI *scgp, cdr_t *));
-static	void	print_track	__PR((int, long, struct msf *, int, int, int));
+static	int	gracewait(cdr_t *dp, BOOL *didgracep);
+static	void	cdrstats(cdr_t *dp);
+static	void	susage(int);
+static	void	usage(int);
+static	void	blusage(int);
+static	void	formattypeusage(int);
+static	void	intr(int sig);
+static	void	catchsig(int sig);
+static	int	scsi_cb(void *arg);
+static	void	intfifo(int sig);
+static	void	exscsi(int excode, void *arg);
+static	void	excdr(int excode, void *arg);
+int	read_buf(int f, char *bp, int size);
+int	fill_buf(int f, track_t *trackp, long secno, char *bp, int size);
+int	get_buf(int f, track_t *trackp, long secno, char **bpp, int size);
+int	write_secs(SCSI *scgp, cdr_t *dp, char *bp, long startsec, int bytespt,
+					  int secspt, BOOL islast);
+static	int	write_track_data(SCSI *scgp, cdr_t *, track_t *);
+int	pad_track(SCSI *scgp, cdr_t *dp, track_t *trackp, long startsec, 
+					 Llong amt, BOOL dolast, Llong *bytesp);
+int	write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, 
+					 long startsec, Llong amt, int secsize, BOOL dolast, 
+					 Llong *bytesp);
+static	void	printdata(int, track_t *);
+static	void	printaudio(int, track_t *);
+static	void	checkfile(int, track_t *);
+static	int	checkfiles(int, track_t *);
+static	void	setleadinout(int, track_t *);
+static	void	setpregaps(int, track_t *);
+static	long	checktsize(int, track_t *);
+static	void	opentracks(track_t *);
+static	void	checksize(track_t *);
+static	BOOL	checkdsize(SCSI *scgp, cdr_t *dp, long tsize, int flags);
+static	void	raise_fdlim(void);
+static	void	raise_memlock(void);
+static	int	gargs(int, char **, int *, track_t *, char **, int *, cdr_t **,
+							int *, long *, int *, int *);
+static	void	set_trsizes(cdr_t *, int, track_t *);
+void		load_media(SCSI *scgp, cdr_t *, BOOL);
+void		unload_media(SCSI *scgp, cdr_t *, int);
+void		reload_media(SCSI *scgp, cdr_t *);
+void		set_secsize(SCSI *scgp, int secsize);
+static	int	get_dmaspeed(SCSI *scgp, cdr_t *);
+static	BOOL	do_opc(SCSI *scgp, cdr_t *, int);
+static	void	check_recovery(SCSI *scgp, cdr_t *, int);
+void		audioread(SCSI *scgp, cdr_t *, int);
+static	void	print_msinfo(SCSI *scgp, cdr_t *);
+static	void	print_toc(SCSI *scgp, cdr_t *);
+static	void	print_track(int, long, struct msf *, int, int, int);
 #if !defined(HAVE_SYS_PRIOCNTL_H)
-static	int	rt_raisepri	__PR((int));
+static	int	rt_raisepri(int);
 #endif
-void	raisepri	__PR((int));
-static	void	wait_input	__PR((void));
-static	void	checkgui	__PR((void));
-static	int	getbltype	__PR((char *optstr, long *typep));
-static	int	getformattype	__PR((char *optstr, long *typep));
-static	void	print_drflags	__PR((cdr_t *dp));
-static	void	print_wrmodes	__PR((cdr_t *dp));
-static	BOOL	check_wrmode	__PR((cdr_t *dp, int wmode, int tflags));
-static	void	set_wrmode	__PR((cdr_t *dp, int wmode, int tflags));
-static	void	linuxcheck	__PR((void));
+void		raisepri(int);
+static	void	wait_input(void);
+static	void	checkgui(void);
+static	int	getbltype(char *optstr, long *typep);
+static	int	getformattype(char *optstr, long *typep);
+static	void	print_drflags(cdr_t *dp);
+static	void	print_wrmodes(cdr_t *dp);
+static	BOOL	check_wrmode(cdr_t *dp, int wmode, int tflags);
+static	void	set_wrmode(cdr_t *dp, int wmode, int tflags);
+static	void	linuxcheck(void);
 
 #ifdef __linux__
-static int get_cap   __PR((cap_value_t cap_array));
+static int get_cap(cap_value_t cap_array);
 #endif
 
 struct exargs {
@@ -280,7 +271,7 @@ struct exargs {
 	int	exflags;
 } exargs;
 
-int
+int 
 main(int argc, char *argv[])
 {
 	char	*dev = NULL;
@@ -597,7 +588,7 @@ main(int argc, char *argv[])
  * Debug only
  */
 {
-extern	void	gconf	__PR((SCSI *));
+extern	void	gconf(SCSI *);
 
 if (lverbose > 2)
 	gconf(scgp);
@@ -1489,7 +1480,7 @@ restore_it:
 	return (0);
 }
 
-static int
+static int 
 gracewait(cdr_t *dp, BOOL *didgracep)
 {
 	int	i;
@@ -1560,7 +1551,7 @@ grace_done:
 	return (0);
 }
 
-static void
+static void 
 cdrstats(cdr_t *dp)
 {
 	float	secsps = 75.0;
@@ -1652,7 +1643,7 @@ susage(int ret)
 	/* NOTREACHED */
 }
 
-static void
+static void 
 usage(int excode)
 {
 	error("Usage: %s [options] track1...trackn\n", get_progname());
@@ -1747,7 +1738,7 @@ usage(int excode)
 	exit(excode);
 }
 
-static void
+static void 
 blusage(int ret)
 {
 	error("Blanking options:\n");
@@ -1766,7 +1757,7 @@ blusage(int ret)
 	/* NOTREACHED */
 }
 
-static void
+static void 
 formattypeusage(int ret)
 {
 	error("Formating options:\n");
@@ -1789,13 +1780,13 @@ intr(int sig)
 	didintr++;
 }
 
-static void
+static void 
 catchsig(int sig)
 {
 	signal(sig, catchsig);
 }
 
-static int
+static int 
 scsi_cb(void *arg)
 {
 	comexit(EX_BAD);
@@ -1803,7 +1794,7 @@ scsi_cb(void *arg)
 	return (0);	/* Keep lint happy */
 }
 
-static void
+static void 
 intfifo(int sig)
 {
 	errmsgno(EX_BAD, "Caught interrupt.\n");
@@ -1824,7 +1815,7 @@ intfifo(int sig)
 }
 
 /* ARGSUSED */
-static void
+static void 
 exscsi(int excode, void *arg)
 {
 	struct exargs	*exp = (struct exargs *)arg;
@@ -1850,7 +1841,7 @@ exscsi(int excode, void *arg)
 	}
 }
 
-static void
+static void 
 excdr(int excode, void *arg)
 {
 	struct exargs	*exp = (struct exargs *)arg;
@@ -1871,7 +1862,7 @@ excdr(int excode, void *arg)
 #endif
 }
 
-int
+int 
 read_buf(int f, char *bp, int size)
 {
 	char	*p = bp;
@@ -1891,7 +1882,7 @@ read_buf(int f, char *bp, int size)
 	return (amount);
 }
 
-int
+int 
 fill_buf(int f, track_t *trackp, long secno, char *bp, int size)
 {
 	int	amount = 0;
@@ -1967,7 +1958,7 @@ fill_buf(int f, track_t *trackp, long secno, char *bp, int size)
 	return (amount);
 }
 
-int
+int 
 get_buf(int f, track_t *trackp, long secno, char **bpp, int size)
 {
 	if (fs > 0) {
@@ -1978,9 +1969,9 @@ get_buf(int f, track_t *trackp, long secno, char **bpp, int size)
 	}
 }
 
-int
+int 
 write_secs(SCSI *scgp, cdr_t *dp, char *bp, long startsec, int bytespt, 
-        int secspt, BOOL islast)
+        		int secspt, BOOL islast)
 {
 	int	amount;
 
@@ -2018,7 +2009,7 @@ again:
 	return (amount);
 }
 
-static int
+static int 
 write_track_data(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	track = trackp->trackno;
@@ -2301,9 +2292,9 @@ int oper = -1;
 	return (0);
 }
 
-int
+int 
 pad_track(SCSI *scgp, cdr_t	*dp, track_t *trackp, long startsec, Llong amt,
-	BOOL dolast, Llong *bytesp)
+				BOOL dolast, Llong *bytesp)
 {
 	int	track = trackp->trackno;
 	Llong	bytes	= 0;
@@ -2435,9 +2426,9 @@ int oper = -1;
 }
 
 #ifdef	USE_WRITE_BUF
-int
+int 
 write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, long startsec, 
-        Llong amt, int secsize, BOOL dolast, Llong *bytesp)
+        	  Llong amt, int secsize, BOOL dolast, Llong *bytesp)
 {
 	int	track = trackp->trackno;
 	Llong	bytes	= 0;
@@ -2498,7 +2489,7 @@ write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, long startsec,
 }
 #endif	/* USE_WRITE_BUF */
 
-static void
+static void 
 printdata(int track, track_t *trackp)
 {
 	if (trackp->itracksize >= 0) {
@@ -2525,7 +2516,7 @@ printdata(int track, track_t *trackp)
 	printf("\n");
 }
 
-static void
+static void 
 printaudio(int track, track_t *trackp)
 {
 	if (trackp->itracksize >= 0) {
@@ -2573,7 +2564,7 @@ printaudio(int track, track_t *trackp)
 	printf("\n");
 }
 
-static void
+static void 
 checkfile(int track, track_t *trackp)
 {
 	if (trackp->itracksize > 0 &&
@@ -2602,7 +2593,7 @@ checkfile(int track, track_t *trackp)
 		printdata(track, trackp);
 }
 
-static int
+static int 
 checkfiles(int tracks, track_t *trackp)
 {
 	int	i;
@@ -2627,7 +2618,7 @@ checkfiles(int tracks, track_t *trackp)
 	return (isaudio);
 }
 
-static void
+static void 
 setleadinout(int tracks, track_t *trackp)
 {
 	/*
@@ -2662,7 +2653,7 @@ setleadinout(int tracks, track_t *trackp)
 	trackp[tracks+1].flags = trackp[tracks].flags;
 }
 
-static void
+static void 
 setpregaps(int tracks, track_t *trackp)
 {
 	int	i;
@@ -2705,7 +2696,7 @@ setpregaps(int tracks, track_t *trackp)
 /*
  * Check total size of the medium
  */
-static long
+static long 
 checktsize(int tracks, track_t *trackp)
 {
 	int	i;
@@ -2782,7 +2773,7 @@ checktsize(int tracks, track_t *trackp)
 	return (total);
 }
 
-static void
+static void 
 opentracks(track_t *trackp)
 {
 	track_t	*tp;
@@ -2856,7 +2847,7 @@ opentracks(track_t *trackp)
 	}
 }
 
-static void
+static void 
 checksize(track_t *trackp)
 {
 	struct stat	st;
@@ -2913,7 +2904,7 @@ checksize(track_t *trackp)
 	}
 }
 
-static BOOL
+static BOOL 
 checkdsize(SCSI *scgp, cdr_t *dp, long tsize, int flags)
 {
 	long	startsec = 0L;
@@ -3082,7 +3073,7 @@ toolarge:
 	return (FALSE);
 }
 
-static void
+static void 
 raise_fdlim()
 {
 #ifdef	RLIMIT_NOFILE
@@ -3106,7 +3097,7 @@ raise_fdlim()
 #endif	/* RLIMIT_NOFILE */
 }
 
-static void
+static void 
 raise_memlock()
 {
 #ifdef	RLIMIT_MEMLOCK
@@ -3129,10 +3120,10 @@ char	*opts =
 #define	M_SAO		2	/* Session at Once mode (also known as DAO) */
 #define	M_RAW		4	/* Raw mode */
 #define	M_PACKET	8	/* Packed mode */
-static int
+static int 
 gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp, 
-        int *timeoutp, cdr_t **dpp, int *speedp, long *flagsp, int *blankp, 
-        int *formatp)
+		int *timeoutp, cdr_t **dpp, int *speedp, long *flagsp, int *blankp, 
+		int *formatp)
 {
 	int	cac;
 	char	* const*cav;
@@ -3837,7 +3828,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 	return ispacket;
 }
 
-static void
+static void 
 set_trsizes(cdr_t *dp, int tracks, track_t *trackp)
 {
 	int	i;
@@ -3892,7 +3883,7 @@ set_trsizes(cdr_t *dp, int tracks, track_t *trackp)
 		printf("Set Transfersizes end\n");
 }
 
-void
+void 
 load_media(SCSI *scgp, cdr_t *dp, BOOL doexit)
 {
 	int	code;
@@ -3938,7 +3929,7 @@ load_media(SCSI *scgp, cdr_t *dp, BOOL doexit)
 	wait_unit_ready(scgp, 120);
 }
 
-void
+void 
 unload_media(SCSI *scgp, cdr_t *dp, int flags)
 {
 	scsi_prevent_removal(scgp, 0);
@@ -3948,7 +3939,7 @@ unload_media(SCSI *scgp, cdr_t *dp, int flags)
 	}
 }
 
-void
+void 
 reload_media(SCSI *scgp, cdr_t *dp)
 {
 	char	ans[2];
@@ -4003,7 +3994,7 @@ reload_media(SCSI *scgp, cdr_t *dp)
 	load_media(scgp, dp, TRUE);
 }
 
-void
+void 
 set_secsize(SCSI *scgp, int secsize)
 {
 	if (secsize > 0) {
@@ -4016,7 +4007,7 @@ set_secsize(SCSI *scgp, int secsize)
 	}
 }
 
-static int
+static int 
 get_dmaspeed(SCSI *scgp, cdr_t *dp)
 {
 	int	i;
@@ -4063,7 +4054,7 @@ get_dmaspeed(SCSI *scgp, cdr_t *dp)
 }
 
 
-static BOOL
+static BOOL 
 do_opc(SCSI *scgp, cdr_t *dp, int flags)
 {
 	if ((flags & F_DUMMY) == 0 && dp->cdr_opc) {
@@ -4080,7 +4071,7 @@ do_opc(SCSI *scgp, cdr_t *dp, int flags)
 	return (TRUE);
 }
 
-static void
+static void 
 check_recovery(SCSI *scgp, cdr_t *dp, int flags)
 {
 	if ((*dp->cdr_check_recovery)(scgp, dp)) {
@@ -4093,7 +4084,7 @@ check_recovery(SCSI *scgp, cdr_t *dp, int flags)
 #ifndef	DEBUG
 #define	DEBUG
 #endif
-void
+void 
 audioread(SCSI *scgp, cdr_t *dp, int flags)
 {
 #ifdef	DEBUG
@@ -4118,7 +4109,7 @@ audioread(SCSI *scgp, cdr_t *dp, int flags)
 #endif
 }
 
-static void
+static void 
 print_msinfo(SCSI *scgp, cdr_t *dp)
 {
 	long	off;
@@ -4138,7 +4129,7 @@ print_msinfo(SCSI *scgp, cdr_t *dp)
 	printf("%ld,%ld\n", off, fa);
 }
 
-static void
+static void 
 print_toc(SCSI *scgp, cdr_t *dp)
 {
 	int	first;
@@ -4186,8 +4177,9 @@ print_toc(SCSI *scgp, cdr_t *dp)
 	}
 }
 
-static void
-print_track(int track, long lba, struct msf *msp, int adr, int control, int mode)
+static void 
+print_track(int track, long lba, struct msf *msp, int adr, 
+				int control, int mode)
 {
 	long	lba_512 = lba*4;
 
@@ -4210,7 +4202,7 @@ print_track(int track, long lba, struct msf *msp, int adr, int control, int mode
 #include <sys/priocntl.h>
 #include <sys/rtpriocntl.h>
 
-void
+void 
 raisepri(int pri)
 {
 	int		pid;
@@ -4264,7 +4256,7 @@ raisepri(int pri)
 #undef	_P
 #endif
 
-static	int
+static int 
 rt_raisepri(int pri)
 {
 	struct sched_param scp;
@@ -4315,7 +4307,7 @@ rt_raisepri(int pri)
 #undef format
 #undef interface
 
-static	int
+static int 
 rt_raisepri(int pri)
 {
 	int prios[] = {THREAD_PRIORITY_TIME_CRITICAL, THREAD_PRIORITY_HIGHEST};
@@ -4338,7 +4330,7 @@ rt_raisepri(int pri)
 /*
  * This OS does not support real time scheduling.
  */
-static	int
+static int 
 rt_raisepri(int pri)
 {
 	return (-1);
@@ -4348,7 +4340,7 @@ rt_raisepri(int pri)
 
 #endif	/* _POSIX_PRIORITY_SCHEDULING */
 
-void
+void 
 raisepri(int pri)
 {
 	if (rt_raisepri(pri) >= 0)
@@ -4402,7 +4394,7 @@ raisepri(int pri)
 #include <sys/socket.h>
 #endif
 
-static void
+static void 
 wait_input()
 {
 #ifdef	HAVE_SELECT
@@ -4421,7 +4413,7 @@ wait_input()
 #endif
 }
 
-static void
+static void 
 checkgui()
 {
 	struct stat st;
@@ -4433,7 +4425,7 @@ checkgui()
 	}
 }
 
-static int
+static int 
 getbltype(char *optstr, long *typep)
 {
 	if (streql(optstr, "all")) {
@@ -4466,7 +4458,7 @@ getbltype(char *optstr, long *typep)
 	return (TRUE);
 }
 
-static int
+static int 
 getformattype(char *optstr, long *typep)
 {
 	if (streql(optstr, "full")) {
@@ -4484,7 +4476,7 @@ getformattype(char *optstr, long *typep)
 	}
 	return (TRUE);
 }
-static void
+static void 
 print_drflags(cdr_t *dp)
 {
 	printf("Driver flags   : ");
@@ -4522,7 +4514,7 @@ print_drflags(cdr_t *dp)
 	printf("\n");
 }
 
-static void
+static void 
 print_wrmodes(cdr_t *dp)
 {
 	BOOL	needblank = FALSE;
@@ -4569,7 +4561,7 @@ print_wrmodes(cdr_t *dp)
 	printf("\n");
 }
 
-static BOOL
+static BOOL 
 check_wrmode(cdr_t *dp, int wmode, int tflags)
 {
 	int	cdflags = dp->cdr_flags;
@@ -4639,7 +4631,7 @@ badsecs:
 	return (FALSE);
 }
 
-static void
+static void 
 set_wrmode(cdr_t *dp, int wmode, int tflags)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
@@ -4695,7 +4687,7 @@ set_wrmode(cdr_t *dp, int wmode, int tflags)
 #endif
 
 #ifdef __linux__
-static int
+static int 
 get_cap(cap_value_t cap_array)
 { 
     	  int ret;

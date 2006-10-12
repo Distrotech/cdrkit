@@ -71,29 +71,29 @@ static	char __sccsid[] =
 #	define	USE_USCSI
 #endif
 
-LOCAL	char	_scg_trans_version[] = "scg-1.83";	/* The version for /dev/scg	*/
-LOCAL	char	_scg_utrans_version[] = "uscsi-1.83";	/* The version for USCSI	*/
+static	char	_scg_trans_version[] = "scg-1.83";	/* The version for /dev/scg	*/
+static	char	_scg_utrans_version[] = "uscsi-1.83";	/* The version for USCSI	*/
 
 #ifdef	USE_USCSI
-LOCAL	int	scgo_uhelp	__PR((SCSI *scgp, FILE *f));
-LOCAL	int	scgo_uopen	__PR((SCSI *scgp, char *device));
-LOCAL	int	scgo_volopen	__PR((SCSI *scgp, char *devname));
-LOCAL	int	scgo_openmedia	__PR((SCSI *scgp, char *mname));
-LOCAL	int	scgo_uclose	__PR((SCSI *scgp));
-LOCAL	int	scgo_ucinfo	__PR((int f, struct dk_cinfo *cp, int debug));
-LOCAL	int	scgo_ugettlun	__PR((int f, int *tgtp, int *lunp));
-LOCAL	long	scgo_umaxdma	__PR((SCSI *scgp, long amt));
-LOCAL	int	scgo_openide	__PR((void));
-LOCAL	BOOL	scgo_uhavebus	__PR((SCSI *scgp, int));
-LOCAL	int	scgo_ufileno	__PR((SCSI *scgp, int, int, int));
-LOCAL	int	scgo_uinitiator_id __PR((SCSI *scgp));
-LOCAL	int	scgo_uisatapi	__PR((SCSI *scgp));
-LOCAL	int	scgo_ureset	__PR((SCSI *scgp, int what));
-LOCAL	int	scgo_usend	__PR((SCSI *scgp));
+static	int	scgo_uhelp(SCSI *scgp, FILE *f);
+static	int	scgo_uopen(SCSI *scgp, char *device);
+static	int	scgo_volopen(SCSI *scgp, char *devname);
+static	int	scgo_openmedia(SCSI *scgp, char *mname);
+static	int	scgo_uclose(SCSI *scgp);
+static	int	scgo_ucinfo(int f, struct dk_cinfo *cp, int debug);
+static	int	scgo_ugettlun(int f, int *tgtp, int *lunp);
+static	long	scgo_umaxdma(SCSI *scgp, long amt);
+static	int	scgo_openide(void);
+static	BOOL	scgo_uhavebus(SCSI *scgp, int);
+static	int	scgo_ufileno(SCSI *scgp, int, int, int);
+static	int	scgo_uinitiator_id(SCSI *scgp);
+static	int	scgo_uisatapi(SCSI *scgp);
+static	int	scgo_ureset(SCSI *scgp, int what);
+static	int	scgo_usend(SCSI *scgp);
 
-LOCAL	int	have_volmgt = -1;
+static	int	have_volmgt = -1;
 
-LOCAL scg_ops_t sun_uscsi_ops = {
+static scg_ops_t sun_uscsi_ops = {
 	scgo_usend,
 	scgo_version,		/* Shared with SCG driver */
 	scgo_uhelp,
@@ -156,10 +156,8 @@ struct scg_local {
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -183,10 +181,8 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "scg", "Generic transport independent SCSI",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
@@ -196,10 +192,8 @@ scgo_help(scgp, f)
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -277,9 +271,8 @@ scgo_open(scgp, device)
 	return (nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	register int	i;
 
@@ -294,10 +287,8 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	long	maxdma = MAX_DMA_OTHER;
 #if	!defined(__i386_) && !defined(i386)
@@ -337,10 +328,8 @@ scgo_maxdma(scgp, amt)
 	return (maxdma);
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	if (scgp->local == NULL)
 		return (FALSE);
@@ -348,12 +337,8 @@ scgo_havebus(scgp, busno)
 	return (busno < 0 || busno >= MAX_SCG) ? FALSE : (scgfiles(scgp)[busno] >= 0);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (scgp->local == NULL)
 		return (-1);
@@ -361,9 +346,8 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return ((busno < 0 || busno >= MAX_SCG) ? -1 : scgfiles(scgp)[busno]);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	int		id = -1;
 #ifdef	DKIO_GETCINFO
@@ -381,17 +365,14 @@ scgo_initiator_id(scgp)
 	return (id);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	if (what == SCG_RESET_NOP)
 		return (0);
@@ -402,27 +383,23 @@ scgo_reset(scgp, what)
 	return (ioctl(scgp->fd, SCGIORESET, 0));
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	scgp->bufbase = (void *)valloc((size_t)amt);
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI	*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	scgp->scmd->target = scg_target(scgp);
 	return (ioctl(scgp->fd, SCGIO_CMD, scgp->scmd));
@@ -461,20 +438,16 @@ scgo_send(scgp)
 #define	STATUS_ACA_ACTIVE		0x30
 #endif
 
-LOCAL int
-scgo_uhelp(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_uhelp(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "USCSI", "SCSI transport for targets known by Solaris drivers",
 		"USCSI:", "bus,target,lun", "USCSI:1,2,0", TRUE, TRUE);
 	return (0);
 }
 
-LOCAL int
-scgo_uopen(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_uopen(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -643,10 +616,8 @@ openbydev:
 	return (nopen);
 }
 
-LOCAL int
-scgo_volopen(scgp, devname)
-	SCSI	*scgp;
-	char	*devname;
+static int
+scgo_volopen(SCSI *scgp, char *devname)
 {
 	int	oerr = geterrno();
 	int	f = -1;
@@ -734,10 +705,8 @@ scgo_volopen(scgp, devname)
 	return (f);
 }
 
-LOCAL int
-scgo_openmedia(scgp, mname)
-	SCSI	*scgp;
-	char	*mname;
+static int
+scgo_openmedia(SCSI *scgp, char *mname)
 {
 	int	f = -1;
 	char	*device = NULL;
@@ -786,9 +755,8 @@ scgo_openmedia(scgp, mname)
 	return (f);
 }
 
-LOCAL int
-scgo_uclose(scgp)
-	SCSI	*scgp;
+static int
+scgo_uclose(SCSI *scgp)
 {
 	register int	f;
 	register int	b;
@@ -811,11 +779,8 @@ scgo_uclose(scgp)
 	return (0);
 }
 
-LOCAL int
-scgo_ucinfo(f, cp, debug)
-	int		f;
-	struct dk_cinfo *cp;
-	int		debug;
+static int
+scgo_ucinfo(int f, struct dk_cinfo *cp, int debug)
 {
 	fillbytes(cp, sizeof (*cp), '\0');
 
@@ -847,11 +812,8 @@ scgo_ucinfo(f, cp, debug)
 	return (0);
 }
 
-LOCAL int
-scgo_ugettlun(f, tgtp, lunp)
-	int	f;
-	int	*tgtp;
-	int	*lunp;
+static int
+scgo_ugettlun(int f, int *tgtp, int *lunp)
 {
 	struct dk_cinfo ci;
 
@@ -864,10 +826,8 @@ scgo_ugettlun(f, tgtp, lunp)
 	return (0);
 }
 
-LOCAL long
-scgo_umaxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_umaxdma(SCSI *scgp, long amt)
 {
 	register int	b;
 	register int	t;
@@ -947,7 +907,7 @@ scgo_umaxdma(scgp, amt)
 }
 
 #if	defined(__i386_) || defined(i386)
-LOCAL int
+static int
 scgo_openide()
 {
 	char	buf[20];
@@ -968,10 +928,8 @@ out:
 }
 #endif
 
-LOCAL BOOL
-scgo_uhavebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_uhavebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -987,12 +945,8 @@ scgo_uhavebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_ufileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_ufileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (scgp->local == NULL ||
 	    busno < 0 || busno >= MAX_SCG ||
@@ -1003,16 +957,14 @@ scgo_ufileno(scgp, busno, tgt, tlun)
 	return ((int)scglocal(scgp)->u.scg_files[busno][tgt][tlun]);
 }
 
-LOCAL int
-scgo_uinitiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_uinitiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_uisatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_uisatapi(SCSI *scgp)
 {
 	char		devname[32];
 	char		symlinkname[MAXPATHLEN];
@@ -1036,10 +988,8 @@ scgo_uisatapi(scgp)
 		return (FALSE);
 }
 
-LOCAL int
-scgo_ureset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_ureset(SCSI *scgp, int what)
 {
 	struct uscsi_cmd req;
 
@@ -1060,9 +1010,8 @@ scgo_ureset(scgp, what)
 	return (ioctl(scgp->fd, USCSICMD, &req));
 }
 
-LOCAL int
-scgo_usend(scgp)
-	SCSI		*scgp;
+static int
+scgo_usend(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	struct uscsi_cmd req;

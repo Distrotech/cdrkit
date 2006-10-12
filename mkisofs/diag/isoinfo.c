@@ -175,40 +175,37 @@ struct unls_table *unls;
 #define	ISODCL(from, to) (to - from + 1)
 
 
-int	isonum_721	__PR((char * p));
-int	isonum_723	__PR((char * p));
-int	isonum_731	__PR((char * p));
-int	isonum_732	__PR((char * p));
-int	isonum_733	__PR((unsigned char * p));
-void	printchars	__PR((char *s, int n));
-char	*sdate		__PR((char *dp));
-void	dump_pathtab	__PR((int block, int size));
-int	parse_rr	__PR((unsigned char * pnt, int len, int cont_flag));
-void	find_rr		__PR((struct iso_directory_record * idr, Uchar **pntp, int *lenp));
-int	dump_rr		__PR((struct iso_directory_record * idr));
-void	dump_stat	__PR((struct iso_directory_record * idr, int extent));
-void	extract_file	__PR((struct iso_directory_record * idr));
-void	parse_dir	__PR((char * rootname, int extent, int len));
-void	usage		__PR((int excode));
-int	main		__PR((int argc, char *argv[]));
+int	isonum_721(char * p);
+int	isonum_723(char * p);
+int	isonum_731(char * p);
+int	isonum_732(char * p);
+int	isonum_733(unsigned char * p);
+void	printchars(char *s, int n);
+char	*sdate(char *dp);
+void	dump_pathtab(int block, int size);
+int	parse_rr(unsigned char * pnt, int len, int cont_flag);
+void	find_rr(struct iso_directory_record * idr, Uchar **pntp, int *lenp);
+int	dump_rr(struct iso_directory_record * idr);
+void	dump_stat(struct iso_directory_record * idr, int extent);
+void	extract_file(struct iso_directory_record * idr);
+void	parse_dir(char * rootname, int extent, int len);
+void	usage(int excode);
 
-LOCAL	void	printf_bootinfo	__PR((FILE *f, int bootcat_offset));
-LOCAL	char	*arch_name	__PR((int val));
-LOCAL	char	*boot_name	__PR((int val));
-LOCAL	char	*bootmedia_name	__PR((int val));
+static	void	printf_bootinfo(FILE *f, int bootcat_offset);
+static	char	*arch_name(int val);
+static	char	*boot_name(int val);
+static	char	*bootmedia_name(int val);
 
 
 int
-isonum_721(p)
-	char	*p;
+isonum_721(char *p)
 {
 	return ((p[0] & 0xff)
 		| ((p[1] & 0xff) << 8));
 }
 
 int
-isonum_723(p)
-	char * p;
+isonum_723(char *p)
 {
 #if 0
 	if (p[0] != p[3] || p[1] != p[2]) {
@@ -224,8 +221,7 @@ isonum_723(p)
 }
 
 int
-isonum_731(p)
-	char	*p;
+isonum_731(char *p)
 {
 	return ((p[0] & 0xff)
 		| ((p[1] & 0xff) << 8)
@@ -234,8 +230,7 @@ isonum_731(p)
 }
 
 int
-isonum_732(p)
-	char	*p;
+isonum_732(char *p)
 {
 	return ((p[3] & 0xff)
 		| ((p[2] & 0xff) << 8)
@@ -244,16 +239,13 @@ isonum_732(p)
 }
 
 int
-isonum_733(p)
-	unsigned char	*p;
+isonum_733(unsigned char *p)
 {
 	return (isonum_731((char *)p));
 }
 
 void
-printchars(s, n)
-	char	*s;
-	int	n;
+printchars(char *s, int n)
 {
 	int	i;
 	char	*p;
@@ -275,8 +267,7 @@ printchars(s, n)
  * Print date info from PVD
  */
 char *
-sdate(dp)
-	char	*dp;
+sdate(char *dp)
 {
 	static	char	d[30];
 
@@ -297,9 +288,7 @@ sdate(dp)
 }
 
 void
-dump_pathtab(block, size)
-	int	block;
-	int	size;
+dump_pathtab(int block, int size)
 {
 	unsigned char	*buf;
 	int		offset;
@@ -367,10 +356,7 @@ dump_pathtab(block, size)
 }
 
 int
-parse_rr(pnt, len, cont_flag)
-	unsigned char	*pnt;
-	int		len;
-	int		cont_flag;
+parse_rr(unsigned char *pnt, int len, int cont_flag)
 {
 	int slen;
 	int xlen;
@@ -512,10 +498,7 @@ parse_rr(pnt, len, cont_flag)
 }
 
 void
-find_rr(idr, pntp, lenp)
-	struct iso_directory_record *idr;
-	Uchar	**pntp;
-	int	*lenp;
+find_rr(struct iso_directory_record *idr, Uchar **pntp, int *lenp)
 {
 	struct iso_xa_dir_record *xadp;
 	int len;
@@ -546,8 +529,7 @@ find_rr(idr, pntp, lenp)
 }
 
 int
-dump_rr(idr)
-	struct iso_directory_record *idr;
+dump_rr(struct iso_directory_record *idr)
 {
 	int len;
 	unsigned char * pnt;
@@ -570,9 +552,7 @@ char		*months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
 				"Aug", "Sep", "Oct", "Nov", "Dec"};
 
 void
-dump_stat(idr, extent)
-	struct iso_directory_record *idr;
-	int	extent;
+dump_stat(struct iso_directory_record *idr, int extent)
 {
 	int	i;
 	char	outline[80];
@@ -652,8 +632,7 @@ dump_stat(idr, extent)
 }
 
 void
-extract_file(idr)
-	struct iso_directory_record *idr;
+extract_file(struct iso_directory_record *idr)
 {
 	int		extent, len, tlen;
 	unsigned char	buff[2048];
@@ -681,10 +660,7 @@ extract_file(idr)
 }
 
 void
-parse_dir(rootname, extent, len)
-	char	*rootname;
-	int	extent;
-	int	len;
+parse_dir(char *rootname, int extent, int len)
 {
 	char		testname[PATH_MAX+1];
 	struct todo 	*td;
@@ -813,8 +789,7 @@ parse_dir(rootname, extent, len)
 }
 
 void
-usage(excode)
-	int	excode;
+usage(int excode)
 {
 	errmsgno(EX_BAD, "Usage: %s [options] -i filename\n", get_progname());
 
@@ -839,9 +814,7 @@ usage(excode)
 }
 
 int
-main(argc, argv)
-	int	argc;
-	char	*argv[];
+main(int argc, char *argv[])
 {
 	int	cac;
 	char	* const *cav;
@@ -1269,10 +1242,8 @@ main(argc, argv)
 
 #include <intcvt.h>
 
-LOCAL void
-printf_bootinfo(f, bootcat_offset)
-	FILE	*f;
-	int	bootcat_offset;
+static void
+printf_bootinfo(FILE *f, int bootcat_offset)
 {
 	struct eltorito_validation_entry	*evp;
 	struct eltorito_defaultboot_entry	*ebe;
@@ -1303,9 +1274,8 @@ printf_bootinfo(f, bootcat_offset)
 
 }
 
-LOCAL char *
-arch_name(val)
-	int	val;
+static char *
+arch_name(int val)
 {
 	switch (val) {
 
@@ -1320,9 +1290,8 @@ arch_name(val)
 	}
 }
 
-LOCAL char *
-boot_name(val)
-	int	val;
+static char *
+boot_name(int val)
 {
 	switch (val) {
 
@@ -1335,9 +1304,8 @@ boot_name(val)
 	}
 }
 
-LOCAL char *
-bootmedia_name(val)
-	int	val;
+static char *
+bootmedia_name(int val)
 {
 	switch (val) {
 

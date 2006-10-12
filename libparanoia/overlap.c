@@ -36,14 +36,12 @@ static	char sccsid[] =
 #include "overlap.h"
 #include "isort.h"
 
-void paranoia_resetcache    __PR((cdrom_paranoia * p));
-void paranoia_resetall      __PR((cdrom_paranoia * p));
-void i_paranoia_trim        __PR((cdrom_paranoia * p, long beginword, 
-                                  long endword));
-void offset_adjust_settings __PR((cdrom_paranoia * p, 
-                                  void (*callback)(long, int)));
-void offset_add_value       __PR((cdrom_paranoia * p, offsets * o, long value,
-						          void (*callback)(long, int)));
+void paranoia_resetcache(cdrom_paranoia *p);
+void paranoia_resetall(cdrom_paranoia *p);
+void i_paranoia_trim(cdrom_paranoia *p, long beginword, long endword);
+void offset_adjust_settings(cdrom_paranoia *p, void (*callback)(long, int));
+void offset_add_value(cdrom_paranoia *p, offsets *o, long value, 
+							 void (*callback)(long, int));
 
 /*
  * Internal cache management

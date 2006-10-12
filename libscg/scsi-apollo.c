@@ -48,7 +48,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-apollo.c-1.5";	/* The version for this transport */
+static	char	_scg_trans_version[] = "scsi-apollo.c-1.5";	/* The version for this transport */
 
 
 #define	MAX_SCG		1	/* Max # of SCSI controllers */
@@ -72,10 +72,8 @@ struct scg_local {
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -95,20 +93,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "scsi_$do_command_2", "SCSI transport from Apollo DomainOS drivers",
 		"", "DomainOS driver name", "A DomainOS device node name", FALSE, TRUE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	register int	nopen = 0;
 	status_$t	status;
@@ -148,9 +142,8 @@ scgo_open(scgp, device)
 	return (++nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	status_$t	status;
 
@@ -164,10 +157,8 @@ scgo_close(scgp)
 }
 
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	status_$t	status;
 	scsi_$info_t	info;
@@ -184,10 +175,8 @@ scgo_maxdma(scgp, amt)
 }
 
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	void	*ret;
 
@@ -200,9 +189,8 @@ scgo_getbuf(scgp, amt)
 	return (ret);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->debug > 1)
 		printf("Entering scsi_freebuf\n");
@@ -212,10 +200,8 @@ scgo_freebuf(scgp)
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -237,12 +223,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (scgp->debug > 1)
 		printf("Entered scsi_fileno:  scgp=%p, busno=%d, tgt=%d, tlun=%d\n", scgp, busno, tgt, tlun);
@@ -258,9 +240,8 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return ((int) scglocal(scgp)->scgfiles[busno][tgt][tlun]);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	if (scgp->debug > 1)
 		printf("Entering scsi_initiator\n");
@@ -268,17 +249,14 @@ scgo_initiator_id(scgp)
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	status_$t	status;
 
@@ -299,10 +277,8 @@ scgo_reset(scgp, what)
 	}
 }
 
-LOCAL void
-scsi_do_sense(scgp, sp)
-	SCSI		*scgp;
-	struct scg_cmd	*sp;
+static void
+scsi_do_sense(SCSI *scgp, struct scg_cmd *sp)
 {
 	scsi_$op_status_t	op_status;
 	static scsi_$cdb_t	sense_cdb;
@@ -361,9 +337,8 @@ scsi_do_sense(scgp, sp)
 }
 
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	linteger	buffer_length;
 	linteger	cdb_len;

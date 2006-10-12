@@ -108,7 +108,7 @@ static char     sccsid[] =
 
 /* do SHA transformation */
 
-static void sha_transform __PR((SHA_INFO *sha_info));
+static void sha_transform(SHA_INFO *sha_info);
 
 static void sha_transform(SHA_INFO *sha_info)
 {
@@ -224,7 +224,7 @@ error Unknown byte order -- you need to add code here
 
 /* initialize the SHA digest */
 
-void sha_init __PR((SHA_INFO *sha_info));
+void sha_init(SHA_INFO *sha_info);
 
 void sha_init(SHA_INFO *sha_info)
 {
@@ -240,7 +240,7 @@ void sha_init(SHA_INFO *sha_info)
 
 /* update the SHA digest */
 
-void sha_update __PR((SHA_INFO *sha_info, BYTE *buffer, int count));
+void sha_update(SHA_INFO *sha_info, BYTE *buffer, int count);
 
 void sha_update(SHA_INFO *sha_info, BYTE *buffer, int count)
 {
@@ -280,7 +280,7 @@ void sha_update(SHA_INFO *sha_info, BYTE *buffer, int count)
 
 /* finish computing the SHA digest */
 
-void sha_final __PR((unsigned char digest[20], SHA_INFO *sha_info));
+void sha_final(unsigned char digest[20], SHA_INFO *sha_info);
 
 void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
 {
@@ -336,7 +336,7 @@ void sha_final(unsigned char digest[20], SHA_INFO *sha_info)
 
 #define BLOCK_SIZE	8192
 
-void sha_stream __PR((unsigned char digest[20], SHA_INFO *sha_info, FILE *fin));
+void sha_stream(unsigned char digest[20], SHA_INFO *sha_info, FILE *fin);
 
 void sha_stream(unsigned char digest[20], SHA_INFO *sha_info, FILE *fin)
 {
@@ -352,7 +352,7 @@ void sha_stream(unsigned char digest[20], SHA_INFO *sha_info, FILE *fin)
 
 /* print a SHA digest */
 
-void sha_print __PR((unsigned char digest[20]));
+void sha_print(unsigned char digest[20]);
 
 void sha_print(unsigned char digest[20])
 {
@@ -366,7 +366,7 @@ void sha_print(unsigned char digest[20])
     }
 }
 
-char *sha_version __PR((void));
+char *sha_version(void);
 
 char *sha_version()
 {

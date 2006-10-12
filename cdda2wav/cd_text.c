@@ -58,10 +58,8 @@ static unsigned short crctab[1<<8] = { /* as calculated by initcrctab() */
 
 #define SUBSIZE	18*8
 
-static unsigned short updcrc __PR((
-	    unsigned int    p_crc,
-            register unsigned char   *cp,
-            register size_t  cnt));
+static unsigned short updcrc(unsigned int p_crc, register unsigned char *cp,
+       							  register size_t cnt);
 
 static unsigned short updcrc(unsigned int p_crc, register unsigned char *cp, 
                              register size_t cnt)
@@ -73,7 +71,7 @@ static unsigned short updcrc(unsigned int p_crc, register unsigned char *cp,
       return( crc );
 }
 
-static unsigned short calcCRC __PR((unsigned char *buf, unsigned bsize));
+static unsigned short calcCRC(unsigned char *buf, unsigned bsize);
 
 static unsigned short calcCRC(unsigned char *buf, unsigned bsize)
 {
@@ -91,7 +89,7 @@ static unsigned char    fliptab[8] = {
         0x80,
 };
 
-static int flip_error_corr __PR((unsigned char *b, int crc));
+static int flip_error_corr(unsigned char *b, int crc);
 
 static int flip_error_corr(unsigned char *b, int crc)
 {
@@ -112,7 +110,7 @@ static int flip_error_corr(unsigned char *b, int crc)
 }
 
 
-static int cdtext_crc_ok __PR((cdtextpackdata *c));
+static int cdtext_crc_ok(cdtextpackdata *c);
 
 static int cdtext_crc_ok(cdtextpackdata *c)
 {
@@ -154,7 +152,7 @@ static int cdtext_crc_ok(cdtextpackdata *c)
 #define DETAILED 0
 
 #if	DETAILED
-static void dump_binary __PR((cdtextpackdata *c));
+static void dump_binary(cdtextpackdata *c);
 
 static void dump_binary(cdtextpackdata *c)
 {
@@ -178,7 +176,8 @@ static void dump_binary(cdtextpackdata *c)
 }
 #endif
 
-static int process_header __PR((cdtextpackdata *c, unsigned tracknr, int dbcc, unsigned char *line));
+static int process_header(cdtextpackdata *c, unsigned tracknr, int dbcc, 
+								  unsigned char *line);
 
 static int process_header(cdtextpackdata *c, unsigned tracknr, int dbcc, 
                           unsigned char *line)

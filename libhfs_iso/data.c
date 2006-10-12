@@ -56,7 +56,7 @@ static	char sccsid[] =
 #define MUTDIFF	2082844800L
 #define	TZNONE	0x0FFFFFFFL	/* A timezone diff that cannot occur */
 
-static	void	calctzdiff	__PR((void));
+static	void	calctzdiff(void);
 
 static
 unsigned long tzdiff = TZNONE;

@@ -91,7 +91,8 @@ typedef struct WAVEHDR {
 
 static WAVEHDR waveHdr;
 
-static int _InitSound __PR(( int audio, long channels, unsigned long rate, long nBitsPerSample, unsigned long expected_bytes ));
+static int _InitSound(int audio, long channels, unsigned long rate, 
+							 long nBitsPerSample, unsigned long expected_bytes);
 
 static int _InitSound(int audio, long channels, unsigned long rate, 
                       long nBitsPerSample, unsigned long expected_bytes)
@@ -117,7 +118,7 @@ static int _InitSound(int audio, long channels, unsigned long rate,
   return write (audio, &waveHdr, sizeof (waveHdr));
 }
 
-static int _ExitSound __PR(( int audio, unsigned long nBytesDone ));
+static int _ExitSound(int audio, unsigned long nBytesDone);
 
 static int _ExitSound(int audio, unsigned long nBytesDone)
 {
@@ -133,14 +134,14 @@ static int _ExitSound(int audio, unsigned long nBytesDone)
   return write (audio, &waveHdr, sizeof (waveHdr));
 }
 
-static unsigned long _GetHdrSize __PR(( void ));
+static unsigned long _GetHdrSize(void);
 
 static unsigned long _GetHdrSize()
 {
   return sizeof( waveHdr );
 }
 
-static unsigned long InSizeToOutSize __PR(( unsigned long BytesToDo ));
+static unsigned long InSizeToOutSize(unsigned long BytesToDo);
 
 static unsigned long InSizeToOutSize(unsigned long BytesToDo)
 {
@@ -152,7 +153,10 @@ struct soundfile wavsound =
 	_InitSound,		/* init header method */
 	_ExitSound,		/* exit header method */
 	_GetHdrSize,		/* report header size method */
-	(int (*) __PR(( int audio, unsigned char *buf, unsigned long BytesToDo ))) write,			/* get sound samples out */
+	/* get sound samples out */
+	(int (*)(int audio, unsigned char *buf, unsigned long BytesToDo)) write,
 	InSizeToOutSize,	/* compressed? output file size */
 	0			/* needs big endian samples */
 };
+
+

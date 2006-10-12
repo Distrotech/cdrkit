@@ -20,7 +20,7 @@ extern short undersampling;	/* conversion factor */
 extern short samples_to_do;	/* loop variable for conversion */
 extern int Halved;		/* interpolate due to non integral divider */
 extern int jitterShift;		/* track accumulated jitter */
-long SaveBuffer __PR((UINT4 *p,
-                 unsigned long SecsToDo, unsigned long *BytesDone));
-unsigned char *synchronize __PR((UINT4 *p, unsigned SamplesToDo, unsigned TotSamplesDone));
-void	handle_inputendianess __PR((UINT4 *p, unsigned SamplesToDo));
+long SaveBuffer(UINT4 *p, unsigned long SecsToDo, unsigned long *BytesDone);
+unsigned char *synchronize(UINT4 *p, unsigned SamplesToDo, 
+									unsigned TotSamplesDone);
+void	handle_inputendianess(UINT4 *p, unsigned SamplesToDo);

@@ -57,8 +57,8 @@ unsigned char *bufferTOC;
 subq_chnl *SubQbuffer;
 unsigned char *cmd;
 
-static unsigned ReadFullTOCSony __PR(( SCSI *scgp ));
-static unsigned ReadFullTOCMMC __PR(( SCSI *scgp ));
+static unsigned ReadFullTOCSony(SCSI *scgp);
+static unsigned ReadFullTOCMMC(SCSI *scgp);
 
 
 int SCSI_emulated_ATAPI_on(SCSI *scgp)
@@ -358,7 +358,7 @@ struct zmsf_address {
 };
 
 #ifdef	WARN_FULLTOC
-static unsigned lba __PR((struct msf_address *ad));
+static unsigned lba(struct msf_address *ad);
 
 static unsigned lba(struct msf_address *ad)
 {
@@ -366,7 +366,7 @@ static unsigned lba(struct msf_address *ad)
 }
 #endif
 
-static unsigned dvd_lba __PR((struct zmsf_address *ad));
+static unsigned dvd_lba(struct zmsf_address *ad);
 
 static unsigned dvd_lba(struct zmsf_address *ad)
 {
@@ -392,7 +392,8 @@ struct outer {
 
 static unsigned long first_session_leadout = 0;
 
-static unsigned collect_tracks __PR((struct outer *po, unsigned entries, BOOL bcd_flag));
+static unsigned collect_tracks(struct outer *po, unsigned entries, 
+										 BOOL bcd_flag);
 
 static unsigned collect_tracks(struct outer *po, unsigned entries, 
                                BOOL bcd_flag)
@@ -958,11 +959,11 @@ fprintf(stderr, "LBA %d %02x %02x %02x %02x %02x %02x %02x %02x\n"
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via standard SCSI-2 Read(10) command */
-static int ReadStandardLowlevel __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal, unsigned secsize ));
+static int ReadStandardLowlevel(SCSI *scgp, UINT4 *p, unsigned lSector, 
+										  unsigned SectorBurstVal, unsigned secsize);
 
-static int 
-ReadStandardLowlevel(SCSI *scgp, UINT4 *p, unsigned lSector, 
-                     unsigned SectorBurstVal, unsigned secsize)
+static int ReadStandardLowlevel(SCSI *scgp, UINT4 *p, unsigned lSector, 
+										  unsigned SectorBurstVal, unsigned secsize)
 {
   /* READ10, flags, block1 msb, block2, block3, block4 lsb, reserved, 
      transfer len msb, transfer len lsb, block addressing mode */
@@ -1254,7 +1255,7 @@ ReadSubQSCSI(SCSI *scgp, unsigned char sq_format, unsigned char track)
 
 static subq_chnl sc;
 
-static subq_chnl* fill_subchannel __PR((unsigned char bufferwithQ[]));
+static subq_chnl* fill_subchannel(unsigned char bufferwithQ[]);
 static subq_chnl* fill_subchannel(unsigned char bufferwithQ[])
 {
 	sc.subq_length = 0;
@@ -1292,7 +1293,8 @@ ReadCddaSubSony(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 	return scg_getresid(scgp) != 0;
 }
 
-int ReadCddaSub96Sony __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal ));
+int ReadCddaSub96Sony(SCSI *scgp, UINT4 *p, unsigned lSector, 
+							 unsigned SectorBurstVal);
 
 int ReadCddaSub96Sony(SCSI *scgp, UINT4 *p, unsigned lSector, 
                       unsigned SectorBurstVal)
@@ -1362,7 +1364,7 @@ int ReadCddaSubMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurs
 	return scg_getresid(scgp) != 0;
 }
 
-static subq_chnl *ReadSubChannelsMMC __PR((SCSI *scgp, unsigned lSector));
+static subq_chnl *ReadSubChannelsMMC(SCSI *scgp, unsigned lSector);
 static subq_chnl *ReadSubChannelsMMC(SCSI *scgp, unsigned lSector)
 {
 	int retval = ReadCddaSubMMC12(scgp, (UINT4 *)bufferTOC, lSector, 1);
@@ -1707,7 +1709,7 @@ int Play_atSCSI(SCSI *scgp, unsigned int from_sector, unsigned int sectors)
 
 static caddr_t scsibuffer;	/* page aligned scsi transfer buffer */
 
-void init_scsibuf __PR((SCSI *, unsigned));
+void init_scsibuf(SCSI *scsp, unsigned amt);
 
 void init_scsibuf(SCSI *scgp, unsigned amt)
 {

@@ -41,17 +41,17 @@
 #define	MAX_MAT		4
 #endif /* APPLE_HYB */
 
-extern int	gen_add_match	__PR((char *fn, int n));
-extern int	gen_matches	__PR((char *fn, int n));
-extern void	gen_add_list	__PR((char *fn, int n));
-extern int	gen_ishidden	__PR((int n));
-extern void	gen_del_match	__PR((int n));
+extern int	gen_add_match(char *fn, int n);
+extern int	gen_matches(char *fn, int n);
+extern void	gen_add_list(char *fn, int n);
+extern int	gen_ishidden(int n);
+extern void	gen_del_match(int n);
 
 #ifdef SORTING
-extern int	add_sort_match	__PR((char *fn, int val));
-extern void	add_sort_list	__PR((char *fn));
-extern int	sort_matches	__PR((char *fn, int val));
-extern void	del_sort	__PR((void));
+extern int	add_sort_match(char *fn, int val);
+extern void	add_sort_list(char *fn);
+extern int	sort_matches(char *fn, int val);
+extern void	del_sort(void);
 #endif /* SORTING */
 
 /*

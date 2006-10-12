@@ -88,90 +88,96 @@ static	char	us_clv_to_speed[16] = {
 };
 
 #ifdef	__needed__
-static	int	mmc_load		__PR((SCSI *scgp, cdr_t *dp));
-static	int	mmc_unload		__PR((SCSI *scgp, cdr_t *dp));
+static	int	mmc_load(SCSI *scgp, cdr_t *dp);
+static	int	mmc_unload(SCSI *scgp, cdr_t *dp);
 #endif
-void	mmc_opthelp		__PR((cdr_t *dp, int excode));
-char	*hasdrvopt		__PR((char *optstr, char *optname));
-static	cdr_t	*identify_mmc		__PR((SCSI *scgp, cdr_t *, struct scsi_inquiry *));
-static	int	attach_mmc		__PR((SCSI *scgp, cdr_t *));
-static   int     attach_mdvd             __PR((SCSI *scgp, cdr_t *));
-int	check_writemodes_mmc	__PR((SCSI *scgp, cdr_t *dp));
- int     check_writemodes_mdvd   __PR((SCSI *scgp, cdr_t *dp));
-static	int	deflt_writemodes_mmc	__PR((SCSI *scgp, BOOL reset_dummy));
-static   int     deflt_writemodes_mdvd   __PR((SCSI *scgp, BOOL reset_dummy));
-static	int	get_diskinfo		__PR((SCSI *scgp, struct disk_info *dip));
-static	void	di_to_dstat		__PR((struct disk_info *dip, dstat_t *dsp));
-static	int	get_atip		__PR((SCSI *scgp, struct atipinfo *atp));
+void				mmc_opthelp(cdr_t *dp, int excode);
+char				*hasdrvopt(char *optstr, char *optname);
+static	cdr_t	*identify_mmc(SCSI *scgp, cdr_t *, struct scsi_inquiry *);
+static	int	attach_mmc(SCSI *scgp, cdr_t *);
+static   int   attach_mdvd(SCSI *scgp, cdr_t *);
+int				check_writemodes_mmc(SCSI *scgp, cdr_t *dp);
+int     			check_writemodes_mdvd(SCSI *scgp, cdr_t *dp);
+static	int	deflt_writemodes_mmc(SCSI *scgp, BOOL reset_dummy);
+static   int   deflt_writemodes_mdvd(SCSI *scgp, BOOL reset_dummy);
+static	int	get_diskinfo(SCSI *scgp, struct disk_info *dip);
+static	void	di_to_dstat(struct disk_info *dip, dstat_t *dsp);
+static	int	get_atip(SCSI *scgp, struct atipinfo *atp);
 #ifdef	PRINT_ATIP
-static	int	get_pma			__PR((SCSI *scgp));
+static	int	get_pma(SCSI *scgp);
 #endif
-static	int	init_mmc		__PR((SCSI *scgp, cdr_t *dp));
-static	int	getdisktype_mmc		__PR((SCSI *scgp, cdr_t *dp));
-static   int     getdisktype_mdvd        __PR((SCSI *scgp, cdr_t *dp));
-static	int	speed_select_mmc	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-static   int     speed_select_mdvd       __PR((SCSI *scgp, cdr_t *dp, int *speedp));
-static	int	mmc_set_speed		__PR((SCSI *scgp, int readspeed, int writespeed, int rotctl));
-static	int	next_wr_addr_mmc	__PR((SCSI *scgp, track_t *trackp, long *ap));
-static   int     next_wr_addr_mdvd       __PR((SCSI *scgp, track_t *trackp, long *ap));
-static	int	write_leadin_mmc	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	open_track_mmc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static   int     open_track_mdvd         __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	close_track_mmc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static   int     close_track_mdvd        __PR((SCSI *scgp, cdr_t *dp, track_t *trackp)); 
-static	int	open_session_mmc	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static   int     open_session_mdvd       __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	waitfix_mmc		__PR((SCSI *scgp, int secs));
-static	int	fixate_mmc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static   int     fixate_mdvd             __PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	blank_mmc		__PR((SCSI *scgp, cdr_t *dp, long addr, int blanktype));
-static	int	format_mdvd		__PR((SCSI *scgp, cdr_t *dp, int formattype));
-static	int	send_opc_mmc		__PR((SCSI *scgp, caddr_t, int cnt, int doopc));
-static	int	opt1_mmc		__PR((SCSI *scgp, cdr_t *dp));
-static	int	opt1_mdvd		__PR((SCSI *scgp, cdr_t *dp));
-static	int	opt2_mmc		__PR((SCSI *scgp, cdr_t *dp));
-static	int	scsi_sony_write		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
-static	int	gen_cue_mmc		__PR((track_t *trackp, void *vcuep, BOOL needgap));
-static	void	fillcue			__PR((struct mmc_cue *cp, int ca, int tno, int idx, int dataform, int scms, msf_t *mp));
-static	int	send_cue_mmc		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static int	stats_mmc		__PR((SCSI *scgp, cdr_t *dp));
-static BOOL	mmc_isplextor		__PR((SCSI *scgp));
-static BOOL	mmc_isyamaha		__PR((SCSI *scgp));
-static void	do_varirec_plextor	__PR((SCSI *scgp));
-static int	do_gigarec_plextor	__PR((SCSI *scgp));
-static int	drivemode_plextor	__PR((SCSI *scgp, caddr_t bp, int cnt, int modecode, void *modeval));
-static int	drivemode2_plextor	__PR((SCSI *scgp, caddr_t bp, int cnt, int modecode, void *modeval));
-static int	check_varirec_plextor	__PR((SCSI *scgp));
-static int	check_gigarec_plextor	__PR((SCSI *scgp));
-static int	varirec_plextor		__PR((SCSI *scgp, BOOL on, int val));
-static int	gigarec_plextor		__PR((SCSI *scgp, int val));
-static Int32_t	gigarec_mult		__PR((int code, Int32_t	val));
-static int	check_ss_hide_plextor	__PR((SCSI *scgp));
-static int	check_speed_rd_plextor	__PR((SCSI *scgp));
-static int	check_powerrec_plextor	__PR((SCSI *scgp));
-static int	ss_hide_plextor		__PR((SCSI *scgp, BOOL do_ss, BOOL do_hide));
-static int	speed_rd_plextor	__PR((SCSI *scgp, BOOL do_speedrd));
-static int	powerrec_plextor	__PR((SCSI *scgp, BOOL do_powerrec));
-static int	get_speeds_plextor	__PR((SCSI *scgp, int *selp, int *maxp, int *lastp));
-static int	bpc_plextor		__PR((SCSI *scgp, int mode, int *bpp));
-static int	set_audiomaster_yamaha	__PR((SCSI *scgp, cdr_t *dp, BOOL keep_mode));
+static	int	init_mmc(SCSI *scgp, cdr_t *dp);
+static	int	getdisktype_mmc(SCSI *scgp, cdr_t *dp);
+static  int   getdisktype_mdvd(SCSI *scgp, cdr_t *dp);
+static	int	speed_select_mmc(SCSI *scgp, cdr_t *dp, int *speedp);
+static  int   speed_select_mdvd(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	mmc_set_speed(SCSI *scgp, int readspeed, int writespeed, 
+									  int rotctl);
+static	int	next_wr_addr_mmc(SCSI *scgp, track_t *trackp, long *ap);
+static  int   next_wr_addr_mdvd(SCSI *scgp, track_t *trackp, long *ap);
+static	int	write_leadin_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	open_track_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static  int   open_track_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	close_track_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static  int   close_track_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp); 
+static	int	open_session_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static  int   open_session_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	waitfix_mmc(SCSI *scgp, int secs);
+static	int	fixate_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static  int   fixate_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	blank_mmc(SCSI *scgp, cdr_t *dp, long addr, int blanktype);
+static	int	format_mdvd(SCSI *scgp, cdr_t *dp, int formattype);
+static	int	send_opc_mmc(SCSI *scgp, caddr_t, int cnt, int doopc);
+static	int	opt1_mmc(SCSI *scgp, cdr_t *dp);
+static	int	opt1_mdvd(SCSI *scgp, cdr_t *dp);
+static	int	opt2_mmc(SCSI *scgp, cdr_t *dp);
+static	int	scsi_sony_write(SCSI *scgp, caddr_t bp, long sectaddr, long size, 
+										 int blocks, BOOL islast);
+static	int	gen_cue_mmc(track_t *trackp, void *vcuep, BOOL needgap);
+static	void	fillcue(struct mmc_cue *cp, int ca, int tno, int idx, int dataform,
+							 int scms, msf_t *mp);
+static	int	send_cue_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static 	int	stats_mmc(SCSI *scgp, cdr_t *dp);
+static 	BOOL	mmc_isplextor(SCSI *scgp);
+static 	BOOL	mmc_isyamaha(SCSI *scgp);
+static 	void	do_varirec_plextor(SCSI *scgp);
+static 	int	do_gigarec_plextor(SCSI *scgp);
+static 	int	drivemode_plextor(SCSI *scgp, caddr_t bp, int cnt, int modecode, 
+											void *modeval);
+static 	int	drivemode2_plextor(SCSI *scgp, caddr_t bp, int cnt, int modecode, 
+											 void *modeval);
+static 	int	check_varirec_plextor(SCSI *scgp);
+static 	int	check_gigarec_plextor(SCSI *scgp);
+static 	int	varirec_plextor(SCSI *scgp, BOOL on, int val);
+static 	int	gigarec_plextor(SCSI *scgp, int val);
+static 	Int32_t	gigarec_mult(int code, Int32_t	val);
+static 	int	check_ss_hide_plextor(SCSI *scgp);
+static 	int	check_speed_rd_plextor(SCSI *scgp);
+static 	int	check_powerrec_plextor(SCSI *scgp);
+static 	int	ss_hide_plextor(SCSI *scgp, BOOL do_ss, BOOL do_hide);
+static 	int	speed_rd_plextor(SCSI *scgp, BOOL do_speedrd);
+static 	int	powerrec_plextor(SCSI *scgp, BOOL do_powerrec);
+static 	int	get_speeds_plextor(SCSI *scgp, int *selp, int *maxp, int *lastp);
+static 	int	bpc_plextor(SCSI *scgp, int mode, int *bpp);
+static 	int	set_audiomaster_yamaha(SCSI *scgp, cdr_t *dp, BOOL keep_mode);
 
-struct ricoh_mode_page_30 * get_justlink_ricoh	__PR((SCSI *scgp, Uchar *mode));
-static int	force_speed_yamaha	__PR((SCSI *scgp, int readspeed, int writespeed));
-static BOOL	get_tattoo_yamaha	__PR((SCSI *scgp, BOOL print, Int32_t *irp, Int32_t *orp));
-static int	do_tattoo_yamaha	__PR((SCSI *scgp, FILE *f));
-static int	yamaha_write_buffer	__PR((SCSI *scgp, int mode, int bufferid, long offset,
-							long parlen, void *buffer, long buflen));
-static	int	dvd_dual_layer_split	__PR((SCSI *scgp, cdr_t *dp, long tsize));
+struct 	ricoh_mode_page_30 * get_justlink_ricoh(SCSI *scgp, Uchar *mode);
+static 	int	force_speed_yamaha(SCSI *scgp, int readspeed, int writespeed);
+static 	BOOL	get_tattoo_yamaha(SCSI *scgp, BOOL print, Int32_t *irp, 
+										Int32_t *orp);
+static 	int	do_tattoo_yamaha(SCSI *scgp, FILE *f);
+static 	int	yamaha_write_buffer(SCSI *scgp, int mode, int bufferid, long offset,
+										  long parlen, void *buffer, long buflen);
+static	int	dvd_dual_layer_split(SCSI *scgp, cdr_t *dp, long tsize);
 
 #ifdef	__needed__
-static int
+static int 
 mmc_load(SCSI *scgp, cdr_t *dp)
 {
 	return (scsi_load_unload(scgp, 1));
 }
 
-static int
+static int 
 mmc_unload(SCSI *scgp, cdr_t *dp)
 {
 	return (scsi_load_unload(scgp, 0));
@@ -198,11 +204,11 @@ cdr_t	cdr_mmc = {
 	scsi_unload,
 	read_buff_cap,
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
 	next_wr_addr_mmc,
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,	/* reserve_track	*/
+	(int(*)(SCSI *, Ulong))cmd_ill,	/* reserve_track	*/
 	scsi_cdr_write,
 	gen_cue_mmc,
 	send_cue_mmc,
@@ -239,14 +245,14 @@ cdr_t   cdr_mdvd = {
          scsi_unload,
          read_buff_cap,
          cmd_dummy,                              /* recovery_needed      */
-         (int(*)__PR((SCSI *, int)))cmd_dummy,   /* recover              */
+         (int(*)(SCSI *, int))cmd_dummy,   /* recover              */
          speed_select_mdvd,
          select_secsize,
          next_wr_addr_mdvd,
-         (int(*)__PR((SCSI *, Ulong)))cmd_ill,   /* reserve_track        */
+         (int(*)(SCSI *, Ulong))cmd_ill,   /* reserve_track        */
          scsi_cdr_write,
-         (int(*)__PR((SCSI *scgp, int, track_t *)))cmd_dummy, /* gen_cue */
-	 (int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
+         (int(*)(SCSI *scgp, int, track_t *))cmd_dummy, /* gen_cue */
+	 (int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy, /* send_cue */
  	 write_leadin_mmc,
          open_track_mdvd,
          close_track_mdvd,
@@ -284,11 +290,11 @@ cdr_t	cdr_mmc_sony = {
 	scsi_unload,
 	read_buff_cap,
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
 	next_wr_addr_mmc,
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,	/* reserve_track	*/
+	(int(*)(SCSI *, Ulong))cmd_ill,	/* reserve_track	*/
 	scsi_sony_write,
 	gen_cue_mmc,
 	send_cue_mmc,
@@ -328,26 +334,26 @@ cdr_t	cdr_cd = {
 	scsi_unload,
 	read_buff_cap,
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
-	(int(*)__PR((SCSI *scgp, track_t *, long *)))cmd_ill,	/* next_wr_addr		*/
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,	/* reserve_track	*/
+	(int(*)(SCSI *scgp, track_t *, long *))cmd_ill,	/* next_wr_addr		*/
+	(int(*)(SCSI *, Ulong))cmd_ill,	/* reserve_track	*/
 	scsi_cdr_write,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_mmc,
 	close_track_mmc,
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset,
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy,	/* fixation */
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy,	/* fixation */
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -372,26 +378,26 @@ cdr_t	cdr_oldcd = {
 	scsi_unload,
 	buf_dummy,
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
-	(int(*)__PR((SCSI *scg, track_t *, long *)))cmd_ill,	/* next_wr_addr		*/
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,	/* reserve_track	*/
+	(int(*)(SCSI *scg, track_t *, long *))cmd_ill,	/* next_wr_addr		*/
+	(int(*)(SCSI *, Ulong))cmd_ill,	/* reserve_track	*/
 	scsi_cdr_write,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_mmc,
 	close_track_mmc,
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy,	/* fixation */
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy,	/* fixation */
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -417,31 +423,31 @@ cdr_t	cdr_cd_dvd = {
 	scsi_unload,
 	read_buff_cap,
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
-	(int(*)__PR((SCSI *scgp, track_t *, long *)))cmd_ill,	/* next_wr_addr		*/
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,	/* reserve_track	*/
+	(int(*)(SCSI *scgp, track_t *, long *))cmd_ill,	/* next_wr_addr		*/
+	(int(*)(SCSI *, Ulong))cmd_ill,	/* reserve_track	*/
 	scsi_cdr_write,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_mmc,
 	close_track_mmc,
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset,
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy,	/* fixation */
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy,	/* fixation */
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
 
-void
+void 
 mmc_opthelp(cdr_t *dp, int excode)
 {
 	BOOL	haveopts = FALSE;
@@ -738,7 +744,7 @@ identify_mmc(SCSI *scgp, cdr_t *dp, struct scsi_inquiry *ip)
 	return (dp);
 }
 
-static int
+static int 
 attach_mmc(SCSI *scgp, cdr_t *dp)
 {
 	int	ret;
@@ -938,7 +944,7 @@ attach_mmc(SCSI *scgp, cdr_t *dp)
 	return (0);
 }
 
-static int
+static int 
 attach_mdvd(SCSI *scgp, cdr_t *dp)
 {
         struct  cd_mode_page_2A *mp;
@@ -973,7 +979,7 @@ attach_mdvd(SCSI *scgp, cdr_t *dp)
         return (0);
 }
 
-int
+int 
 check_writemodes_mmc(SCSI *scgp, cdr_t *dp)
 {
 	Uchar	mode[0x100];
@@ -1118,7 +1124,7 @@ check_writemodes_mmc(SCSI *scgp, cdr_t *dp)
 	return (0);
 }
 
-int
+int 
 check_writemodes_mdvd(SCSI *scgp, cdr_t *dp)
 {
 	Uchar	mode[0x100];
@@ -1187,7 +1193,7 @@ check_writemodes_mdvd(SCSI *scgp, cdr_t *dp)
 	return (0);
 }
 
-static int
+static int 
 deflt_writemodes_mmc(SCSI *scgp, BOOL reset_dummy)
 {
 	Uchar	mode[0x100];
@@ -1259,7 +1265,7 @@ deflt_writemodes_mmc(SCSI *scgp, BOOL reset_dummy)
 	return (0);
 }
 
-static int
+static int 
 deflt_writemodes_mdvd(SCSI *scgp, BOOL reset_dummy)
 {
 	Uchar	mode[0x100];
@@ -1313,12 +1319,12 @@ deflt_writemodes_mdvd(SCSI *scgp, BOOL reset_dummy)
 }
 
 #ifdef	PRINT_ATIP
-static	void	print_di		__PR((struct disk_info *dip));
-static	void	atip_printspeed		__PR((char *fmt, int speedindex, char speedtab[]));
-static	void	print_atip		__PR((SCSI *scgp, struct atipinfo *atp));
+static	void	print_di(struct disk_info *dip);
+static	void	atip_printspeed(char *fmt, int speedindex, char speedtab[]);
+static	void	print_atip(SCSI *scgp, struct atipinfo *atp);
 #endif	/* PRINT_ATIP */
 
-static int
+static int 
 get_diskinfo(SCSI *scgp, struct disk_info *dip)
 {
 	int	len;
@@ -1344,7 +1350,7 @@ get_diskinfo(SCSI *scgp, struct disk_info *dip)
 	return (ret);
 }
 
-static void
+static void 
 di_to_dstat(struct disk_info *dip, dstat_t *dsp)
 {
 	dsp->ds_diskid = a_to_u_4_byte(dip->disk_id);
@@ -1382,7 +1388,7 @@ di_to_dstat(struct disk_info *dip, dstat_t *dsp)
 	dsp->ds_trfirst_ls=dip->first_track_ls;
 }
 
-static int
+static int 
 get_atip(SCSI *scgp, struct atipinfo *atp)
 {
 	int	len;
@@ -1436,14 +1442,12 @@ get_atip(SCSI *scgp, struct atipinfo *atp)
 
 #ifdef	PRINT_ATIP
 
-static int
-/*get_pma(atp)*/
+static int 
 get_pma(SCSI *scgp)
-/*	struct atipinfo *atp;*/
 {
 	int	len;
 	int	ret;
-char	atp[1024];
+	char	atp[1024];
 
 	fillbytes((caddr_t)atp, sizeof (*atp), '\0');
 
@@ -1478,13 +1482,13 @@ char	atp[1024];
 
 #endif	/* PRINT_ATIP */
 
-static int
+static int 
 init_mmc(SCSI *scgp, cdr_t *dp)
 {
 	return (speed_select_mmc(scgp, dp, NULL));
 }
 
-static int
+static int 
 getdisktype_mdvd(SCSI *scgp, cdr_t *dp)
 {
        int ret = 0;
@@ -1506,7 +1510,7 @@ getdisktype_mdvd(SCSI *scgp, cdr_t *dp)
   
 }
 
-static int
+static int 
 getdisktype_mmc(SCSI *scgp, cdr_t *dp)
 {
 extern	char	*buf;
@@ -1664,11 +1668,11 @@ again:
 #define	VAL(what, val)		printf("  %s: %d\n", what, val[0]*256 + val[1]);
 #define	SVAL(what, val)		printf("  %s: %s\n", what, val);
 
-static void
+static void 
 print_di(struct disk_info *dip)
 {
-static	char *ds_name[] = { "empty", "incomplete/appendable", "complete", "illegal" };
-static	char *ss_name[] = { "empty", "incomplete/appendable", "illegal", "complete", };
+	static	char *ds_name[] = { "empty", "incomplete/appendable", "complete", "illegal" };
+	static	char *ss_name[] = { "empty", "incomplete/appendable", "illegal", "complete", };
 
 	IS("erasable", dip->erasable);
 	printf("disk status: %s\n", ds_name[dip->disk_status]);
@@ -1733,7 +1737,7 @@ char	*cdrw_subtypes[] = {
 	"Medium Type C, high Beta category (C+)",
 };
 
-static void
+static void 
 atip_printspeed(char *fmt, int speedindex, char speedtab[])
 {
 	printf("%s:", fmt);
@@ -1745,7 +1749,7 @@ atip_printspeed(char *fmt, int speedindex, char speedtab[])
 	}
 }
 
-static void
+static void 
 print_atip(SCSI *scgp, struct atipinfo *atp)
 {
 	char	*sub_type;
@@ -1837,7 +1841,7 @@ print_atip(SCSI *scgp, struct atipinfo *atp)
 }
 #endif	/* PRINT_ATIP */
 
-static int
+static int 
 speed_select_mmc(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	Uchar	mode[0x100];
@@ -1958,7 +1962,7 @@ speed_select_mmc(SCSI *scgp, cdr_t *dp, int *speedp)
  * the minimum write speed of the drive is higher. Try to increment
  * the write speed unti it gets accepted by the drive.
  */
-static int
+static int 
 mmc_set_speed(SCSI *scgp, int readspeed, int writespeed, int rotctl)
 {
 	int	rs;
@@ -2003,7 +2007,7 @@ mmc_set_speed(SCSI *scgp, int readspeed, int writespeed, int rotctl)
 	return (ret);
 }
 
-static int
+static int 
 speed_select_mdvd(SCSI *scgp, cdr_t *dp, int *speedp)
 {
   int retcode;
@@ -2062,7 +2066,7 @@ speed_select_mdvd(SCSI *scgp, cdr_t *dp, int *speedp)
    return retcode;
 }
 
-static int
+static int 
 next_wr_addr_mmc(SCSI *scgp, track_t *trackp, long *ap)
 {
 	struct	track_info	track_info;
@@ -2103,7 +2107,7 @@ next_wr_addr_mmc(SCSI *scgp, track_t *trackp, long *ap)
 	return (0);
 }
 
-static int
+static int 
 write_leadin_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	Uint	i;
@@ -2192,7 +2196,7 @@ int	st2mode[] = {
 	0,		/* 7			*/
 };
 
-static int
+static int 
 next_wr_addr_mdvd(SCSI *scgp, track_t *trackp, long *ap)
 {
 	int     track=0;
@@ -2232,7 +2236,7 @@ next_wr_addr_mdvd(SCSI *scgp, track_t *trackp, long *ap)
 	return (0);
 }
 
-static int
+static int 
 open_track_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	Uchar	mode[0x100];
@@ -2309,7 +2313,7 @@ open_track_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (0);
 }
 
-static int
+static int 
 open_track_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	Uchar	mode[0x100];
@@ -2345,7 +2349,7 @@ open_track_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (0);
 }
 
-static int
+static int 
 close_track_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	ret;
@@ -2368,7 +2372,7 @@ close_track_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (0);
 }
 
-static int
+static int 
 close_track_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	ret;
@@ -2399,7 +2403,7 @@ int	toc2sess[] = {
 	SES_DA_ROM,	/* Invalid - use default */
 };
 
-static int
+static int 
 open_session_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	Uchar	mode[0x100];
@@ -2468,7 +2472,7 @@ open_session_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (0);
 }
 
-static int
+static int 
 open_session_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	Uchar	mode[0x100];
@@ -2543,7 +2547,7 @@ open_session_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (0);
 }
 
-static int
+static int 
 waitfix_mmc(SCSI *scgp, int secs)
 {
 	char	dibuf[16];
@@ -2567,7 +2571,7 @@ waitfix_mmc(SCSI *scgp, int secs)
 #undef	W_SLEEP
 }
 
-static int
+static int 
 fixate_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	ret = 0;
@@ -2672,7 +2676,7 @@ fixate_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (ret);
 }
 
-static int
+static int 
 fixate_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
       /*set a really BIG timeout and call fixate_mmc
@@ -2710,7 +2714,7 @@ char	*format_types[] = {
 	"forced format",
 };
 
-static int
+static int 
 blank_mmc(SCSI *scgp, cdr_t *dp, long addr, int blanktype)
 {
 	BOOL	cdrr	 = FALSE;	/* Read CD-R	*/
@@ -2742,8 +2746,7 @@ blank_mmc(SCSI *scgp, cdr_t *dp, long addr, int blanktype)
 	return (ret);
 }
 
-static int
-format_mdvd(SCSI *scgp, cdr_t *dp, int formattype)
+static int format_mdvd(SCSI *scgp, cdr_t *dp, int formattype)
 {
 extern	char	*buf;
 	BOOL	dvdwr	 = FALSE;	/* Write DVD	*/
@@ -2813,7 +2816,7 @@ extern	char	*buf;
 	return (ret);
 }
 
-static int
+static int 
 send_opc_mmc(SCSI *scgp, caddr_t bp, int cnt, int doopc)
 {
 	int	ret;
@@ -2871,7 +2874,7 @@ send_opc_mmc(SCSI *scgp, caddr_t bp, int cnt, int doopc)
 	return (0);
 }
 
-static int
+static int 
 opt1_mmc(SCSI *scgp, cdr_t *dp)
 {
 	int	oflags = dp->cdr_dstat->ds_cdrflags;
@@ -2952,7 +2955,7 @@ opt1_mmc(SCSI *scgp, cdr_t *dp)
 	return (0);
 }
 
-static int
+static int 
 opt2_mmc(SCSI *scgp, cdr_t *dp)
 {
 	Uchar	mode[0x100];
@@ -3034,7 +3037,7 @@ opt2_mmc(SCSI *scgp, cdr_t *dp)
 	return (0);
 }
 
-static int
+static int 
 opt1_mdvd(SCSI *scgp, cdr_t *dp)
 {
 	int	oflags = dp->cdr_dstat->ds_cdrflags;
@@ -3099,7 +3102,7 @@ Uchar	db2df[] = {
 	0xFF,			/* 15 -    Vendor specific			*/
 };
 
-static int
+static int 
 gen_cue_mmc(track_t *trackp, void *vcuep, BOOL needgap)
 {
 	int	tracks = trackp->tracks;
@@ -3236,7 +3239,7 @@ gen_cue_mmc(track_t *trackp, void *vcuep, BOOL needgap)
 	return (ncue);
 }
 
-static void
+static void 
 fillcue(struct mmc_cue *cp  /* The target cue entry */, 
         int ca              /* Control/adr for this entry */, 
         int tno             /* Track number for this entry */, 
@@ -3255,7 +3258,7 @@ fillcue(struct mmc_cue *cp  /* The target cue entry */,
 	cp->cs_frame = mp->msf_frame;
 }
 
-static int
+static int 
 send_cue_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	struct mmc_cue	*cp;
@@ -3288,7 +3291,7 @@ send_cue_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	return (ret);
 }
 
-static int
+static int 
 stats_mmc(SCSI *scgp, cdr_t *dp)
 {
 	Uchar mode[256];
@@ -3355,7 +3358,7 @@ stats_mmc(SCSI *scgp, cdr_t *dp)
 	return (0);
 }
 /*--------------------------------------------------------------------------*/
-static BOOL
+static BOOL 
 mmc_isplextor(SCSI *scgp)
 {
 	if (scgp->inq != NULL &&
@@ -3365,7 +3368,7 @@ mmc_isplextor(SCSI *scgp)
 	return (FALSE);
 }
 
-static BOOL
+static BOOL 
 mmc_isyamaha(SCSI *scgp)
 {
 	if (scgp->inq != NULL &&
@@ -3375,7 +3378,7 @@ mmc_isyamaha(SCSI *scgp)
 	return (FALSE);
 }
 
-static void
+static void 
 do_varirec_plextor(SCSI *scgp)
 {
 	char	*p;
@@ -3414,7 +3417,7 @@ struct gr {
 	{ 0x00,	0,  NULL, },
 };
 
-static int
+static int 
 do_gigarec_plextor(SCSI *scgp)
 {
 	char	*p;
@@ -3443,7 +3446,7 @@ do_gigarec_plextor(SCSI *scgp)
 	return (0);
 }
 
-static int
+static int 
 drivemode_plextor(SCSI *scgp, caddr_t bp, int cnt, int modecode, void *modeval)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -3489,9 +3492,8 @@ drivemode_plextor(SCSI *scgp, caddr_t bp, int cnt, int modecode, void *modeval)
 #define	MBbb_SPEAD_READ	0x01	/* Spead Read				   */
 				/* Danach Speed auf 0xFFFF 0xFFFF setzen   */
 
-static int
-drivemode2_plextor(SCSI *scgp, caddr_t bp, int cnt, int modecode, 
-                   void *modeval)
+static int 
+drivemode2_plextor(SCSI *scgp, caddr_t bp, int cnt, int modecode, void *modeval)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -3522,7 +3524,7 @@ drivemode2_plextor(SCSI *scgp, caddr_t bp, int cnt, int modecode,
 	return (0);
 }
 
-static int
+static int 
 check_varirec_plextor(SCSI *scgp)
 {
 	int	modecode = 2;
@@ -3539,7 +3541,7 @@ check_varirec_plextor(SCSI *scgp)
 	return (0);
 }
 
-static int
+static int 
 check_gigarec_plextor(SCSI *scgp)
 {
 	int	modecode = 4;
@@ -3556,7 +3558,7 @@ check_gigarec_plextor(SCSI *scgp)
 	return (0);
 }
 
-static int
+static int 
 varirec_plextor(SCSI *scgp, BOOL on, int val)
 {
 	int	modecode = 2;
@@ -3604,7 +3606,7 @@ varirec_plextor(SCSI *scgp, BOOL on, int val)
 	return (0);
 }
 
-static int
+static int 
 gigarec_plextor(SCSI *scgp, int val)
 {
 	int	modecode = 4;
@@ -3651,7 +3653,7 @@ gigarec_plextor(SCSI *scgp, int val)
 	return (getmode[3]);
 }
 
-static Int32_t
+static Int32_t 
 gigarec_mult(int code, Int32_t val)
 {
 	Int32_t	add;
@@ -3668,7 +3670,7 @@ gigarec_mult(int code, Int32_t val)
 	return (val + add);
 }
 
-static int
+static int 
 check_ss_hide_plextor(SCSI *scgp)
 {
 	int	modecode = 1;
@@ -3685,7 +3687,7 @@ check_ss_hide_plextor(SCSI *scgp)
 	return (getmode[2] & 0x03);
 }
 
-static int
+static int 
 check_speed_rd_plextor(SCSI *scgp)
 {
 	int	modecode = 0xBB;
@@ -3702,7 +3704,7 @@ check_speed_rd_plextor(SCSI *scgp)
 	return (getmode[2] & 0x01);
 }
 
-static int
+static int 
 check_powerrec_plextor(SCSI *scgp)
 {
 	int	modecode = 0;
@@ -3722,7 +3724,7 @@ check_powerrec_plextor(SCSI *scgp)
 	return (0);
 }
 
-static int
+static int 
 ss_hide_plextor(SCSI *scgp, BOOL do_ss, BOOL do_hide)
 {
 	int	modecode = 1;
@@ -3784,7 +3786,7 @@ ss_hide_plextor(SCSI *scgp, BOOL do_ss, BOOL do_hide)
 	return (0);
 }
 
-static int
+static int 
 speed_rd_plextor(SCSI *scgp, BOOL do_speedrd)
 {
 	int	modecode = 0xBB;
@@ -3840,7 +3842,7 @@ speed_rd_plextor(SCSI *scgp, BOOL do_speedrd)
 	return (0);
 }
 
-static int
+static int 
 powerrec_plextor(SCSI *scgp, BOOL do_powerrec)
 {
 	int	modecode = 0;
@@ -3895,7 +3897,7 @@ powerrec_plextor(SCSI *scgp, BOOL do_powerrec)
 	return (0);
 }
 
-static int
+static int 
 get_speeds_plextor(SCSI *scgp, int *selp, int *maxp, int *lastp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -3935,7 +3937,7 @@ get_speeds_plextor(SCSI *scgp, int *selp, int *maxp, int *lastp)
 	return (0);
 }
 
-static int
+static int 
 bpc_plextor(SCSI *scgp, int mode, int *bpp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -3973,7 +3975,7 @@ bpc_plextor(SCSI *scgp, int mode, int *bpp)
 	return (0);
 }
 
-static int
+static int 
 set_audiomaster_yamaha(SCSI *scgp, cdr_t *dp, BOOL keep_mode)
 {
 	Uchar	mode[0x100];
@@ -4032,8 +4034,8 @@ set_audiomaster_yamaha(SCSI *scgp, cdr_t *dp, BOOL keep_mode)
 	return (ret);
 }
 
-struct ricoh_mode_page_30 *
-get_justlink_ricoh(SCSI *scgp, Uchar *mode)
+struct 
+ricoh_mode_page_30 *get_justlink_ricoh(SCSI *scgp, Uchar *mode)
 {
 	Uchar	modec[0x100];
 	int	len;
@@ -4076,7 +4078,7 @@ get_justlink_ricoh(SCSI *scgp, Uchar *mode)
 	return (mp);
 }
 
-static int
+static int 
 force_speed_yamaha(SCSI *scgp, int readspeed, int writespeed)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -4158,7 +4160,7 @@ get_tattoo_yamaha(SCSI *scgp, BOOL print, Int32_t *irp, Int32_t *orp)
 	return (TRUE);
 }
 
-static int
+static int 
 do_tattoo_yamaha(SCSI *scgp, FILE *f)
 {
 	Int32_t ival = 0;
@@ -4236,8 +4238,8 @@ do_tattoo_yamaha(SCSI *scgp, FILE *f)
  * Yamaha specific version of 'write buffer' that offers an additional
  * Parameter Length 'parlen' parameter.
  */
-static int
-yamaha_write_buffer(SCSI *scgp, int mode, int bufferid, long offset, 
+static int 
+yamaha_write_buffer(SCSI *scgp, int mode, int bufferid, long offset,
                     long parlen, void *buffer, long buflen)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -4264,7 +4266,7 @@ yamaha_write_buffer(SCSI *scgp, int mode, int bufferid, long offset,
 	return (0);
 }
 
-static int
+static int 
 dvd_dual_layer_split(SCSI *scgp, cdr_t *dp, long tsize)
 {
     unsigned char	xb[12];
@@ -4304,4 +4306,3 @@ dvd_dual_layer_split(SCSI *scgp, cdr_t *dp, long tsize)
     }
    return 1;
 }
-

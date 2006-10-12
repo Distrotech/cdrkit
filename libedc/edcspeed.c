@@ -19,7 +19,7 @@
 
 #define	Uchar	unsigned char
 
-static int encspeed __PR((void));
+static int encspeed(void);
 
 static int encspeed()
 {

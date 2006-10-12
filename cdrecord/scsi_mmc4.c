@@ -61,7 +61,7 @@ static	char sccsid[] =
 #include "scsimmc.h"
 #include "cdrecord.h"
 
- int	get_supported_cdrw_media_types	__PR((SCSI *scgp));
+ int	get_supported_cdrw_media_types(SCSI *scgp);
 
 /*
  * Retrieve list of supported cd-rw media types (feature 0x37)

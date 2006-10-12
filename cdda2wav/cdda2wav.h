@@ -45,10 +45,10 @@
 #define LITTLE 0
 #define BIG 1
 
-void FatalError __PR((const char *szMessage, ...));
-void AnalyzeQchannel __PR(( unsigned frame ));
-long SamplesNeeded __PR(( long amount, long undersampling));
-unsigned int get_current_track __PR(( void ));
+void FatalError(const char *szMessage, ...);
+void AnalyzeQchannel(unsigned frame);
+long SamplesNeeded(long amount, long undersampling);
+unsigned int get_current_track(void);
 
 #if defined (sun) && !defined(SVR4)
 #define  atexit(f) on_exit(f, 0)

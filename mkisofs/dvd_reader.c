@@ -64,23 +64,22 @@ struct dvd_file_s {
 };
 
 
-EXPORT	void		DVDCloseFile	__PR((dvd_file_t *dvd_file));
-LOCAL	dvd_file_t *	DVDOpenFilePath	__PR((dvd_reader_t *dvd, char *filename));
-LOCAL	dvd_file_t *	DVDOpenVOBPath	__PR((dvd_reader_t *dvd, int title, int menu));
-EXPORT	dvd_file_t *	DVDOpenFile	__PR((dvd_reader_t *dvd, int titlenum,
-						dvd_read_domain_t domain));
-LOCAL	dvd_reader_t *	DVDOpenPath	__PR((const char *path_root));
-EXPORT	dvd_reader_t *	DVDOpen		__PR((const char *path));
-EXPORT	void		DVDClose	__PR((dvd_reader_t *dvd));
-EXPORT	ssize_t		DVDFileSize	__PR((dvd_file_t *dvd_file));
+void		DVDCloseFile(dvd_file_t *dvd_file);
+static	dvd_file_t *DVDOpenFilePath(dvd_reader_t *dvd, char *filename);
+static	dvd_file_t *DVDOpenVOBPath(dvd_reader_t *dvd, int title, int menu);
+dvd_file_t *DVDOpenFile(dvd_reader_t *dvd, int titlenum, 
+								dvd_read_domain_t domain);
+static	dvd_reader_t *DVDOpenPath(const char *path_root);
+dvd_reader_t *DVDOpen(const char *path);
+void		DVDClose(dvd_reader_t *dvd);
+ssize_t		DVDFileSize(dvd_file_t *dvd_file);
 
 
 /*
  * Free a DVD file
  */
-EXPORT void
-DVDCloseFile(dvd_file)
-	dvd_file_t	*dvd_file;
+void
+DVDCloseFile(dvd_file_t *dvd_file)
 {
 	free(dvd_file);
 	dvd_file = 0;
@@ -90,10 +89,8 @@ DVDCloseFile(dvd_file)
 /*
  * Stat a IFO or BUP file from a DVD directory tree.
  */
-LOCAL dvd_file_t *
-DVDOpenFilePath(dvd, filename)
-	dvd_reader_t	*dvd;
-	char		*filename;
+static dvd_file_t *
+DVDOpenFilePath(dvd_reader_t *dvd, char *filename)
 {
 
 	char		full_path[PATH_MAX + 1];
@@ -125,11 +122,8 @@ DVDOpenFilePath(dvd, filename)
 /*
  * Stat a VOB file from a DVD directory tree.
  */
-LOCAL dvd_file_t *
-DVDOpenVOBPath(dvd, title, menu)
-	dvd_reader_t	*dvd;
-	int		title;
-	int		menu;
+static dvd_file_t *
+DVDOpenVOBPath(dvd_reader_t *dvd, int title, int menu)
 {
 
 	char		filename[PATH_MAX + 1];
@@ -176,14 +170,7 @@ DVDOpenVOBPath(dvd, title, menu)
  * Stat a DVD file from a DVD directory tree
  */
 EXPORT dvd_file_t *
-#ifdef	PROTOTYPES
 DVDOpenFile(dvd_reader_t *dvd, int titlenum, dvd_read_domain_t domain)
-#else
-DVDOpenFile(dvd, titlenum, domain)
-	dvd_reader_t	*dvd;
-	int		titlenum;
-	dvd_read_domain_t domain;
-#endif
 {
 	char		filename[MAX_UDF_FILE_NAME_LEN];
 
@@ -233,9 +220,8 @@ DVDOpenFile(dvd, titlenum, domain)
 /*
  * Stat a DVD directory structure
  */
-LOCAL dvd_reader_t *
-DVDOpenPath(path_root)
-	const char	*path_root;
+static dvd_reader_t *
+DVDOpenPath(const char *path_root)
 {
 	dvd_reader_t	*dvd;
 
@@ -251,9 +237,8 @@ DVDOpenPath(path_root)
 /*
  * Stat a DVD structure - this one only works with directory structures
  */
-EXPORT dvd_reader_t *
-DVDOpen(path)
-	const char	*path;
+dvd_reader_t *
+DVDOpen(const char *path)
 {
 	struct stat	fileinfo;
 	int		ret;
@@ -290,9 +275,8 @@ DVDOpen(path)
 /*
  * Free a DVD structure - this one will only close a directory tree
  */
-EXPORT void
-DVDClose(dvd)
-	dvd_reader_t	*dvd;
+void
+DVDClose(dvd_reader_t *dvd)
 {
 	if (dvd) {
 		if (dvd->path_root) free(dvd->path_root);
@@ -306,9 +290,8 @@ DVDClose(dvd)
 /*
  * Return the size of a DVD file
  */
-EXPORT ssize_t
-DVDFileSize(dvd_file)
-	dvd_file_t	*dvd_file;
+ssize_t
+DVDFileSize(dvd_file_t *dvd_file)
 {
 	return (dvd_file->filesize);
 }

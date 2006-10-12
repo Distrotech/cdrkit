@@ -94,20 +94,20 @@ extern "C" {
 
 #define	MAXPAT	128	/* Maximum length of pattern */
 
-extern	int	    patcompile	__PR((const unsigned char * __pat, int __patlen, int * __aux));
+extern	int patcompile(const unsigned char *__pat, int __patlen, int *__aux);
 
-extern	unsigned char *opatmatch	__PR((const unsigned char * __pat, const int * __aux,
-						const  unsigned char * __str, int __soff, int __slen,
-						int __alt));
-extern	unsigned char *opatlmatch __PR((const unsigned char * __pat, const int * __aux,
-						const  unsigned char * __str, int __soff, int __slen,
-						int __alt));
-extern	unsigned char *patmatch	__PR((const unsigned char * __pat, const int * __aux,
-						const  unsigned char * __str, int __soff, int __slen,
-						int __alt, int __state[]));
-extern	unsigned char *patlmatch __PR((const unsigned char * __pat, const int * __aux,
-						const  unsigned char * __str, int __soff, int __slen,
-						int __alt, int __state[]));
+extern	unsigned char *opatmatch(const unsigned char *__pat, const int *__aux,
+											 const unsigned char *__str, int __soff, 
+											 int __slen, int __alt);
+extern	unsigned char *opatlmatch(const unsigned char *__pat, const int *__aux,
+											  const unsigned char *__str, int __soff, 
+											  int __slen, int __alt);
+extern	unsigned char *patmatch(const unsigned char *__pat, const int *__aux,
+											const unsigned char *__str, int __soff, 
+											int __slen, int __alt, int __state[]);
+extern	unsigned char *patlmatch(const unsigned char *__pat, const int *__aux,
+											 const unsigned char *__str, int __soff, 
+											 int __slen, int __alt, int __state[]);
 
 #ifdef	__cplusplus
 }

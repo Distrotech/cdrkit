@@ -34,6 +34,6 @@
 #ifndef	_SCSI_SCAN_H
 #define	_SCSI_SCAN_H
 
-extern	int	select_target		__PR((SCSI *scgp, FILE *f));
+extern	int	select_target(SCSI *scgp, FILE *f);
 
 #endif	/* _SCSI_SCAN_H */

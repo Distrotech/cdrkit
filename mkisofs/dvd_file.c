@@ -45,22 +45,19 @@ static	char sccsid[] =
 #include "dvd_file.h"
 #include "ifo_read.h"
 
-LOCAL	void	bsort		__PR((int sector[], int title[], int size));
-LOCAL	void	uniq		__PR((int sector[], int title[],
-					int title_sets_array[],
-					int sector_sets_array[], int titles));
-LOCAL	void	DVDFreeFileSetArrays __PR((int * sector, int * title, int * title_sets_array,
-					int * sector_sets_array));
-EXPORT	void	DVDFreeFileSet	__PR((title_set_info_t * title_set_info));
-EXPORT	title_set_info_t * DVDGetFileSet __PR((char * dvd));
-EXPORT	int	DVDGetFilePad	__PR((title_set_info_t * title_set_info, char * name));
+static	void	bsort(int sector[], int title[], int size);
+static	void	uniq(int sector[], int title[], int title_sets_array[],
+						  int sector_sets_array[], int titles);
+static	void	DVDFreeFileSetArrays(int *sector, int *title, 
+												int *title_sets_array, 
+												int *sector_sets_array);
+void	DVDFreeFileSet(title_set_info_t *title_set_info);
+title_set_info_t *DVDGetFileSet(char *dvd);
+int	DVDGetFilePad(title_set_info_t *title_set_info, char *name);
 
 
-LOCAL void
-bsort(sector, title, size)
-	int	sector[];
-	int	title[];
-	int	size;
+static void
+bsort(int sector[], int title[], int size)
 {
 	int	temp_title;
 	int	temp_sector;
@@ -82,13 +79,9 @@ bsort(sector, title, size)
 }
 
 
-LOCAL void
-uniq(sector, title, title_sets_array, sector_sets_array, titles)
-	int	sector[];
-	int	title[];
-	int	title_sets_array[];
-	int	sector_sets_array[];
-	int	titles;
+static void
+uniq(int sector[], int title[], int title_sets_array[], 
+	  int sector_sets_array[], int titles)
 {
 	int	i;
 	int	j;
@@ -115,12 +108,9 @@ uniq(sector, title, title_sets_array, sector_sets_array, titles)
 
 }
 
-LOCAL void
-DVDFreeFileSetArrays(sector, title, title_sets_array, sector_sets_array)
-	int	* sector;
-	int	* title;
-	int	* title_sets_array;
-	int	* sector_sets_array;
+static void
+DVDFreeFileSetArrays(int *sector, int *title, int *title_sets_array, 
+							int *sector_sets_array)
 {
 	free(sector);
 	free(title);
@@ -128,17 +118,15 @@ DVDFreeFileSetArrays(sector, title, title_sets_array, sector_sets_array)
 	free(sector_sets_array);
 }
 
-EXPORT void
-DVDFreeFileSet(title_set_info)
-	title_set_info_t * title_set_info;
+void
+DVDFreeFileSet(title_set_info_t *title_set_info)
 {
 	free(title_set_info->title_set);
 	free(title_set_info);
 }
 
-EXPORT title_set_info_t *
-DVDGetFileSet(dvd)
-	char * dvd;
+title_set_info_t *
+DVDGetFileSet(char *dvd)
 {
 	/*
 	 * TODO  Fix close of files if
@@ -730,10 +718,8 @@ DVDGetFileSet(dvd)
 
 }
 
-EXPORT int
-DVDGetFilePad(title_set_info, name)
-	title_set_info_t * title_set_info;
-	char *  name;
+int
+DVDGetFilePad(title_set_info_t *title_set_info, char *name)
 {
 	char	title_a[3];
 	char	vob_a[2];

@@ -31,9 +31,12 @@
 
 #define CFGPATH "/etc/default/wodim"
 /* The better way would be exporting the meta functions to getnum.h or so */
-extern int	getnum		(char *arg, long *valp);
+extern int	getnum(char *arg, long *valp);
 
-void cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opts) {
+void 
+cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, 
+					char **p_drv_opts)
+{
 	FILE *stream;
 	char *t; /* tmp */
 	int wc=0;

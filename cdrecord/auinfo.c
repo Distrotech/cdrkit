@@ -50,19 +50,20 @@ static	char sccsid[] =
 extern	int	debug;
 extern	int	xdebug;
 
-BOOL	auinfosize	__PR((char *name, track_t *trackp));
-void	auinfo		__PR((char *name, int track, track_t *trackp));
-textptr_t *gettextptr	__PR((int track, track_t *trackp));
-static	char 	*savestr	__PR((char *name));
-static	char 	*readtag	__PR((char *name));
-static	char 	*readtstr	__PR((char *name));
-void	setmcn		__PR((char *mcn, track_t *trackp));
-static	void	isrc_illchar	__PR((char *isrc, int c));
-void	setisrc		__PR((char *isrc, track_t *trackp));
-void	setindex	__PR((char *tindex, track_t *trackp));
+BOOL			auinfosize(char *name, track_t *trackp);
+void			auinfo(char *name, int track, track_t *trackp);
+textptr_t 	*gettextptr(int track, track_t *trackp);
+static char *savestr(char *name);
+static char *readtag(char *name);
+static char *readtstr(char *name);
+void			setmcn(char *mcn, track_t *trackp);
+static void	isrc_illchar(char *isrc, int c);
+void			setisrc(char *isrc, track_t *trackp);
+void			setindex(char *tindex, track_t *trackp);
 
 #ifdef	XXX
-int main(int argc, char *argv[])
+int 
+main(int argc, char *argv[])
 {
 /*	auinfo("/etc/default/cdrecord");*/
 /*	auinfo("/mnt2/CD3/audio_01.inf");*/
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
 }
 #endif
 
-BOOL
+BOOL 
 auinfosize(char *name, track_t *trackp)
 {
 	const	char	*p;
@@ -147,7 +148,7 @@ auinfosize(char *name, track_t *trackp)
 	return (TRUE);
 }
 
-void
+void 
 auinfo(char *name, int track, track_t *trackp)
 {
 	char	infname[1024];
@@ -368,7 +369,7 @@ readtstr(char *name)
 /*
  * Media catalog number is a 13 digit number.
  */
-void
+void 
 setmcn(char *mcn, track_t *trackp)
 {
 	register char	*p;
@@ -390,7 +391,7 @@ setmcn(char *mcn, track_t *trackp)
 
 static	char	upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-static void
+static void 
 isrc_illchar(char *isrc, int c)
 {
 	errmsgno(EX_BAD, "ISRC '%s' contains illegal character '%c'.\n", isrc, c);
@@ -406,7 +407,7 @@ isrc_illchar(char *isrc, int c)
  *
  *	CC-OOO-YY-SSSSS
  */
-void
+void 
 setisrc(char *isrc, track_t *trackp)
 {
 	char	ibuf[13];
@@ -484,7 +485,7 @@ illchar:
 	exit(EX_BAD);
 }
 
-void
+void 
 setindex(char *tindex, track_t *trackp)
 {
 	char	*p;

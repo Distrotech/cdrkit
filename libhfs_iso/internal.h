@@ -326,7 +326,7 @@ typedef struct _btree_ {
   unsigned long mapsz;		/* number of bytes in bitmap */
   int flags;			/* bit flags */
 
-  int (*compare) __PR((unsigned char *, unsigned char *));
+  int (*compare)(unsigned char *, unsigned char *);
 				/* key comparison function */
 } btree;
 

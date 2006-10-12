@@ -47,26 +47,27 @@ static	char sccsid[] =
 #include "cdrecord.h"
 #include "crc16.h"
 
-int	do_leadin	__PR((track_t *trackp));
-int	write_leadin	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart));
-int	write_leadout	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-void	fillsubch	__PR((track_t *trackp, Uchar *sp, int secno, int nsecs));
-void	filltpoint	__PR((Uchar *sub, int ctrl_adr, int point, msf_t *mp));
-void	fillttime	__PR((Uchar *sub, msf_t *mp));
-static	void	filldsubq	__PR((Uchar *sub, int ca, int t, int i, msf_t *mrp, msf_t *mp));
-static	void	fillmcn		__PR((Uchar *sub, Uchar *mcn));
-static	void	fillisrc	__PR((Uchar *sub, Uchar *isrc));
-static	int	ascii2q		__PR((int c));
-static	void	qpto16		__PR((Uchar *sub, Uchar *subq, int dop));
-void	qpto96		__PR((Uchar *sub, Uchar *subq, int dop));
-void	addrw		__PR((Uchar *sub, Uchar	*subrwptr));
-void	qwto16		__PR((Uchar *subq, Uchar *subptr));
-void	subrecodesecs	__PR((track_t *trackp, Uchar *bp, int address, int nsecs));
-static	void	subinterleave	__PR((Uchar *sub));
+int	do_leadin(track_t *trackp);
+int	write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart);
+int	write_leadout(SCSI *scgp, cdr_t *dp, track_t *trackp);
+void	fillsubch(track_t *trackp, Uchar *sp, int secno, int nsecs);
+void	filltpoint(Uchar *sub, int ctrl_adr, int point, msf_t *mp);
+void	fillttime(Uchar *sub, msf_t *mp);
+static	void	filldsubq(Uchar *sub, int ca, int t, int i, msf_t *mrp, 
+								 msf_t *mp);
+static	void	fillmcn(Uchar *sub, Uchar *mcn);
+static	void	fillisrc(Uchar *sub, Uchar *isrc);
+static	int	ascii2q(int c);
+static	void	qpto16(Uchar *sub, Uchar *subq, int dop);
+void	qpto96(Uchar *sub, Uchar *subq, int dop);
+void	addrw(Uchar *sub, Uchar	*subrwptr);
+void	qwto16(Uchar *subq, Uchar *subptr);
+void	subrecodesecs(track_t *trackp, Uchar *bp, int address, int nsecs);
+static	void	subinterleave(Uchar *sub);
 
 /*#define	TEST_CRC*/
 #ifdef	TEST_CRC
-static	void	testcrc		__PR((void));
+static	void	testcrc(void);
 #endif
 
 /*Die 96 Bits == 12 Bytes haben folgendes Aussehen:*/
@@ -909,7 +910,7 @@ Uchar	tq[12] = { 0x01, 0x00, 0xA0, 0x98, 0x06, 0x12, 0x00, 0x01, 0x00, 0x00, 0xE
 
 */
 
-static	int	b	__PR((int bcd));
+static	int	b(int bcd);
 
 
 static int

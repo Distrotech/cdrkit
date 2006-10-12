@@ -42,7 +42,7 @@ static	char _sccsid[] =
 
 #include <scg/scsitransp.h>
 
-EXPORT	scg_ops_t *scg_remote	__PR((void));
+scg_ops_t *scg_remote(void);
 
 EXPORT scg_ops_t *
 scg_remote()

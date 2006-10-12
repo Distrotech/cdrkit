@@ -30,18 +30,18 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-int bt_getnode		__PR((node *));
-int bt_putnode		__PR((node *));
+int bt_getnode(node *);
+int bt_putnode(node *);
 
-int bt_readhdr		__PR((btree *));
-int bt_writehdr		__PR((btree *));
+int bt_readhdr(btree *);
+int bt_writehdr(btree *);
 
-int bt_space		__PR((btree *, unsigned int));
+int bt_space(btree *, unsigned int);
 
-int bt_insertx		__PR((node *, unsigned char *, int *));
-int bt_insert		__PR((btree *, unsigned char *, int));
+int bt_insertx(node *, unsigned char *, int *);
+int bt_insert(btree *, unsigned char *, int);
 
-int bt_deletex		__PR((node *, unsigned char *, unsigned char *, int *));
-int bt_delete		__PR((btree *, unsigned char *));
+int bt_deletex(node *, unsigned char *, unsigned char *, int *);
+int bt_delete(btree *, unsigned char *);
 
-int bt_search		__PR((btree *, unsigned char *, node *));
+int bt_search(btree *, unsigned char *, node *);

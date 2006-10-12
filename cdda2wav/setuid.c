@@ -81,8 +81,8 @@ void initsecurity()
 
 #if defined _POSIX_SAVED_IDS && defined (HAVE_SETEUID) && defined SCO
 /* SCO seems to lack the prototypes... */
-int	seteuid __PR((uid_t euid));
-int	setegid __PR((gid_t guid));
+int	seteuid(uid_t euid);
+int	setegid(gid_t guid);
 #endif
 
 void needroot(int necessary)

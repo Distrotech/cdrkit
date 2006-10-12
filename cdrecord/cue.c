@@ -230,55 +230,52 @@ static keyw_t	dtypes[] = {
 };
 
 
-#ifdef	CUE_MAIN
-int	main		__PR((int ac, char **av));
-#endif
-int	parsecue	__PR((char *cuefname, track_t trackp[]));
-void	fparsecue	__PR((FILE *f, track_t trackp[]));
-static	void	parse_mcn	__PR((track_t trackp[], state_t *sp));
-static	void	parse_textfile	__PR((track_t trackp[], state_t *sp));
-static	void	parse_file	__PR((track_t trackp[], state_t *sp));
-static	void	parse_flags	__PR((track_t trackp[], state_t *sp));
-static	void	parse_index	__PR((track_t trackp[], state_t *sp));
-static	void	parse_isrc	__PR((track_t trackp[], state_t *sp));
-static	void	parse_performer	__PR((track_t trackp[], state_t *sp));
-static	void	parse_postgap	__PR((track_t trackp[], state_t *sp));
-static	void	parse_pregap	__PR((track_t trackp[], state_t *sp));
-static	void	parse_songwriter __PR((track_t trackp[], state_t *sp));
-static	void	parse_title	__PR((track_t trackp[], state_t *sp));
-static	void	parse_track	__PR((track_t trackp[], state_t *sp));
-static	void	parse_offset	__PR((long *lp));
-static	void	newtrack	__PR((track_t trackp[], state_t *sp));
+int	parsecue(char *cuefname, track_t trackp[]);
+void	fparsecue(FILE *f, track_t trackp[]);
+static	void	parse_mcn(track_t trackp[], state_t *sp);
+static	void	parse_textfile(track_t trackp[], state_t *sp);
+static	void	parse_file(track_t trackp[], state_t *sp);
+static	void	parse_flags(track_t trackp[], state_t *sp);
+static	void	parse_index(track_t trackp[], state_t *sp);
+static	void	parse_isrc(track_t trackp[], state_t *sp);
+static	void	parse_performer(track_t trackp[], state_t *sp);
+static	void	parse_postgap(track_t trackp[], state_t *sp);
+static	void	parse_pregap(track_t trackp[], state_t *sp);
+static	void	parse_songwriter(track_t trackp[], state_t *sp);
+static	void	parse_title(track_t trackp[], state_t *sp);
+static	void	parse_track(track_t trackp[], state_t *sp);
+static	void	parse_offset(long *lp);
+static	void	newtrack(track_t trackp[], state_t *sp);
 
-static	keyw_t	*lookup		__PR((char *word, keyw_t table[]));
-static	void	wdebug		__PR((void));
-static	FILE	*cueopen	__PR((char *name));
-static	char	*cuename	__PR((void));
-static	char	*nextline	__PR((FILE *f));
-static	void	ungetline	__PR((void));
-static	char	*skipwhite	__PR((const char *s));
-static	char	*peekword	__PR((void));
-static	char	*lineend	__PR((void));
-static	char	*markword	__PR((char *delim));
-static	char	getdelim	__PR((void));
-static	char	*getnextitem	__PR((char *delim));
-static	char	*neednextitem	__PR((char *delim));
-static	char	*nextword	__PR((void));
-static	char	*needword	__PR((void));
-static	char	*curword	__PR((void));
-static	char	*nextitem	__PR((void));
-static	char	*needitem	__PR((void));
-static	void	checkextra	__PR((void));
-static	void	cueabort	__PR((const char *fmt, ...));
+static	keyw_t	*lookup(char *word, keyw_t table[]);
+static	void	wdebug(void);
+static	FILE	*cueopen(char *name);
+static	char	*cuename(void);
+static	char	*nextline(FILE *f);
+static	void	ungetline(void);
+static	char	*skipwhite(const char *s);
+static	char	*peekword(void);
+static	char	*lineend(void);
+static	char	*markword(char *delim);
+static	char	getdelim(void);
+static	char	*getnextitem(char *delim);
+static	char	*neednextitem(char *delim);
+static	char	*nextword(void);
+static	char	*needword(void);
+static	char	*curword(void);
+static	char	*nextitem(void);
+static	char	*needitem(void);
+static	void	checkextra(void);
+static	void	cueabort(const char *fmt, ...);
 
 #ifdef	CUE_MAIN
 int	debug;
 int	xdebug = 1;
 
-int write_secs	__PR((void));
+int write_secs(void);
 int write_secs() { return (-1); }
 
-int
+int 
 main(int argc, char *argv[])
 {
 	int	i;
@@ -299,7 +296,7 @@ main(int argc, char *argv[])
 extern	int	xdebug;
 #endif
 
-int
+int 
 parsecue(char *cuefname, track_t trackp[])
 {
 	FILE	*f = cueopen(cuefname);
@@ -308,7 +305,7 @@ parsecue(char *cuefname, track_t trackp[])
 	return (0);
 }
 
-void
+void 
 fparsecue(FILE *f, track_t trackp[])
 {
 	char	*word;
@@ -397,7 +394,7 @@ fparsecue(FILE *f, track_t trackp[])
 	} while (1);
 }
 
-static void
+static void 
 parse_mcn(track_t trackp[], state_t *sp)
 {
 	char	*word;
@@ -414,7 +411,7 @@ parse_mcn(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_textfile(track_t trackp[], state_t *sp)
 {
 	char	*word;
@@ -439,7 +436,7 @@ parse_textfile(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_file(track_t trackp[], state_t *sp)
 {
 	char	cname[1024];
@@ -538,7 +535,7 @@ parse_file(track_t trackp[], state_t *sp)
 #endif
 }
 
-static void
+static void 
 parse_flags(track_t trackp[], state_t *sp)
 {
 	struct keyw *kp;
@@ -570,7 +567,7 @@ parse_flags(track_t trackp[], state_t *sp)
 		printf("Track %d flags 0x%08X\n", sp->track, sp->flags);
 }
 
-static void
+static void 
 parse_index(track_t trackp[], state_t *sp)
 {
 	char	*word;
@@ -629,7 +626,7 @@ parse_index(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_isrc(track_t trackp[], state_t *sp)
 {
 	char	*word;
@@ -652,7 +649,7 @@ parse_isrc(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_performer(track_t trackp[], state_t *sp)
 {
 	char	*word;
@@ -665,7 +662,7 @@ parse_performer(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_postgap(track_t trackp[], state_t *sp)
 {
 	long	l;
@@ -680,7 +677,7 @@ parse_postgap(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_pregap(track_t trackp[], state_t *sp)
 {
 	long	l;
@@ -696,7 +693,7 @@ parse_pregap(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_songwriter(track_t trackp[], state_t *sp)
 {
 	char	*word;
@@ -709,7 +706,7 @@ parse_songwriter(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_title(track_t trackp[], state_t *sp)
 {
 	char	*word;
@@ -722,7 +719,7 @@ parse_title(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_track(track_t trackp[], state_t *sp)
 {
 	struct keyw *kp;
@@ -836,7 +833,7 @@ parse_track(track_t trackp[], state_t *sp)
 	checkextra();
 }
 
-static void
+static void 
 parse_offset(long *lp)
 {
 	char	*word;
@@ -873,7 +870,7 @@ parse_offset(long *lp)
 }
 
 /*--------------------------------------------------------------------------*/
-static void
+static void 
 newtrack(track_t trackp[], state_t *sp)
 {
 	register int	i;
@@ -1010,7 +1007,7 @@ static	int	lineno;
 static	char	worddelim[] = "=:,/";
 static	char	nulldelim[] = "";
 
-static void
+static void 
 wdebug()
 {
 /*		printf("WORD: '%s' rest '%s'\n", word, peekword());*/
@@ -1064,7 +1061,7 @@ nextline(FILE *f)
 	return (linep);
 }
 
-static void
+static void 
 ungetline()
 {
 	linelen = olinelen;
@@ -1134,7 +1131,7 @@ linelen--;
 	return (linep);
 }
 
-static char
+static char 
 getdelim()
 {
 	return (wordendc);
@@ -1193,7 +1190,7 @@ needitem()
 	return (neednextitem(nulldelim));
 }
 
-static void
+static void 
 checkextra()
 {
 	if (peekword() < lineend())
@@ -1201,21 +1198,12 @@ checkextra()
 }
 
 /* VARARGS1 */
-#ifdef	PROTOTYPES
-static void
+static void 
 cueabort(const char *fmt, ...)
-#else
-static void
-cueabort(char *fmt, va_dcl va_alist)
-#endif
 {
 	va_list	args;
 
-#ifdef	PROTOTYPES
 	va_start(args, fmt);
-#else
-	va_start(args);
-#endif
 	comerrno(EX_BAD, "%r on line %d in '%s'.\n",
 		fmt, args, lineno, fname);
 	va_end(args);

@@ -96,7 +96,7 @@ static HWAVEOUT	DeviceID;
 static WAVEHDR	wavehdr[WAVEHDRS];
 static unsigned lastwav = 0;
 
-static int check_winsound_caps __PR((int bits, double rate, int channels));
+static int check_winsound_caps(int bits, double rate, int channels);
 
 static int check_winsound_caps(int bits, double rate, int channels)
 {
@@ -462,7 +462,7 @@ int init_soundcard(double rate, int bits)
   return 0;
 }
 
-int open_snd_device ()
+int open_snd_device()
 {
 #if	defined(F_GETFL) && defined(F_SETFL) && defined(O_NONBLOCK)
 	int	fl;

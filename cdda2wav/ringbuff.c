@@ -41,7 +41,7 @@ static char     sccsid[] =
 #undef _DEBUG
 #include <assert.h>
 
-static void occupy_buffer	__PR((void));
+static void occupy_buffer(void);
 
 myringbuff **he_fill_buffer;
 myringbuff **last_buffer;

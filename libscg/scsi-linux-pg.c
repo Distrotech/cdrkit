@@ -59,7 +59,7 @@ static	char ___sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version_pg[] = "scsi-linux-pg.c-1.43";	/* The version for this transport*/
+static	char	_scg_trans_version_pg[] = "scsi-linux-pg.c-1.43";	/* The version for this transport*/
 
 #ifdef	USE_PG_ONLY
 
@@ -87,20 +87,20 @@ struct scg_local {
 #define	scgo_isatapi	pg_isatapi
 #define	scgo_reset	pg_reset
 
-LOCAL	char	*pg_version	__PR((SCSI *scgp, int what));
-LOCAL	int	pg_help		__PR((SCSI *scgp, FILE *f));
-LOCAL	int	pg_open		__PR((SCSI *scgp, char *device));
-LOCAL	int	pg_close	__PR((SCSI *scgp));
-LOCAL	long	pg_maxdma	__PR((SCSI *scgp, long amt));
-LOCAL	int 	pg_initiator_id	__PR((SCSI *scgp));
-LOCAL	int 	pg_isatapi	__PR((SCSI *scgp));
-LOCAL	int	pg_reset	__PR((SCSI *scgp, int what));
-LOCAL	int	pg_send		__PR((SCSI *scgp));
+static	char	*pg_version(SCSI *scgp, int what);
+static	int	pg_help(SCSI *scgp, FILE *f);
+static	int	pg_open(SCSI *scgp, char *device);
+static	int	pg_close(SCSI *scgp);
+static	long	pg_maxdma(SCSI *scgp, long amt);
+static	int 	pg_initiator_id(SCSI *scgp);
+static	int 	pg_isatapi(SCSI *scgp);
+static	int	pg_reset(SCSI *scgp, int what);
+static	int	pg_send(SCSI *scgp);
 
 #endif
 
-LOCAL	int	do_scg_cmd	__PR((SCSI *scgp, struct scg_cmd *sp));
-LOCAL	int	do_scg_sense	__PR((SCSI *scgp, struct scg_cmd *sp));
+static	int	do_scg_cmd(SCSI *scgp, struct scg_cmd *sp);
+static	int	do_scg_sense(SCSI *scgp, struct scg_cmd *sp);
 
 
 /*
@@ -108,10 +108,8 @@ LOCAL	int	do_scg_sense	__PR((SCSI *scgp, struct scg_cmd *sp));
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -131,20 +129,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "pg", "SCSI transport for ATAPI over Parallel Port",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -283,9 +277,8 @@ openbydev:
 	return (nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	register int	f;
 	register int	b;
@@ -310,20 +303,16 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	return (PG_MAX_DATA);
 }
 
 #ifdef	USE_PG_ONLY
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	char    *ret;
 
@@ -341,19 +330,16 @@ scgo_getbuf(scgp, amt)
 
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -372,12 +358,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= MAX_SCG ||
 	    tgt < 0 || tgt >= MAX_TGT ||
@@ -391,24 +373,20 @@ scgo_fileno(scgp, busno, tgt, tlun)
 }
 #endif	/* USE_PG_ONLY */
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (TRUE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	struct pg_write_hdr hdr = {PG_MAGIC, PG_RESET, 0};
 
@@ -433,10 +411,8 @@ scgo_reset(scgp, what)
 #define	WHSIZE  sizeof (struct pg_write_hdr)
 #define	LEAD	MAX(RHSIZE, WHSIZE)
 
-LOCAL int
-do_scg_cmd(scgp, sp)
-	SCSI	*scgp;
-	struct scg_cmd	*sp;
+static int
+do_scg_cmd(SCSI *scgp, struct scg_cmd *sp)
 {
 
 	char	local[LEAD+PG_MAX_DATA];
@@ -556,10 +532,8 @@ do_scg_cmd(scgp, sp)
 
 }
 
-LOCAL int
-do_scg_sense(scgp, sp)
-	SCSI	*scgp;
-	struct scg_cmd	*sp;
+static int
+do_scg_sense(SCSI *scgp, struct scg_cmd *sp)
 {
 	int		ret;
 	struct scg_cmd 	s_cmd;
@@ -582,9 +556,8 @@ do_scg_sense(scgp, sp)
 	return (ret);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	int	ret;

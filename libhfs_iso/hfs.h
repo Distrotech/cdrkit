@@ -137,66 +137,66 @@ extern char *hfs_error;
 /*extern unsigned char hfs_charorder[];*/
 
 #ifdef APPLE_HYB
-hfsvol *hfs_mount	__PR((hce_mem *, int, int));
+hfsvol *hfs_mount(hce_mem *, int, int);
 #else
-hfsvol *hfs_mount	__PR((char *, int, int));
+hfsvol *hfs_mount(char *, int, int);
 #endif /* APPLE_HYB */
 
-int hfs_flush		__PR((hfsvol *));
-void hfs_flushall	__PR((void));
+int hfs_flush(hfsvol *);
+void hfs_flushall(void);
 #ifdef APPLE_HYB
-int hfs_umount		__PR((hfsvol *, long, long));
+int hfs_umount(hfsvol *, long, long);
 #else
-int hfs_umount		__PR((hfsvol *));
+int hfs_umount(hfsvol *);
 #endif /* APPLE_HYB */
-void hfs_umountall	__PR((void));
-hfsvol *hfs_getvol	__PR((char *));
-void hfs_setvol		__PR((hfsvol *));
+void hfs_umountall(void);
+hfsvol *hfs_getvol(char *);
+void hfs_setvol(hfsvol *);
 
-int hfs_vstat		__PR((hfsvol *, hfsvolent *));
+int hfs_vstat(hfsvol *, hfsvolent *);
 #ifdef APPLE_HYB
-int hfs_format		__PR((hce_mem *, int, char *));
+int hfs_format(hce_mem *, int, char *);
 #else
-int hfs_format		__PR((char *, int, char *));
-#endif /* APPLE_HYB */
-
-int hfs_chdir		__PR((hfsvol *, char *));
-long hfs_getcwd		__PR((hfsvol *));
-int hfs_setcwd		__PR((hfsvol *, long));
-int hfs_dirinfo		__PR((hfsvol *, long *, char *));
-
-hfsdir *hfs_opendir	__PR((hfsvol *, char *));
-int hfs_readdir		__PR((hfsdir *, hfsdirent *));
-int hfs_closedir	__PR((hfsdir *));
-
-hfsfile *hfs_open	__PR((hfsvol *, char *));
-int hfs_setfork		__PR((hfsfile *, int));
-int hfs_getfork		__PR((hfsfile *));
-long hfs_read		__PR((hfsfile *, void *, unsigned long));
-long hfs_write		__PR((hfsfile *, void *, unsigned long));
-int hfs_truncate	__PR((hfsfile *, unsigned long));
-long hfs_lseek		__PR((hfsfile *, long, int));
-#ifdef APPLE_HYB
-int hfs_close		__PR((hfsfile *, long, long));
-#else
-int hfs_close		__PR((hfsfile *));
+int hfs_format(char *, int, char *);
 #endif /* APPLE_HYB */
 
-int hfs_stat		__PR((hfsvol *, char *, hfsdirent *));
-int hfs_fstat		__PR((hfsfile *, hfsdirent *));
-int hfs_setattr		__PR((hfsvol *, char *, hfsdirent *));
-int hfs_fsetattr	__PR((hfsfile *, hfsdirent *));
+int hfs_chdir(hfsvol *, char *);
+long hfs_getcwd(hfsvol *);
+int hfs_setcwd(hfsvol *, long);
+int hfs_dirinfo(hfsvol *, long *, char *);
 
-int hfs_mkdir		__PR((hfsvol *, char *));
-int hfs_rmdir		__PR((hfsvol *, char *));
+hfsdir *hfs_opendir(hfsvol *, char *);
+int hfs_readdir(hfsdir *, hfsdirent *);
+int hfs_closedir(hfsdir *);
 
-int hfs_create		__PR((hfsvol *, char *, char *, char *));
-int hfs_delete		__PR((hfsvol *, char *));
+hfsfile *hfs_open(hfsvol *, char *);
+int hfs_setfork(hfsfile *, int);
+int hfs_getfork(hfsfile *);
+long hfs_read(hfsfile *, void *, unsigned long);
+long hfs_write(hfsfile *, void *, unsigned long);
+int hfs_truncate(hfsfile *, unsigned long);
+long hfs_lseek(hfsfile *, long, int);
+#ifdef APPLE_HYB
+int hfs_close(hfsfile *, long, long);
+#else
+int hfs_close(hfsfile *);
+#endif /* APPLE_HYB */
 
-int hfs_rename		__PR((hfsvol *, char *, char *));
+int hfs_stat(hfsvol *, char *, hfsdirent *);
+int hfs_fstat(hfsfile *, hfsdirent *);
+int hfs_setattr(hfsvol *, char *, hfsdirent *);
+int hfs_fsetattr(hfsfile *, hfsdirent *);
+
+int hfs_mkdir(hfsvol *, char *);
+int hfs_rmdir(hfsvol *, char *);
+
+int hfs_create(hfsvol *, char *, char *, char *);
+int hfs_delete(hfsvol *, char *);
+
+int hfs_rename(hfsvol *, char *, char *);
 
 #ifdef APPLE_HYB
-unsigned short hfs_get_drAllocPtr	__PR((hfsfile *));
-int hfs_set_drAllocPtr			__PR((hfsfile *, unsigned short, int size));
-void hfs_vsetbless			__PR((hfsvol *, unsigned long));
+unsigned short hfs_get_drAllocPtr(hfsfile *);
+int hfs_set_drAllocPtr(hfsfile *, unsigned short, int size);
+void hfs_vsetbless(hfsvol *, unsigned long);
 #endif /* APPLE_HYB */

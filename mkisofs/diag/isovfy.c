@@ -134,30 +134,28 @@ struct iso_directory_record {
 	unsigned char name			[38];
 };
 
-LOCAL int	isonum_721	__PR((char * p));
-LOCAL int	isonum_723	__PR((char * p));
-LOCAL int	isonum_711	__PR((char * p));
-LOCAL int	isonum_731	__PR((char * p));
-LOCAL int	isonum_722	__PR((char * p));
-LOCAL int	isonum_732	__PR((char * p));
-LOCAL int	isonum_733	__PR((unsigned char * p));
-LOCAL int	parse_rr	__PR((unsigned char * pnt, int len, int cont_flag));
-LOCAL int	dump_rr		__PR((struct iso_directory_record * idr));
-LOCAL void	check_tree	__PR((off_t file_addr, int file_size, off_t parent_addr));
-LOCAL void	check_path_tables __PR((int typel_extent, int typem_extent, int path_table_size));
-LOCAL void	usage		__PR((int excode));
-EXPORT int	main		__PR((int argc, char *argv[]));
+static int	isonum_721(char * p);
+static int	isonum_723(char * p);
+static int	isonum_711(char * p);
+static int	isonum_731(char * p);
+static int	isonum_722(char * p);
+static int	isonum_732(char * p);
+static int	isonum_733(unsigned char * p);
+static int	parse_rr(unsigned char * pnt, int len, int cont_flag);
+static int	dump_rr(struct iso_directory_record * idr);
+static void	check_tree(off_t file_addr, int file_size, off_t parent_addr);
+static void	check_path_tables(int typel_extent, int typem_extent, 
+										int path_table_size);
+static void	usage(int excode);
 
-LOCAL int
-isonum_721(p)
-	char	*p;
+static int
+isonum_721(char *p)
 {
 	return ((p[0] & 0xff) | ((p[1] & 0xff) << 8));
 }
 
-LOCAL int
-isonum_723(p)
-	char	*p;
+static int
+isonum_723(char *p)
 {
 #if 0
 	if (p[0] != p[3] || p[1] != p[2]) {
@@ -172,16 +170,14 @@ isonum_723(p)
 	return (isonum_721(p));
 }
 
-LOCAL int
-isonum_711(p)
-	char	*p;
+static int
+isonum_711(char *p)
 {
 	return (*p & 0xff);
 }
 
-LOCAL int
-isonum_731(p)
-	char	*p;
+static int
+isonum_731(char *p)
 {
 	return ((p[0] & 0xff)
 		| ((p[1] & 0xff) << 8)
@@ -189,17 +185,15 @@ isonum_731(p)
 		| ((p[3] & 0xff) << 24));
 }
 
-LOCAL int
-isonum_722(p)
-	char	*p;
+static int
+isonum_722(char *p)
 {
 	return ((p[1] & 0xff)
 		| ((p[0] & 0xff) << 8));
 }
 
-LOCAL int
-isonum_732(p)
-	char	*p;
+static int
+isonum_732(char *p)
 {
 	return ((p[3] & 0xff)
 		| ((p[2] & 0xff) << 8)
@@ -207,9 +201,8 @@ isonum_732(p)
 		| ((p[0] & 0xff) << 24));
 }
 
-LOCAL int
-isonum_733(p)
-	unsigned char	*p;
+static int
+isonum_733(unsigned char *p)
 {
 	return (isonum_731((char *)p));
 }
@@ -219,11 +212,8 @@ int	iline;
 int	rr_goof;
 
 
-LOCAL int
-parse_rr(pnt, len, cont_flag)
-	unsigned char	*pnt;
-	int		len;
-	int		cont_flag;
+static int
+parse_rr(unsigned char *pnt, int len, int cont_flag)
 {
 	int		slen;
 	int		ncount;
@@ -370,9 +360,8 @@ parse_rr(pnt, len, cont_flag)
 	return (flag2);
 }
 
-LOCAL int
-dump_rr(idr)
-	struct iso_directory_record *idr;
+static int
+dump_rr(struct iso_directory_record *idr)
 {
 	int len;
 	char * pnt;
@@ -395,15 +384,12 @@ dump_rr(idr)
 }
 
 
-LOCAL int	dir_count = 0;
-LOCAL int	dir_size_count = 0;
-LOCAL int	ngoof = 0;
+static int	dir_count = 0;
+static int	dir_size_count = 0;
+static int	ngoof = 0;
 
-LOCAL void
-check_tree(file_addr, file_size, parent_addr)
-	off_t	file_addr;
-	int	file_size;
-	off_t	parent_addr;
+static void
+check_tree(off_t file_addr, int file_size, off_t parent_addr)
 {
 	unsigned char	buffer[2048];
 	unsigned int	k;
@@ -593,11 +579,8 @@ struct path_table_info {
 	unsigned short	parent;
 };
 
-LOCAL void
-check_path_tables(typel_extent, typem_extent, path_table_size)
-	int	typel_extent;
-	int	typem_extent;
-	int	path_table_size;
+static void
+check_path_tables(int typel_extent, int typem_extent, int path_table_size)
 {
 	int	count;
 	int	j;
@@ -672,9 +655,8 @@ check_path_tables(typel_extent, typem_extent, path_table_size)
 	}
 }
 
-LOCAL void
-usage(excode)
-	int	excode;
+static void
+usage(int excode)
 {
 	errmsgno(EX_BAD, "Usage: %s [options] image\n",
 						get_progname());
@@ -688,10 +670,8 @@ usage(excode)
 	exit(excode);
 }
 
-EXPORT int
-main(argc, argv)
-	int	argc;
-	char	*argv[];
+int
+main(int argc, char *argv[])
 {
 	int	cac;
 	char	* const *cav;

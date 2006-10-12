@@ -52,16 +52,15 @@ static	char sccsid[] =
 #include "cdrecord.h"
 #include "scgcheck.h"
 
-LOCAL	void	usage		__PR((int ret));
-EXPORT	int	main		__PR((int ac, char *av[]));
-LOCAL	SCSI	*doopen		__PR((char *dev));
-LOCAL	void	checkversion	__PR((SCSI *scgp));
-LOCAL	void	getbuf		__PR((SCSI *scgp));
-EXPORT	void	flushit		__PR((void));
-EXPORT	int	countopen	__PR((void));
+static	void	usage(int ret);
+static	SCSI	*doopen(char *dev);
+static	void	checkversion(SCSI *scgp);
+static	void	getbuf(SCSI *scgp);
+void	flushit(void);
+int	countopen(void);
 
 
-	char	*dev;
+char	*dev;
 int		debug;		/* print debug messages */
 int		kdebug;		/* kernel debug messages */
 int		scsi_verbose;	/* SCSI verbose flag */
@@ -81,9 +80,8 @@ int	basefds;
 #define	BUF_SIZE	(126*1024)
 #define	MAX_BUF_SIZE	(16*1024*1024)
 
-LOCAL void
-usage(ret)
-	int	ret;
+static void
+usage(int ret)
 {
 	error("Usage:\tscgcheck [options]\n");
 	error("Options:\n");
@@ -102,10 +100,8 @@ usage(ret)
 
 char	opts[]   = "debug#,d+,kdebug#,kd#,timeout#,verbose+,v+,Verbose+,V+,silent,s,x+,xd#,help,h,version,dev*,f*";
 
-EXPORT int
-main(ac, av)
-	int	ac;
-	char	*av[];
+int
+main(int argc, char *argv[])
 {
 	int	cac;
 	char	* const *cav;
@@ -118,10 +114,10 @@ main(ac, av)
 	BOOL	pversion = FALSE;
 	char	*filename = "check.log";
 
-	save_args(ac, av);
+	save_args(argc, argv);
 
-	cac = --ac;
-	cav = ++av;
+	cac = --argc;
+	cav = ++argv;
 
 	if (getallargs(&cac, &cav, opts,
 			&debug, &debug,
@@ -147,8 +143,8 @@ main(ac, av)
 	}
 
 	fcount = 0;
-	cac = ac;
-	cav = av;
+	cac = argc;
+	cav = argv;
 
 	while (getfiles(&cac, &cav, opts) > 0) {
 		fcount++;
@@ -392,9 +388,8 @@ reset
 	return (0);
 }
 
-LOCAL SCSI *
-doopen(devname)
-	char	*devname;
+static SCSI *
+doopen(char *devname)
 {
 	SCSI	*scgp;
 	char	errstr[128];
@@ -416,9 +411,8 @@ doopen(devname)
 	return (scgp);
 }
 
-LOCAL void
-checkversion(scgp)
-	SCSI	*scgp;
+static void
+checkversion(SCSI *scgp)
 {
 	char	*vers;
 	char	*auth;
@@ -469,9 +463,8 @@ checkversion(scgp)
 	fprintf(logfile, "Using remote transport code version '%s-%s'\n", auth, vers);
 }
 
-LOCAL void
-getbuf(scgp)
-	SCSI	*scgp;
+static void
+getbuf(SCSI *scgp)
 {
 	bufsize = scg_bufsize(scgp, MAX_BUF_SIZE);
 		printf("Max DMA buffer size: %ld\n", bufsize);
@@ -492,7 +485,7 @@ getbuf(scgp)
 		comerr("Cannot get SCSI I/O buffer.\n");
 }
 
-EXPORT void
+void
 flushit()
 {
 	flush();

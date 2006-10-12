@@ -53,13 +53,13 @@
 #include <schily.h>
 #include "endianconv.h"
 
-int     add_boot_hppa_cmdline     __PR((char *cmdline));
-int     add_boot_hppa_kernel_32   __PR((char *filename));
-int     add_boot_hppa_kernel_64   __PR((char *filename));
-int     add_boot_hppa_bootloader  __PR((char *filename));
-int     add_boot_hppa_ramdisk     __PR((char *filename));
+int     add_boot_hppa_cmdline(char *cmdline);
+int     add_boot_hppa_kernel_32(char *filename);
+int     add_boot_hppa_kernel_64(char *filename);
+int     add_boot_hppa_bootloader(char *filename);
+int     add_boot_hppa_ramdisk(char *filename);
 
-static  int     boot_hppa_write   __PR((FILE *outfile));
+static  int     boot_hppa_write(FILE *outfile);
 
 static  char   *hppa_cmdline = NULL;
 static  char   *hppa_kernel_32 = NULL;
@@ -69,8 +69,7 @@ static  char   *hppa_ramdisk = NULL;
 
 /* Simple function: store the filename to be used later when we need
    to find the boot file */
-extern int add_boot_hppa_cmdline(cmdline)
-    char *cmdline;
+extern int add_boot_hppa_cmdline(char *cmdline)
 {
     char *ptr = NULL;
     hppa_cmdline = strdup(cmdline);
@@ -86,8 +85,7 @@ extern int add_boot_hppa_cmdline(cmdline)
 
 /* Simple function: store the filename to be used later when we need
    to find the boot file */
-extern int add_boot_hppa_kernel_32(filename)
-    char *filename;
+extern int add_boot_hppa_kernel_32(char *filename)
 {
     hppa_kernel_32 = filename;
     return 0;
@@ -95,8 +93,7 @@ extern int add_boot_hppa_kernel_32(filename)
 
 /* Simple function: store the filename to be used later when we need
    to find the boot file */
-extern int add_boot_hppa_kernel_64(filename)
-    char *filename;
+extern int add_boot_hppa_kernel_64(char *filename)
 {
     hppa_kernel_64 = filename;
     return 0;
@@ -104,8 +101,7 @@ extern int add_boot_hppa_kernel_64(filename)
 
 /* Simple function: store the filename to be used later when we need
    to find the boot file */
-extern int add_boot_hppa_bootloader(filename)
-    char *filename;
+extern int add_boot_hppa_bootloader(char *filename)
 {
     hppa_bootloader = filename;
     return 0;
@@ -113,16 +109,13 @@ extern int add_boot_hppa_bootloader(filename)
 
 /* Simple function: store the filename to be used later when we need
    to find the boot file */
-extern int add_boot_hppa_ramdisk(filename)
-    char *filename;
+extern int add_boot_hppa_ramdisk(char *filename)
 {
     hppa_ramdisk = filename;
     return 0;
 }
 
-static void exit_fatal(type, filename)
-    char *type;
-    char *filename;
+static void exit_fatal(char *type, char *filename)
 {
 #ifdef	USE_LIBSCHILY
     comerrno(EX_BAD, "Uh oh, I can't find the %s '%s'!\n",
@@ -134,8 +127,7 @@ static void exit_fatal(type, filename)
 #endif
 }
 
-static int boot_hppa_write(outfile)
-    FILE *outfile;
+static int boot_hppa_write(FILE *outfile)
 {
     unsigned char boot_sector[2048]; /* One (ISO) sector */
 	struct directory_entry	*boot_file;	/* Boot file we need to search for */
@@ -209,7 +201,3 @@ static int boot_hppa_write(outfile)
 }
 
 struct output_fragment hppaboot_desc = {NULL, oneblock_size, NULL, boot_hppa_write, "hppa boot block"};
-
-
-
-

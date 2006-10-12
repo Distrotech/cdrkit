@@ -74,44 +74,44 @@ extern "C" {
 #define	NULL	0
 #endif
 
-extern void *memcpy	__PR((void *, const void *, int));
-extern void *memmove	__PR((void *, const void *, int));
-extern char *strcpy	__PR((char *, const char *));
-extern char *strncpy	__PR((char *, const char *, int));
+extern void *memcpy(void *, const void *, int);
+extern void *memmove(void *, const void *, int);
+extern char *strcpy(char *, const char *);
+extern char *strncpy(char *, const char *, int);
 
-extern char *strcat	__PR((char *, const char *));
-extern char *strncat	__PR((char *, const char *, int));
+extern char *strcat(char *, const char *);
+extern char *strncat(char *, const char *, int);
 
-extern int memcmp	__PR((const void *, const void *, int));
-extern int strcmp	__PR((const char *, const char *));
-extern int strcoll	__PR((const char *, const char *));
-extern int strncmp	__PR((const char *, const char *, int));
-extern int strxfrm	__PR((char *, const char *, int));
+extern int memcmp(const void *, const void *, int);
+extern int strcmp(const char *, const char *);
+extern int strcoll(const char *, const char *);
+extern int strncmp(const char *, const char *, int);
+extern int strxfrm(char *, const char *, int);
 
-extern void *memchr	__PR((const void *, int, int));
-extern char *strchr	__PR((const char *, int));
+extern void *memchr(const void *, int, int);
+extern char *strchr(const char *, int);
 
-extern int strcspn	__PR((const char *, const char *));
+extern int strcspn(const char *, const char *);
 /*#pragma int_to_unsigned strcspn*/
 
-extern char *strpbrk	__PR((const char *, const char *));
-extern char *strrchr	__PR((const char *, int));
+extern char *strpbrk(const char *, const char *);
+extern char *strrchr(const char *, int);
 
-extern int strspn	__PR((const char *, const char *));
+extern int strspn(const char *, const char *);
 /*#pragma int_to_unsigned strspn*/
 
-extern char *strstr	__PR((const char *, const char *));
-extern char *strtok	__PR((char *, const char *));
-extern void *memset	__PR((void *, int, int));
-extern char *strerror	__PR((int));
+extern char *strstr(const char *, const char *);
+extern char *strtok(char *, const char *);
+extern void *memset(void *, int, int);
+extern char *strerror(int);
 
-extern int strlen	__PR((const char *));
+extern int strlen(const char *);
 /*#pragma int_to_unsigned strlen*/
 
-extern void *memccpy	__PR((void *, const void *, int, int));
+extern void *memccpy(void *, const void *, int, int);
 
-extern int strcasecmp	__PR((const char *, const char *));
-extern int strncasecmp	__PR((const char *, const char *, int));
+extern int strcasecmp(const char *, const char *);
+extern int strncasecmp(const char *, const char *, int);
 
 /*#define	index	strchr*/
 /*#define	rindex	strrchr*/

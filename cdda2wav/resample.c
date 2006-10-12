@@ -69,20 +69,29 @@ int Halved;		/* interpolate due to non integral divider */
 static long lsum = 0, rsum = 0;	       /* accumulator for left/right channel */
 static long ls2 = 0, rs2 = 0, ls3 = 0, rs3 = 0, auxl = 0, auxr = 0;
 
-static const unsigned char *my_symmemmem	__PR((const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, const unsigned char *const NEEDLE, const size_t NEEDLE_LEN));
-static const unsigned char *my_memmem	__PR((const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, const unsigned char *const NEEDLE, const size_t NEEDLE_LEN));
-static const unsigned char *my_memrmem	__PR((const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, const unsigned char *const NEEDLE, const size_t NEEDLE_LEN));
-static const unsigned char *sync_buffers	__PR((const unsigned char *const newbuf));
-static long interpolate				__PR((long p1, long p2, long p3));
-static void emit_sample				__PR((long lsumval, long rsumval, long channels));
-static void change_endianness			__PR((UINT4 *pSam, unsigned int Samples));
-static void swap_channels			__PR((UINT4 *pSam, unsigned int Samples));
-static int guess_endianess			__PR((UINT4 *p, Int16_t *p2, unsigned int SamplesToDo));
+static const unsigned char *my_symmemmem(const unsigned char *HAYSTACK, 
+													  const size_t HAYSTACK_LEN, 
+													  const unsigned char *const NEEDLE, 
+													  const size_t NEEDLE_LEN);
+static const unsigned char *my_memmem(const unsigned char *HAYSTACK, 
+												  const size_t HAYSTACK_LEN, 
+												  const unsigned char *const NEEDLE, 
+												  const size_t NEEDLE_LEN);
+static const unsigned char *my_memrmem(const unsigned char *HAYSTACK, 
+													const size_t HAYSTACK_LEN, 
+													const unsigned char *const NEEDLE, 
+													const size_t NEEDLE_LEN);
+static const unsigned char *sync_buffers(const unsigned char *const newbuf);
+static long interpolate(long p1, long p2, long p3);
+static void emit_sample(long lsumval, long rsumval, long channels);
+static void change_endianness(UINT4 *pSam, unsigned int Samples);
+static void swap_channels(UINT4 *pSam, unsigned int Samples);
+static int guess_endianess(UINT4 *p, Int16_t *p2, unsigned int SamplesToDo);
 
 
 #ifdef CHECK_MEM
-static void
-check_mem __PR((const unsigned char *p, unsigned long amount, const unsigned char *q, unsigned line, char *file));
+static void check_mem(const unsigned char *p, unsigned long amount, 
+							 const unsigned char *q, unsigned line, char *file);
 
 static void check_mem(const unsigned char *p, unsigned long amount, 
                       const unsigned char *q, unsigned line, char *file)
@@ -472,7 +481,8 @@ error type unsigned long is too small
 }
 
 #ifdef	ECHO_TO_SOUNDCARD
-static long ReSampleBuffer			__PR((unsigned char *p, unsigned char *newp, long samples, int samplesize));
+static long ReSampleBuffer(unsigned char *p, unsigned char *newp, 
+									long samples, int samplesize);
 static long ReSampleBuffer(unsigned char *p, unsigned char *newp, 
                            long samples, int samplesize)
 {

@@ -75,16 +75,17 @@ typedef	void    cdrom_paranoia;
 /*
  * The interface from libcdparanoia to the high level caller
  */
-extern cdrom_paranoia	*paranoia_init	__PR((void * d, int nsectors));
-extern void	paranoia_dynoverlapset	__PR((cdrom_paranoia * p,
-							int minoverlap,
-							int maxoverlap));
-extern void	paranoia_modeset	__PR((cdrom_paranoia * p, int mode));
-extern long	paranoia_seek		__PR((cdrom_paranoia * p, long seek, int mode));
-extern Int16_t	*paranoia_read		__PR((cdrom_paranoia * p, void (*callback) (long, int)));
-extern Int16_t	*paranoia_read_limited	__PR((cdrom_paranoia * p, void (*callback) (long, int), int maxretries));
-extern void	paranoia_free		__PR((cdrom_paranoia * p));
-extern void	paranoia_overlapset	__PR((cdrom_paranoia * p, long overlap));
+extern cdrom_paranoia	*paranoia_init(void * d, int nsectors);
+extern void	paranoia_dynoverlapset(cdrom_paranoia * p, int minoverlap, 
+											  int maxoverlap);
+extern void	paranoia_modeset(cdrom_paranoia * p, int mode);
+extern long	paranoia_seek(cdrom_paranoia * p, long seek, int mode);
+extern Int16_t	*paranoia_read(cdrom_paranoia * p, void (*callback) (long, int));
+extern Int16_t	*paranoia_read_limited(cdrom_paranoia * p, 
+												  void (*callback) (long, int), 
+												  int maxretries);
+extern void	paranoia_free(cdrom_paranoia * p);
+extern void	paranoia_overlapset(cdrom_paranoia * p, long overlap);
 
 #ifndef	HAVE_MEMMOVE
 #define	memmove(dst, src, size)		movebytes((src), (dst), (size))
@@ -94,13 +95,14 @@ extern void	paranoia_overlapset	__PR((cdrom_paranoia * p, long overlap));
 /*
  * The callback interface from libparanoia to the CD-ROM interface
  */
-extern long	cdda_disc_firstsector	__PR((void *d));		/* -> long sector */
-extern long	cdda_disc_lastsector	__PR((void *d));		/* -> long sector */
-extern long	cdda_read		__PR((void *d, void *buffer, long beginsector, long sectors));	/* -> long sectors */
-extern int	cdda_sector_gettrack	__PR((void *d, long sector));	/* -> int trackno */
-extern int	cdda_track_audiop	__PR((void *d, int track));	/* -> int Is audiotrack */
-extern long	cdda_track_firstsector	__PR((void *d, int track));	/* -> long sector */
-extern long	cdda_track_lastsector	__PR((void *d, int track));	/* -> long sector */
-extern int	cdda_tracks		__PR((void *d));		/* -> int tracks */
+extern long	cdda_disc_firstsector(void *d);		/* -> long sector */
+extern long	cdda_disc_lastsector(void *d);		/* -> long sector */
+/* -> long sectors */
+extern long	cdda_read(void *d, void *buffer, long beginsector, long sectors);	
+extern int	cdda_sector_gettrack(void *d, long sector);	/* -> int trackno */
+extern int	cdda_track_audiop(void *d, int track);	/* -> int Is audiotrack */
+extern long	cdda_track_firstsector(void *d, int track);	/* -> long sector */
+extern long	cdda_track_lastsector(void *d, int track);	/* -> long sector */
+extern int	cdda_tracks(void *d);		/* -> int tracks */
 
 #endif	/* _CDROM_PARANOIA_H */

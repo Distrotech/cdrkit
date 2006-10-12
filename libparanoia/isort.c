@@ -41,15 +41,14 @@ static	char sccsid[] =
 #include "isort.h"
 #include "pmalloc.h"
 
-sort_info *sort_alloc   __PR((long size));
-void sort_unsortall     __PR((sort_info * i));
-void sort_free          __PR((sort_info * i));
-void sort_sort          __PR((sort_info * i, long sortlo, long sorthi));
-void sort_setup         __PR((sort_info * i, Int16_t * vector, long *abspos, 
-                              long size, long sortlo, long sorthi));
-sort_link *sort_getmatch __PR((sort_info * i, long post, long overlap, 
-                               int value));
-sort_link *sort_nextmatch __PR((sort_info * i, sort_link * prev));
+sort_info *sort_alloc(long size);
+void sort_unsortall(sort_info * i);
+void sort_free(sort_info * i);
+void sort_sort(sort_info * i, long sortlo, long sorthi);
+void sort_setup(sort_info * i, Int16_t * vector, long *abspos, long size, 
+					 long sortlo, long sorthi);
+sort_link *sort_getmatch(sort_info * i, long post, long overlap, int value);
+sort_link *sort_nextmatch(sort_info * i, sort_link * prev);
 
 
 sort_info *sort_alloc(long size)

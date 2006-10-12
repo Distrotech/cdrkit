@@ -117,12 +117,12 @@ typedef struct {
 				(((unsigned  char *)a)[3] << 24	& 0xFF000000)))
 #endif
 
-BOOL	is_auname	__PR((const char *name));
-off_t	ausize		__PR((int f));
-BOOL	is_wavname	__PR((const char *name));
-off_t	wavsize		__PR((int f));
+BOOL	is_auname(const char *name);
+off_t	ausize(int f);
+BOOL	is_wavname(const char *name);
+off_t	wavsize(int f);
 
-BOOL
+BOOL 
 is_auname(const char *name)
 {
 	const	char	*p;
@@ -135,7 +135,7 @@ is_auname(const char *name)
 /*
  * Read Sun audio header, leave file seek pointer past auheader.
  */
-off_t
+off_t 
 ausize(int f)
 {
 	sun_au_t	hdr;
@@ -195,7 +195,7 @@ err:
 	return ((off_t)ret);
 }
 
-BOOL
+BOOL 
 is_wavname(const char *name)
 {
 	const	char	*p;
@@ -208,7 +208,7 @@ is_wavname(const char *name)
 /*
  * Read WAV header, leave file seek pointer past WAV header.
  */
-off_t
+off_t 
 wavsize(int f)
 {
 	chunk_t		chunk;

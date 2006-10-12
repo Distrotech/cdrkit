@@ -30,29 +30,29 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-int v_catsearch		__PR((hfsvol *, long, char *, CatDataRec *, char *, node *));
-int v_extsearch		__PR((hfsfile *, unsigned int, ExtDataRec *, node *));
+int v_catsearch(hfsvol *, long, char *, CatDataRec *, char *, node *);
+int v_extsearch(hfsfile *, unsigned int, ExtDataRec *, node *);
 
-int v_getthread		__PR((hfsvol *, long, CatDataRec *, node *, int));
+int v_getthread(hfsvol *, long, CatDataRec *, node *, int);
 
 # define v_getdthread(vol, id, thread, np)  \
     v_getthread(vol, id, thread, np, cdrThdRec)
 # define v_getfthread(vol, id, thread, np)  \
     v_getthread(vol, id, thread, np, cdrFThdRec)
 
-int v_putcatrec		__PR((CatDataRec *, node *));
-int v_putextrec		__PR((ExtDataRec *, node *));
+int v_putcatrec(CatDataRec *, node *);
+int v_putextrec(ExtDataRec *, node *);
 
-int v_allocblocks	__PR((hfsvol *, ExtDescriptor *));
-void v_freeblocks	__PR((hfsvol *, ExtDescriptor *));
+int v_allocblocks(hfsvol *, ExtDescriptor *);
+void v_freeblocks(hfsvol *, ExtDescriptor *);
 
-int v_resolve		__PR((hfsvol **, char *, CatDataRec *, long *, char *, node *));
+int v_resolve(hfsvol **, char *, CatDataRec *, long *, char *, node *);
 
-void v_destruct		__PR((hfsvol *));
-int v_getvol		__PR((hfsvol **));
-int v_flush		__PR((hfsvol *, int));
+void v_destruct(hfsvol *);
+int v_getvol(hfsvol **);
+int v_flush(hfsvol *, int);
 
-int v_adjvalence	__PR((hfsvol *, long, int, int));
-int v_newfolder		__PR((hfsvol *, long, char *));
+int v_adjvalence(hfsvol *, long, int, int);
+int v_newfolder(hfsvol *, long, char *);
 
-int v_scavenge		__PR((hfsvol *));
+int v_scavenge(hfsvol *);

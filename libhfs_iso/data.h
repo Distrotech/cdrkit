@@ -30,28 +30,28 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-char d_getb		__PR((unsigned char *));
-short d_getw		__PR((unsigned char *));
-long d_getl		__PR((unsigned char *));
+char d_getb(unsigned char *);
+short d_getw(unsigned char *);
+long d_getl(unsigned char *);
 
-void d_putb		__PR((unsigned char *, char));
-void d_putw		__PR((unsigned char *, short));
-void d_putl		__PR((unsigned char *, long));
+void d_putb(unsigned char *, char);
+void d_putw(unsigned char *, short);
+void d_putl(unsigned char *, long);
 
-void d_fetchb		__PR((unsigned char **, char *));
-void d_fetchw		__PR((unsigned char **, short *));
-void d_fetchl		__PR((unsigned char **, long *));
-void d_fetchs		__PR((unsigned char **, char *, int));
+void d_fetchb(unsigned char **, char *);
+void d_fetchw(unsigned char **, short *);
+void d_fetchl(unsigned char **, long *);
+void d_fetchs(unsigned char **, char *, int);
 
-void d_storeb		__PR((unsigned char **, char));
-void d_storew		__PR((unsigned char **, short));
-void d_storel		__PR((unsigned char **, long));
-void d_stores		__PR((unsigned char **, char *, int));
+void d_storeb(unsigned char **, char);
+void d_storew(unsigned char **, short);
+void d_storel(unsigned char **, long);
+void d_stores(unsigned char **, char *, int);
 
-unsigned long d_tomtime	__PR((unsigned long));
-unsigned long d_toutime	__PR((unsigned long));
+unsigned long d_tomtime(unsigned long);
+unsigned long d_toutime(unsigned long);
 #ifdef APPLE_HYB
-unsigned long d_dtoutime __PR((long));
+unsigned long d_dtoutime(long);
 #endif /* APPLE_HYB */
 
-int d_relstring		__PR((char *, char *));
+int d_relstring(char *, char *);

@@ -46,11 +46,11 @@ static	char _sccsid[] =
 #endif
 
 #define	FLASHSIZE	0x100000	/* BTC flash is 1MB */
-
-unsigned char *loadfirmware(const char *);
-int getbyte(char **);
-unsigned short calcsum(unsigned char *);
-static int btcmain		__PR((SCSI *scgp, const char *fwfile));
+   
+unsigned char	*loadfirmware(const char *);
+int				getbyte(char **);
+unsigned short	calcsum(unsigned char *);
+static int		btcmain(SCSI *scgp, const char *fwfile);
 
 
 unsigned char *

@@ -102,7 +102,7 @@ char *start_of_shm;
 char *end_of_shm;
 #endif
 
-int flush_buffers __PR((void));
+int flush_buffers(void);
 
 
 /*------ Semaphore interfacing (for special cases only) ----------*/
@@ -111,7 +111,7 @@ int flush_buffers __PR((void));
 #if defined(HAVE_SEMGET) && defined(USE_SEMAPHORES)
 
 int sem_id;
-static int seminstall	__PR((key_t key, int amount));
+static int seminstall(key_t key, int amount);
 
 static int seminstall(key_t key, int amount)
 {
@@ -274,7 +274,7 @@ int flush_buffers()
 
 
 #if defined(HAVE_SHMAT) && (HAVE_SHMAT == 1)
-static int shm_request_nommap	__PR((int size, unsigned char **memptr));
+static int shm_request_nommap(int size, unsigned char **memptr);
 
 /* request a shared memory block */
 static int shm_request_nommap(int size, unsigned char **memptr)
@@ -330,7 +330,7 @@ static int shm_request_nommap(int size, unsigned char **memptr)
 #endif	/* #if defined(HAVE_SHMAT) && (HAVE_SHMAT == 1) */
 
 
-static int shm_request	__PR((int size, unsigned char **memptr));
+static int shm_request(int size, unsigned char **memptr);
 
 #ifdef  USE_USGSHM
 /* request a shared memory block */
@@ -341,7 +341,7 @@ static int shm_request(int size, unsigned char **memptr)
 #endif
 
 /* release semaphores */
-void free_sem __PR(( void ));
+void free_sem(void);
 void free_sem()
 {
 #if defined(HAVE_SEMGET) && defined(USE_SEMAPHORES)

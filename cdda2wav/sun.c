@@ -45,11 +45,11 @@ typedef struct SUNHDR {
 
 static SUNHDR sunHdr;
 
-static int InitSound __PR(( int audio, long channels, unsigned long rate, long nBitsPerSample, unsigned long expected_bytes ));
+static int InitSound(int audio, long channels, unsigned long rate, 
+							long nBitsPerSample, unsigned long expected_bytes);
 
-static int 
-InitSound(int audio, long channels, unsigned long rate, long nBitsPerSample, 
-          unsigned long expected_bytes)
+static int InitSound(int audio, long channels, unsigned long rate, 
+							long nBitsPerSample, unsigned long expected_bytes)
 {
   unsigned long format = nBitsPerSample > 8 ? 0x03 : 0x02;
 
@@ -63,7 +63,7 @@ InitSound(int audio, long channels, unsigned long rate, long nBitsPerSample,
   return write (audio, &sunHdr, sizeof (sunHdr));
 }
 
-static int ExitSound __PR(( int audio, unsigned long nBytesDone ));
+static int ExitSound(int audio, unsigned long nBytesDone);
 
 static int ExitSound(int audio, unsigned long nBytesDone)
 {
@@ -76,14 +76,14 @@ static int ExitSound(int audio, unsigned long nBytesDone)
   return write (audio, &sunHdr, sizeof (sunHdr));
 }
 
-static unsigned long GetHdrSize __PR(( void ));
+static unsigned long GetHdrSize(void);
 
-static unsigned long GetHdrSize( )
+static unsigned long GetHdrSize()
 {
   return sizeof( sunHdr );
 }
 
-static unsigned long InSizeToOutSize __PR(( unsigned long BytesToDo ));
+static unsigned long InSizeToOutSize(unsigned long BytesToDo);
 
 static unsigned long InSizeToOutSize(unsigned long BytesToDo)
 {
@@ -95,7 +95,10 @@ struct soundfile sunsound =
 	InitSound,		/* init header method */
 	ExitSound,		/* exit header method */
 	GetHdrSize,		/* report header size method */
-	(int (*) __PR(( int audio, unsigned char *buf, unsigned long BytesToDo ))) write,			/* get sound samples out */
+	/* get sound samples out */
+	(int (*)(int audio, unsigned char *buf, unsigned long BytesToDo)) write,
 	InSizeToOutSize,	/* compressed? output file size */
 	1			/* needs big endian samples */
 };
+
+

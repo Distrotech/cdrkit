@@ -90,62 +90,61 @@ typedef struct sync_result {
 	long		end;
 } sync_result;
 
-static inline long	re      __PR((root_block * root));
-static inline long rb       __PR((root_block * root));
-static inline long rs       __PR((root_block * root));
-static inline Int16_t *rv   __PR((root_block * root));
-static inline long i_paranoia_overlap __PR((Int16_t * buffA, Int16_t * buffB,
-                                            long offsetA, long offsetB,
-                                            long sizeA, long sizeB,
-                                            long *ret_begin, long *ret_end));
-static inline long i_paranoia_overlap2 __PR((Int16_t * buffA, Int16_t * buffB,
-                                             Uchar *flagsA, Uchar *flagsB,
-                                             long offsetA, long offsetB,
-                                             long sizeA, long sizeB,
-                                             long *ret_begin, long *ret_end));
-static inline long do_const_sync __PR((c_block * A,
-                                       sort_info * B, Uchar *flagB,
-                                       long posA, long posB,
-                                       long *begin, long *end, long *offset));
-static inline long try_sort_sync __PR((cdrom_paranoia * p,
-                                       sort_info * A, Uchar *Aflags,
-                                       c_block * B,
-                                       long post, long *begin, long *end,
-                                       long *offset, void (*callback) (long, int)));
-static inline void stage1_matched __PR((c_block * old, c_block * new,
-                                 long matchbegin, long matchend,
-                                 long matchoffset, void (*callback) (long, int)));
-static long i_iterate_stage1    __PR((cdrom_paranoia * p, c_block * old, c_block * new,
-                                      void (*callback) (long, int)));
-static long i_stage1            __PR((cdrom_paranoia * p, c_block * new,
-                                      void (*callback) (long, int)));
-static long i_iterate_stage2    __PR((cdrom_paranoia * p, v_fragment * v,
-                                      sync_result *r, void (*callback)(long, int)));
-static void i_silence_test      __PR((root_block * root));
-static long i_silence_match     __PR((root_block * root, v_fragment * v,
-                                      void (*callback) (long, int)));
-static long i_stage2_each       __PR((root_block * root, v_fragment * v,
-                                      void (*callback) (long, int)));
-static int i_init_root          __PR((root_block * root, v_fragment * v, 
-                                      long begin, void (*callback)(long, int)));
-static int vsort                __PR((const void *a, const void *b));
-static int i_stage2             __PR((cdrom_paranoia * p, long beginword, 
-                                      long endword, void (*callback)(long, int)));
-static void i_end_case          __PR((cdrom_paranoia * p, long endword, 
-                                      void (*callback)(long, int)));
-static void verify_skip_case    __PR((cdrom_paranoia * p, 
-                                      void (*callback)(long, int)));
-void paranoia_free              __PR((cdrom_paranoia * p));
-void paranoia_modeset           __PR((cdrom_paranoia * p, int enable));
-long paranoia_seek              __PR((cdrom_paranoia * p, long seek, int mode));
-c_block *i_read_c_block         __PR((cdrom_paranoia * p, long beginword, 
-                                      long endword, void (*callback)(long,int)));
-Int16_t *paranoia_read          __PR((cdrom_paranoia * p, 
-                                      void (*callback)(long, int)));
-Int16_t *paranoia_read_limited  __PR((cdrom_paranoia * p, 
-                                      void (*callback)(long, int),
-                                      int max_retries));
-void paranoia_overlapset        __PR((cdrom_paranoia * p, long overlap));
+static inline long re(root_block *root);
+static inline long rb(root_block *root);
+static inline long rs(root_block *root);
+static inline Int16_t *rv(root_block *root);
+static inline long i_paranoia_overlap(Int16_t *buffA, Int16_t *buffB,
+                                      long offsetA, long offsetB,
+                                      long sizeA, long sizeB,
+                                      long *ret_begin, long *ret_end);
+static inline long i_paranoia_overlap2(Int16_t *buffA, Int16_t *buffB,
+                                       Uchar *flagsA, Uchar *flagsB,
+                                       long offsetA, long offsetB,
+                                       long sizeA, long sizeB,
+                                       long *ret_begin, long *ret_end);
+static inline long do_const_sync(c_block *A,
+                                 sort_info *B, Uchar *flagB,
+                                 long posA, long posB,
+                                 long *begin, long *end, long *offset);
+static inline long try_sort_sync(cdrom_paranoia *p,
+                                 sort_info *A, Uchar *Aflags,
+                                 c_block *B,
+                                 long post, long *begin, long *end,
+                                 long *offset, void (*callback) (long, int));
+static inline void stage1_matched(c_block *old, c_block *new,
+                                  long matchbegin, long matchend, 
+											 long matchoffset, 
+											 void (*callback) (long, int));
+static long i_iterate_stage1(cdrom_paranoia *p, c_block *old, c_block *new,
+                             void (*callback) (long, int));
+static long i_stage1(cdrom_paranoia *p, c_block *new, 
+							void (*callback) (long, int));
+static long i_iterate_stage2(cdrom_paranoia *p, v_fragment *v, sync_result *r, 
+									  void (*callback)(long, int));
+static void i_silence_test(root_block *root);
+static long i_silence_match(root_block *root, v_fragment *v,
+                            void (*callback) (long, int));
+static long i_stage2_each(root_block *root, v_fragment *v,
+                          void (*callback) (long, int));
+static int i_init_root(root_block *root, v_fragment *v, 
+                       long begin, void (*callback)(long, int));
+static int vsort(const void *a, const void *b);
+static int i_stage2(cdrom_paranoia *p, long beginword, long endword, 
+						  void (*callback)(long, int));
+static void i_end_case(cdrom_paranoia *p, long endword, 
+                       void (*callback)(long, int));
+static void verify_skip_case(cdrom_paranoia *p, 
+                             void (*callback)(long, int));
+void paranoia_free(cdrom_paranoia *p);
+void paranoia_modeset(cdrom_paranoia *p, int enable);
+long paranoia_seek(cdrom_paranoia *p, long seek, int mode);
+c_block *i_read_c_block(cdrom_paranoia *p, long beginword, long endword, 
+								void (*callback)(long,int));
+Int16_t *paranoia_read(cdrom_paranoia *p, void (*callback)(long, int));
+Int16_t *paranoia_read_limited(cdrom_paranoia *p, void (*callback)(long, int),
+                               int max_retries);
+void paranoia_overlapset(cdrom_paranoia *p, long overlap);
 
 
 static inline long re(root_block *root)
@@ -409,7 +408,7 @@ stage1_matched(c_block *old, c_block *new, long matchbegin, long matchend,
 
 }
 
-#define	CB_NULL		(void (*) __PR((long, int)))0
+#define	CB_NULL		(void (*)(long, int))0
 
 static long 
 i_iterate_stage1(cdrom_paranoia *p, c_block *old, c_block *new, 

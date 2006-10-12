@@ -44,11 +44,10 @@ static	char sccsid[] =
 #include <utypes.h>
 #include "crc16.h"
 
-static	UInt16_t	updcrc		__PR((Uint p_crc, UInt8_t *cp, Uint cnt));
-/*static	UInt16_t	calcCRC		__PR((Uchar *buf, Uint bsize));*/
-UInt16_t	calcCRC		__PR((Uchar *buf, Uint bsize));
-UInt16_t	fillcrc		__PR((Uchar *buf, Uint bsize));
-UInt16_t	flip_crc_error_corr	__PR((Uchar *b, Uint bsize, Uint p_crc));
+static	UInt16_t	updcrc(Uint p_crc, UInt8_t *cp, Uint cnt);
+UInt16_t	calcCRC(Uchar *buf, Uint bsize);
+UInt16_t	fillcrc(Uchar *buf, Uint bsize);
+UInt16_t	flip_crc_error_corr(Uchar *b, Uint bsize, Uint p_crc);
 
 
 	/* number of bits in CRC: don't change it. */
@@ -94,7 +93,7 @@ static UInt16_t crctab[1<<BPB] = {
 
 #define	SUBSIZE	96	/* 12 bytes with 8 bits */
 
-static UInt16_t
+static UInt16_t 
 updcrc(Uint p_crc, register UInt8_t *cp, register Uint cnt)
 {
 	register UInt16_t	crc = p_crc;
@@ -106,7 +105,7 @@ updcrc(Uint p_crc, register UInt8_t *cp, register Uint cnt)
 }
 
 /*static UInt16_t*/
-UInt16_t
+UInt16_t 
 calcCRC(Uchar *buf, Uint bsize)
 {
 	return (updcrc(0x0000, (UInt8_t *)buf, bsize));
@@ -115,7 +114,7 @@ calcCRC(Uchar *buf, Uint bsize)
 /*
  * CRC für Q-Sub füllen
  */
-UInt16_t
+UInt16_t 
 fillcrc(Uchar *buf, Uint bsize)
 {
 	UInt16_t	crc = calcCRC(buf, bsize-2);
@@ -141,7 +140,7 @@ static UInt8_t fliptab[BPB] = {
 	0x80,
 };
 
-UInt16_t
+UInt16_t 
 flip_crc_error_corr(Uchar *b, Uint bsize, Uint p_crc)
 {
 	register UInt16_t	crc = p_crc;

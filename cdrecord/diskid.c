@@ -43,10 +43,10 @@ static	char sccsid[] =
 
 #include "cdrecord.h"
 
-void	pr_manufacturer		__PR((msf_t *mp, BOOL rw, BOOL audio));
-static	struct disk_man * man_ptr	__PR((msf_t *mp));
-int	manufacturer_id		__PR((msf_t *mp));
-long	disk_rcap		__PR((msf_t *mp, long maxblock, BOOL rw, BOOL audio));
+void	pr_manufacturer(msf_t *mp, BOOL rw, BOOL audio);
+static	struct disk_man *man_ptr(msf_t *mp);
+int	manufacturer_id(msf_t *mp);
+long	disk_rcap(msf_t *mp, long maxblock, BOOL rw, BOOL audio);
 
 struct disk_man {
 	msf_t	mi_msf;
@@ -367,8 +367,7 @@ man_ptr(msf_t *mp)
 	return (NULL);
 }
 
-void
-pr_manufacturer(msf_t *mp, BOOL rw, BOOL audio)
+void pr_manufacturer(msf_t *mp, BOOL rw, BOOL audio)
 {
 	struct disk_man * dp;
 	struct disk_man xdman;
@@ -422,8 +421,7 @@ pr_manufacturer(msf_t *mp, BOOL rw, BOOL audio)
 	}
 }
 
-int
-manufacturer_id(msf_t *mp)
+int manufacturer_id(msf_t *mp)
 {
 	struct disk_man * dp;
 
@@ -510,7 +508,7 @@ static	struct disk_rcap rcap[] = {
 	{{00, 00, 00}, 0L, 0L },
 };
 
-long
+long 
 disk_rcap(msf_t *mp, long maxblock, BOOL rw, BOOL audio)
 {
 	struct disk_rcap * dp;

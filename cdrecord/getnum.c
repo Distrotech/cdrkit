@@ -40,9 +40,9 @@ static	char sccsid[] =
 #include <utypes.h>
 #include <schily.h>
 
-static	Llong	number		__PR((char *arg, int *retp));
-int	getnum		__PR((char *arg, long *valp));
-int	getllnum	__PR((char *arg, Llong *lvalp));
+static	Llong	number(char *arg, int *retp);
+int	getnum(char *arg, long *valp);
+int	getllnum(char *arg, Llong *lvalp);
 
 static Llong
 number(register char *arg, int *retp)

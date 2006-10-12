@@ -183,36 +183,36 @@ static	long	buflen;			/* The size of the FIFO buffer */
 extern	int	debug;
 extern	int	lverbose;
 
-void	init_fifo	__PR((long));
+void	init_fifo(long);
 #ifdef	USE_MMAP
-static	char	*mkshare	__PR((int size));
+static	char	*mkshare(int size);
 #endif
 #ifdef	USE_USGSHM
-static	char	*mkshm		__PR((int size));
+static	char	*mkshm(int size);
 #endif
 #ifdef	USE_OS2SHM
-static	char	*mkos2shm	__PR((int size));
+static	char	*mkos2shm(int size);
 #endif
 #ifdef	USE_BEOS_AREAS
-static	char	*mkbeosshm	__PR((int size));
-static	void	beosshm_child	__PR((void));
+static	char	*mkbeosshm(int size);
+static	void	beosshm_child(void);
 #endif
 
-BOOL	init_faio	__PR((track_t *trackp, int));
-BOOL	await_faio	__PR((void));
-void	kill_faio	__PR((void));
-int	wait_faio	__PR((void));
-static	void	faio_reader	__PR((track_t *trackp));
-static	void	faio_read_track	__PR((track_t *trackp));
-static	void	faio_wait_on_buffer __PR((faio_t *f, fowner_t s,
-					unsigned long delay,
-					unsigned long max_wait));
-static	int	faio_read_segment __PR((int fd, faio_t *f, track_t *track, long secno, int len));
-static	faio_t	*faio_ref	__PR((int n));
-int	faio_read_buf	__PR((int f, char *bp, int size));
-int	faio_get_buf	__PR((int f, char **bpp, int size));
-void	fifo_stats	__PR((void));
-int	fifo_percent	__PR((BOOL addone));
+BOOL	init_faio(track_t *trackp, int);
+BOOL	await_faio(void);
+void	kill_faio(void);
+int	wait_faio(void);
+static	void	faio_reader(track_t *trackp);
+static	void	faio_read_track(track_t *trackp);
+static	void	faio_wait_on_buffer(faio_t *f, fowner_t s, unsigned long delay,
+											  unsigned long max_wait);
+static	int	faio_read_segment(int fd, faio_t *f, track_t *track, long secno, 
+											int len);
+static	faio_t	*faio_ref(int n);
+int	faio_read_buf(int f, char *bp, int size);
+int	faio_get_buf(int f, char **bpp, int size);
+void	fifo_stats(void);
+int	fifo_percent(BOOL addone);
 
 
 void
@@ -832,15 +832,15 @@ fifo_percent(BOOL addone)
 
 #include "cdrecord.h"
 
-void	init_fifo	__PR((long));
-BOOL	init_faio	__PR((track_t *track, int));
-BOOL	await_faio	__PR((void));
-void	kill_faio	__PR((void));
-int	wait_faio	__PR((void));
-int	faio_read_buf	__PR((int f, char *bp, int size));
-int	faio_get_buf	__PR((int f, char **bpp, int size));
-void	fifo_stats	__PR((void));
-int	fifo_percent	__PR((BOOL addone));
+void	init_fifo(long);
+BOOL	init_faio(track_t *track, int);
+BOOL	await_faio(void);
+void	kill_faio(void);
+int	wait_faio(void);
+int	faio_read_buf(int f, char *bp, int size);
+int	faio_get_buf(int f, char **bpp, int size);
+void	fifo_stats(void);
+int	fifo_percent(BOOL addone);
 
 
 void init_fifo(long fs)

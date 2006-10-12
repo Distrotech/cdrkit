@@ -63,68 +63,68 @@ static	char sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_version[]		= "0.8ubuntu1+debburn1";	/* The global libscg version	*/
-LOCAL	char	_scg_auth_ubuntu[]	= "debburn project";	/* The author for this module	*/
+static	char	_scg_version[]		= "0.8ubuntu1+debburn1";	/* The global libscg version	*/
+static	char	_scg_auth_ubuntu[]	= "debburn project";	/* The author for this module	*/
 
 #define	DEFTIMEOUT	20	/* Default timeout for SCSI command transport */
 
-EXPORT	char	*scg_version	__PR((SCSI *scgp, int what));
-EXPORT	int	scg__open	__PR((SCSI *scgp, char *device));
-EXPORT	int	scg__close	__PR((SCSI *scgp));
-EXPORT	BOOL	scg_havebus	__PR((SCSI *scgp, int));
-EXPORT	int	scg_initiator_id __PR((SCSI *scgp));
-EXPORT	int	scg_isatapi	__PR((SCSI *scgp));
-EXPORT	int	scg_reset	__PR((SCSI *scgp, int what));
-EXPORT	void	*scg_getbuf	__PR((SCSI *scgp, long));
-EXPORT	void	scg_freebuf	__PR((SCSI *scgp));
-EXPORT	long	scg_bufsize	__PR((SCSI *scgp, long));
-EXPORT	void	scg_setnonstderrs __PR((SCSI *scgp, const char **));
-EXPORT	BOOL	scg_yes		__PR((char *));
+char	*scg_version(SCSI *scgp, int what);
+int	scg__open(SCSI *scgp, char *device);
+int	scg__close(SCSI *scgp);
+BOOL	scg_havebus(SCSI *scgp, int);
+int	scg_initiator_id(SCSI *scgp);
+int	scg_isatapi(SCSI *scgp);
+int	scg_reset(SCSI *scgp, int what);
+void	*scg_getbuf(SCSI *scgp, long);
+void	scg_freebuf(SCSI *scgp);
+long	scg_bufsize(SCSI *scgp, long);
+void	scg_setnonstderrs(SCSI *scgp, const char **);
+BOOL	scg_yes(char *);
 #ifdef	nonono
-LOCAL	void	scg_sighandler	__PR((int));
+static	void	scg_sighandler(int);
 #endif
-EXPORT	int	scg_cmd		__PR((SCSI *scgp));
-EXPORT	void	scg_vhead	__PR((SCSI *scgp));
-EXPORT	int	scg_svhead	__PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	int	scg_vtail	__PR((SCSI *scgp));
-EXPORT	int	scg_svtail	__PR((SCSI *scgp, int *retp, char *buf, int maxcnt));
-EXPORT	void	scg_vsetup	__PR((SCSI *scgp));
-EXPORT	int	scg_getresid	__PR((SCSI *scgp));
-EXPORT	int	scg_getdmacnt	__PR((SCSI *scgp));
-EXPORT	BOOL	scg_cmd_err	__PR((SCSI *scgp));
-EXPORT	void	scg_printerr	__PR((SCSI *scgp));
-EXPORT	void	scg_fprinterr	__PR((SCSI *scgp, FILE *f));
-EXPORT	int	scg_sprinterr	__PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	int	scg__sprinterr	__PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	void	scg_printcdb	__PR((SCSI *scgp));
-EXPORT	int	scg_sprintcdb	__PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	void	scg_printwdata	__PR((SCSI *scgp));
-EXPORT	int	scg_sprintwdata	__PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	void	scg_printrdata	__PR((SCSI *scgp));
-EXPORT	int	scg_sprintrdata	__PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	void	scg_printresult	__PR((SCSI *scgp));
-EXPORT	int	scg_sprintresult __PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	void	scg_printstatus	__PR((SCSI *scgp));
-EXPORT	int	scg_sprintstatus __PR((SCSI *scgp, char *buf, int maxcnt));
-EXPORT	void	scg_fprbytes	__PR((FILE *, char *, unsigned char *, int));
-EXPORT	void	scg_fprascii	__PR((FILE *, char *, unsigned char *, int));
-EXPORT	void	scg_prbytes	__PR((char *, unsigned char *, int));
-EXPORT	void	scg_prascii	__PR((char *, unsigned char *, int));
-EXPORT	int	scg_sprbytes	__PR((char *buf, int maxcnt, char *, unsigned char *, int));
-EXPORT	int	scg_sprascii	__PR((char *buf, int maxcnt, char *, unsigned char *, int));
-EXPORT	void	scg_fprsense	__PR((FILE *f, unsigned char *, int));
-EXPORT	int	scg_sprsense	__PR((char *buf, int maxcnt, unsigned char *, int));
-EXPORT	void	scg_prsense	__PR((unsigned char *, int));
-EXPORT	int	scg_cmd_status	__PR((SCSI *scgp));
-EXPORT	int	scg_sense_key	__PR((SCSI *scgp));
-EXPORT	int	scg_sense_code	__PR((SCSI *scgp));
-EXPORT	int	scg_sense_qual	__PR((SCSI *scgp));
-EXPORT	unsigned char *scg_sense_table	__PR((SCSI *scgp));
-EXPORT	void	scg_fprintdev	__PR((FILE *, struct scsi_inquiry *));
-EXPORT	void	scg_printdev	__PR((struct scsi_inquiry *));
-EXPORT	int	scg_printf	__PR((SCSI *scgp, const char *form, ...));
-EXPORT	int	scg_errflush	__PR((SCSI *scgp));
-EXPORT	int	scg_errfflush	__PR((SCSI *scgp, FILE *f));
+int	scg_cmd(SCSI *scgp);
+void	scg_vhead(SCSI *scgp);
+int	scg_svhead(SCSI *scgp, char *buf, int maxcnt);
+int	scg_vtail(SCSI *scgp);
+int	scg_svtail(SCSI *scgp, int *retp, char *buf, int maxcnt);
+void	scg_vsetup(SCSI *scgp);
+int	scg_getresid(SCSI *scgp);
+int	scg_getdmacnt(SCSI *scgp);
+BOOL	scg_cmd_err(SCSI *scgp);
+void	scg_printerr(SCSI *scgp);
+void	scg_fprinterr(SCSI *scgp, FILE *f);
+int	scg_sprinterr(SCSI *scgp, char *buf, int maxcnt);
+int	scg__sprinterr(SCSI *scgp, char *buf, int maxcnt);
+void	scg_printcdb(SCSI *scgp);
+int	scg_sprintcdb(SCSI *scgp, char *buf, int maxcnt);
+void	scg_printwdata(SCSI *scgp);
+int	scg_sprintwdata(SCSI *scgp, char *buf, int maxcnt);
+void	scg_printrdata(SCSI *scgp);
+int	scg_sprintrdata(SCSI *scgp, char *buf, int maxcnt);
+void	scg_printresult(SCSI *scgp);
+int	scg_sprintresult(SCSI *scgp, char *buf, int maxcnt);
+void	scg_printstatus(SCSI *scgp);
+int	scg_sprintstatus(SCSI *scgp, char *buf, int maxcnt);
+void	scg_fprbytes(FILE *, char *, unsigned char *, int);
+void	scg_fprascii(FILE *, char *, unsigned char *, int);
+void	scg_prbytes(char *, unsigned char *, int);
+void	scg_prascii(char *, unsigned char *, int);
+int	scg_sprbytes(char *buf, int maxcnt, char *, unsigned char *, int);
+int	scg_sprascii(char *buf, int maxcnt, char *, unsigned char *, int);
+void	scg_fprsense(FILE *f, unsigned char *, int);
+int	scg_sprsense(char *buf, int maxcnt, unsigned char *, int);
+void	scg_prsense(unsigned char *, int);
+int	scg_cmd_status(SCSI *scgp);
+int	scg_sense_key(SCSI *scgp);
+int	scg_sense_code(SCSI *scgp);
+int	scg_sense_qual(SCSI *scgp);
+unsigned char *scg_sense_table(SCSI *scgp);
+void	scg_fprintdev(FILE *, struct scsi_inquiry *);
+void	scg_printdev(struct scsi_inquiry *);
+int	scg_printf(SCSI *scgp, const char *form, ...);
+int	scg_errflush(SCSI *scgp);
+int	scg_errfflush(SCSI *scgp, FILE *f);
 
 /*
  * Return version information for the SCSI transport code.
@@ -134,10 +134,8 @@ EXPORT	int	scg_errfflush	__PR((SCSI *scgp, FILE *f));
  * If scgp is NULL, return general library version information.
  * If scgp is != NULL, return version information for the low level transport.
  */
-EXPORT char *
-scg_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+char *
+scg_version(SCSI *scgp, int what)
 {
 	if (scgp == (SCSI *)0) {
 		switch (what) {
@@ -162,10 +160,8 @@ scg_version(scgp, what)
 /*
  * Call low level SCSI open routine from transport abstraction layer.
  */
-EXPORT int
-scg__open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+int
+scg__open(SCSI *scgp, char *device)
 {
 	int	ret;
 	scg_ops_t *ops;
@@ -223,9 +219,8 @@ extern	scg_ops_t scg_std_ops;
 /*
  * Call low level SCSI close routine from transport abstraction layer.
  */
-EXPORT int
-scg__close(scgp)
-	SCSI	*scgp;
+int
+scg__close(SCSI *scgp)
 {
 	return (SCGO_CLOSE(scgp));
 }
@@ -233,10 +228,8 @@ scg__close(scgp)
 /*
  * Retrieve max DMA count for this target.
  */
-EXPORT long
-scg_bufsize(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+long
+scg_bufsize(SCSI *scgp, long amt)
 {
 	long	maxdma;
 
@@ -253,10 +246,8 @@ scg_bufsize(scgp, amt)
 /*
  * Allocate a buffer that may be used for DMA.
  */
-EXPORT void *
-scg_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+void *
+scg_getbuf(SCSI *scgp, long amt)
 {
 	void	*buf;
 
@@ -271,9 +262,8 @@ scg_getbuf(scgp, amt)
 /*
  * Free DMA buffer.
  */
-EXPORT void
-scg_freebuf(scgp)
-	SCSI	*scgp;
+void
+scg_freebuf(SCSI *scgp)
 {
 	SCGO_FREEBUF(scgp);
 	scgp->bufptr = NULL;
@@ -282,10 +272,8 @@ scg_freebuf(scgp)
 /*
  * Check if 'busno' is a valid SCSI bus number.
  */
-EXPORT BOOL
-scg_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+BOOL
+scg_havebus(SCSI *scgp, int busno)
 {
 	return (SCGO_HAVEBUS(scgp, busno));
 }
@@ -293,9 +281,8 @@ scg_havebus(scgp, busno)
 /*
  * Return SCSI initiator ID for current SCSI bus if available.
  */
-EXPORT int
-scg_initiator_id(scgp)
-	SCSI	*scgp;
+int
+scg_initiator_id(SCSI *scgp)
 {
 	return (SCGO_INITIATOR_ID(scgp));
 }
@@ -303,9 +290,8 @@ scg_initiator_id(scgp)
 /*
  * Return a hint whether current SCSI target refers to a ATAPI device.
  */
-EXPORT int
-scg_isatapi(scgp)
-	SCSI	*scgp;
+int
+scg_isatapi(SCSI *scgp)
 {
 	return (SCGO_ISATAPI(scgp));
 }
@@ -313,10 +299,8 @@ scg_isatapi(scgp)
 /*
  * Reset SCSI bus or target.
  */
-EXPORT int
-scg_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+int
+scg_reset(SCSI *scgp, int what)
 {
 	return (SCGO_RESET(scgp, what));
 }
@@ -326,10 +310,8 @@ scg_reset(scgp, what)
  * To clear additional error table, call scg_setnonstderrs(scgp, NULL);
  * Note: do not use this when scanning the SCSI bus.
  */
-EXPORT void
-scg_setnonstderrs(scgp, vec)
-	SCSI	*scgp;
-	const char **vec;
+void
+scg_setnonstderrs(SCSI *scgp, const char **vec)
 {
 	scgp->nonstderrs = vec;
 }
@@ -337,9 +319,8 @@ scg_setnonstderrs(scgp, vec)
 /*
  * Simple Yes/No answer checker.
  */
-EXPORT BOOL
-scg_yes(msg)
-	char	*msg;
+BOOL
+scg_yes(char *msg)
 {
 	char okbuf[10];
 
@@ -355,9 +336,8 @@ scg_yes(msg)
 }
 
 #ifdef	nonono
-LOCAL void
-scg_sighandler(sig)
-	int	sig;
+static void
+scg_sighandler(int sig)
 {
 	js_printf("\n");
 	if (scsi_running) {
@@ -376,9 +356,8 @@ scg_sighandler(sig)
  * Do error checking and reporting depending on the values of
  * scgp->verbose, scgp->debug and scgp->silent.
  */
-EXPORT int
-scg_cmd(scgp)
-	SCSI	*scgp;
+int
+scg_cmd(SCSI *scgp)
 {
 		int		ret;
 	register struct	scg_cmd	*scmd = scgp->scmd;
@@ -449,9 +428,8 @@ scg_cmd(scgp)
  * Fill the head of verbose printing into the SCSI error buffer.
  * Action depends on SCSI verbose status.
  */
-EXPORT void
-scg_vhead(scgp)
-	SCSI	*scgp;
+void
+scg_vhead(SCSI *scgp)
 {
 	scgp->errptr += scg_svhead(scgp, scgp->errptr, scg_errrsize(scgp));
 }
@@ -460,11 +438,8 @@ scg_vhead(scgp)
  * Fill the head of verbose printing into a buffer.
  * Action depends on SCSI verbose status.
  */
-EXPORT int
-scg_svhead(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_svhead(SCSI *scgp, char *buf, int maxcnt)
 {
 	register char	*p = buf;
 	register int	amt;
@@ -503,9 +478,8 @@ scg_svhead(scgp, buf, maxcnt)
  * Fill the tail of verbose printing into the SCSI error buffer.
  * Action depends on SCSI verbose status.
  */
-EXPORT int
-scg_vtail(scgp)
-	SCSI	*scgp;
+int
+scg_vtail(SCSI *scgp)
 {
 	int	ret;
 
@@ -517,12 +491,8 @@ scg_vtail(scgp)
  * Fill the tail of verbose printing into a buffer.
  * Action depends on SCSI verbose status.
  */
-EXPORT int
-scg_svtail(scgp, retp, buf, maxcnt)
-	SCSI	*scgp;
-	int	*retp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_svtail(SCSI *scgp, int *retp, char *buf, int maxcnt)
 {
 	register char	*p = buf;
 	register int	amt;
@@ -575,9 +545,8 @@ scg_svtail(scgp, retp, buf, maxcnt)
  * Set up SCSI error buffer with verbose print data.
  * Action depends on SCSI verbose status.
  */
-EXPORT void
-scg_vsetup(scgp)
-	SCSI	*scgp;
+void
+scg_vsetup(SCSI *scgp)
 {
 	scg_vhead(scgp);
 	scg_vtail(scgp);
@@ -587,9 +556,8 @@ scg_vsetup(scgp)
  * Return the residual DMA count for last command.
  * If this count is < 0, then a DMA overrun occured.
  */
-EXPORT int
-scg_getresid(scgp)
-	SCSI	*scgp;
+int
+scg_getresid(SCSI *scgp)
 {
 	return (scgp->scmd->resid);
 }
@@ -597,9 +565,8 @@ scg_getresid(scgp)
 /*
  * Return the actual DMA count for last command.
  */
-EXPORT int
-scg_getdmacnt(scgp)
-	SCSI	*scgp;
+int
+scg_getdmacnt(SCSI *scgp)
 {
 	register struct scg_cmd *scmd = scgp->scmd;
 
@@ -612,9 +579,8 @@ scg_getdmacnt(scgp)
 /*
  * Test if last SCSI command got an error.
  */
-EXPORT BOOL
-scg_cmd_err(scgp)
-	SCSI	*scgp;
+BOOL
+scg_cmd_err(SCSI *scgp)
 {
 	register struct scg_cmd *cp = scgp->scmd;
 
@@ -641,9 +607,8 @@ scg_cmd_err(scgp)
  *
  * to SCSI errfile.
  */
-EXPORT void
-scg_printerr(scgp)
-	SCSI	*scgp;
+void
+scg_printerr(SCSI *scgp)
 {
 	scg_fprinterr(scgp, (FILE *)scgp->errfile);
 }
@@ -661,10 +626,8 @@ scg_printerr(scgp)
  *
  * to a file.
  */
-EXPORT void
-scg_fprinterr(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+void
+scg_fprinterr(SCSI *scgp, FILE *f)
 {
 	char	errbuf[SCSI_ERRSTR_SIZE];
 	int	amt;
@@ -689,11 +652,8 @@ scg_fprinterr(scgp, f)
  *
  * into a buffer.
  */
-EXPORT int
-scg_sprinterr(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_sprinterr(SCSI *scgp, char *buf, int maxcnt)
 {
 	int	amt;
 	int	osilent = scgp->silent;
@@ -718,11 +678,8 @@ scg_sprinterr(scgp, buf, maxcnt)
  *
  * into a buffer.
  */
-EXPORT int
-scg__sprinterr(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg__sprinterr(SCSI *scgp, char *buf, int maxcnt)
 {
 	register struct scg_cmd *cp = scgp->scmd;
 	register char		*err;
@@ -794,9 +751,8 @@ scg__sprinterr(scgp, buf, maxcnt)
  *
  * print the SCSI Command descriptor block to XXX stderr.
  */
-EXPORT void
-scg_printcdb(scgp)
-	SCSI	*scgp;
+void
+scg_printcdb(SCSI *scgp)
 {
 	scg_prbytes("CDB: ", scgp->scmd->cdb.cmd_cdb, scgp->scmd->cdb_len);
 }
@@ -804,11 +760,8 @@ scg_printcdb(scgp)
 /*
  * print the SCSI Command descriptor block into a buffer.
  */
-EXPORT int
-scg_sprintcdb(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_sprintcdb(SCSI *scgp, char *buf, int maxcnt)
 {
 	int	cnt;
 
@@ -825,9 +778,8 @@ scg_sprintcdb(scgp, buf, maxcnt)
  *
  * print the SCSI send data to stderr.
  */
-EXPORT void
-scg_printwdata(scgp)
-	SCSI	*scgp;
+void
+scg_printwdata(SCSI *scgp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -843,11 +795,8 @@ scg_printwdata(scgp)
 /*
  * print the SCSI send data into a buffer.
  */
-EXPORT int
-scg_sprintwdata(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_sprintwdata(SCSI *scgp, char *buf, int maxcnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 	register char		*p = buf;
@@ -876,9 +825,8 @@ scg_sprintwdata(scgp, buf, maxcnt)
  *
  * print the SCSI received data to stderr.
  */
-EXPORT void
-scg_printrdata(scgp)
-	SCSI	*scgp;
+void
+scg_printrdata(SCSI *scgp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 	register int		trcnt = scg_getdmacnt(scgp);
@@ -896,11 +844,8 @@ scg_printrdata(scgp)
 /*
  * print the SCSI received data into a buffer.
  */
-EXPORT int
-scg_sprintrdata(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_sprintrdata(SCSI *scgp, char *buf, int maxcnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 	register char		*p = buf;
@@ -932,9 +877,8 @@ scg_sprintrdata(scgp, buf, maxcnt)
  *
  * print the SCSI timings and (depending on verbose) received data to stderr.
  */
-EXPORT void
-scg_printresult(scgp)
-	SCSI	*scgp;
+void
+scg_printresult(SCSI *scgp)
 {
 	js_fprintf(stderr, "cmd finished after %ld.%03lds timeout %ds\n",
 		(long)scgp->cmdstop->tv_sec,
@@ -948,11 +892,8 @@ scg_printresult(scgp)
 /*
  * print the SCSI timings and (depending on verbose) received data into a buffer.
  */
-EXPORT int
-scg_sprintresult(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_sprintresult(SCSI *scgp, char *buf, int maxcnt)
 {
 	register char		*p = buf;
 	register int		amt;
@@ -980,9 +921,8 @@ scg_sprintresult(scgp, buf, maxcnt)
  *
  * print the SCSI status byte in human readable form to the SCSI error file.
  */
-EXPORT void
-scg_printstatus(scgp)
-	SCSI	*scgp;
+void
+scg_printstatus(SCSI *scgp)
 {
 	char	errbuf[SCSI_ERRSTR_SIZE];
 	int	amt;
@@ -997,11 +937,8 @@ scg_printstatus(scgp)
 /*
  * print the SCSI status byte in human readable form into a buffer.
  */
-EXPORT int
-scg_sprintstatus(scgp, buf, maxcnt)
-	SCSI	*scgp;
-	char	*buf;
-	int	maxcnt;
+int
+scg_sprintstatus(SCSI *scgp, char *buf, int maxcnt)
 {
 	register struct scg_cmd *cp = scgp->scmd;
 		char	*err;
@@ -1055,12 +992,8 @@ scg_sprintstatus(scgp, buf, maxcnt)
 /*
  * print some bytes in hex to a file.
  */
-EXPORT void
-scg_fprbytes(f, s, cp, n)
-		FILE	*f;
-		char	*s;
-	register Uchar	*cp;
-	register int	n;
+void
+scg_fprbytes(FILE *f, char *s, register Uchar *cp, register int n)
 {
 	js_fprintf(f, "%s", s);
 	while (--n >= 0)
@@ -1071,12 +1004,8 @@ scg_fprbytes(f, s, cp, n)
 /*
  * print some bytes in ascii to a file.
  */
-EXPORT void
-scg_fprascii(f, s, cp, n)
-		FILE	*f;
-		char	*s;
-	register Uchar	*cp;
-	register int	n;
+void
+scg_fprascii(FILE *f, char *s, register Uchar *cp, register int n)
 {
 	register int	c;
 
@@ -1096,11 +1025,8 @@ scg_fprascii(f, s, cp, n)
  *
  * print some bytes in hex to stderr.
  */
-EXPORT void
-scg_prbytes(s, cp, n)
-		char	*s;
-	register Uchar	*cp;
-	register int	n;
+void
+scg_prbytes(char *s, register Uchar *cp, register int n)
 {
 	scg_fprbytes(stderr, s, cp, n);
 }
@@ -1110,11 +1036,8 @@ scg_prbytes(s, cp, n)
  *
  * print some bytes in ascii to stderr.
  */
-EXPORT void
-scg_prascii(s, cp, n)
-		char	*s;
-	register Uchar	*cp;
-	register int	n;
+void
+scg_prascii(char *s, register Uchar *cp, register int n)
 {
 	scg_fprascii(stderr, s, cp, n);
 }
@@ -1122,13 +1045,8 @@ scg_prascii(s, cp, n)
 /*
  * print some bytes in hex into a buffer.
  */
-EXPORT int
-scg_sprbytes(buf, maxcnt, s, cp, n)
-		char	*buf;
-		int	maxcnt;
-		char	*s;
-	register Uchar	*cp;
-	register int	n;
+int
+scg_sprbytes(char *buf, int maxcnt, char *s, register Uchar *cp, register int n)
 {
 	register char	*p = buf;
 	register int	amt;
@@ -1156,13 +1074,8 @@ scg_sprbytes(buf, maxcnt, s, cp, n)
 /*
  * print some bytes in ascii into a buffer.
  */
-EXPORT int
-scg_sprascii(buf, maxcnt, s, cp, n)
-		char	*buf;
-		int	maxcnt;
-		char	*s;
-	register Uchar	*cp;
-	register int	n;
+int
+scg_sprascii(char *buf, int maxcnt, char *s, register Uchar *cp, register int n)
 {
 	register char	*p = buf;
 	register int	amt;
@@ -1195,11 +1108,8 @@ scg_sprascii(buf, maxcnt, s, cp, n)
 /*
  * print the SCSI sense data for last command in hex to a file.
  */
-EXPORT void
-scg_fprsense(f, cp, n)
-	FILE	*f;
-	Uchar	*cp;
-	int	n;
+void
+scg_fprsense(FILE *f, Uchar *cp, int n)
 {
 	scg_fprbytes(f, "Sense Bytes:", cp, n);
 }
@@ -1209,10 +1119,8 @@ scg_fprsense(f, cp, n)
  *
  * print the SCSI sense data for last command in hex to stderr.
  */
-EXPORT void
-scg_prsense(cp, n)
-	Uchar	*cp;
-	int	n;
+void
+scg_prsense(Uchar *cp, int n)
 {
 	scg_fprsense(stderr, cp, n);
 }
@@ -1220,12 +1128,8 @@ scg_prsense(cp, n)
 /*
  * print the SCSI sense data for last command in hex into a buffer.
  */
-EXPORT int
-scg_sprsense(buf, maxcnt, cp, n)
-	char	*buf;
-	int	maxcnt;
-	Uchar	*cp;
-	int	n;
+int
+scg_sprsense(char *buf, int maxcnt, Uchar *cp, int n)
 {
 	return (scg_sprbytes(buf, maxcnt, "Sense Bytes:", cp, n));
 }
@@ -1233,9 +1137,8 @@ scg_sprsense(buf, maxcnt, cp, n)
 /*
  * Return the SCSI status byte for last command.
  */
-EXPORT int
-scg_cmd_status(scgp)
-	SCSI	*scgp;
+int
+scg_cmd_status(SCSI *scgp)
 {
 	struct scg_cmd	*cp = scgp->scmd;
 	int		cmdstatus = *(Uchar *)&cp->scb;
@@ -1246,9 +1149,8 @@ scg_cmd_status(scgp)
 /*
  * Return the SCSI sense key for last command.
  */
-EXPORT int
-scg_sense_key(scgp)
-	SCSI	*scgp;
+int
+scg_sense_key(SCSI *scgp)
 {
 	register struct scg_cmd *cp = scgp->scmd;
 	int	key = -1;
@@ -1264,9 +1166,8 @@ scg_sense_key(scgp)
 /*
  * Return all the SCSI sense table last command.
  */
-EXPORT unsigned char *
-scg_sense_table(scgp)
-	SCSI	*scgp;
+unsigned char *
+scg_sense_table(SCSI *scgp)
 {
 	register struct scg_cmd *cp = scgp->scmd;
 
@@ -1281,9 +1182,8 @@ scg_sense_table(scgp)
 /*
  * Return the SCSI sense code for last command.
  */
-EXPORT int
-scg_sense_code(scgp)
-	SCSI	*scgp;
+int
+scg_sense_code(SCSI *scgp)
 {
 	register struct scg_cmd *cp = scgp->scmd;
 	int	code = -1;
@@ -1301,9 +1201,8 @@ scg_sense_code(scgp)
 /*
  * Return the SCSI sense qualifier for last command.
  */
-EXPORT int
-scg_sense_qual(scgp)
-	SCSI	*scgp;
+int
+scg_sense_qual(SCSI *scgp)
 {
 	register struct scg_cmd *cp = scgp->scmd;
 
@@ -1319,10 +1218,8 @@ scg_sense_qual(scgp)
 /*
  * Print the device type from the SCSI inquiry buffer to file.
  */
-EXPORT void
-scg_fprintdev(f, ip)
-		FILE	*f;
-	struct	scsi_inquiry *ip;
+void
+scg_fprintdev(FILE *f, struct scsi_inquiry *ip)
 {
 	if (ip->removable)
 		js_fprintf(f, "Removable ");
@@ -1409,9 +1306,8 @@ scg_fprintdev(f, ip)
 /*
  * Print the device type from the SCSI inquiry buffer to stdout.
  */
-EXPORT void
-scg_printdev(ip)
-	struct	scsi_inquiry *ip;
+void
+scg_printdev(struct scsi_inquiry *ip)
 {
 	scg_fprintdev(stdout, ip);
 }
@@ -1422,24 +1318,13 @@ scg_printdev(ip)
  * print into the SCSI error buffer, adjust the next write pointer.
  */
 /* VARARGS2 */
-EXPORT int
-#ifdef	PROTOTYPES
+int
 scg_printf(SCSI *scgp, const char *form, ...)
-#else
-scg_printf(scgp, form, va_alist)
-	SCSI	*scgp;
-	char	*form;
-	va_dcl
-#endif
 {
 	int	cnt;
 	va_list	args;
 
-#ifdef	PROTOTYPES
 	va_start(args, form);
-#else
-	va_start(args);
-#endif
 	cnt = js_snprintf(scgp->errptr, scg_errrsize(scgp), "%r", form, args);
 	va_end(args);
 
@@ -1455,9 +1340,8 @@ scg_printf(scgp, form, va_alist)
  * Flush the SCSI error buffer to SCSI errfile.
  * Clear error buffer after flushing.
  */
-EXPORT int
-scg_errflush(scgp)
-	SCSI	*scgp;
+int
+scg_errflush(SCSI *scgp)
 {
 	if (scgp->errfile == NULL)
 		return (0);
@@ -1469,10 +1353,8 @@ scg_errflush(scgp)
  * Flush the SCSI error buffer to a file.
  * Clear error buffer after flushing.
  */
-EXPORT int
-scg_errfflush(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+int
+scg_errfflush(SCSI *scgp, FILE *f)
 {
 	int	cnt;
 

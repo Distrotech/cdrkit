@@ -81,7 +81,7 @@ static unsigned sector_size;
 
 static int err;
 
-static void EnableCdda_cooked __PR((SCSI *scgp, int fAudioMode, unsigned uSectorsize));
+static void EnableCdda_cooked(SCSI *scgp, int fAudioMode, unsigned uSectorsize);
 /* ARGSUSED */
 static void EnableCdda_cooked(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
 {
@@ -112,7 +112,7 @@ static void EnableCdda_cooked(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
 }
 
 
-static unsigned ReadToc_cooked __PR(( SCSI *x ));
+static unsigned ReadToc_cooked(SCSI *x);
 
 /* read the table of contents (toc) via the ioctl interface */
 static unsigned ReadToc_cooked(SCSI *x)
@@ -211,7 +211,8 @@ static unsigned ReadToc_cooked(SCSI *x)
     return --tracks;           /* without lead-out */
 }
 
-static void trash_cache_cooked __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
+static void trash_cache_cooked(UINT4 *p, unsigned lSector, 
+										 unsigned SectorBurstVal);
 
 static void trash_cache_cooked(UINT4 *p, unsigned lSector, 
                                unsigned SectorBurstVal)
@@ -255,7 +256,8 @@ static void trash_cache_cooked(UINT4 *p, unsigned lSector,
 #endif
 }
 
-static void ReadCdRomData_cooked __PR(( SCSI *x, UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
+static void ReadCdRomData_cooked(SCSI *x, UINT4 *p, unsigned lSector, 
+											unsigned SectorBurstVal);
 /* read 'SectorBurst' adjacent sectors of data sectors 
  * to Buffer '*p' beginning at sector 'lSector'
  */
@@ -276,7 +278,8 @@ static void ReadCdRomData_cooked(SCSI *x, UINT4 *p, unsigned lSector,
 	return;
 }
 
-static int ReadCdRom_cooked __PR(( SCSI *x, UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
+static int ReadCdRom_cooked(SCSI *x, UINT4 *p, unsigned lSector, 
+									 unsigned SectorBurstVal);
 /* read 'SectorBurst' adjacent sectors of audio sectors 
  * to Buffer '*p' beginning at sector 'lSector'
  */
@@ -368,7 +371,7 @@ static int ReadCdRom_cooked(SCSI *x, UINT4 *p, unsigned lSector,
   return SectorBurstVal;
 }
 
-static int StopPlay_cooked __PR(( SCSI *x));
+static int StopPlay_cooked(SCSI *x);
 static int StopPlay_cooked(SCSI *x)
 {
     if (x && x->verbose) {
@@ -378,7 +381,8 @@ static int StopPlay_cooked(SCSI *x)
 	return ioctl( global.cooked_fd, CDROMSTOP, 0 ) ? 0 : -1; 
 }
 
-static int Play_at_cooked __PR(( SCSI *x, unsigned int from_sector, unsigned int sectors));
+static int Play_at_cooked(SCSI *x, unsigned int from_sector, 
+								  unsigned int sectors);
 static int Play_at_cooked(SCSI *x, unsigned int from_sector, 
                           unsigned int sectors)
 {
@@ -411,14 +415,11 @@ static int Play_at_cooked(SCSI *x, unsigned int from_sector,
 	return retval;
 }
 
-#if	defined	PROTOTYPES
-static subq_chnl *ReadSubQ_cooked __PR(( SCSI *x, unsigned char sq_format, unsigned char track ))
-#else
 /* request sub-q-channel information. This function may cause confusion
  * for a drive, when called in the sampling process.
  */
-static subq_chnl *ReadSubQ_cooked(SCSI *x, unsigned char sq_format, unsigned char track)
-#endif
+static subq_chnl *ReadSubQ_cooked(SCSI *x, unsigned char sq_format, 
+											 unsigned char track)
 {
     struct cdrom_subchnl sub_ch;
 
@@ -500,7 +501,7 @@ static subq_chnl *ReadSubQ_cooked(SCSI *x, unsigned char sq_format, unsigned cha
 }
 
 /* Speed control */
-static void SpeedSelect_cooked __PR(( SCSI *x, unsigned speed));
+static void SpeedSelect_cooked(SCSI *x, unsigned speed);
 /* ARGSUSED */
 static void SpeedSelect_cooked(SCSI *x, unsigned speed)
 {
@@ -568,7 +569,7 @@ void SetupCookedIoctl(char *pdev_name)
 #endif
     EnableCdda = EnableCdda_cooked;
     ReadCdRom = ReadCdRom_cooked;
-    ReadCdRomData = (int (*) __PR((SCSI *, unsigned char *, unsigned, unsigned ))) ReadCdRomData_cooked;
+    ReadCdRomData = (int (*)(SCSI *, unsigned char *, unsigned, unsigned)) ReadCdRomData_cooked;
     doReadToc = ReadToc_cooked;
     ReadTocText = NULL;
     ReadSubQ = ReadSubQ_cooked;

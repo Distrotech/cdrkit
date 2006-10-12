@@ -48,7 +48,7 @@ typedef struct xio {
 
 #define	xfileno(p)	(((xio_t *)(p))->x_file)
 
-extern	void	*xopen		__PR((char *name, int oflag, int mode));
-extern	int	xclose		__PR((void *vp));
+extern	void	*xopen(char *name, int oflag, int mode);
+extern	int	xclose(void *vp);
 
 #endif

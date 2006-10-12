@@ -64,28 +64,27 @@ extern	int	silent;
 extern	int	verbose;
 extern	int	lverbose;
 
-static	int	simul_load		__PR((SCSI *scgp, cdr_t *));
-static	int	simul_unload		__PR((SCSI *scgp, cdr_t *));
-static	cdr_t	*identify_simul		__PR((SCSI *scgp, cdr_t *, struct scsi_inquiry *));
-static	int	init_simul		__PR((SCSI *scgp, cdr_t *dp));
-static	int	getdisktype_simul	__PR((SCSI *scgp, cdr_t *dp));
-static	int	speed_select_simul	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-static	int	next_wr_addr_simul	__PR((SCSI *scgp, track_t *trackp, long *ap));
-static	int	cdr_write_simul		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
-static	int	open_track_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	close_track_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	open_session_simul	__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	int	fixate_simul		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-static	void	tv_sub			__PR((struct timeval *tvp1, struct timeval *tvp2));
+static	int	simul_load(SCSI *scgp, cdr_t *);
+static	int	simul_unload(SCSI *scgp, cdr_t *);
+static	cdr_t	*identify_simul(SCSI *scgp, cdr_t *, struct scsi_inquiry *);
+static	int	init_simul(SCSI *scgp, cdr_t *dp);
+static	int	getdisktype_simul(SCSI *scgp, cdr_t *dp);
+static	int	speed_select_simul(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	next_wr_addr_simul(SCSI *scgp, track_t *trackp, long *ap);
+static	int	cdr_write_simul(SCSI *scgp, caddr_t bp, long sectaddr, long size, 
+										 int blocks, BOOL islast);
+static	int	open_track_simul(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	close_track_simul(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	open_session_simul(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	fixate_simul(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	void	tv_sub(struct timeval *tvp1, struct timeval *tvp2);
 
-static int
-simul_load(SCSI *scgp, cdr_t *dp)
+static int simul_load(SCSI *scgp, cdr_t *dp)
 {
 	return (0);
 }
 
-static int
-simul_unload(SCSI *scgp, cdr_t *dp)
+static int simul_unload(SCSI *scgp, cdr_t *dp)
 {
 	return (0);
 }
@@ -107,15 +106,15 @@ cdr_t	cdr_cdr_simul = {
 	simul_unload,
 	buf_dummy,
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_simul,
 	select_secsize,
 	next_wr_addr_simul,
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,	/* reserve_track	*/
+	(int(*)(SCSI *, Ulong))cmd_ill,	/* reserve_track	*/
 	cdr_write_simul,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy, /* send_cue */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_simul,
 	close_track_simul,
 	open_session_simul,
@@ -126,7 +125,7 @@ cdr_t	cdr_cdr_simul = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -148,15 +147,15 @@ cdr_t	cdr_dvd_simul = {
 	simul_unload,
 	buf_dummy,
 	cmd_dummy,					/* recovery_needed */
-	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,	/* recover	*/
+	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_simul,
 	select_secsize,
 	next_wr_addr_simul,
-	(int(*)__PR((SCSI *, Ulong)))cmd_ill,	/* reserve_track	*/
+	(int(*)(SCSI *, Ulong))cmd_ill,	/* reserve_track	*/
 	cdr_write_simul,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
-	(int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
+	(int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy, /* send_cue */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_simul,
 	close_track_simul,
 	open_session_simul,
@@ -167,7 +166,7 @@ cdr_t	cdr_dvd_simul = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };

@@ -28,41 +28,40 @@ static	char sccsid[] =
 #include "cdda_paranoia.h"
 #include "pmalloc.h"
 
-linked_list *new_list       __PR((void *(*newp) (void),
-                                  void (*freep) (void *)));
-linked_element *add_elem    __PR((linked_list * l, void *elem));
-linked_element *new_elem    __PR((linked_list * list));
-void free_elem              __PR((linked_element * e, int free_ptr));
-void free_list              __PR((linked_list * list, int free_ptr));
-void *get_elem              __PR((linked_element * e));
-linked_list *copy_list      __PR((linked_list * list));
-static c_block *i_cblock_constructor __PR((void));
-void i_cblock_destructor    __PR((c_block * c));
-c_block *new_c_block        __PR((cdrom_paranoia * p));
-void free_c_block           __PR((c_block * c));
-static v_fragment *i_vfragment_constructor __PR((void));
-static void i_v_fragment_destructor __PR((v_fragment * v));
-v_fragment *new_v_fragment  __PR((cdrom_paranoia * p, c_block * one,
-                                 long begin, long end, int last));
-void free_v_fragment        __PR((v_fragment * v));
-c_block *c_first            __PR((cdrom_paranoia * p));
-c_block *c_last             __PR((cdrom_paranoia * p));
-c_block *c_next             __PR((c_block * c));
-c_block *c_prev             __PR((c_block * c));
-v_fragment *v_first         __PR((cdrom_paranoia * p));
-v_fragment *v_last          __PR((cdrom_paranoia * p));
-v_fragment *v_next          __PR((v_fragment * v));
-v_fragment *v_prev          __PR((v_fragment * v));
-void recover_cache          __PR((cdrom_paranoia * p));
-Int16_t *v_buffer           __PR((v_fragment * v));
-c_block *c_alloc            __PR((Int16_t * vector, long begin, long size));
-void c_set                  __PR((c_block * v, long begin));
-void c_remove               __PR((c_block * v, long cutpos, long cutsize));
-void c_overwrite            __PR((c_block * v, long pos, Int16_t * b, long size));
-void c_append               __PR((c_block * v, Int16_t * vector, long size));
-void c_removef              __PR((c_block * v, long cut));
-void i_paranoia_firstlast   __PR((cdrom_paranoia * p));
-cdrom_paranoia *paranoia_init __PR((void * d, int nsectors));
+linked_list 	*new_list(void *(*newp) (void), void (*freep) (void *));
+linked_element *add_elem(linked_list *l, void *elem);
+linked_element *new_elem(linked_list *list);
+void 				free_elem(linked_element *e, int free_ptr);
+void 				free_list(linked_list *list, int free_ptr);
+void 				*get_elem(linked_element *e);
+linked_list 	*copy_list(linked_list *list);
+static c_block *i_cblock_constructor(void);
+void 				i_cblock_destructor(c_block *c);
+c_block 			*new_c_block(cdrom_paranoia *p);
+void 				free_c_block(c_block *c);
+static v_fragment *i_vfragment_constructor(void);
+static void 	i_v_fragment_destructor(v_fragment *v);
+v_fragment 		*new_v_fragment(cdrom_paranoia *p, c_block *one, long begin, 
+										 long end, int last);
+void 				free_v_fragment(v_fragment *v);
+c_block 			*c_first(cdrom_paranoia *p);
+c_block 			*c_last(cdrom_paranoia *p);
+c_block 			*c_next(c_block *c);
+c_block 			*c_prev(c_block *c);
+v_fragment 		*v_first(cdrom_paranoia *p);
+v_fragment 		*v_last(cdrom_paranoia *p);
+v_fragment 		*v_next(v_fragment *v);
+v_fragment 		*v_prev(v_fragment *v);
+void 				recover_cache(cdrom_paranoia *p);
+Int16_t 			*v_buffer(v_fragment *v);
+c_block 			*c_alloc(Int16_t *vector, long begin, long size);
+void 				c_set(c_block *v, long begin);
+void 				c_remove(c_block *v, long cutpos, long cutsize);
+void 				c_overwrite(c_block *v, long pos, Int16_t *b, long size);
+void 				c_append(c_block *v, Int16_t *vector, long size);
+void 				c_removef(c_block *v, long cut);
+void 				i_paranoia_firstlast(cdrom_paranoia *p);
+cdrom_paranoia *paranoia_init(void *d, int nsectors);
 
 
 linked_list *new_list(void *(*newp)(void), void (*freep)(void *))
@@ -149,7 +148,7 @@ linked_list *copy_list(linked_list *list)
 
 /**** C_block stuff ******************************************************/
 
-#define	vp_cblock_constructor_func ((void*(*)__PR((void)))i_cblock_constructor)
+#define	vp_cblock_constructor_func ((void*(*)(void))i_cblock_constructor)
 static c_block *i_cblock_constructor()
 {
 	c_block		*ret = _pcalloc(1, sizeof (c_block));
@@ -157,7 +156,7 @@ static c_block *i_cblock_constructor()
 	return (ret);
 }
 
-#define	vp_cblock_destructor_func ((void(*)__PR((void*)))i_cblock_destructor)
+#define	vp_cblock_destructor_func ((void(*)(void*))i_cblock_destructor)
 void i_cblock_destructor(c_block *c)
 {
 	if (c) {
@@ -198,7 +197,7 @@ void free_c_block(c_block *c)
 	free_elem(c->e, 1);
 }
 
-#define	vp_vfragment_constructor_func ((void*(*)__PR((void)))i_vfragment_constructor)
+#define	vp_vfragment_constructor_func ((void*(*)(void))i_vfragment_constructor)
 static v_fragment *i_vfragment_constructor()
 {
 	v_fragment	*ret = _pcalloc(1, sizeof (v_fragment));
@@ -206,7 +205,7 @@ static v_fragment *i_vfragment_constructor()
 	return (ret);
 }
 
-#define	vp_v_fragment_destructor_func ((void(*)__PR((void*)))i_v_fragment_destructor)
+#define	vp_v_fragment_destructor_func ((void(*)(void*))i_v_fragment_destructor)
 static void i_v_fragment_destructor(v_fragment *v)
 {
 	_pfree(v);

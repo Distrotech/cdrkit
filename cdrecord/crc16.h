@@ -34,8 +34,8 @@
 #ifndef	_CRC16_H
 #define	_CRC16_H
 
-extern	UInt16_t	calcCRC		__PR((Uchar *buf, Uint bsize));
-extern	UInt16_t	fillcrc		__PR((Uchar *buf, Uint bsize));
-extern	UInt16_t	flip_crc_error_corr __PR((Uchar *b, Uint bsize, Uint p_crc));
+extern	UInt16_t	calcCRC(Uchar *buf, Uint bsize);
+extern	UInt16_t	fillcrc(Uchar *buf, Uint bsize);
+extern	UInt16_t	flip_crc_error_corr(Uchar *b, Uint bsize, Uint p_crc);
 
 #endif

@@ -77,24 +77,24 @@ static	char _sccsid[] =
 extern	int	errno;
 #endif
 
-LOCAL	int	scgo_send	__PR((SCSI *scgp));
-LOCAL	char *	scgo_version	__PR((SCSI *scgp, int what));
-LOCAL	int	scgo_help	__PR((SCSI *scgp, FILE *f));
-LOCAL	int	scgo_open	__PR((SCSI *scgp, char *device));
-LOCAL	int	scgo_close	__PR((SCSI *scgp));
-LOCAL	long	scgo_maxdma	__PR((SCSI *scgp, long amt));
-LOCAL	void *	scgo_getbuf	__PR((SCSI *scgp, long amt));
-LOCAL	void	scgo_freebuf	__PR((SCSI *scgp));
+static	int	scgo_send(SCSI *scgp);
+static	char *scgo_version(SCSI *scgp, int what);
+static	int	scgo_help(SCSI *scgp, FILE *f);
+static	int	scgo_open(SCSI *scgp, char *device);
+static	int	scgo_close(SCSI *scgp);
+static	long	scgo_maxdma(SCSI *scgp, long amt);
+static	void *scgo_getbuf(SCSI *scgp, long amt);
+static	void	scgo_freebuf(SCSI *scgp);
 
-LOCAL	BOOL	scgo_havebus	__PR((SCSI *scgp, int busno));
-LOCAL	int	scgo_fileno	__PR((SCSI *scgp, int busno, int tgt, int tlun));
-LOCAL	int	scgo_initiator_id __PR((SCSI *scgp));
-LOCAL	int	scgo_isatapi	__PR((SCSI *scgp));
-LOCAL	int	scgo_reset	__PR((SCSI *scgp, int what));
+static	BOOL	scgo_havebus(SCSI *scgp, int busno);
+static	int	scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun);
+static	int	scgo_initiator_id(SCSI *scgp);
+static	int	scgo_isatapi(SCSI *scgp);
+static	int	scgo_reset(SCSI *scgp, int what);
 
-LOCAL	char	_scg_auth_cdrkit[]	= "cdrkit-team";	/* The author for this module	*/
+static	char	_scg_auth_cdrkit[]	= "cdrkit-team";	/* The author for this module	*/
 
-EXPORT scg_ops_t scg_std_ops = {
+scg_ops_t scg_std_ops = {
 	scgo_send,
 	scgo_version,
 	scgo_help,
@@ -291,23 +291,23 @@ EXPORT scg_ops_t scg_std_ops = {
 #define	scgo_dsend		scgo_send
 #endif	/* SCSI_IMPL */
 
-LOCAL	int	scgo_dsend	__PR((SCSI *scgp));
-LOCAL	char *	scgo_dversion	__PR((SCSI *scgp, int what));
-LOCAL	int	scgo_dhelp	__PR((SCSI *scgp, FILE *f));
-LOCAL	int	scgo_nohelp	__PR((SCSI *scgp, FILE *f));
-LOCAL	int	scgo_ropen	__PR((SCSI *scgp, char *device));
-LOCAL	int	scgo_dopen	__PR((SCSI *scgp, char *device));
-LOCAL	int	scgo_dclose	__PR((SCSI *scgp));
-LOCAL	long	scgo_dmaxdma	__PR((SCSI *scgp, long amt));
-LOCAL	void *	scgo_dgetbuf	__PR((SCSI *scgp, long amt));
-LOCAL	void	scgo_dfreebuf	__PR((SCSI *scgp));
-LOCAL	BOOL	scgo_dhavebus	__PR((SCSI *scgp, int busno));
-LOCAL	int	scgo_dfileno	__PR((SCSI *scgp, int busno, int tgt, int tlun));
-LOCAL	int	scgo_dinitiator_id __PR((SCSI *scgp));
-LOCAL	int	scgo_disatapi	__PR((SCSI *scgp));
-LOCAL	int	scgo_dreset	__PR((SCSI *scgp, int what));
+static	int	scgo_dsend(SCSI *scgp);
+static	char *scgo_dversion(SCSI *scgp, int what);
+static	int	scgo_dhelp(SCSI *scgp, FILE *f);
+static	int	scgo_nohelp(SCSI *scgp, FILE *f);
+static	int	scgo_ropen(SCSI *scgp, char *device);
+static	int	scgo_dopen(SCSI *scgp, char *device);
+static	int	scgo_dclose(SCSI *scgp);
+static	long	scgo_dmaxdma(SCSI *scgp, long amt);
+static	void *scgo_dgetbuf(SCSI *scgp, long amt);
+static	void	scgo_dfreebuf(SCSI *scgp);
+static	BOOL	scgo_dhavebus(SCSI *scgp, int busno);
+static	int	scgo_dfileno(SCSI *scgp, int busno, int tgt, int tlun);
+static	int	scgo_dinitiator_id(SCSI *scgp);
+static	int	scgo_disatapi(SCSI *scgp);
+static	int	scgo_dreset(SCSI *scgp, int what);
 
-EXPORT scg_ops_t scg_remote_ops = {
+scg_ops_t scg_remote_ops = {
 	scgo_dsend,
 	scgo_dversion,
 	scgo_nohelp,
@@ -323,7 +323,7 @@ EXPORT scg_ops_t scg_remote_ops = {
 	scgo_dreset,
 };
 
-EXPORT scg_ops_t scg_dummy_ops = {
+scg_ops_t scg_dummy_ops = {
 	scgo_dsend,
 	scgo_dversion,
 	scgo_dhelp,
@@ -346,17 +346,15 @@ EXPORT scg_ops_t scg_dummy_ops = {
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_dversion[] = "scsihack.c-1.44";	/* The version for this transport*/
+static	char	_scg_trans_dversion[] = "scsihack.c-1.44";	/* The version for this transport*/
 
 /*
  * Return version information for the low level SCSI transport code.
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_dversion(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_dversion(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -376,128 +374,101 @@ scgo_dversion(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_dhelp(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_dhelp(SCSI *scgp, FILE *f)
 {
 	printf("None.\n");
 	return (0);
 }
 
-LOCAL int
-scgo_nohelp(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_nohelp(SCSI *scgp, FILE *f)
 {
 	return (0);
 }
 
-LOCAL int
-scgo_ropen(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_ropen(SCSI *scgp, char *device)
 {
 	comerrno(EX_BAD, "No remote SCSI transport available.\n");
 	return (-1);	/* Keep lint happy */
 }
 
 #ifndef	SCSI_IMPL
-LOCAL int
-scgo_dopen(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_dopen(SCSI *scgp, char *device)
 {
 	comerrno(EX_BAD, "No local SCSI transport implementation for this architecture.\n");
 	return (-1);	/* Keep lint happy */
 }
 #else
-LOCAL int
-scgo_dopen(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_dopen(SCSI *scgp, char *device)
 {
 	comerrno(EX_BAD, "SCSI open usage error.\n");
 	return (-1);	/* Keep lint happy */
 }
 #endif	/* SCSI_IMPL */
 
-LOCAL int
-scgo_dclose(scgp)
-	SCSI	*scgp;
+static int
+scgo_dclose(SCSI *scgp)
 {
 	errno = EINVAL;
 	return (-1);
 }
 
-LOCAL long
-scgo_dmaxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_dmaxdma(SCSI *scgp, long amt)
 {
 	errno = EINVAL;
 	return	(0L);
 }
 
-LOCAL void *
-scgo_dgetbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_dgetbuf(SCSI *scgp, long amt)
 {
 	errno = EINVAL;
 	return ((void *)0);
 }
 
-LOCAL void
-scgo_dfreebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_dfreebuf(SCSI *scgp)
 {
 }
 
-LOCAL BOOL
-scgo_dhavebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_dhavebus(SCSI *scgp, int busno)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_dfileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_dfileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_dinitiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_dinitiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_disatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_disatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_dreset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_dreset(SCSI *scgp, int what)
 {
 	errno = EINVAL;
 	return (-1);
 }
 
-LOCAL int
-scgo_dsend(scgp)
-	SCSI	*scgp;
+static int
+scgo_dsend(SCSI *scgp)
 {
 	errno = EINVAL;
 	return (-1);

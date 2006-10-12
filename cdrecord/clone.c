@@ -56,8 +56,8 @@ static	char sccsid[] =
 
 /*#define	SAO_RAW*/
 
-void	clone_toc	__PR((track_t *trackp));
-void	clone_tracktype	__PR((track_t *trackp));
+void	clone_toc(track_t *trackp);
+void	clone_tracktype(track_t *trackp);
 
 extern	int	lverbose;
 extern	int	xdebug;
@@ -76,8 +76,7 @@ static	long	loutstart;
 /*
  * Read Clone TOC description from full toc file.
  */
-void
-clone_toc(track_t *trackp)
+void clone_toc(track_t *trackp)
 {
 	char	filename[1024];
 	msf_t	m;
@@ -213,8 +212,7 @@ clone_toc(track_t *trackp)
  * Control 4 = data
  * Control 5 = packet data
  */
-void
-clone_tracktype(track_t *trackp)
+void clone_tracktype(track_t *trackp)
 {
 	int	tracks = trackp->tracks;
 	int	sectype;

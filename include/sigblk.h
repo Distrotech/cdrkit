@@ -52,7 +52,7 @@ typedef struct sigblk {
 	const char	*sb_signame;	/* Name of software signal	*/
 
 					/* sb_sigfun: function to call	*/
-	int		(*sb_sigfun)	__PR((const char *, long, long));
+	int		(*sb_sigfun)(const char *, long, long);
 
 	long		sb_sigarg;	/* Second arg for sb_sigfun	*/
 } SIGBLK;
@@ -64,14 +64,14 @@ typedef struct sigblk {
  *	2)	The argument from the handlecond() call
  *	3)	The argument from the raisecond() call
  */
-typedef	int	(*handlefunc_t)		__PR((const char *, long, long));
+typedef	int	(*handlefunc_t)(const char *, long, long);
 
-extern	void	handlecond		__PR((const char *, SIGBLK *,
-					    int(*)(const char *, long, long),
-									long));
-extern	void	raisecond		__PR((const char *, long));
-extern	void	starthandlecond		__PR((SIGBLK *));
-extern	void	unhandlecond		__PR((SIGBLK *));
+extern	void	handlecond(const char *, SIGBLK *,
+					    		  int(*)(const char *, long, long),
+								  long);
+extern	void	raisecond(const char *, long);
+extern	void	starthandlecond(SIGBLK *);
+extern	void	unhandlecond(SIGBLK *);
 
 #ifdef	__cplusplus
 }

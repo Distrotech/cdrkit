@@ -176,9 +176,9 @@ struct file_hash {
  */
 struct output_fragment {
 	struct output_fragment *of_next;
-	int		(*of_size)	__PR((int));
-	int		(*of_generate)	__PR((void));
-	int		(*of_write)	__PR((FILE *));
+	int		(*of_size)(int);
+	int		(*of_generate)(void);
+	int		(*of_write)(FILE *);
 	char		*of_name;			/* Textual description */
 	unsigned int	of_start_extent;		/* For consist check */
 };
@@ -433,98 +433,93 @@ extern int	do_sort;
 #endif /* SORTING */
 
 /* tree.c */
-extern int stat_filter __PR((char *, struct stat *));
-extern int lstat_filter __PR((char *, struct stat *));
-extern int sort_tree __PR((struct directory *));
+extern int stat_filter(char *, struct stat *);
+extern int lstat_filter(char *, struct stat *);
+extern int sort_tree(struct directory *);
 extern struct directory *
-		find_or_create_directory __PR((struct directory *,
-				const char *,
-				struct directory_entry * self, int));
-extern void	finish_cl_pl_entries __PR((void));
-extern int	scan_directory_tree __PR((struct directory * this_dir,
-				char *path,
-				struct directory_entry * self));
+find_or_create_directory(struct directory *, const char *, 
+								 struct directory_entry *self, int);
+extern void	finish_cl_pl_entries(void);
+extern int	scan_directory_tree(struct directory *this_dir, char *path,
+										  struct directory_entry *self);
 
 #ifdef APPLE_HYB
-extern int	insert_file_entry __PR((struct directory *, char *,
-				char *, int));
-
+extern int	insert_file_entry(struct directory *, char *, char *, int);
 #else
-extern int	insert_file_entry __PR((struct directory *, char *,
-				char *));
-
+extern int	insert_file_entry(struct directory *, char *, char *);
 #endif	/* APPLE_HYB */
 
-extern void generate_iso9660_directories __PR((struct directory *, FILE *));
-extern void dump_tree __PR((struct directory * node));
-extern struct directory_entry *search_tree_file __PR((struct
-				directory * node, char *filename));
-extern void update_nlink_field __PR((struct directory * node));
-extern void init_fstatbuf __PR((void));
+extern void generate_iso9660_directories(struct directory *, FILE *);
+extern void dump_tree(struct directory * node);
+extern struct directory_entry *
+search_tree_file(struct directory * node, char *filename);
+extern void update_nlink_field(struct directory * node);
+extern void init_fstatbuf(void);
 extern struct stat root_statbuf;
 extern struct stat fstatbuf;
 
 /* eltorito.c */
-extern void init_boot_catalog __PR((const char *path));
-extern void insert_boot_cat __PR((void));
-extern void get_boot_entry	__PR((void));
-extern void new_boot_entry	__PR((void));
+extern void init_boot_catalog(const char *path);
+extern void insert_boot_cat(void);
+extern void get_boot_entry(void);
+extern void new_boot_entry(void);
 
 /* boot.c */
-extern void sparc_boot_label __PR((char *label));
-extern void sunx86_boot_label __PR((char *label));
-extern void scan_sparc_boot __PR((char *files));
-extern void scan_sunx86_boot __PR((char *files));
-extern int make_sun_label __PR((void));
-extern int make_sunx86_label __PR((void));
+extern void sparc_boot_label(char *label);
+extern void sunx86_boot_label(char *label);
+extern void scan_sparc_boot(char *files);
+extern void scan_sunx86_boot(char *files);
+extern int make_sun_label(void);
+extern int make_sunx86_label(void);
 
 /* boot-alpha.c */
-extern int add_boot_alpha_filename __PR((char *filename));
+extern int add_boot_alpha_filename(char *filename);
 
 /* boot-hppa.c */
-extern int add_boot_hppa_cmdline    __PR((char *cmdline));
-extern int add_boot_hppa_kernel_32  __PR((char *filename));
-extern int add_boot_hppa_kernel_64  __PR((char *filename));
-extern int add_boot_hppa_bootloader __PR((char *filename));
-extern int add_boot_hppa_ramdisk    __PR((char *filename));
+extern int add_boot_hppa_cmdline(char *cmdline);
+extern int add_boot_hppa_kernel_32(char *filename);
+extern int add_boot_hppa_kernel_64(char *filename);
+extern int add_boot_hppa_bootloader(char *filename);
+extern int add_boot_hppa_ramdisk(char *filename);
 
 /* boot-mips.c */
-extern int add_boot_mips_filename __PR((char *filename));
+extern int add_boot_mips_filename(char *filename);
 
 /* boot-mipsel.c */
-extern int add_boot_mipsel_filename  __PR((char *filename));
+extern int add_boot_mipsel_filename(char *filename);
 
 /* rsync.c */
-extern unsigned long long rsync64   __PR((unsigned char *mem, size_t size));
+extern unsigned long long rsync64(unsigned char *mem, size_t size);
 
 /* write.c */
-extern int get_731 __PR((char *));
-extern int get_732 __PR((char *));
-extern int get_733 __PR((char *));
-extern int isonum_733 __PR((unsigned char *));
-extern void set_723 __PR((char *, unsigned int));
-extern void set_731 __PR((char *, unsigned int));
-extern void set_721 __PR((char *, unsigned int));
-extern void set_733 __PR((char *, unsigned int));
-extern int sort_directory __PR((struct directory_entry **, int));
-extern void generate_one_directory __PR((struct directory *, FILE *));
-extern void memcpy_max __PR((char *, char *, int));
-extern int oneblock_size __PR((int starting_extent));
+extern int get_731(char *);
+extern int get_732(char *);
+extern int get_733(char *);
+extern int isonum_733(unsigned char *);
+extern void set_723(char *, unsigned int);
+extern void set_731(char *, unsigned int);
+extern void set_721(char *, unsigned int);
+extern void set_733(char *, unsigned int);
+extern int sort_directory(struct directory_entry **, int);
+extern void generate_one_directory(struct directory *, FILE *);
+extern void memcpy_max(char *, char *, int);
+extern int oneblock_size(int starting_extent);
 extern struct iso_primary_descriptor vol_desc;
-extern void xfwrite __PR((void *buffer, int size, int count, FILE * file, int submode, BOOL islast));
-extern void set_732 __PR((char *pnt, unsigned int i));
-extern void set_722 __PR((char *pnt, unsigned int i));
-extern void outputlist_insert __PR((struct output_fragment * frag));
+extern void xfwrite(void *buffer, int size, int count, FILE *file, int submode,
+						  BOOL islast);
+extern void set_732(char *pnt, unsigned int i);
+extern void set_722(char *pnt, unsigned int i);
+extern void outputlist_insert(struct output_fragment * frag);
 
 #ifdef APPLE_HYB
-extern Ulong get_adj_size __PR((int Csize));
-extern int adj_size __PR((int Csize, int start_extent, int extra));
-extern void adj_size_other __PR((struct directory * dpnt));
-extern int insert_padding_file __PR((int size));
-extern int gen_mac_label __PR((struct deferred_write *));
+extern Ulong get_adj_size(int Csize);
+extern int adj_size(int Csize, int start_extent, int extra);
+extern void adj_size_other(struct directory * dpnt);
+extern int insert_padding_file(int size);
+extern int gen_mac_label(struct deferred_write *);
 
 #ifdef PREP_BOOT
-extern void gen_prepboot_label __PR((unsigned char *));
+extern void gen_prepboot_label(unsigned char *);
 
 #endif	/* PREP_BOOT */
 #endif	/* APPLE_HYB */
@@ -532,114 +527,112 @@ extern void gen_prepboot_label __PR((unsigned char *));
 /* multi.c */
 
 extern FILE	*in_image;
-extern int open_merge_image __PR((char *path));
-extern int close_merge_image __PR((void));
+extern int open_merge_image(char *path);
+extern int close_merge_image(void);
 extern struct iso_directory_record *
-			merge_isofs __PR((char *path));
-extern unsigned char	*parse_xa __PR((unsigned char *pnt, int *lenp,
-				struct directory_entry * dpnt));
-extern int	rr_flags	__PR((struct iso_directory_record *idr));
-extern int merge_previous_session __PR((struct directory *,
-				struct iso_directory_record *, char *, char *));
-extern int get_session_start __PR((int *));
+merge_isofs(char *path);
+extern unsigned char	*parse_xa(unsigned char *pnt, int *lenp,
+										 struct directory_entry *dpnt);
+extern int	rr_flags(struct iso_directory_record *idr);
+extern int merge_previous_session(struct directory *, 
+											 struct iso_directory_record *, 
+											 char *, char *);
+extern int get_session_start(int *);
 
 /* joliet.c */
 #ifdef	UDF
 #   ifdef USE_ICONV
-extern	size_t	convert_to_unicode	__PR((unsigned char *buffer,
-			int size, char *source, struct unls_table *inls));
-extern	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
+extern	size_t	convert_to_unicode(unsigned char *buffer, int size, 
+												 char *source, struct unls_table *inls);
+extern	int	joliet_strlen(const char *string, struct unls_table *inls);
 #   else
-extern	void	convert_to_unicode	__PR((unsigned char *buffer,
-			int size, char *source, struct unls_table *inls));
-extern	int	joliet_strlen		__PR((const char *string));
+extern	void	convert_to_unicode(unsigned char *buffer, int size, 
+											 char *source, struct unls_table *inls);
+extern	int	joliet_strlen(const char *string);
 #   endif
 #endif
-extern unsigned char conv_charset __PR((unsigned char, struct unls_table *,
-				struct unls_table *));
-extern int joliet_sort_tree __PR((struct directory * node));
+extern unsigned char conv_charset(unsigned char, struct unls_table *,
+											 struct unls_table *);
+extern int joliet_sort_tree(struct directory * node);
 
 /* match.c */
-extern int matches __PR((char *));
-extern int add_match __PR((char *));
+extern int matches(char *);
+extern int add_match(char *);
 
 /* files.c */
-struct dirent	*readdir_add_files __PR((char **, char *, DIR *));
+struct dirent	*readdir_add_files(char **, char *, DIR *);
 
 /* name.c */
 
-extern void iso9660_check	__PR((struct iso_directory_record *idr, struct directory_entry *ndr));
-extern int iso9660_file_length __PR((const char *name,
-				struct directory_entry * sresult, int flag));
+extern void iso9660_check(struct iso_directory_record *idr, 
+								  struct directory_entry *ndr);
+extern int iso9660_file_length(const char *name, 
+										 struct directory_entry *sresult, int flag);
 
 /* various */
-extern int iso9660_date __PR((char *, time_t));
-extern void add_hash __PR((struct directory_entry *));
-extern struct file_hash *find_hash __PR((dev_t, ino_t));
+extern int iso9660_date(char *, time_t);
+extern void add_hash(struct directory_entry *);
+extern struct file_hash *find_hash(dev_t, ino_t);
 
-extern void flush_hash __PR((void));
-extern void add_directory_hash __PR((dev_t, ino_t));
-extern struct file_hash *find_directory_hash __PR((dev_t, ino_t));
-extern void flush_file_hash __PR((void));
-extern int delete_file_hash __PR((struct directory_entry *));
-extern struct directory_entry *find_file_hash __PR((char *));
-extern void add_file_hash __PR((struct directory_entry *));
+extern void flush_hash(void);
+extern void add_directory_hash(dev_t, ino_t);
+extern struct file_hash *find_directory_hash(dev_t, ino_t);
+extern void flush_file_hash(void);
+extern int delete_file_hash(struct directory_entry *);
+extern struct directory_entry *find_file_hash(char *);
+extern void add_file_hash(struct directory_entry *);
 
-extern int	generate_xa_rr_attributes __PR((char *, char *,
-				struct directory_entry *,
-				struct stat *, struct stat *,
-				int deep_flag));
-extern char	*generate_rr_extension_record __PR((char *id,
-				char *descriptor,
-				char *source, int *size));
+extern int	generate_xa_rr_attributes(char *, char *, struct directory_entry *,
+												  struct stat *, struct stat *, 
+												  int deep_flag);
+extern char	*generate_rr_extension_record(char *id, char *descriptor,
+														char *source, int *size);
 
-extern int	check_prev_session __PR((struct directory_entry **, int len,
-				struct directory_entry *,
-				struct stat *,
-				struct stat *,
-				struct directory_entry **));
+extern int	check_prev_session(struct directory_entry **, int len, 
+										 struct directory_entry *, struct stat *,
+										 struct stat *, struct directory_entry **);
 
-extern void	match_cl_re_entries __PR((void));
-extern void	finish_cl_pl_for_prev_session __PR((void));
-extern char	*find_rr_attribute __PR((unsigned char *pnt, int len, char *attr_type));
+extern void	match_cl_re_entries(void);
+extern void	finish_cl_pl_for_prev_session(void);
+extern char	*find_rr_attribute(unsigned char *pnt, int len, char *attr_type);
 
 #ifdef APPLE_HYB
 /* volume.c */
-extern int make_mac_volume __PR((struct directory * dpnt, int start_extent));
-extern int write_fork __PR((hfsfile * hfp, long tot));
+extern int make_mac_volume(struct directory * dpnt, int start_extent);
+extern int write_fork(hfsfile * hfp, long tot);
 
 /* apple.c */
 
-extern void del_hfs_info __PR((struct hfs_info *));
-extern int get_hfs_dir __PR((char *, char *, struct directory_entry *));
-extern int get_hfs_info __PR((char *, char *, struct directory_entry *));
-extern int get_hfs_rname __PR((char *, char *, char *));
-extern int hfs_exclude __PR((char *));
-extern void print_hfs_info __PR((struct directory_entry *));
-extern void hfs_init __PR((char *, unsigned short, unsigned int));
-extern void delete_rsrc_ent __PR((struct directory_entry *));
-extern void clean_hfs __PR((void));
-extern void perr __PR((char *));
-extern void set_root_info __PR((char *));
+extern void del_hfs_info(struct hfs_info *);
+extern int get_hfs_dir(char *, char *, struct directory_entry *);
+extern int get_hfs_info(char *, char *, struct directory_entry *);
+extern int get_hfs_rname(char *, char *, char *);
+extern int hfs_exclude(char *);
+extern void print_hfs_info(struct directory_entry *);
+extern void hfs_init(char *, unsigned short, unsigned int);
+extern void delete_rsrc_ent(struct directory_entry *);
+extern void clean_hfs(void);
+extern void perr(char *);
+extern void set_root_info(char *);
 
 /* desktop.c */
 
-extern int make_desktop __PR((hfsvol *, int));
+extern int make_desktop(hfsvol *, int);
 
 /* mac_label.c */
 
 #ifdef	_MAC_LABEL_H
 #ifdef PREP_BOOT
-extern void	gen_prepboot_label __PR((MacLabel * mac_label));
+extern void	gen_prepboot_label(MacLabel * mac_label);
 #endif
-extern int	gen_mac_label __PR((defer *));
+extern int	gen_mac_label(defer *);
 #endif
-extern int	autostart __PR((void));
+extern int	autostart(void);
 
 /* libfile */
 
-extern char	*get_magic_match __PR((const char *));
-extern void	clean_magic __PR((void));
+extern char	*get_magic_match(const char *);
+extern void	clean_magic(void);
 
 #endif	/* APPLE_HYB */
 
@@ -671,8 +664,8 @@ extern struct eltorito_boot_entry_info *first_boot_entry;
 extern struct eltorito_boot_entry_info *last_boot_entry;
 extern struct eltorito_boot_entry_info *current_boot_entry;
 
-extern char	*findgequal	__PR((char *));
-extern void	*e_malloc	__PR((size_t));
+extern char	*findgequal(char *);
+extern void	*e_malloc(size_t);
 
 /*
  * Note: always use these macros to avoid problems.

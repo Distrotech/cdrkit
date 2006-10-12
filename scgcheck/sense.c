@@ -57,17 +57,16 @@ extern	long	bufsize;		/* The size of the transfer buffer */
 extern	FILE	*logfile;
 extern	char	unavail[];
 
-LOCAL	BOOL	inq_nofail = FALSE;
+static	BOOL	inq_nofail = FALSE;
 
 
-EXPORT	void	sensetest	__PR((SCSI *scgp));
-LOCAL	int	sensecount	__PR((SCSI *scgp, int sensecnt));
-LOCAL	int	badinquiry	__PR((SCSI *scgp, caddr_t bp, int cnt, int sensecnt));
-LOCAL	int	bad_unit_ready	__PR((SCSI *scgp, int sensecnt));
+void	sensetest(SCSI *scgp);
+static	int	sensecount(SCSI *scgp, int sensecnt);
+static	int	badinquiry(SCSI *scgp, caddr_t bp, int cnt, int sensecnt);
+static	int	bad_unit_ready(SCSI *scgp, int sensecnt);
 
-EXPORT void
-sensetest(scgp)
-	SCSI	*scgp;
+void
+sensetest(SCSI *scgp)
 {
 	char	abuf[2];
 	int	ret;
@@ -189,10 +188,8 @@ sensetest(scgp)
 	}
 }
 
-LOCAL int
-sensecount(scgp, sensecnt)
-	SCSI	*scgp;
-	int	sensecnt;
+static int
+sensecount(SCSI *scgp, int sensecnt)
 {
 	int	maxcnt;
 	int	i;
@@ -250,12 +247,8 @@ printf("---------->     Method 0xFF: expected: %d reported: %d max found: %d\n",
 	return (maxcnt);
 }
 
-LOCAL int
-badinquiry(scgp, bp, cnt, sensecnt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	int	cnt;
-	int	sensecnt;
+static int
+badinquiry(SCSI *scgp, caddr_t bp, int cnt, int sensecnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -282,10 +275,8 @@ scmd->cdb.cmd_cdb[3] = 0xFF;
 	return (0);
 }
 
-LOCAL int
-bad_unit_ready(scgp, sensecnt)
-	SCSI	*scgp;
-	int	sensecnt;
+static int
+bad_unit_ready(SCSI *scgp, int sensecnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 

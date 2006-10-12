@@ -138,17 +138,21 @@ static char     sccsid[] =
 #endif
 #include "defaults.h"
 
-static void RestrictPlaybackRate	__PR((long newrate));
-static void output_indices		__PR((FILE *fp, index_list *p, unsigned trackstart));
-static int write_info_file		__PR((char *fname_baseval, unsigned int track, unsigned long SamplesDone, int numbered));
-static void CloseAudio			__PR((int channels_val, unsigned long nSamples, struct soundfile *audio_out));
-static void CloseAll			__PR((void));
-static void OpenAudio			__PR((char *fname, double rate, long nBitsPerSample, long channels_val, unsigned long expected_bytes, struct soundfile*audio_out));
-static void set_offset			__PR((myringbuff *p, int offset));
-static int get_offset			__PR((myringbuff *p));
-static void usage			__PR((void));
-static void init_globals		__PR((void));
-static	int	is_fifo			__PR((char * filename));
+static void RestrictPlaybackRate(long newrate);
+static void output_indices(FILE *fp, index_list *p, unsigned trackstart);
+static int 	write_info_file(char *fname_baseval, unsigned int track, 
+									 unsigned long SamplesDone, int numbered);
+static void CloseAudio(int channels_val, unsigned long nSamples, 
+							  struct soundfile *audio_out);
+static void CloseAll(void);
+static void OpenAudio(char *fname, double rate, long nBitsPerSample, 
+							 long channels_val, unsigned long expected_bytes, 
+							 struct soundfile*audio_out);
+static void set_offset(myringbuff *p, int offset);
+static int 	get_offset(myringbuff *p);
+static void usage(void);
+static void init_globals(void);
+static int	is_fifo(char *filename);
 
 
 /* Rules:
@@ -188,7 +192,7 @@ static unsigned long *nSamplesToDo;
 static unsigned int current_track;
 static int bulk = 0;
 
-unsigned int get_current_track __PR((void));
+unsigned int get_current_track(void);
 
 unsigned int get_current_track()
 {
@@ -219,14 +223,14 @@ static int argc2;
 static int argc3;
 static char **argv2;
 
-static void reset_name_iterator __PR((void));
-static void reset_name_iterator ()
+static void reset_name_iterator(void);
+static void reset_name_iterator()
 {
 	argv2 -= argc3 - argc2;
 	argc2 = argc3;
 }
 
-static char *get_next_name __PR((void));
+static char *get_next_name(void);
 static char *get_next_name()
 {
 	if (argc2 > 0) {
@@ -237,7 +241,7 @@ static char *get_next_name()
 	}
 }
 
-static char *cut_extension __PR(( char * fname ));
+static char *cut_extension(char *fname);
 
 static char *cut_extension(char *fname)
 {
@@ -628,7 +632,7 @@ static void OpenAudio(char *fname, double rate, long nBitsPerSample,
 
 #include "scsi_cmds.h"
 
-static int RealEnd __PR((SCSI *scgp, UINT4 *buff));
+static int RealEnd(SCSI *scgp, UINT4 *buff);
 
 static int RealEnd(SCSI *scgp, UINT4 *buff)
 {
@@ -850,7 +854,7 @@ static void init_globals()
 
 #if !defined (HAVE_STRCASECMP) || (HAVE_STRCASECMP != 1)
 #include <ctype.h>
-static int strcasecmp __PR(( const char *s1, const char *s2 ));
+static int strcasecmp(const char *s1, const char *s2);
 static int strcasecmp(const char *s1, const char *s2)
 {
   if (s1 && s2) {
@@ -890,7 +894,7 @@ static int is_fifo(char *filename)
 
 
 #if !defined (HAVE_STRTOUL) || (HAVE_STRTOUL != 1)
-static unsigned int strtoul __PR(( const char *s1, char **s2, int base ));
+static unsigned int strtoul(const char *s1, char **s2, int base);
 static unsigned int strtoul(const char *s1, char **s2, int base)
 {
 	long retval;
@@ -917,7 +921,7 @@ error block size for overlap check has to be < sector size
 
 
 static void
-switch_to_realtime_priority __PR((void));
+switch_to_realtime_priority(void);
 
 #ifdef  HAVE_SYS_PRIOCNTL_H
 
@@ -1033,7 +1037,7 @@ static void switch_to_realtime_priority()
 #endif
 
 /* SCSI cleanup */
-int on_exitscsi __PR((void *status));
+int on_exitscsi(void *status);
 
 int on_exitscsi(void *status)
 {
@@ -1042,7 +1046,7 @@ int on_exitscsi(void *status)
 }
 
 /* wrapper for signal handler exit needed for Mac-OS-X */
-static void exit_wrapper __PR((int status));
+static void exit_wrapper(int status);
 
 static void exit_wrapper(int status)
 {
@@ -1065,7 +1069,7 @@ static void exit_wrapper(int status)
 }
 
 /* signal handler for process communication */
-static void set_nonforked __PR((int status));
+static void set_nonforked(int status);
 
 /* ARGSUSED */
 static void set_nonforked(int status)
@@ -1119,7 +1123,7 @@ static struct paranoia_statistics
 }	*para_stat;
 
 
-static void paranoia_reset __PR((void));
+static void paranoia_reset(void);
 static void paranoia_reset()
 {
 	para_stat->c_sector = 0;
@@ -1147,7 +1151,7 @@ static void paranoia_reset()
 	para_stat->skips = 0;
 }
 
-static void paranoia_callback __PR((long inpos, int function));
+static void paranoia_callback(long inpos, int function);
 
 static void paranoia_callback(long inpos, int function)
 {
@@ -1284,7 +1288,7 @@ static unsigned long SamplesToWrite;
 static unsigned minover;
 static unsigned maxover;
 
-static unsigned long calc_SectorBurst __PR((void));
+static unsigned long calc_SectorBurst(void);
 static unsigned long calc_SectorBurst()
 {
 	unsigned long SectorBurstVal;
@@ -1304,7 +1308,7 @@ static unsigned long calc_SectorBurst()
  */
 #define	PERCENTAGE_PER_TRACK
 
-static int do_read __PR((myringbuff *p, unsigned *total_unsuccessful_retries));
+static int do_read(myringbuff *p, unsigned *total_unsuccessful_retries);
 static int do_read(myringbuff *p, unsigned *total_unsuccessful_retries)
 {
 	unsigned char *newbuf;
@@ -1487,7 +1491,7 @@ fprintf(stderr, "decreasing overlap from %u to %u (jitter %d)\n", global.overlap
 }
 
 static void
-print_percentage __PR((unsigned *poper, int c_offset));
+print_percentage(unsigned *poper, int c_offset);
 
 static void print_percentage(unsigned *poper, int c_offset)
 {
@@ -1521,7 +1525,7 @@ static void print_percentage(unsigned *poper, int c_offset)
 	fflush(stderr);
 }
 
-static unsigned long do_write __PR((myringbuff *p));
+static unsigned long do_write(myringbuff *p);
 static unsigned long do_write(myringbuff *p)
 {
 	int current_offset;
@@ -1753,7 +1757,7 @@ if (left_in_track < 0) {
    }
 
 #if defined HAVE_FORK_AND_SHAREDMEM
-static void forked_read __PR((void));
+static void forked_read(void);
 
 /* This function does all audio cdrom reads
  * until there is nothing more to do
@@ -1782,7 +1786,7 @@ static void forked_read()
    }
 }
 
-static void forked_write __PR((void));
+static void forked_write(void);
 
 static void forked_write()
 {
@@ -1816,7 +1820,7 @@ static void forked_write()
  * there is no fork/thread_create system call).
  * This means reads and writes have to wait for each other to complete.
  */
-static void nonforked_loop __PR((void));
+static void nonforked_loop(void);
 
 static void nonforked_loop()
 {
@@ -1839,7 +1843,7 @@ static void nonforked_loop()
 
 }
 
-void verbose_usage __PR((void));
+void verbose_usage(void);
 
 void verbose_usage()
 {
@@ -1858,7 +1862,7 @@ void verbose_usage()
 }
 
 #ifdef	USE_PARANOIA
-void paranoia_usage __PR((void));
+void paranoia_usage(void);
 
 void paranoia_usage()
 {
@@ -1875,7 +1879,7 @@ void paranoia_usage()
 #endif
 
 int
-handle_verbose_opts __PR((char *optstr, long *flagp));
+handle_verbose_opts(char *optstr, long *flagp);
 
 int handle_verbose_opts(char *optstr, long *flagp)
 {
@@ -1944,7 +1948,7 @@ int handle_verbose_opts(char *optstr, long *flagp)
 
 
 int
-handle_paranoia_opts __PR((char *optstr, long *flagp));
+handle_paranoia_opts(char *optstr, long *flagp);
 
 int handle_paranoia_opts(char *optstr, long *flagp)
 {

@@ -47,13 +47,11 @@ static	char sccsid[] =
 
 int	scsi_compliant;
 
-static	BOOL	has_mode_page	__PR((SCSI *scgp, int page, char *pagename, int *lenp));
-BOOL	get_mode_params	__PR((SCSI *scgp, int page, char *pagename,
-					Uchar *modep, Uchar *cmodep,
-					Uchar *dmodep, Uchar *smodep,
-					int *lenp));
-BOOL	set_mode_params	__PR((SCSI *scgp, char *pagename, Uchar *modep,
-					int len, int save, int secsize));
+static	BOOL	has_mode_page(SCSI *scgp, int page, char *pagename, int *lenp);
+BOOL	get_mode_params(SCSI *scgp, int page, char *pagename, Uchar *modep, 
+							 Uchar *cmodep, Uchar *dmodep, Uchar *smodep, int *lenp);
+BOOL	set_mode_params(SCSI *scgp, char *pagename, Uchar *modep, int len, 
+							 int save, int secsize);
 
 #define	XXX
 

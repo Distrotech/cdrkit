@@ -76,8 +76,8 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-wnt.c-1.45";	/* The version for this transport*/
-LOCAL	char	_scg_itrans_version[] = "SPTI-scsi-wnt.c-1.45";	/* The version for SPTI */
+static	char	_scg_trans_version[] = "scsi-wnt.c-1.45";	/* The version for this transport*/
+static	char	_scg_itrans_version[] = "SPTI-scsi-wnt.c-1.45";	/* The version for SPTI */
 
 /*
  * Local defines and constants
@@ -99,35 +99,35 @@ struct scg_local {
 /*
  * Local variables
  */
-LOCAL	int	busses;
-LOCAL	DWORD	(*pfnGetASPI32SupportInfo)(void)		= NULL;
-LOCAL	DWORD	(*pfnSendASPI32Command)(LPSRB)			= NULL;
-LOCAL	BOOL	(*pfnGetASPI32Buffer)(PASPI32BUFF)		= NULL;
-LOCAL	BOOL	(*pfnFreeASPI32Buffer)(PASPI32BUFF)		= NULL;
-LOCAL	BOOL	(*pfnTranslateASPI32Address)(PDWORD, PDWORD)	= NULL;
+static	int	busses;
+static	DWORD	(*pfnGetASPI32SupportInfo)(void)		= NULL;
+static	DWORD	(*pfnSendASPI32Command)(LPSRB)			= NULL;
+static	BOOL	(*pfnGetASPI32Buffer)(PASPI32BUFF)		= NULL;
+static	BOOL	(*pfnFreeASPI32Buffer)(PASPI32BUFF)		= NULL;
+static	BOOL	(*pfnTranslateASPI32Address)(PDWORD, PDWORD)	= NULL;
 
-LOCAL	int	AspiLoaded			= 0;    /* ASPI or SPTI */
-LOCAL	HANDLE	hAspiLib			= NULL;	/* Used for Loadlib */
+static	int	AspiLoaded			= 0;    /* ASPI or SPTI */
+static	HANDLE	hAspiLib			= NULL;	/* Used for Loadlib */
 
 #define	MAX_DMA_WNT	(63L*1024L) /* ASPI-Driver  allows up to 64k ??? */
 
 /*
  * Local function prototypes
  */
-LOCAL	void	exit_func	__PR((void));
+static	void	exit_func(void);
 #ifdef DEBUG_WNTASPI
-LOCAL	void	DebugScsiSend	__PR((SCSI *scgp, SRB_ExecSCSICmd *s, int bDisplayBuffer));
+static	void	DebugScsiSend(SCSI *scgp, SRB_ExecSCSICmd *s, int bDisplayBuffer);
 #endif
-LOCAL	void	copy_sensedata	__PR((SRB_ExecSCSICmd *cp, struct scg_cmd *sp));
-LOCAL	void	set_error	__PR((SRB_ExecSCSICmd *cp, struct scg_cmd *sp));
-LOCAL	BOOL	open_driver	__PR((SCSI *scgp));
-LOCAL	BOOL	load_aspi	__PR((SCSI *scgp));
-LOCAL	BOOL	close_driver	__PR((void));
-LOCAL	int	ha_inquiry	__PR((SCSI *scgp, int id, SRB_HAInquiry	*ip));
+static	void	copy_sensedata(SRB_ExecSCSICmd *cp, struct scg_cmd *sp);
+static	void	set_error(SRB_ExecSCSICmd *cp, struct scg_cmd *sp);
+static	BOOL	open_driver(SCSI *scgp);
+static	BOOL	load_aspi(SCSI *scgp);
+static	BOOL	close_driver(void);
+static	int	ha_inquiry(SCSI *scgp, int id, SRB_HAInquiry	*ip);
 #ifdef	__USED__
-LOCAL	int	resetSCSIBus	__PR((SCSI *scgp));
+static	int	resetSCSIBus(SCSI *scgp);
 #endif
-LOCAL	int	scsiabort	__PR((SCSI *scgp, SRB_ExecSCSICmd *sp));
+static	int	scsiabort(SCSI *scgp, SRB_ExecSCSICmd *sp);
 
 
 /* SPTI Start ---------------------------------------------------------------*/
@@ -175,21 +175,21 @@ typedef struct {
 	DRIVE	drive[NUM_MAX_NTSCSI_DRIVES];
 } SPTIGLOBAL;
 
-LOCAL	int	InitSCSIPT(void);
-LOCAL	int	DeinitSCSIPT(void);
-LOCAL	void	GetDriveInformation(BYTE i, DRIVE *pDrive);
-LOCAL	BYTE	SPTIGetNumAdapters(void);
-LOCAL	BYTE	SPTIGetDeviceIndex(BYTE ha, BYTE tgt, BYTE lun);
-LOCAL	DWORD	SPTIHandleHaInquiry(LPSRB_HAInquiry lpsrb);
-LOCAL	DWORD	SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHereBefore);
-LOCAL	HANDLE	GetFileHandle(BYTE i, BOOL openshared);
+static	int	InitSCSIPT(void);
+static	int	DeinitSCSIPT(void);
+static	void	GetDriveInformation(BYTE i, DRIVE *pDrive);
+static	BYTE	SPTIGetNumAdapters(void);
+static	BYTE	SPTIGetDeviceIndex(BYTE ha, BYTE tgt, BYTE lun);
+static	DWORD	SPTIHandleHaInquiry(LPSRB_HAInquiry lpsrb);
+static	DWORD	SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHereBefore);
+static	HANDLE	GetFileHandle(BYTE i, BOOL openshared);
 
-LOCAL	BOOL	bSCSIPTInit = FALSE;
-LOCAL	SPTIGLOBAL sptiglobal;
-LOCAL	BOOL	bUsingSCSIPT = FALSE;
-LOCAL	BOOL	bForceAccess = FALSE;
-LOCAL	int	sptihamax;
-LOCAL	USHORT	sptihasortarr[NUM_MAX_NTSCSI_HA];
+static	BOOL	bSCSIPTInit = FALSE;
+static	SPTIGLOBAL sptiglobal;
+static	BOOL	bUsingSCSIPT = FALSE;
+static	BOOL	bForceAccess = FALSE;
+static	int	sptihamax;
+static	USHORT	sptihasortarr[NUM_MAX_NTSCSI_HA];
 
 /*
  * Initialization of SCSI Pass Through Interface code.  Responsible for
@@ -199,7 +199,7 @@ LOCAL	USHORT	sptihasortarr[NUM_MAX_NTSCSI_HA];
  * send CDB with the INQUIRY command to it -- NT will automagically fill in
  * the PathId, TargetId, and Lun for us.
  */
-LOCAL int
+static int
 InitSCSIPT(void)
 {
 	BYTE	i;
@@ -306,7 +306,7 @@ InitSCSIPT(void)
 }
 
 
-LOCAL int
+static int
 DeinitSCSIPT(void)
 {
 	BYTE	i;
@@ -331,7 +331,7 @@ DeinitSCSIPT(void)
 /*
  * Returns the number of "adapters" present.
  */
-LOCAL BYTE
+static BYTE
 SPTIGetNumAdapters(void)
 {
 	BYTE	buf[256];
@@ -361,7 +361,7 @@ SPTIGetNumAdapters(void)
 }
 
 #include <ctype.h>
-LOCAL BOOL
+static BOOL
 w2k_or_newer(void)
 {
 	OSVERSIONINFO osver;
@@ -379,7 +379,7 @@ w2k_or_newer(void)
 	return (FALSE);
 }
 
-LOCAL BOOL
+static BOOL
 w2kstyle_create(void)
 {
 	OSVERSIONINFO osver;
@@ -425,7 +425,7 @@ w2kstyle_create(void)
  * GENERIC_WRITE access is beyond me...), the easist workaround is to just
  * try them both.
  */
-LOCAL HANDLE
+static HANDLE
 GetFileHandle(BYTE i, BOOL openshared)
 {
 	char	buf[12];
@@ -489,7 +489,7 @@ GetFileHandle(BYTE i, BOOL openshared)
  * fills in a pDrive structure with information from a SCSI_INQUIRY
  * and obtains the ha:tgt:lun values via IOCTL_SCSI_GET_ADDRESS
  */
-LOCAL void
+static void
 GetDriveInformation(BYTE i, DRIVE *pDrive)
 {
 	HANDLE		fh;
@@ -605,7 +605,7 @@ GetDriveInformation(BYTE i, DRIVE *pDrive)
 
 
 
-LOCAL DWORD
+static DWORD
 SPTIHandleHaInquiry(LPSRB_HAInquiry lpsrb)
 {
 	DWORD	*pMTL;
@@ -631,7 +631,7 @@ SPTIHandleHaInquiry(LPSRB_HAInquiry lpsrb)
 /*
  * Looks up the index in the drive array for a given ha:tgt:lun triple
  */
-LOCAL BYTE
+static BYTE
 SPTIGetDeviceIndex(BYTE ha, BYTE tgt, BYTE lun)
 {
 	BYTE	i;
@@ -657,7 +657,7 @@ SPTIGetDeviceIndex(BYTE ha, BYTE tgt, BYTE lun)
  * Converts ASPI-style SRB to SCSI Pass Through IOCTL
  */
 
-LOCAL DWORD
+static DWORD
 SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHereBefore)
 {
 	BOOL	status;
@@ -763,7 +763,7 @@ SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHere
 /* SPTI End -----------------------------------------------------------------*/
 
 
-LOCAL void
+static void
 exit_func()
 {
 	if (!close_driver())
@@ -775,10 +775,8 @@ exit_func()
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -800,10 +798,8 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "ASPI", "Generic transport independent SCSI",
 		"ASPI:", "bus,target,lun", "ASPI:1,2,0", TRUE, FALSE);
@@ -812,10 +808,8 @@ scgo_help(scgp, f)
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	int	busno	= scg_scsibus(scgp);
 	int	tgt	= scg_target(scgp);
@@ -920,26 +914,21 @@ devok:
 	return (1);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	exit_func();
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	return (MAX_DMA_WNT);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -949,19 +938,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL __SBOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static __SBOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	if (busno < 0 || busno >= busses)
 		return (FALSE);
@@ -969,12 +955,8 @@ scgo_havebus(scgp, busno)
 	return (TRUE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= busses ||
 	    tgt < 0 || tgt >= MAX_TGT ||
@@ -988,9 +970,8 @@ scgo_fileno(scgp, busno, tgt, tlun)
 }
 
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	SRB_HAInquiry	s;
 
@@ -999,9 +980,8 @@ scgo_initiator_id(scgp)
 	return (s.HA_SCSI_ID);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (-1);	/* XXX Need to add real test */
 }
@@ -1010,10 +990,8 @@ scgo_isatapi(scgp)
 /*
  * XXX scgo_reset not yet tested
  */
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 
 	DWORD			Status = 0;
@@ -1126,11 +1104,8 @@ scgo_reset(scgp, what)
 
 
 #ifdef DEBUG_WNTASPI
-LOCAL void
-DebugScsiSend(scgp, s, bDisplayBuffer)
-	SCSI		*scgp;
-	SRB_ExecSCSICmd	*s;
-	int		bDisplayBuffer;
+static void
+DebugScsiSend(SCSI *scgp, SRB_ExecSCSICmd *s, int bDisplayBuffer)
 {
 	int i;
 
@@ -1165,10 +1140,8 @@ DebugScsiSend(scgp, s, bDisplayBuffer)
 }
 #endif
 
-LOCAL void
-copy_sensedata(cp, sp)
-	SRB_ExecSCSICmd	*cp;
-	struct scg_cmd	*sp;
+static void
+copy_sensedata(SRB_ExecSCSICmd *cp, struct scg_cmd *sp)
 {
 	sp->sense_count	= cp->SRB_SenseLen;
 	if (sp->sense_count > sp->sense_len)
@@ -1183,10 +1156,8 @@ copy_sensedata(cp, sp)
 /*
  * Set error flags
  */
-LOCAL void
-set_error(cp, sp)
-	SRB_ExecSCSICmd	*cp;
-	struct scg_cmd	*sp;
+static void
+set_error(SRB_ExecSCSICmd *cp, struct scg_cmd *sp)
 {
 	switch (cp->SRB_Status) {
 
@@ -1270,9 +1241,8 @@ struct aspi_cmd {
 	char			pad[32];
 };
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd		*sp = scgp->scmd;
 	DWORD			Status = 0;
@@ -1438,9 +1408,8 @@ scgo_send(scgp)
  *  Preconditions: ASPI Router driver has be loaded			   *
  *									   *
  ***************************************************************************/
-LOCAL BOOL
-open_driver(scgp)
-	SCSI	*scgp;
+static BOOL
+open_driver(SCSI *scgp)
 {
 	DWORD	astatus;
 	BYTE	HACount;
@@ -1540,9 +1509,8 @@ open_driver(scgp)
 	return (TRUE);
 }
 
-LOCAL BOOL
-load_aspi(scgp)
-	SCSI	*scgp;
+static BOOL
+load_aspi(SCSI *scgp)
 {
 #ifdef	__CYGWIN32__
 	hAspiLib = dlopen("WNASPI32", RTLD_NOW);
@@ -1606,7 +1574,7 @@ load_aspi(scgp)
  *  Preconditions: ASPI Router driver has be opened with open_driver	   *
  *									   *
  ***************************************************************************/
-LOCAL BOOL
+static BOOL
 close_driver()
 {
 	if (--AspiLoaded > 0)
@@ -1642,11 +1610,8 @@ close_driver()
 	return (TRUE);
 }
 
-LOCAL int
-ha_inquiry(scgp, id, ip)
-	SCSI		*scgp;
-	int		id;
-	SRB_HAInquiry	*ip;
+static int
+ha_inquiry(SCSI *scgp, int id, SRB_HAInquiry *ip)
 {
 	DWORD		Status;
 
@@ -1674,9 +1639,8 @@ ha_inquiry(scgp, id, ip)
 }
 
 #ifdef	__USED__
-LOCAL int
-resetSCSIBus(scgp)
-	SCSI	*scgp;
+static int
+resetSCSIBus(SCSI *scgp)
 {
 	DWORD			Status;
 	HANDLE			Event;
@@ -1744,10 +1708,8 @@ resetSCSIBus(scgp)
 }
 #endif	/* __USED__ */
 
-LOCAL int
-scsiabort(scgp, sp)
-	SCSI		*scgp;
-	SRB_ExecSCSICmd	*sp;
+static int
+scsiabort(SCSI *scgp, SRB_ExecSCSICmd *sp)
 {
 	DWORD			Status = 0;
 	SRB_Abort		s;
