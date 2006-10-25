@@ -690,94 +690,89 @@ restore_it:
 }
 
 static void 
-usage(excode)
-	int excode;
+usage(int excode)
 {
 	errmsgno(EX_BAD, "Usage: %s [options] track1...trackn\n",
 		get_progname());
 
-	error("Options:\n");
-	error("\t-version	print version information and exit\n");
-	error("\t-v		increment general verbose level by one\n");
-	error("\t-V		increment SCSI command transport verbose level by one\n");
-	error("\t-debug		print additional debug messages\n");
-	error("\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
-	error("\ttimeout=#	set the default SCSI command timeout to #.\n");
-	error("\tdriver=name	user supplied driver name, use with extreme care\n");
-	error("\t-checkdrive	check if a driver for the drive is present\n");
-	error("\t-prcap		print drive capabilities for MMC compliant drives\n");
-	error("\t-inq		do an inquiry for the drive end exit\n");
-	error("\t-scanbus	scan the SCSI bus end exit\n");
-	error("\t-reset		reset the SCSI bus with the cdrecorder (if possible)\n");
-	error("\t-ignsize	ignore the known size of a medium (may cause problems)\n");
-	error("\t-useinfo	use *.inf files to overwrite audio options.\n");
-	error("\tspeed=#		set speed of drive\n");
-	error("\tblank=type	blank a CD-RW disc (see blank=help)\n");
+	schily_error("Options:\n");
+	schily_error("\t-version	print version information and exit\n");
+	schily_error("\t-v		increment general verbose level by one\n");
+	schily_error("\t-V		increment SCSI command transport verbose level by one\n");
+	schily_error("\t-debug		print additional debug messages\n");
+	schily_error("\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
+	schily_error("\ttimeout=#	set the default SCSI command timeout to #.\n");
+	schily_error("\tdriver=name	user supplied driver name, use with extreme care\n");
+	schily_error("\t-checkdrive	check if a driver for the drive is present\n");
+	schily_error("\t-prcap		print drive capabilities for MMC compliant drives\n");
+	schily_error("\t-inq		do an inquiry for the drive end exit\n");
+	schily_error("\t-scanbus	scan the SCSI bus end exit\n");
+	schily_error("\t-reset		reset the SCSI bus with the cdrecorder (if possible)\n");
+	schily_error("\t-ignsize	ignore the known size of a medium (may cause problems)\n");
+	schily_error("\t-useinfo	use *.inf files to overwrite audio options.\n");
+	schily_error("\tspeed=#		set speed of drive\n");
+	schily_error("\tblank=type	blank a CD-RW disc (see blank=help)\n");
 #ifdef	FIFO
-	error("\tfs=#		Set fifo size to # (0 to disable, default is %ld MB)\n",
+	schily_error("\tfs=#		Set fifo size to # (0 to disable, default is %ld MB)\n",
 							DEFAULT_FIFOSIZE/(1024*1024));
 #endif
-	error("\t-load		load the disk and exit (works only with tray loader)\n");
-	error("\t-eject		eject the disk after doing the work\n");
-	error("\t-dummy		do everything with laser turned off\n");
-	error("\t-msinfo		retrieve multi-session info for mkisofs >= 1.10\n");
-	error("\t-toc		retrieve and print TOC/PMA data\n");
-	error("\t-atip		retrieve and print ATIP data\n");
-	error("\t-multi		generate a TOC that allows multi session\n");
-	error("\t		In this case default track type is CD-ROM XA2\n");
-	error("\t-fix		fixate a corrupt or unfixated disk (generate a TOC)\n");
-	error("\t-nofix		do not fixate disk after writing tracks\n");
-	error("\t-force		force to continue on some errors to allow blanking bad disks\n");
-	error("\t-dao		Write disk in DAO mode. This option will go away in the future.\n");
-	error("\ttsize=#		Length of valid data in next track\n");
-	error("\tpadsize=#	Amount of padding for next track\n");
-	error("\tpregap=#	Amount of pre-gap sectors before next track\n");
-	error("\tdefpregap=#	Amount of pre-gap sectors for all but track #1\n");
-	error("\tmcn=text	Set the media catalog number for this CD to 'text'\n");
-	error("\tisrc=text	Set the ISRC number for the next track to 'text'\n");
-	error("\tindex=list	Set the index list for the next track to 'list'\n");
+	schily_error("\t-load		load the disk and exit (works only with tray loader)\n");
+	schily_error("\t-eject		eject the disk after doing the work\n");
+	schily_error("\t-dummy		do everything with laser turned off\n");
+	schily_error("\t-msinfo		retrieve multi-session info for mkisofs >= 1.10\n");
+	schily_error("\t-toc		retrieve and print TOC/PMA data\n");
+	schily_error("\t-atip		retrieve and print ATIP data\n");
+	schily_error("\t-multi		generate a TOC that allows multi session\n");
+	schily_error("\t		In this case default track type is CD-ROM XA2\n");
+	schily_error("\t-fix		fixate a corrupt or unfixated disk (generate a TOC)\n");
+	schily_error("\t-nofix		do not fixate disk after writing tracks\n");
+	schily_error("\t-force		force to continue on some errors to allow blanking bad disks\n");
+	schily_error("\t-dao		Write disk in DAO mode. This option will go away in the future.\n");
+	schily_error("\ttsize=#		Length of valid data in next track\n");
+	schily_error("\tpadsize=#	Amount of padding for next track\n");
+	schily_error("\tpregap=#	Amount of pre-gap sectors before next track\n");
+	schily_error("\tdefpregap=#	Amount of pre-gap sectors for all but track #1\n");
+	schily_error("\tmcn=text	Set the media catalog number for this CD to 'text'\n");
+	schily_error("\tisrc=text	Set the ISRC number for the next track to 'text'\n");
+	schily_error("\tindex=list	Set the index list for the next track to 'list'\n");
 
-	error("\t-audio		Subsequent tracks are CD-DA audio tracks\n");
-	error("\t-data		Subsequent tracks are CD-ROM data mode 1 (default)\n");
-	error("\t-mode2		Subsequent tracks are CD-ROM data mode 2\n");
-	error("\t-xa1		Subsequent tracks are CD-ROM XA mode 1\n");
-	error("\t-xa2		Subsequent tracks are CD-ROM XA mode 2\n");
-	error("\t-cdi		Subsequent tracks are CDI tracks\n");
-	error("\t-isosize	Use iso9660 file system size for next data track\n");
-	error("\t-preemp		Audio tracks are mastered with 50/15 µs preemphasis\n");
-	error("\t-nopreemp	Audio tracks are mastered with no preemphasis (default)\n");
-	error("\t-pad		Pad data tracks with %d zeroed sectors\n", PAD_SECS);
-	error("\t		Pad audio tracks to a multiple of %d bytes\n", AUDIO_SEC_SIZE);
-	error("\t-nopad		Do not pad data tracks (default)\n");
-	error("\t-swab		Audio data source is byte-swapped (little-endian/Intel)\n");
-	error("The type of the first track is used for the toc type.\n");
-	error("Currently only form 1 tracks are supported.\n");
+	schily_error("\t-audio		Subsequent tracks are CD-DA audio tracks\n");
+	schily_error("\t-data		Subsequent tracks are CD-ROM data mode 1 (default)\n");
+	schily_error("\t-mode2		Subsequent tracks are CD-ROM data mode 2\n");
+	schily_error("\t-xa1		Subsequent tracks are CD-ROM XA mode 1\n");
+	schily_error("\t-xa2		Subsequent tracks are CD-ROM XA mode 2\n");
+	schily_error("\t-cdi		Subsequent tracks are CDI tracks\n");
+	schily_error("\t-isosize	Use iso9660 file system size for next data track\n");
+	schily_error("\t-preemp		Audio tracks are mastered with 50/15 µs preemphasis\n");
+	schily_error("\t-nopreemp	Audio tracks are mastered with no preemphasis (default)\n");
+	schily_error("\t-pad		Pad data tracks with %d zeroed sectors\n", PAD_SECS);
+	schily_error("\t		Pad audio tracks to a multiple of %d bytes\n", AUDIO_SEC_SIZE);
+	schily_error("\t-nopad		Do not pad data tracks (default)\n");
+	schily_error("\t-swab		Audio data source is byte-swapped (little-endian/Intel)\n");
+	schily_error("The type of the first track is used for the toc type.\n");
+	schily_error("Currently only form 1 tracks are supported.\n");
 	exit(excode);
 }
 
-static void
-blusage(int	ret)
+static void blusage(int	ret) 
 {
-	error("Blanking options:\n");
-	error("\tall\t\tblank the entire disk\n");
-	error("\tdisc\t\tblank the entire disk\n");
-	error("\tdisk\t\tblank the entire disk\n");
-	error("\tfast\t\tminimally blank the entire disk (PMA, TOC, pregap)\n");
-	error("\tminimal\t\tminimally blank the entire disk (PMA, TOC, pregap)\n");
-	error("\ttrack\t\tblank a track\n");
-	error("\tunreserve\tunreserve a track\n");
-	error("\ttrtail\t\tblank a track tail\n");
-	error("\tunclose\t\tunclose last session\n");
-	error("\tsession\t\tblank last session\n");
+	schily_error("Blanking options:\n");
+	schily_error("\tall\t\tblank the entire disk\n");
+	schily_error("\tdisc\t\tblank the entire disk\n");
+	schily_error("\tdisk\t\tblank the entire disk\n");
+	schily_error("\tfast\t\tminimally blank the entire disk (PMA, TOC, pregap)\n");
+	schily_error("\tminimal\t\tminimally blank the entire disk (PMA, TOC, pregap)\n");
+	schily_error("\ttrack\t\tblank a track\n");
+	schily_error("\tunreserve\tunreserve a track\n");
+	schily_error("\ttrtail\t\tblank a track tail\n");
+	schily_error("\tunclose\t\tunclose last session\n");
+	schily_error("\tsession\t\tblank last session\n");
 
 	exit(ret);
 	/* NOTREACHED */
 }
 
-static void
-intr(sig)
-	int	sig;
-{
+static void intr(int sig) {
 	sig = 0;	/* Fake usage */
 
 	signal(SIGINT, intr);
@@ -817,13 +812,7 @@ extern	int	get_buf		(int f, char **bpp, int size) {
 	}
 }
 
-static int
-write_track_data(scgp, dp, track, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	track;
-	track_t	*trackp;
-{
+static int write_track_data(SCSI	*scgp, cdr_t	*dp, int	track, track_t	*trackp) {
 	int	f;
 	int	isaudio;
 	long	startsec;
@@ -2372,7 +2361,7 @@ getbltype(optstr, typep)
 	} else if (streql(optstr, "help")) {
 		blusage(0);
 	} else {
-		error("Illegal blanking type '%s'.\n", optstr);
+		schily_error("Illegal blanking type '%s'.\n", optstr);
 		blusage(EX_BAD);
 		return (-1);
 	}
