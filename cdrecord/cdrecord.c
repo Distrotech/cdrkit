@@ -54,7 +54,7 @@ static	char sccsid[] =
 #include "auheader.h"
 #include "cdrecord.h"
 
-char	cdr_version[] = "1.8a28";
+char	cdr_version[] = "1.8a28+cdrkit.1.0pre5+experimental";
 
 /*
  * Map toc/track types into names.
@@ -107,7 +107,7 @@ char	*db2name[] = {
 };
 
 int		debug;		/* print debug messages */
-LOCAL	int	scsi_verbose;	/* SCSI verbose flag */
+static	int	scsi_verbose;	/* SCSI verbose flag */
 int		lverbose;	/* local verbose flag */
 
 /*
@@ -138,55 +138,55 @@ struct timeval	fixtime;
 
 static	long	fs = -1L;	/* fifo (ring buffer) size */
 
-EXPORT	int 	main		__PR((int ac, char **av));
-LOCAL	void	usage		__PR((int));
-LOCAL	void	blusage		__PR((int));
-LOCAL	void	intr		__PR((int sig));
-EXPORT	int	read_buf	__PR((int f, char *bp, int size));
-EXPORT	int	get_buf		__PR((int f, char **bpp, int size));
-LOCAL	int	write_track_data __PR((SCSI *scgp, cdr_t *, int , track_t *));
-EXPORT	int	pad_track	__PR((SCSI *scgp, cdr_t *dp, int track, track_t *trackp,
+extern	int 	main		(int ac, char **av)
+static	void	usage		(int)
+static	void	blusage		(int)
+static	void	intr		(int sig)
+extern	int	read_buf	(int f, char *bp, int size)
+extern	int	get_buf		(int f, char **bpp, int size)
+static	int	write_track_data (SCSI *scgp, cdr_t *, int , track_t *)
+extern	int	pad_track	(SCSI *scgp, cdr_t *dp, int track, track_t *trackp,
 				     long startsec, long amt,
-				     BOOL dolast, long *bytesp));
-EXPORT	int	write_buf	__PR((SCSI *scgp, cdr_t *dp, int track, track_t *trackp,
+				     BOOL dolast, long *bytesp)
+extern	int	write_buf	(SCSI *scgp, cdr_t *dp, int track, track_t *trackp,
 				     char *bp, long startsec, long amt, int secsize,
-				     BOOL dolast, long *bytesp));
-LOCAL	void	printdata	__PR((int, track_t *));
-LOCAL	void	printaudio	__PR((int, track_t *));
-LOCAL	void	checkfile	__PR((int, track_t *));
-LOCAL	int	checkfiles	__PR((int, track_t *));
-LOCAL	void	setpregaps	__PR((int, track_t *));
-LOCAL	long	checktsize	__PR((int, track_t *));
-LOCAL	void	checksize	__PR((track_t *));
-LOCAL	BOOL	checkdsize	__PR((SCSI *scgp, cdr_t *dp, dstat_t *dsp, long tsize));
-LOCAL	void	raise_fdlim	__PR((void));
-LOCAL	void	gargs		__PR((int, char **, int *, track_t *, char **,
+				     BOOL dolast, long *bytesp)
+static	void	printdata	(int, track_t *)
+static	void	printaudio	(int, track_t *)
+static	void	checkfile	(int, track_t *)
+static	int	checkfiles	(int, track_t *)
+static	void	setpregaps	(int, track_t *)
+static	long	checktsize	(int, track_t *)
+static	void	checksize	(track_t *)
+static	BOOL	checkdsize	(SCSI *scgp, cdr_t *dp, dstat_t *dsp, long tsize)
+static	void	raise_fdlim	(void)
+static	void	gargs		(int, char **, int *, track_t *, char **,
 					int *, cdr_t **,
-					int *, long *, int *, int *));
-LOCAL	void	set_trsizes	__PR((cdr_t *, int, track_t *));
-EXPORT	void	load_media	__PR((SCSI *scgp, cdr_t *));
-EXPORT	void	unload_media	__PR((SCSI *scgp, cdr_t *, int));
-EXPORT	void	set_secsize	__PR((SCSI *scgp, int secsize));
-LOCAL	void	check_recovery	__PR((SCSI *scgp, cdr_t *, int));
-	void	audioread	__PR((SCSI *scgp, cdr_t *, int));
-LOCAL	void	print_msinfo	__PR((SCSI *scgp, cdr_t *));
-LOCAL	void	print_toc	__PR((SCSI *scgp, cdr_t *));
-LOCAL	void	print_track	__PR((int, long, struct msf *, int, int, int));
-LOCAL	void	prtimediff	__PR((const char *fmt,
+					int *, long *, int *, int *)
+static	void	set_trsizes	(cdr_t *, int, track_t *)
+extern	void	load_media	(SCSI *scgp, cdr_t *)
+extern	void	unload_media	(SCSI *scgp, cdr_t *, int)
+extern	void	set_secsize	(SCSI *scgp, int secsize)
+static	void	check_recovery	(SCSI *scgp, cdr_t *, int)
+	void	audioread	(SCSI *scgp, cdr_t *, int)
+static	void	print_msinfo	(SCSI *scgp, cdr_t *)
+static	void	print_toc	(SCSI *scgp, cdr_t *)
+static	void	print_track	(int, long, struct msf *, int, int, int)
+static	void	prtimediff	(const char *fmt,
 					struct timeval *start,
-					struct timeval *stop));
+					struct timeval *stop)
 #if !defined(HAVE_SYS_PRIOCNTL_H)
-LOCAL	int	rt_raisepri	__PR((int));
+static	int	rt_raisepri	(int)
 #endif
-EXPORT	void	raisepri	__PR((int));
-LOCAL	void	checkgui	__PR((void));
-LOCAL	char *	astoll		__PR((const char *s, Llong *ll));
-LOCAL	Llong	number		__PR((char* arg, int* retp));
-EXPORT	int	getnum		__PR((char* arg, long* valp));
-EXPORT	int	getllnum	__PR((char *arg, Llong* lvalp));
-LOCAL	int	getbltype	__PR((char* optstr, long *typep));
+extern	void	raisepri	(int)
+static	void	checkgui	(void)
+static	char *	astoll		(const char *s, Llong *ll)
+static	Llong	number		(char* arg, int* retp)
+extern	int	getnum		(char* arg, long* valp)
+extern	int	getllnum	(char *arg, Llong* lvalp)
+static	int	getbltype	(char* optstr, long *typep)
 
-EXPORT int 
+extern int 
 main(ac, av)
 	int	ac;
 	char	*av[];
@@ -688,7 +688,7 @@ restore_it:
 	return (0);
 }
 
-LOCAL void 
+static void 
 usage(excode)
 	int excode;
 {
@@ -754,7 +754,7 @@ usage(excode)
 	exit(excode);
 }
 
-LOCAL void
+static void
 blusage(ret)
 	int	ret;
 {
@@ -774,7 +774,7 @@ blusage(ret)
 	/* NOTREACHED */
 }
 
-LOCAL void
+static void
 intr(sig)
 	int	sig;
 {
@@ -785,7 +785,7 @@ intr(sig)
 	didintr++;
 }
 
-EXPORT int
+extern int
 read_buf(f, bp, size)
 	int	f;
 	char	*bp;
@@ -808,7 +808,7 @@ read_buf(f, bp, size)
 	return (amount);
 }
 
-EXPORT int
+extern int
 get_buf(f, bpp, size)
 	int	f;
 	char	**bpp;
@@ -822,7 +822,7 @@ get_buf(f, bpp, size)
 	}
 }
 
-LOCAL int
+static int
 write_track_data(scgp, dp, track, trackp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -999,7 +999,7 @@ int oper = -1;
 	return 0;
 }
 
-EXPORT int
+extern int
 pad_track(scgp, dp, track, trackp, startsec, amt, dolast, bytesp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -1065,7 +1065,7 @@ read_buff_cap(scgp, 0, 0);
 }
 
 #ifdef	USE_WRITE_BUF
-EXPORT int
+extern int
 write_buf(scgp, dp, track, trackp, bp, startsec, amt, secsize, dolast, bytesp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -1136,7 +1136,7 @@ read_buff_cap(scgp, 0, 0);
 }
 #endif	/* USE_WRITE_BUF */
 
-LOCAL void
+static void
 printdata(track, trackp)
 	int	track;
 	track_t	*trackp;
@@ -1160,7 +1160,7 @@ printdata(track, trackp)
 	printf("\n");
 }
 
-LOCAL void
+static void
 printaudio(track, trackp)
 	int	track;
 	track_t	*trackp;
@@ -1198,7 +1198,7 @@ printaudio(track, trackp)
 	printf("\n");
 }
 
-LOCAL void
+static void
 checkfile(track, trackp)
 	int	track;
 	track_t	*trackp;
@@ -1223,7 +1223,7 @@ checkfile(track, trackp)
 		printdata(track, trackp);
 }
 
-LOCAL int
+static int
 checkfiles(tracks, trackp)
 	int	tracks;
 	track_t	*trackp;
@@ -1239,7 +1239,7 @@ checkfiles(tracks, trackp)
 	return (isaudio);
 }
 
-LOCAL void
+static void
 setpregaps(tracks, trackp)
 	int	tracks;
 	track_t	*trackp;
@@ -1275,7 +1275,7 @@ setpregaps(tracks, trackp)
 	trackp[tracks+1].dbtype = trackp[tracks].dbtype;
 }
 
-LOCAL long
+static long
 checktsize(tracks, trackp)
 	int	tracks;
 	track_t	*trackp;
@@ -1331,7 +1331,7 @@ checktsize(tracks, trackp)
 	return (total);
 }
 
-LOCAL void
+static void
 checksize(trackp)
 	track_t	*trackp;
 {
@@ -1363,7 +1363,7 @@ checksize(trackp)
 	}
 }
 
-LOCAL BOOL
+static BOOL
 checkdsize(scgp, dp, dsp, tsize)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -1416,7 +1416,7 @@ checkdsize(scgp, dp, dsp, tsize)
 	return (TRUE);
 }
 
-LOCAL void
+static void
 raise_fdlim()
 {
 #ifdef	RLIMIT_NOFILE
@@ -1440,7 +1440,7 @@ raise_fdlim()
 char	*opts =
 "help,version,checkdrive,prcap,inq,scanbus,reset,ignsize,useinfo,dev*,timeout#,driver*,tsize&,padsize&,pregap&,defpregap&,speed#,load,eject,dummy,msinfo,toc,atip,multi,fix,nofix,debug,v+,V+,audio,data,mode2,xa1,xa2,cdi,isosize,nopreemp,preemp,nopad,pad,swab,fs&,blank&,pktsize#,packet,noclose,force,dao,scms,isrc*,mcn*,index*";
 
-LOCAL void
+static void
 gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, toctypep, blankp)
 	int	ac;
 	char	**av;
@@ -1847,7 +1847,7 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, toctypep, bl
 	}
 }
 
-LOCAL void
+static void
 set_trsizes(dp, tracks, trackp)
 	cdr_t	*dp;
 	int	tracks;
@@ -1888,7 +1888,7 @@ set_trsizes(dp, tracks, trackp)
 	}
 }
 
-EXPORT void
+extern void
 load_media(scgp, dp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -1926,7 +1926,7 @@ load_media(scgp, dp)
 	wait_unit_ready(scgp, 120);
 }
 
-EXPORT void
+extern void
 unload_media(scgp, dp, flags)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -1937,7 +1937,7 @@ unload_media(scgp, dp, flags)
 		(*dp->cdr_unload)(scgp);
 }
 
-EXPORT void
+extern void
 set_secsize(scgp, secsize)
 	SCSI	*scgp;
 	int	secsize;
@@ -1952,7 +1952,7 @@ set_secsize(scgp, secsize)
 	}
 }
 
-LOCAL void
+static void
 check_recovery(scgp, dp, flags)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -1989,7 +1989,7 @@ void audioread(scgp, dp, flags)
 #endif
 }
 
-LOCAL void
+static void
 print_msinfo(scgp, dp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -2011,7 +2011,7 @@ print_msinfo(scgp, dp)
 	printf("%ld,%ld\n", off, fa);
 }
 
-LOCAL void
+static void
 print_toc(scgp, dp)
 	SCSI	*scgp;
 	cdr_t	*dp;
@@ -2061,7 +2061,7 @@ print_toc(scgp, dp)
 	}
 }
 
-LOCAL void
+static void
 print_track(track, lba, msp, adr, control, mode)
 	int	track;
 	long	lba;
@@ -2085,7 +2085,7 @@ print_track(track, lba, msp, adr, control, mode)
 			adr, control, mode);
 }
 
-LOCAL void
+static void
 prtimediff(fmt, start, stop)
 	const	char	*fmt;
 	struct timeval	*start;
@@ -2116,7 +2116,7 @@ prtimediff(fmt, start, stop)
 #include <sys/priocntl.h>
 #include <sys/rtpriocntl.h>
 
-EXPORT	void
+extern	void
 raisepri(pri)
 	int pri;
 {
@@ -2166,7 +2166,7 @@ raisepri(pri)
 #undef	_P
 #endif
 
-LOCAL	int
+static	int
 rt_raisepri(pri)
 	int pri;
 {
@@ -2209,7 +2209,7 @@ rt_raisepri(pri)
 #include <Windows32/Functions.h>
 #undef format
 
-LOCAL	int
+static	int
 rt_raisepri(pri)
 	int pri;
 {
@@ -2229,7 +2229,7 @@ rt_raisepri(pri)
 
 #else
 
-LOCAL	int
+static	int
 rt_raisepri(pri)
 	int pri;
 {
@@ -2240,7 +2240,7 @@ rt_raisepri(pri)
 
 #endif	/* _POSIX_PRIORITY_SCHEDULING */
 
-EXPORT	void
+extern	void
 raisepri(pri)
 	int pri;
 {
@@ -2270,7 +2270,7 @@ raisepri(pri)
 
 #endif	/* HAVE_SYS_PRIOCNTL_H */
 
-LOCAL void
+static void
 checkgui()
 {
 	struct stat st;
@@ -2282,7 +2282,7 @@ checkgui()
 	}
 }
 
-LOCAL char *
+static char *
 astoll(s, ll)
 	register const char *s;
         Llong *ll;
@@ -2295,7 +2295,7 @@ astoll(s, ll)
 	return (p);
 }
 
-LOCAL Llong
+static Llong
 number(arg, retp)
 	register char	*arg;
 		int	*retp;
@@ -2353,7 +2353,7 @@ number(arg, retp)
 	return (val);
 }
 
-EXPORT int
+extern int
 getnum(arg, valp)
 	char	*arg;
 	long	*valp;
@@ -2364,7 +2364,7 @@ getnum(arg, valp)
 	return (ret);
 }
 
-EXPORT int
+extern int
 getllnum(arg, lvalp)
 	char	*arg;
 	Llong	*lvalp;
@@ -2375,7 +2375,7 @@ getllnum(arg, lvalp)
 	return (ret);
 }
 
-LOCAL int
+static int
 getbltype(optstr, typep)
 	char	*optstr;
 	long	*typep;
