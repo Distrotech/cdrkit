@@ -83,18 +83,18 @@ int	basefds;
 static void
 usage(int ret)
 {
-	error("Usage:\tscgcheck [options]\n");
-	error("Options:\n");
-	error("\t-version	print version information and exit\n");
-	error("\tdev=target	SCSI target to use\n");
-	error("\ttimeout=#	set the default SCSI command timeout to #.\n");
-	error("\tdebug=#,-d	Set to # or increment misc debug level\n");
-	error("\tkdebug=#,kd=#	do Kernel debugging\n");
-	error("\t-verbose,-v	increment general verbose level by one\n");
-	error("\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
-	error("\t-silent,-s	do not print status of failed SCSI commands\n");
-	error("\tf=filename	Name of file to write log data to.\n");
-	error("\n");
+	fprintf(stderr, "Usage:\tscgcheck [options]\n");
+	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "\t-version	print version information and exit\n");
+	fprintf(stderr, "\tdev=target	SCSI target to use\n");
+	fprintf(stderr, "\ttimeout=#	set the default SCSI command timeout to #.\n");
+	fprintf(stderr, "\tdebug=#,-d	Set to # or increment misc debug level\n");
+	fprintf(stderr, "\tkdebug=#,kd=#	do Kernel debugging\n");
+	fprintf(stderr, "\t-verbose,-v	increment general verbose level by one\n");
+	fprintf(stderr, "\t-Verbose,-V	increment SCSI command transport verbose level by one\n");
+	fprintf(stderr, "\t-silent,-s	do not print status of failed SCSI commands\n");
+	fprintf(stderr, "\tf=filename	Name of file to write log data to.\n");
+	fprintf(stderr, "\n");
 	exit(ret);
 }	
 
@@ -153,7 +153,7 @@ main(int argc, char *argv[])
 	}
 	if (fcount > 0)
 		comerrno(EX_BAD, "Bad argument(s).\n");
-/*error("dev: '%s'\n", dev);*/
+/*fprintf(stderr, "dev: '%s'\n", dev);*/
 
 	logfile = fileopen(filename, "wct");
 	if (logfile == NULL)
@@ -177,7 +177,7 @@ main(int argc, char *argv[])
 
 	basefds = countopen();
 	if (xdebug)
-		error("nopen: %d\n", basefds);
+		fprintf(stderr, "nopen: %d\n", basefds);
 
 	printf("Checking if your implementation supports to scan the SCSI bus.\n");
 	fprintf(logfile, "Checking if your implementation supports to scan the SCSI bus.\n");
@@ -186,16 +186,16 @@ main(int argc, char *argv[])
 	scgp = doopen(dev);
 
 	if (xdebug) {
-		error("nopen: %d\n", countopen());
-		error("Scanopen opened %d new files.\n", countopen() - basefds);
+		fprintf(stderr, "nopen: %d\n", countopen());
+		fprintf(stderr, "Scanopen opened %d new files.\n", countopen() - basefds);
 	}
 
 	device[0] = '\0';
 	if (scgp == NULL) do {
-		error("SCSI open failed...\n");
+		fprintf(stderr, "SCSI open failed...\n");
 		if (!scg_yes("Retry with different device name? "))
 			break;
-		error("Enter SCSI device name for bus scanning [%s]: ", device);
+		fprintf(stderr, "Enter SCSI device name for bus scanning [%s]: ", device);
 		flushit();
 		(void) getline(device, sizeof (device));
 		if (device[0] == '\0')
@@ -226,14 +226,14 @@ main(int argc, char *argv[])
 	}
 
 	if (xdebug)
-		error("nopen: %d\n", countopen());
+		fprintf(stderr, "nopen: %d\n", countopen());
 	printf("For the next test we need to open a single SCSI device.\n");
 	fprintf(logfile, "For the next test we need to open a single SCSI device.\n");
 	printf("Best results will be obtained if you specify a modern CD-ROM drive.\n");
 	fprintf(logfile, "Best results will be obtained if you specify a modern CD-ROM drive.\n");
 	strcpy(device, "0,6,0");
 	do {
-		error("Enter SCSI device name [%s]: ", device);
+		fprintf(stderr, "Enter SCSI device name [%s]: ", device);
 		flushit();
 		(void) getline(device, sizeof (device));
 		if (device[0] == '\0')
@@ -251,7 +251,7 @@ main(int argc, char *argv[])
 		 */
 	} while (scgp == NULL);
 	if (xdebug)
-		error("nopen: %d\n", countopen());
+		fprintf(stderr, "nopen: %d\n", countopen());
 	/*
 	 * First try to check which type of SCSI device we
 	 * have.
@@ -276,7 +276,7 @@ main(int argc, char *argv[])
 		ret = inquiry(scgp, buf, sizeof (struct scsi_inquiry));
 		scgp->silent--;
 		if (xdebug)
-			error("ret: %d key: %d\n", ret, scg_sense_key(scgp));
+			fprintf(stderr, "ret: %d key: %d\n", ret, scg_sense_key(scgp));
 		if (ret >= 0 || scgp->scmd->error == SCG_RETRYABLE) {
 			printf("First SCSI open OK - device usable\n");
 			printf("Checking for second SCSI open.\n");
@@ -338,14 +338,14 @@ main(int argc, char *argv[])
 		}
 		if (!second_ok && scgp2) {
 			if (xdebug > 1)
-				error("scgp %p scgp2 %p\n", scgp, scgp2);
+				fprintf(stderr, "scgp %p scgp2 %p\n", scgp, scgp2);
 			if (scgp)
 				scg_close(scgp);
 			if (scgp2)
 				scg_close(scgp2);
 			scgp = doopen(device);
 			if (xdebug > 1)
-				error("scgp %p\n", scgp);
+				fprintf(stderr, "scgp %p\n", scgp);
 		}
 	}
 #endif	/* CHECK_SECOND_OPEN */
@@ -434,7 +434,7 @@ checkversion(SCSI *scgp)
 	vers = scg_version(scgp, SCG_VERSION);
 	auth = scg_version(scgp, SCG_AUTHOR);
 	if (lverbose > 1)
-		error("Using libscg transport code version '%s-%s'\n", auth, vers);
+		fprintf(stderr, "Using libscg transport code version '%s-%s'\n", auth, vers);
 	fprintf(logfile, "Using libscg transport code version '%s-%s'\n", auth, vers);
 	if (auth == 0 || strcmp("schily", auth) != 0) {
 		errmsgno(EX_BAD,
@@ -449,7 +449,7 @@ checkversion(SCSI *scgp)
 	vers = scg_version(scgp, SCG_RVERSION);
 	auth = scg_version(scgp, SCG_RAUTHOR);
 	if (lverbose > 1 && vers && auth)
-		error("Using remote transport code version '%s-%s'\n", auth, vers);
+		fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
 
 	if (auth != 0 && strcmp("schily", auth) != 0) {
 		errmsgno(EX_BAD,
@@ -480,7 +480,7 @@ getbuf(SCSI *scgp)
 
 	bufsize = scg_bufsize(scgp, BUF_SIZE);
 	if (debug)
-		error("SCSI buffer size: %ld\n", bufsize);
+		fprintf(stderr, "SCSI buffer size: %ld\n", bufsize);
 	if ((buf = scg_getbuf(scgp, bufsize)) == NULL)
 		comerr("Cannot get SCSI I/O buffer.\n");
 }

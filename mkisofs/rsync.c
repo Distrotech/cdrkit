@@ -102,7 +102,7 @@ unsigned long long rsync64(unsigned char *mem, size_t size)
         b += a;
     }
 
-    a = a & 0xffffffff; // Just in case uint32 can be 64 bits
+    a = a & 0xffffffff; /* Just in case uint32 can be 64 bits */
     b = b & 0xffffffff;
 
     result = ((unsigned long long)b << 32) | a;

@@ -203,7 +203,7 @@ cdr_t	cdr_mmc = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -244,15 +244,15 @@ cdr_t   cdr_mdvd = {
          scsi_load,
          scsi_unload,
          read_buff_cap,
-         cmd_dummy,                              /* recovery_needed      */
-         (int(*)(SCSI *, int))cmd_dummy,   /* recover              */
+         cmd_dummy,                                       /* check_recovery */
+         (int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,   /* recover     */
          speed_select_mdvd,
          select_secsize,
          next_wr_addr_mdvd,
          (int(*)(SCSI *, Ulong))cmd_ill,   /* reserve_track        */
          scsi_cdr_write,
-         (int(*)(SCSI *scgp, int, track_t *))cmd_dummy, /* gen_cue */
-	 (int(*)(SCSI *scgp, cdr_t *, track_t *))cmd_dummy, /* send_cue */
+         (int(*)__PR((track_t *, void *, BOOL)))cmd_dummy, /* gen_cue */
+	 (int(*)__PR((SCSI *scgp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
  	 write_leadin_mmc,
          open_track_mdvd,
          close_track_mdvd,
@@ -289,7 +289,7 @@ cdr_t	cdr_mmc_sony = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -333,7 +333,7 @@ cdr_t	cdr_cd = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -377,7 +377,7 @@ cdr_t	cdr_oldcd = {
 	scsi_load,
 	scsi_unload,
 	buf_dummy,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -422,7 +422,7 @@ cdr_t	cdr_cd_dvd = {
 	scsi_load,
 	scsi_unload,
 	read_buff_cap,
-	cmd_dummy,					/* recovery_needed */
+	cmd_dummy,					/* check_recovery */
 	(int(*)(SCSI *, cdr_t *, int))cmd_dummy,	/* recover	*/
 	speed_select_mmc,
 	select_secsize,
@@ -452,51 +452,51 @@ mmc_opthelp(cdr_t *dp, int excode)
 {
 	BOOL	haveopts = FALSE;
 
-	error("Driver options:\n");
+	fprintf(stderr, "Driver options:\n");
 	if (dp->cdr_flags & CDR_BURNFREE) {
-		error("burnfree	Prepare writer to use BURN-Free technology\n");
-		error("noburnfree	Disable using BURN-Free technology\n");
+		fprintf(stderr, "burnfree	Prepare writer to use BURN-Free technology\n");
+		fprintf(stderr, "noburnfree	Disable using BURN-Free technology\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_VARIREC) {
-		error("varirec=val	Set VariRec Laserpower to -2, -1, 0, 1, 2\n");
-		error("		Only works for audio and if speed is set to 4\n");
+		fprintf(stderr, "varirec=val	Set VariRec Laserpower to -2, -1, 0, 1, 2\n");
+		fprintf(stderr, "		Only works for audio and if speed is set to 4\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_GIGAREC) {
-		error("gigarec=val	Set GigaRec capacity ratio to 0.6, 0.7, 0.8, 1.0, 1.2, 1.3, 1.4\n");
+		fprintf(stderr, "gigarec=val	Set GigaRec capacity ratio to 0.6, 0.7, 0.8, 1.0, 1.2, 1.3, 1.4\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_AUDIOMASTER) {
-		error("audiomaster	Turn Audio Master feature on (SAO CD-R Audio/Data only)\n");
+		fprintf(stderr, "audiomaster	Turn Audio Master feature on (SAO CD-R Audio/Data only)\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_FORCESPEED) {
-		error("forcespeed	Tell the drive to force speed even for low quality media\n");
+		fprintf(stderr, "forcespeed	Tell the drive to force speed even for low quality media\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_SPEEDREAD) {
-		error("speedread	Tell the drive to read as fast as possible\n");
-		error("nospeedread	Disable to read as fast as possible\n");
+		fprintf(stderr, "speedread	Tell the drive to read as fast as possible\n");
+		fprintf(stderr, "nospeedread	Disable to read as fast as possible\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_DISKTATTOO) {
-		error("tattooinfo	Print image size info for DiskT@2 feature\n");
-		error("tattoofile=name	Use 'name' as DiskT@2 image file\n");
+		fprintf(stderr, "tattooinfo	Print image size info for DiskT@2 feature\n");
+		fprintf(stderr, "tattoofile=name	Use 'name' as DiskT@2 image file\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_SINGLESESS) {
-		error("singlesession	Tell the drive to behave as single session only drive\n");
-		error("nosinglesession	Disable single session only mode\n");
+		fprintf(stderr, "singlesession	Tell the drive to behave as single session only drive\n");
+		fprintf(stderr, "nosinglesession	Disable single session only mode\n");
 		haveopts = TRUE;
 	}
 	if (dp->cdr_flags & CDR_HIDE_CDR) {
-		error("hidecdr		Tell the drive to hide CD-R media\n");
-		error("nohidecdr	Disable hiding CD-R media\n");
+		fprintf(stderr, "hidecdr		Tell the drive to hide CD-R media\n");
+		fprintf(stderr, "nohidecdr	Disable hiding CD-R media\n");
 		haveopts = TRUE;
 	}
 	if (!haveopts) {
-		error("None supported for this drive.\n");
+		fprintf(stderr, "None supported for this drive.\n");
 	}
 	exit(excode);
 }
@@ -630,7 +630,7 @@ identify_mmc(SCSI *scgp, cdr_t *dp, struct scsi_inquiry *ip)
 	if (profile >= 0) {
 		if (lverbose)
 			print_profiles(scgp);
-		if (profile == 0 || profile >= 0x10 && profile <= 0x15 || profile > 0x19) {
+		if (profile == 0 || (profile >= 0x10 && profile <= 0x15) || profile > 0x19) {
 		    /*
 		     * 10h DVD-ROM
 		     * 11h DVD-R
@@ -704,7 +704,7 @@ identify_mmc(SCSI *scgp, cdr_t *dp, struct scsi_inquiry *ip)
 #ifndef	DVD_DEBUG
 		scgp->silent++;
 #else
-		error("identify_dvd: checking for DVD media\n");
+		fprintf(stderr, "identify_dvd: checking for DVD media\n");
 #endif
 		if (read_dvd_structure(scgp, (caddr_t)xb, 32, 0, 0, 0) >= 0) {
 			/*
@@ -731,7 +731,7 @@ identify_mmc(SCSI *scgp, cdr_t *dp, struct scsi_inquiry *ip)
 #ifndef	DVD_DEBUG
 		scgp->silent--;
 #else
-		error("identify_dvd: is_dvd: %d\n", is_dvd);
+		fprintf(stderr, "identify_dvd: is_dvd: %d\n", is_dvd);
 #endif
 	}
 	if (is_dvd) {
@@ -847,7 +847,7 @@ attach_mmc(SCSI *scgp, cdr_t *dp)
 
 		scgp->verbose++;
 		if (scsi_set_speed(scgp, -1, val, ROTCTL_CAV) < 0) {
-			error("XXX\n");
+			fprintf(stderr, "XXX\n");
 		}
 		scgp->verbose--;
 	}
@@ -1218,7 +1218,7 @@ deflt_writemodes_mmc(SCSI *scgp, BOOL reset_dummy)
 		((struct scsi_mode_header *)mode)->blockdesc_len);
 #ifdef	DEBUG
 	scg_prbytes("CD write parameter:", (Uchar *)mode, len);
-	error("Audio pause len: %d\n", a_to_2_byte(mp->audio_pause_len));
+	fprintf(stderr, "Audio pause len: %d\n", a_to_2_byte(mp->audio_pause_len));
 #endif
 
 	/*
@@ -2011,10 +2011,8 @@ static int
 speed_select_mdvd(SCSI *scgp, cdr_t *dp, int *speedp)
 {
   int retcode;
-  unsigned char perf_desc[28];
+  char perf_desc[28];
   int write_speed = *speedp * 1385;
-  int val = 0, val2 = 0;
-  int i;
    
   /* For the moment we just divide the CD speed by 7*/
 
@@ -2057,8 +2055,8 @@ speed_select_mdvd(SCSI *scgp, cdr_t *dp, int *speedp)
   perf_desc[26] = 1000 >> 8;
   perf_desc[27] = 1000 & 0xFF;  
   
-  //retcode = scsi_set_streaming(scgp, NULL, 0);
-  retcode = scsi_set_streaming(scgp, &perf_desc, sizeof(perf_desc));
+  /* retcode = scsi_set_streaming(scgp, NULL, 0); */
+  retcode = scsi_set_streaming(scgp, perf_desc, sizeof(perf_desc));
   if (retcode == -1) return retcode;
   retcode = speed_select_mmc(scgp, dp, speedp);
   if(speedp!=NULL)
@@ -2482,7 +2480,6 @@ open_session_mdvd(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	struct	cd_mode_page_05 *mp;
 	Ulong totalsize;
 	int i;
-	struct	track_info	track_info;
 	int profile;
 
 	fillbytes((caddr_t)mode, sizeof(mode), '\0');
@@ -2609,7 +2606,7 @@ fixate_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 	scgp->silent++;
 	if (debug && !unit_ready(scgp)) {
-		error("Early return from fixating. Ret: %d Key: %d, Code: %d\n", ret, key, code);
+		fprintf(stderr, "Early return from fixating. Ret: %d Key: %d, Code: %d\n", ret, key, code);
 	}
 	scgp->silent--;
 
@@ -2642,7 +2639,7 @@ fixate_mmc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	}
 
 	if (debug && !unit_ready(scgp)) {
-		error("Early return from fixating. Ret: %d Key: %d, Code: %d\n", ret, key, code);
+		fprintf(stderr, "Early return from fixating. Ret: %d Key: %d, Code: %d\n", ret, key, code);
 	}
 
 	wait_unit_ready(scgp, 420);	 /* XXX Wait for ATAPI */
@@ -2722,7 +2719,6 @@ blank_mmc(SCSI *scgp, cdr_t *dp, long addr, int blanktype)
 	BOOL	cdrrw	 = FALSE;	/* Read CD-RW	*/
 	BOOL	cdwrw	 = FALSE;	/* Write CD-RW	*/
 	int	ret;
-	int 	profile;
 
 	mmc_check(scgp, &cdrr, &cdwr, &cdrrw, &cdwrw, NULL, NULL);
 	if (!cdwrw)
@@ -2775,10 +2771,10 @@ extern	char	*buf;
 		printf("Error: disk already formated, ignoring.\n");
 	        return ret;
         }
-	addr[0] = 0;           // "Reserved"
-	addr[1] = 2;           // "IMMED" flag
-	addr[2] = 0;           // "Descriptor Length" (MSB)
-	addr[3] = 8;           // "Descriptor Length" (LSB)
+	addr[0] = 0;           /* "Reserved" */
+	addr[1] = 2;           /* "IMMED" flag */
+	addr[2] = 0;           /* "Descriptor Length" (MSB) */
+	addr[3] = 8;           /* "Descriptor Length" (LSB) */
 	addr[4+0] = 0xff;
 	addr[4+1] = 0xff;
 	addr[4+2] = 0xff;
@@ -4056,7 +4052,7 @@ ricoh_mode_page_30 *get_justlink_ricoh(SCSI *scgp, Uchar *mode)
 		return ((struct ricoh_mode_page_30 *)0);
 
 	if (xdebug) {
-		error("Mode len: %d\n", len);
+		fprintf(stderr, "Mode len: %d\n", len);
 		scg_prbytes("Mode Sense Data ", mode, len);
 		scg_prbytes("Mode Sence CData", modec, len);
 	}
@@ -4073,7 +4069,7 @@ ricoh_mode_page_30 *get_justlink_ricoh(SCSI *scgp, Uchar *mode)
 		return ((struct ricoh_mode_page_30 *)0);
 
 	if (xdebug) {
-		error("Burnfree counter: %d\n", a_to_u_2_byte(mp->link_counter));
+		fprintf(stderr, "Burnfree counter: %d\n", a_to_u_2_byte(mp->link_counter));
 	}
 	return (mp);
 }
@@ -4270,13 +4266,12 @@ static int
 dvd_dual_layer_split(SCSI *scgp, cdr_t *dp, long tsize)
 {
     unsigned char	xb[12];
-    int		i;
     long 	l0_size;
     
     /* Get the Layer 0 defined data zone*/
     if (read_dvd_structure(scgp, (caddr_t)xb, 12, 0, 0, 0x20) >= 0) {
 	if ((xb[1] | xb[0] << 8) < 13) {
-	    error("dvd_dual_layer_split: read_dvd_structure returns invalid data\n");
+	    fprintf(stderr, "dvd_dual_layer_split: read_dvd_structure returns invalid data\n");
 	    return 1;
 	}
 	if (xb[4] & 0x80) {
@@ -4285,13 +4280,13 @@ dvd_dual_layer_split(SCSI *scgp, cdr_t *dp, long tsize)
 	}
 	l0_size = xb[11] | xb[10] << 8 | xb[9] << 16 | xb[8] << 24;
 	if (tsize < l0_size) {
-	    error("track size smaller than one layer, use --force to force burning.");
+	    fprintf(stderr, "track size smaller than one layer, use --force to force burning.");
 	    return 0;
 	}
-	printf("L0 size: %l (track size %l)\n", l0_size, tsize);
+	printf("L0 size: %ld (track size %ld)\n", l0_size, tsize);
 	l0_size = tsize / 2;
 	l0_size = l0_size - 1 + 16 - (l0_size - 1) % 16;
-	printf("New L0 size: %l\n", l0_size);
+	printf("New L0 size: %ld\n", l0_size);
 
 	memset (xb, 0, sizeof(xb));
 	xb[1]  = sizeof(xb) - 2;
@@ -4300,7 +4295,7 @@ dvd_dual_layer_split(SCSI *scgp, cdr_t *dp, long tsize)
 	xb[10] = l0_size >> 8;
 	xb[11] = l0_size;
 	if (send_dvd_structure(scgp, (caddr_t)xb, 12, 0, 0x20)) {
-	    error("dvd_dual_layer_split: send_dvd_structure failed, could not set middle zone location.\n");
+	    fprintf(stderr, "dvd_dual_layer_split: send_dvd_structure failed, could not set middle zone location.\n");
 	    return 0;
 	}
     }

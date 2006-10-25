@@ -542,20 +542,20 @@ static void usage2 (const char *szMessage, ...)
 static void usage2(const char *szMessage, va_dcl va_alist)
 #endif
 {
-  va_list marker;
+	va_list marker;
 
 #ifdef  PROTOTYPES
-  va_start(marker, szMessage);
+	va_start(marker, szMessage);
 #else
-  va_start(marker);
+	va_start(marker);
 #endif
 
-  error("%r", szMessage, marker);
+	vfprintf(stderr, szMessage, marker);
 
-  va_end(marker);
-  fprintf(stderr, "\nPlease use -help or consult the man page for help.\n");
+	va_end(marker);
+	fprintf(stderr, "\nPlease use -help or consult the man page for help.\n");
 
-  exit (1);
+	exit (1);
 }
 
 
@@ -574,7 +574,7 @@ void FatalError(const char *szMessage, va_dcl va_alist)
 	va_start(marker);
 #endif
 
-	error("%r", szMessage, marker);
+	vfprintf(stderr, szMessage, marker);
 
 	va_end(marker);
 
@@ -2616,7 +2616,7 @@ Rate   Divider      Rate   Divider      Rate   Divider      Rate   Divider\n\
 
 #if	0
   if (!global.paranoia_selected) {
-    error("NICE\n");
+    fprintf(stderr, "NICE\n");
     /* try to get some extra kicks */
     priv_on();
     needroot(0);
@@ -3046,7 +3046,7 @@ Rate   Divider      Rate   Divider      Rate   Divider      Rate   Divider\n\
 		global.have_forked = 0;
 #if	0
 		if (!global.paranoia_selected) {
-			error("REAL\n");
+			fprintf(stderr, "REAL\n");
 			switch_to_realtime_priority();
 		}
 #endif

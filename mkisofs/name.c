@@ -283,7 +283,7 @@ iso9660_file_length(const char *name /* Not really const !!! */,
 			/*
 			 * Does not work as we may truncate before the dot.
 			 */
-			error("Truncating '%s' to '%.*s'.\n",
+			fprintf(stderr, "Truncating '%s' to '%.*s'.\n",
 				name,
 				current_length, sresult->isorec.name);
 			ignore++;
@@ -528,8 +528,8 @@ iso9660_file_length(const char *name /* Not really const !!! */,
 
 /*#define	DEBBUG*/
 #ifdef	DEBBUG
-	error("NAME: '%s'\n", sresult->isorec.name);
-	error("chars_before_dot %d chars_after_dot %d seen_dot %d extra %d\n",
+	fprintf(stderr, "NAME: '%s'\n", sresult->isorec.name);
+	fprintf(stderr, "chars_before_dot %d chars_after_dot %d seen_dot %d extra %d\n",
 		chars_before_dot, chars_after_dot, seen_dot, extra);
 #endif
 	return (chars_before_dot + chars_after_dot + seen_dot + extra);

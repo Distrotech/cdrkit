@@ -179,7 +179,7 @@ BOOL yes(char *form, ...)
 
 again:
 	va_start(args, form);
-	printf("%r", form, args);
+	vprintf(form, args);
 	va_end(args);
 	flush();
 	if (getline(okbuf, sizeof(okbuf)) == EOF)

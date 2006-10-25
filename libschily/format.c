@@ -42,12 +42,12 @@
 #ifdef	DEBUG
 #include <unixstd.h>
 #endif
-#if	!defined(HAVE_STDLIB_H) || !defined(HAVE_GCVT)
-extern	char	*gcvt __PR((double, int, char *));
-#endif
+
 #include <standard.h>
 #include <utypes.h>
 #include <schily.h>
+
+#include "cvt.h"
 
 /*
  * As Llong is currently a 'best effort' long long, we usually need to

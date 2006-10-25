@@ -241,7 +241,7 @@ scg_open(char *scsidev, char *errs, int slen, int debug, int be_verbose)
 	}
 nulldevice:
 
-/*error("10 scsidev '%s' sdev '%s' devp '%s' b: %d t: %d l: %d\n", scsidev, sdev, devp, bus, tgt, lun);*/
+/*fprintf(stderr, "10 scsidev '%s' sdev '%s' devp '%s' b: %d t: %d l: %d\n", scsidev, sdev, devp, bus, tgt, lun);*/
 
 	if (devp != NULL) {
 		n = scg_scandev(devp, errs, slen, &bus, &tgt, &lun);

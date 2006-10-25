@@ -35,10 +35,26 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
   * rewrote README.mkisofs, README.win32
   * better track numbers extraction command in cdda2ogg/cdda2mp3
   * reenabled (forgotten) support for libedc
+  * table formating fixes in cdda2wav.1, helps small terminals
+  * AIX 5l port
+  * killing FIFO process on ungraceful termination
+  * scsi-linux-sg.c: skipping unallowed devices, cleanup/consolidation of the
+    old workaround(s) for ATA now for SCSI too
+  * renamed error function to schily_error because it started to wreak random
+    havoc after harmless header moving (conflict with incompatible GNU version)
+
+  [ Vladimir Nadvornik ]
+  * enabled CLONE feature in wodim's config
 
   [ Modestas Vainius ]
   * dropped . from the include path and fixed mkisofs source to use the local
     headers
+
+  [ Lorenz Minder ]
+  * Fix of the joliet_strlen signature
+  * Code refactoring around *cvt* declarations to make the conditional
+    compilation more reliable, especially on BSD and AIX
+  * include/utypes.h: guard to preserve SIZE_T_MAX
 
   [ Christian Fromme ]
   * detailed review and correction of author related data in manpages and
@@ -46,6 +62,8 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
 
   [ Peter Samuelson, Tollef Fog Heen ]
   * typo and grammar fixes in mkisofs.8
+  * Remove several instances of %r in printf-like statements, in
+    preparation for removing the libschily format-string implementation
 
  -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
 

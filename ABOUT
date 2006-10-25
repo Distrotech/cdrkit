@@ -5,6 +5,9 @@ This package is heavily based on cdrtools (by Jörg
 Schilling, see below), however he is not affiliated
 with the debburn development project creating this package.
 
+Cdrtools (see http://cdrecord.berlios.de) 2.01.01a08 from May 2006 was
+the version used as the starting code base for cdrkit.
+
 Jörg Schilling is not responsible for problems caused by the
 use or distribution of this software. Please avoid bothering
 him with issues that are out of his control.

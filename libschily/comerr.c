@@ -186,7 +186,7 @@ errmsgno(err, msg, va_alist)
 	 * defined to a enum. ENODEV may work as ENODEV is defined to a number
 	 * directly.
 	 */
-#define	silent_error(e)		((e) < 0 && (e) >= -1024)
+#define	silent_schily_error(e)		((e) < 0 && (e) >= -1024)
 #else
 	/*
 	 * On UNIX errno is a small non-negative number, so we assume that
@@ -194,7 +194,7 @@ errmsgno(err, msg, va_alist)
 	 * string in this case. However the value may still be used as exit()
 	 * code if 'exflg' is set.
 	 */
-#define	silent_error(e)		((e) < 0)
+#define	silent_schily_error(e)		((e) < 0)
 #endif
 LOCAL int
 _comerr(exflg, err, msg, args)
@@ -207,8 +207,9 @@ _comerr(exflg, err, msg, args)
 	char	*errnam;
 	char	*prognam = get_progname();
 
-	if (silent_error(err)) {
-		error("%s: %r", prognam, msg, args);
+	if (silent_schily_error(err)) {
+		fprintf(stderr, "%s: ", prognam);
+		vfprintf(stderr, msg, args);
 	} else {
 		errnam = errmsgstr(err);
 		if (errnam == NULL) {
@@ -216,7 +217,8 @@ _comerr(exflg, err, msg, args)
 						"Error %d", err);
 			errnam = errbuf;
 		}
-		error("%s: %s. %r", prognam, errnam, msg, args);
+		fprintf(stderr, "%s: %s. ", prognam, errnam);
+		vfprintf(stderr, msg, args);
 	}
 	if (exflg) {
 		comexit(err);

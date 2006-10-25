@@ -269,13 +269,13 @@ find_file_hash(register char *name)
 	register struct name_hash	*nh;
 
 	if (debug > 1)
-		error("find_hash('%s')\n", name);
+		fprintf(stderr, "find_hash('%s')\n", name);
 
 	for (nh = name_hash_table[name_hash(name)]; nh; nh = nh->next) {
 		p1 = name;
 		p2 = nh->de->isorec.name;
 		if (debug > 1)
-			error("Checking name '%s' isorec.name '%s'\n", p1, p2);
+			fprintf(stderr, "Checking name '%s' isorec.name '%s'\n", p1, p2);
 
 		/* Look for end of string, or a mismatch. */
 		while (1 == 1) {
@@ -290,9 +290,9 @@ find_file_hash(register char *name)
 		if (!isoname_endsok(p1) || !isoname_endsok(p2)) {
 			if (debug > 1) {
 				if (!isoname_endsok(p1))
-					error("'%s' does NOT END OK\n", p1);
+					fprintf(stderr, "'%s' does NOT END OK\n", p1);
 				if (!isoname_endsok(p2))
-					error("'%s' does NOT END OK\n", p2);
+					fprintf(stderr, "'%s' does NOT END OK\n", p2);
 			}
 			/*
 			 * If one file does not end with a valid version number

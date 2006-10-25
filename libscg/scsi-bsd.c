@@ -188,7 +188,7 @@ scgo_open(SCSI *scgp, char *device)
 				js_snprintf(devname, sizeof (devname),
 							"/dev/su%d-%d-%d", b, t, l);
 				f = open(devname, O_RDWR);
-/*				error("open (%s) = %d\n", devname, f);*/
+/*				fprintf(stderr, "open (%s) = %d\n", devname, f);*/
 
 				if (f < 0) {
 					if (errno != ENOENT &&

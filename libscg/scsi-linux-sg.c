@@ -243,22 +243,22 @@ static	long	sg_raisedma(SCSI *scgp, long newmax);
 #endif
 static	void	sg_settimeout(int f, int timeout);
 
-int    sg_open_excl(char *device, int mode, int quickAndQuiet);
+int    sg_open_excl(char *device, int mode);
 
 int
-sg_open_excl(char *device, int mode, int quickAndQuiet)
+sg_open_excl(char *device, int mode)
+
 {
        int f;
        int i;
        f = open(device, mode|O_EXCL);
-       if(!quickAndQuiet)
-          for (i = 0; (i < 10) && (f == -1 && (errno == EACCES || errno == EBUSY)); i++) {
-             fprintf(stderr, "Error trying to open %s exclusively (%s)... retrying in 1 second.\n", device, strerror(errno));
-             usleep(1000000 + 100000.0 * rand()/(RAND_MAX+1.0));
-             f = open(device, mode|O_EXCL);
-          }
-       if (f == -1 && errno != EACCES && errno != EBUSY) {
-           f = open(device, mode);
+       /* try to reopen locked/busy devices up to five times */
+       for (i = 0; (i < 5) && (f == -1 && errno == EBUSY); i++) {
+	       fprintf(stderr, "Error trying to open %s exclusively (%s)... %s\n",
+               device, strerror(errno), 
+               (i<4)?"retrying in 1 second.":"giving up.");
+	       usleep(1000000 + 100000.0 * rand()/(RAND_MAX+1.0));
+	       f = open(device, mode|O_EXCL);
        }
        return f;
 }
@@ -440,7 +440,7 @@ scanopen:
 	if (use_ata) for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
 					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, 1);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -481,7 +481,7 @@ scanopen:
 	if (nopen == 0) for (i = 0; i < 32; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/sg%d", i);
 					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, 0);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -490,6 +490,8 @@ scanopen:
 			if (scgp->errstr)
 				js_snprintf(scgp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '/dev/sg*'");
+			if(errno == EACCES || errno==EPERM)
+				continue;
 			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
 				if (scgp->errstr)
 					js_snprintf(scgp->errstr, SCSI_ERRSTR_SIZE,
@@ -510,7 +512,7 @@ scanopen:
 	if (nopen == 0) for (i = 0; i <= 25; i++) {
 		js_snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
 					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, 0);
+		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			/*
 			 * Set up error string but let us clear it later
@@ -519,6 +521,8 @@ scanopen:
 			if (scgp->errstr)
 				js_snprintf(scgp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '/dev/sg*'");
+			if(errno == EACCES || errno==EPERM)
+				continue;
 			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
 				if (scgp->errstr)
 					js_snprintf(scgp->errstr, SCSI_ERRSTR_SIZE,
@@ -544,25 +548,8 @@ openbydev:
 			if (b < 0 || b > 25)
 				b = -1;
 		}
-		if (scgp->overbose) {
-			/*
-			 * Before you patch this away, are you sure that you
-			 * know what you are going to to?
-			 *
-			 * Note that this is a warning that helps users from
-			 * cdda2wav, mkisofs and other programs (that
-			 * distinguish SCSI addresses from file names) from
-			 * getting unexpected results.
-       *
-       *
-       * EB: Yes, I know, the hell I care about the distinguish SCSI addresses
-       * which I do not need and don't want to care about.
-			js_fprintf((FILE *)scgp->errfile,
-			"Warning: Open by 'devname' is unintentional and not supported.\n");
-			 */
-		}
-					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(device, O_RDWR | O_NONBLOCK, 0);
+    /* O_NONBLOCK is dangerous */
+		f = sg_open_excl(device, O_RDWR | O_NONBLOCK);
 /*		if (f < 0 && errno == ENOENT)*/
 /*			goto openpg;*/
 

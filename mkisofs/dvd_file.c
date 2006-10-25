@@ -64,6 +64,8 @@ bsort(int sector[], int title[], int size)
 	int	i;
 	int	j;
 
+  /* this is not bubble sort, this is primitive selection sort. Replace with
+   * bubble sort later, maybe bidirectional, aka Coctail Sort */
 	for (i = 0; i < size; i++) {
 		for (j = 0; j < size; j++) {
 			if (sector[i] < sector[j]) {

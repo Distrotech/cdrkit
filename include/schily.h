@@ -187,7 +187,7 @@ extern	int	serrmsgno(int, char *, size_t, const char *, ...) __printflike__(4, 5
 extern	void	comexit(int);
 extern	char	*errmsgstr(int);
 /*PRINTFLIKE1*/
-extern	int	error(const char *, ...) __printflike__(1, 2);
+extern	int	schily_error(const char *, ...) __printflike__(1, 2);
 extern	char	*fillbytes(void *, int, char);
 extern	char	*findbytes(const void *, int, char);
 extern	int	findline(const char *, char, const char *, int, char **, int);

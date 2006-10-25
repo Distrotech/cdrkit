@@ -400,12 +400,6 @@ extern double rnd_prod(double, double), rnd_quot(double, double);
 
 #define Kmax 15
 
-#ifdef __cplusplus
-extern "C" double strtod(const char *s00, char **se);
-extern "C" char *__dtoa(double d, int mode, int ndigits,
-			int *decpt, int *sign, char **rve);
-#endif
-
  struct
 Bigint {
 	struct Bigint *next;
@@ -1787,7 +1781,7 @@ strtod
 	if (se)
 		*se = (char *)s;
 	return sign ? -rv : rv;
-	}
+}
 
  static int
 quorem
@@ -1893,7 +1887,7 @@ quorem
 			}
 		}
 	return q;
-	}
+}
 
 /* dtoa for IEEE arithmetic (dmg): convert double to ASCII string.
  *

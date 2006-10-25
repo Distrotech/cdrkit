@@ -115,7 +115,7 @@ FILE	*ef;
 #define	USDEBUG1
 #define	USDEBUG2
 #endif
-#define	EDEBUG(a)	if (debug) error a
+#define EDEBUG(a)   if (debug) schily_error a
 #else
 #define	EDEBUG(a)
 #define	USDEBUG1
@@ -412,7 +412,7 @@ static	int	buf_idx = 0;		/* Initialize to fix an Amiga bug   */
 static	int	buf_idx_reader = 0;	/* Separate var to allow vfork()    */
 					/* buf_idx_reader is for the process */
 					/* that fills the FIFO		    */
-static	pid_t	faio_pid;
+static	pid_t	faio_pid = -1;
 static	BOOL	faio_didwait;
 
 #ifdef AMIGA
@@ -582,6 +582,7 @@ kill_faio()
 {
 	if (faio_pid > 0)
 		kill(faio_pid, SIGKILL);
+  faio_pid=-1;
 }
 
 int
@@ -621,7 +622,7 @@ faio_reader(track_t *trackp)
 			/* XXX This should be fixed soon */
 #endif
 	if (debug)
-		error("\nfaio_reader _exit(0)\n");
+		fprintf(stderr, "\nfaio_reader _exit(0)\n");
 	_exit(0);
 }
 

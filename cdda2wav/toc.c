@@ -192,7 +192,6 @@ void AnalyzeQchannel(unsigned frame)
 }
 
 unsigned cdtracks = 0;
-static int have_hiddenAudioTrack = 0;
 
 int no_disguised_audiotracks()
 {

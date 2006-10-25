@@ -162,7 +162,7 @@ scgo_open(SCSI *scgp, char *device)
 				for (l = 0; l < 1; l++) {
 					js_snprintf(devname, sizeof (devname),
 							"/dev/rscsi/c%xt%xl%x", b, t, l);
-/*error("name: '%s'\n", devname);*/
+/*fprintf(stderr, "name: '%s'\n", devname);*/
 					f = open(devname, O_RDWR);
 					if (f >= 0) {
 						scglocal(scgp)->scgfiles[b][t][l] = (short)f;
@@ -332,7 +332,7 @@ scgo_send(SCSI *scgp)
 		return (ret);
 	}
 if (scgp->debug > 0)
-error("cdb_status: %X, size: %d xfer: %d\n", sctl_io.cdb_status, sctl_io.data_length, sctl_io.data_xfer);
+fprintf(stderr, "cdb_status: %X, size: %d xfer: %d\n", sctl_io.cdb_status, sctl_io.data_length, sctl_io.data_xfer);
 
 	if (sctl_io.cdb_status == 0 || sctl_io.cdb_status == 0x02)
 		sp->resid = sp->size - sctl_io.data_xfer;

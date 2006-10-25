@@ -191,23 +191,23 @@ printasc(char *txt, unsigned char *p, int len)
 {
 	int		i;
 
-	error("%s ", txt);
+	fprintf(stderr, "%s ", txt);
 	for (i = 0; i < len; i++) {
 		if (isprint(p[i]))
-			error("%c", p[i]);
+			fprintf(stderr, "%c", p[i]);
 		else
-			error(".");
+			fprintf(stderr, ".");
 	}
-	error("\n");
+	fprintf(stderr, "\n");
 }
 
 static void
 prbytes(char *txt, register Uchar *p, register int len)
 {
-	error("%s", txt);
+	fprintf(stderr, "%s", txt);
 	while (--len >= 0)
-		error(" %02X", *p++);
-	error("\n");
+		fprintf(stderr, " %02X", *p++);
+	fprintf(stderr, "\n");
 }
 
 unsigned char *
@@ -217,7 +217,7 @@ parse_xa(unsigned char *pnt, int *lenp, struct directory_entry *dpnt)
 	int		len = *lenp;
 static	int		did_xa = 0;
 
-/*error("len: %d\n", len);*/
+/*fprintf(stderr, "len: %d\n", len);*/
 
 	if (len >= 14) {
 		xadp = (struct iso_xa_dir_record *)pnt;
@@ -659,7 +659,7 @@ read_merging_directory(struct iso_directory_record *mrootp, int *nentp)
 		*pnt = (struct directory_entry *) e_malloc(sizeof (**rtn));
 		(*pnt)->next = NULL;
 #ifdef	DEBUG
-		error("IDR name: '%s' ist: %d soll: %d\n",
+		fprintf(stderr, "IDR name: '%s' ist: %d soll: %d\n",
 			idr->name, strlen(idr->name), idr->name_len[0]);
 #endif
 		(*pnt)->isorec = *idr;
@@ -717,7 +717,7 @@ read_merging_directory(struct iso_directory_record *mrootp, int *nentp)
 			seen_rockridge = 1;
 		}
 #ifdef	DEBUG
-		error("INT name: '%s' ist: %d soll: %d\n",
+		fprintf(stderr, "INT name: '%s' ist: %d soll: %d\n",
 			(*pnt)->isorec.name, strlen((*pnt)->isorec.name),
 			idr->name_len[0]);
 #endif

@@ -542,14 +542,14 @@ extern int get_session_start(int *);
 /* joliet.c */
 #ifdef	UDF
 #   ifdef USE_ICONV
-extern	size_t	convert_to_unicode(unsigned char *buffer, int size, 
-												 char *source, struct unls_table *inls);
-extern	int	joliet_strlen(const char *string, struct unls_table *inls);
+extern	size_t	convert_to_unicode	(unsigned char *buffer,
+			int size, char *source, struct unls_table *inls);
 #   else
-extern	void	convert_to_unicode(unsigned char *buffer, int size, 
-											 char *source, struct unls_table *inls);
-extern	int	joliet_strlen(const char *string);
+extern	void	convert_to_unicode	(unsigned char *buffer,
+			int size, char *source, struct unls_table *inls);
+>>>>>>> .merge-rechts.r368
 #   endif
+extern	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
 #endif
 extern unsigned char conv_charset(unsigned char, struct unls_table *,
 											 struct unls_table *);

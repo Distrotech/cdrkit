@@ -198,13 +198,13 @@ set_cdrcmds(char *name, cdr_t **dpp)
 		return (FALSE);
 
 	if (!streql("help", name))
-		error("Illegal driver type '%s'.\n", name);
+		fprintf(stderr, "Illegal driver type '%s'.\n", name);
 
-	error("Driver types:\n");
+	fprintf(stderr, "Driver types:\n");
 	for (d = drivers; *d != (cdr_t *)NULL; d++) {
-		error("%s%n",
+		fprintf(stderr, "%s%n",
 			(*d)->cdr_drname, &n);
-		error("%*s%s\n",
+		fprintf(stderr, "%*s%s\n",
 			20-n, "",
 			(*d)->cdr_drtext);
 	}
@@ -238,7 +238,7 @@ get_cdrcmds(SCSI *scgp)
 		get_wproflist(scgp, &is_cdwr, &is_dvdwr,
 						&is_dvdpluswr, &is_ddcdwr);
 		if (xdebug) {
-			error(
+			fprintf(stderr, 
 			"Found MMC-3 %s CD: %s/%s DVD-: %s/%s DVD+: %s/%s DDCD: %s/%s.\n",
 					is_wr ? "writer": "reader",
 					is_cd?"r":"-",
@@ -261,7 +261,7 @@ get_cdrcmds(SCSI *scgp)
 	 */
 	if (is_mmc(scgp, &is_cdwr, &is_dvdwr)) {
 		if (xdebug) {
-			error("Found MMC drive CDWR: %d DVDWR: %d.\n",
+			fprintf(stderr, "Found MMC drive CDWR: %d DVDWR: %d.\n",
 							is_cdwr, is_dvdwr);
 		}
 
@@ -302,7 +302,7 @@ get_cdrcmds(SCSI *scgp)
 	odp = dp;
 
 	if (xdebug) {
-		error("Using driver '%s' for identify.\n",
+		fprintf(stderr, "Using driver '%s' for identify.\n",
 			dp != NULL ?
 			dp->cdr_drname :
 			"<no driver>");
@@ -312,7 +312,7 @@ get_cdrcmds(SCSI *scgp)
 		dp = dp->cdr_identify(scgp, dp, scgp->inq);
 
 	if (xdebug && dp != odp) {
-		error("Identify set driver to '%s'.\n",
+		fprintf(stderr, "Identify set driver to '%s'.\n",
 			dp != NULL ?
 			dp->cdr_drname :
 			"<no driver>");

@@ -449,7 +449,7 @@ static	Uchar	lastindex = 255;
 		ctrl |= TM_ALLOW_COPY << 4;
 
 #ifdef	SUB_DEBUG
-	error("Tracknl %d nindex %d trackstart %ld rsecno %d index0start %ld nsecs %d\n",
+	fprintf(stderr, "Tracknl %d nindex %d trackstart %ld rsecno %d index0start %ld nsecs %d\n",
 	trackno, nindex, trackp->trackstart, rsecno, trackp->index0start, nsecs);
 #endif
 

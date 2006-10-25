@@ -244,12 +244,12 @@ usage(int excode)
 	errmsgno(EX_BAD, "Usage: %s [options] [image]\n",
 						get_progname());
 
-	error("Options:\n");
-	error("\t-help, -h	Print this help\n");
-	error("\t-version	Print version info and exit\n");
-	error("\t-i filename	Filename to read ISO-9660 image from\n");
-	error("\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
-	error("\nIf neither -i nor dev= are speficied, <image> is needed.\n");
+	fprintf(stderr, "Options:\n");
+	fprintf(stderr, "\t-help, -h	Print this help\n");
+	fprintf(stderr, "\t-version	Print version info and exit\n");
+	fprintf(stderr, "\t-i filename	Filename to read ISO-9660 image from\n");
+	fprintf(stderr, "\tdev=target	SCSI target to use as CD/DVD-Recorder\n");
+	fprintf(stderr, "\nIf neither -i nor dev= are speficied, <image> is needed.\n");
 	exit(excode);
 }
 

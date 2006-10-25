@@ -134,7 +134,7 @@ sglog(const char *fmt, ...)
 		return;
 
 	va_start(args, fmt);
-	js_fprintf(f, "%r", fmt, args);
+	vfprintf(f, fmt, args);
 	va_end(args);
 	fclose(f);
 }
@@ -192,10 +192,10 @@ scgo_aopen(SCSI *scgp, char *device)
 		int	nopen = 0;
 
 	if (scgp->overbose)
-		error("Warning: Using ATA Packet interface.\n");
+		fprintf(stderr, "Warning: Using ATA Packet interface.\n");
 	if (scgp->overbose) {
-		error("Warning: The related Linux kernel interface code seems to be unmaintained.\n");
-		error("Warning: There is absolutely NO DMA, operations thus are slow.\n");
+		fprintf(stderr, "Warning: The related Linux kernel interface code seems to be unmaintained.\n");
+		fprintf(stderr, "Warning: There is absolutely NO DMA, operations thus are slow.\n");
 	}
 
 	log(("\n<<<<<<<<<<<<<<<<  LOGGING ON >>>>>>>>>>>>>>>>>\n"));

@@ -140,7 +140,7 @@ auinfosize(char *name, track_t *trackp)
 	}
 	tracksize = (secs * 2352) + (nsamples * 4);
 	if (xdebug > 0) {
-		error("%s: Tracksize %lld bytes (%ld sectors, %ld samples)\n",
+		fprintf(stderr, "%s: Tracksize %lld bytes (%ld sectors, %ld samples)\n",
 			name, tracksize, secs, nsamples);
 	}
 	trackp->itracksize = tracksize;

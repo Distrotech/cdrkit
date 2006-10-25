@@ -284,7 +284,7 @@ scgo_ropen(scgp, device)
 	char		*p;
 
 	if (scgp->overbose)
-		error("Warning: Using remote SCSI interface.\n");
+		fprintf(stderr, "Warning: Using remote SCSI interface.\n");
 
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;

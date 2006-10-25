@@ -40,10 +40,10 @@
 /* VARARGS1 */
 #ifdef	PROTOTYPES
 EXPORT int
-error(const char *fmt, ...)
+schily_error(const char *fmt, ...)
 #else
 EXPORT int
-error(fmt, va_alist)
+schily_error(fmt, va_alist)
 	char	*fmt;
 	va_dcl
 #endif
@@ -56,7 +56,7 @@ error(fmt, va_alist)
 #else
 	va_start(args);
 #endif
-	ret = js_fprintf(stderr, "%r", fmt, args);
+	ret = vfprintf(stderr, fmt, args);
 	va_end(args);
 	return (ret);
 }

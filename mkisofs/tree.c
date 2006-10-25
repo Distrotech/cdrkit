@@ -395,7 +395,7 @@ sort_n_finish(struct directory *this_dir)
 					newname[new_reclen + 2] =
 					    (d3 <= 9 ? '0' + d3 : 'A' + d3 - 10);
 					if (debug)
-						error("NEW name '%s'\n", newname);
+						fprintf(stderr, "NEW name '%s'\n", newname);
 
 #ifdef VMS
 					/* Sigh.  VAXCRTL seems to be broken here */
@@ -2248,7 +2248,7 @@ find_or_create_directory(struct directory *parent, const char *path,
 	 * XXX be found.
 	 */
 	if (path == NULL) {
-		error("Warning: missing whole name for: '%s'\n", de->name);
+		fprintf(stderr, "Warning: missing whole name for: '%s'\n", de->name);
 		path = de->name;
 	}
 	pnt = strrchr(path, PATH_SEPARATOR);
@@ -2368,7 +2368,7 @@ find_or_create_directory(struct directory *parent, const char *path,
 		else
 			sts = stat_filter(parent->whole_name, &xstatbuf);
 		if (debug && parent) {
-			error("stat parent->whole_name: '%s' -> %d.\n",
+			fprintf(stderr, "stat parent->whole_name: '%s' -> %d.\n",
 				parent->whole_name, sts);
 		}
 		if (sts == 0) {
