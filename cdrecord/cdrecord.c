@@ -138,53 +138,53 @@ struct timeval	fixtime;
 
 static	long	fs = -1L;	/* fifo (ring buffer) size */
 
-extern	int 	main		(int ac, char **av)
-static	void	usage		(int)
-static	void	blusage		(int)
-static	void	intr		(int sig)
-extern	int	read_buf	(int f, char *bp, int size)
-extern	int	get_buf		(int f, char **bpp, int size)
-static	int	write_track_data (SCSI *scgp, cdr_t *, int , track_t *)
+extern	int 	main		(int ac, char **av);
+static	void	usage		(int);
+static	void	blusage		(int);
+static	void	intr		(int sig);
+extern	int	read_buf	(int f, char *bp, int size);
+extern	int	get_buf		(int f, char **bpp, int size);
+static	int	write_track_data (SCSI *scgp, cdr_t *, int , track_t *);
 extern	int	pad_track	(SCSI *scgp, cdr_t *dp, int track, track_t *trackp,
 				     long startsec, long amt,
-				     BOOL dolast, long *bytesp)
+				     BOOL dolast, long *bytesp);
 extern	int	write_buf	(SCSI *scgp, cdr_t *dp, int track, track_t *trackp,
 				     char *bp, long startsec, long amt, int secsize,
-				     BOOL dolast, long *bytesp)
-static	void	printdata	(int, track_t *)
-static	void	printaudio	(int, track_t *)
-static	void	checkfile	(int, track_t *)
-static	int	checkfiles	(int, track_t *)
-static	void	setpregaps	(int, track_t *)
-static	long	checktsize	(int, track_t *)
-static	void	checksize	(track_t *)
-static	BOOL	checkdsize	(SCSI *scgp, cdr_t *dp, dstat_t *dsp, long tsize)
-static	void	raise_fdlim	(void)
+				     BOOL dolast, long *bytesp);
+static	void	printdata	(int, track_t *);
+static	void	printaudio	(int, track_t *);
+static	void	checkfile	(int, track_t *);
+static	int	checkfiles	(int, track_t *);
+static	void	setpregaps	(int, track_t *);
+static	long	checktsize	(int, track_t *);
+static	void	checksize	(track_t *);
+static	BOOL	checkdsize	(SCSI *scgp, cdr_t *dp, dstat_t *dsp, long tsize);
+static	void	raise_fdlim	(void);
 static	void	gargs		(int, char **, int *, track_t *, char **,
 					int *, cdr_t **,
-					int *, long *, int *, int *)
-static	void	set_trsizes	(cdr_t *, int, track_t *)
-extern	void	load_media	(SCSI *scgp, cdr_t *)
-extern	void	unload_media	(SCSI *scgp, cdr_t *, int)
-extern	void	set_secsize	(SCSI *scgp, int secsize)
-static	void	check_recovery	(SCSI *scgp, cdr_t *, int)
-	void	audioread	(SCSI *scgp, cdr_t *, int)
-static	void	print_msinfo	(SCSI *scgp, cdr_t *)
-static	void	print_toc	(SCSI *scgp, cdr_t *)
-static	void	print_track	(int, long, struct msf *, int, int, int)
+					int *, long *, int *, int *);
+static	void	set_trsizes	(cdr_t *, int, track_t *);
+extern	void	load_media	(SCSI *scgp, cdr_t *);
+extern	void	unload_media	(SCSI *scgp, cdr_t *, int);
+extern	void	set_secsize	(SCSI *scgp, int secsize);
+static	void	check_recovery	(SCSI *scgp, cdr_t *, int);
+	void	audioread	(SCSI *scgp, cdr_t *, int);
+static	void	print_msinfo	(SCSI *scgp, cdr_t *);
+static	void	print_toc	(SCSI *scgp, cdr_t *);
+static	void	print_track	(int, long, struct msf *, int, int, int);
 static	void	prtimediff	(const char *fmt,
 					struct timeval *start,
-					struct timeval *stop)
-#if !defined(HAVE_SYS_PRIOCNTL_H)
-static	int	rt_raisepri	(int)
+					struct timeval *stop);
+#if !defined(HAVE_SYS_PRIOCNTL_H);
+static	int	rt_raisepri	(int);
 #endif
-extern	void	raisepri	(int)
-static	void	checkgui	(void)
-static	char *	astoll		(const char *s, Llong *ll)
-static	Llong	number		(char* arg, int* retp)
-extern	int	getnum		(char* arg, long* valp)
-extern	int	getllnum	(char *arg, Llong* lvalp)
-static	int	getbltype	(char* optstr, long *typep)
+extern	void	raisepri	(int);
+static	void	checkgui	(void);
+static	char *	astoll		(const char *s, Llong *ll);
+static	Llong	number		(char* arg, int* retp);
+extern	int	getnum		(char* arg, long* valp);
+extern	int	getllnum	(char *arg, Llong* lvalp);
+static	int	getbltype	(char* optstr, long *typep);
 
 extern int 
 main(ac, av)
