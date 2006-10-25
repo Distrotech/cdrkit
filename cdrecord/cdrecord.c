@@ -129,7 +129,6 @@ long	bufsize;		/* The size of the transfer buffer */
 int	data_secs_per_tr;	/* # of data secs per transfer */
 int	audio_secs_per_tr;	/* # of audio secs per transfer */
 
-BOOL	isgui;
 int	didintr;
 
 struct timeval	starttime;
@@ -179,12 +178,15 @@ static	void	prtimediff	(const char *fmt,
 static	int	rt_raisepri	(int);
 #endif
 extern	void	raisepri	(int);
-static	void	checkgui	(void);
 static	char *	astoll		(const char *s, Llong *ll);
 static	Llong	number		(char* arg, int* retp);
 extern	int	getnum		(char* arg, long* valp);
 extern	int	getllnum	(char *arg, Llong* lvalp);
 static	int	getbltype	(char* optstr, long *typep);
+
+/* provided by libschily and others nowadays */
+
+static char * astoll(register const char *s, Llong *ll);
 
 extern int 
 main(ac, av)
@@ -228,7 +230,6 @@ main(ac, av)
 	if (flags & F_VERSION)
 		exit(0);
 
-	checkgui();
 
 	if (debug || lverbose) {
 		printf("TOC Type: %d = %s\n",
@@ -755,8 +756,7 @@ usage(excode)
 }
 
 static void
-blusage(ret)
-	int	ret;
+blusage(int	ret)
 {
 	error("Blanking options:\n");
 	error("\tall\t\tblank the entire disk\n");
@@ -808,14 +808,9 @@ read_buf(f, bp, size)
 	return (amount);
 }
 
-extern int
-get_buf(f, bpp, size)
-	int	f;
-	char	**bpp;
-	int	size;
-{
+extern	int	get_buf		(int f, char **bpp, int size) {
 	if (fs > 0) {
-/*		return (faio_read_buf(f, *bpp, size));*/
+		/*		return (faio_read_buf(f, *bpp, size));*/
 		return (faio_get_buf(f, bpp, size));
 	} else {
 		return (read_buf(f, *bpp, size));
@@ -2085,11 +2080,9 @@ print_track(track, lba, msp, adr, control, mode)
 			adr, control, mode);
 }
 
-static void
-prtimediff(fmt, start, stop)
-	const	char	*fmt;
-	struct timeval	*start;
-	struct timeval	*stop;
+static	void	prtimediff	(const char *fmt,
+					struct timeval *start,
+					struct timeval *stop)
 {
 	struct timeval tv;
 
@@ -2270,30 +2263,6 @@ raisepri(pri)
 
 #endif	/* HAVE_SYS_PRIOCNTL_H */
 
-static void
-checkgui()
-{
-	struct stat st;
-
-	if (fstat(STDERR_FILENO, &st) >= 0 && !S_ISCHR(st.st_mode)) {
-		isgui = TRUE;
-		if (lverbose > 1)
-			printf("Using remote (pipe) mode for interactive i/o.\n");
-	}
-}
-
-static char *
-astoll(s, ll)
-	register const char *s;
-        Llong *ll;
-{
-	char	*p;
-	long	l = 0;
-
-	p = astol(s, &l);
-	*ll = (Llong)l;
-	return (p);
-}
 
 static Llong
 number(arg, retp)

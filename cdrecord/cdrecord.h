@@ -439,6 +439,8 @@ extern	int	st2mode[];	/* Convert sector type to control nibble*/
 #define	DB_VU_7		7	/* -	Vendor specific			  */
 #define	DB_ROM_MODE1	8	/* 2048 bytes Mode 1 (ISO/IEC 10149)	  */
 #define	DB_ROM_MODE2	9	/* 2336 bytes Mode 2 (ISO/IEC 10149)	  */
+#warning FIXME: find out what DB_XA_MODE1 was exactly good for
+#define	DB_XA_MODE1	10	/* 2048 bytes Mode 1? (CD-ROM XA form 1)  */
 #define	DB_XA_MODE2	10	/* 2048 bytes Mode 2 (CD-ROM XA form 1)   */
 #define	DB_XA_MODE2_F1	11	/* 2056 bytes Mode 2 (CD-ROM XA form 1)	  */
 #define	DB_XA_MODE2_F2	12	/* 2324 bytes Mode 2 (CD-ROM XA form 2)	  */
@@ -850,16 +852,18 @@ struct cdr_cmd {
  */
 extern	int	read_buf(int f, char *bp, int size);
 extern	int	fill_buf(int f, track_t *trackp, long secno, char *bp, int size);
-extern	int	get_buf(int f, track_t *trackp, long secno, char **bpp, int size);
+/*extern	int	get_buf(int f, track_t *trackp, long secno, char **bpp, int size);
+*/
 #ifdef	_SCG_SCSITRANSP_H
 extern	int	write_secs(SCSI *scgp, cdr_t *dp, char *bp, long startsec, 
 								  int bytespt, int secspt, BOOL islast);
-extern	int	pad_track(SCSI *scgp, cdr_t *dp, track_t *trackp,
+/*extern	int	pad_track(SCSI *scgp, cdr_t *dp, track_t *trackp,
 								 long startsec, Llong amt,
 								 BOOL dolast, Llong *bytesp);
 extern	void	load_media(SCSI *scgp, cdr_t *, BOOL);
 extern	void	unload_media(SCSI *scgp, cdr_t *, int);
 extern	void	reload_media(SCSI *scgp, cdr_t *);
+*/
 #endif
 extern	void	raisepri(int);
 extern	int	getnum(char *arg, long *valp);
@@ -925,8 +929,9 @@ extern	BOOL	set_mode_params(SCSI *scgp, char *pagename, Uchar *modep,
  */
 #ifdef	timerclear
 extern	void	timevaldiff(struct timeval *start, struct timeval *stop);
-extern	void	prtimediff(const char *fmt, struct timeval *start,
+/*extern	void	prtimediff(const char *fmt, struct timeval *start,
 								  struct timeval *stop);
+*/
 #endif
 
 /*
