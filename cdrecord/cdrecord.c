@@ -325,13 +325,12 @@ main(ac, av)
 			"Copyright (C) 2006 cdrkit maintainers, (C) 1994-2006 Joerg Schilling\n\n" );
 	fprintf(stderr,
 			"WARNING WARNING WARNING:\n\n"
-			"If you are annoyed by the messages about unofficial status or about\n"
-			"non-Schily-Makefilesystem below or if you cannot link multisession\n"
-			"because your GUI/script breaks, please don't send your complaints to\n"
-      "cdrkit maintainers; they already know.\n"
+			"If you are annoyed by the messages below about unofficial status or about\n"
+			"non-Schily-Makefilesystem or if your GUI/script breaks because of them,\n"
+      "please don't send your complaints to cdrkit maintainers; they already know.\n"
 			"They are not allowed to remove them by Joerg Schilling's license\n"
 			"modifications (restrictions), hidden in the source. Correcting the contents\n"
-      "of this message is forbidden as well, so don't believe everything said there.\n\n\n" );
+      "of the messages is forbidden as well, so don't believe everything said there.\n\n\n" );
 
 #endif /* SHUT_UP */
 
