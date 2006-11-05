@@ -171,7 +171,7 @@ scg__open(scgp, device)
 	scg_ops_t *ops;
 extern	scg_ops_t scg_std_ops;
 
-#ifdef DONT_CARE 
+#ifndef SHUT_UP
 /* 
  * Who defines which changes decrease the quality and how? The one who hates
  * all changes not done by him personally? There are more harsh (but more
@@ -197,7 +197,7 @@ extern	scg_ops_t scg_std_ops;
 	/*
 	 * End restricted code for quality assurance.
 	 */
-#endif
+#endif /* SHUT_UP */
 
 	scgp->ops = &scg_std_ops;
 
