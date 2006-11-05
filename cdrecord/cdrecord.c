@@ -779,7 +779,7 @@ if (lverbose > 2)
 
 	/* DVD does not support TAO */
 	if (dp->is_dvd) {
-	        printf("Using Session At Once (SAO) for DVD mode.\n");
+	        fprintf(stderr, "Using Session At Once (SAO) for DVD mode.\n");
 		dp->cdr_flags |= F_SAO;
 		for (i = 0; i <= MAX_TRACK; i++) {
 		    track[i].flags &= ~TI_TAO;

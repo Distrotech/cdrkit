@@ -171,6 +171,9 @@ scg__open(scgp, device)
 	scg_ops_t *ops;
 extern	scg_ops_t scg_std_ops;
 
+#define printf(x) fprintf(stderr, x)
+/* The code is not modified. Only moved to where it belongs to, stopping sabotage of frontend programs' functionality */
+
 #ifndef SHUT_UP
 /* 
  * Who defines which changes decrease the quality and how? The one who hates
@@ -198,6 +201,7 @@ extern	scg_ops_t scg_std_ops;
 	 * End restricted code for quality assurance.
 	 */
 #endif /* SHUT_UP */
+#undef printf
 
 	scgp->ops = &scg_std_ops;
 
