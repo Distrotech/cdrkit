@@ -1,0 +1,35 @@
+#!/bin/sh
+
+if [ "$1" = "upgrade" ] ||  [ "$1" = "install" ] ; then
+   # first kill old conffiles, then possible dangling symlinks created by that action
+   for CONF in /etc/default/wodim /etc/default/cdrecord /etc/default/rscsi \
+      /etc/cdrecord/cdrecord /etc/cdrecord/rscsi \
+      /etc/wodim/wodim /etc/wodim/rscsi
+   do
+      SUM="$(md5sum $CONF 2>/dev/null | cut -f1 -d\  )"
+      # missing, empty, unchanged files
+      case "$SUM" in 
+         ""|d41d8cd98f00b204e9800998ecf8427e|e7e6151fe872d56351d04f4c2c3d9722|0bcdd41f5d7c6419d524b234701d18f0|1d2c06f0d52fae533ef0cd58b80d22e4|3016370f809f8bca713a2eee1ecbeb2d|68e2b3b297d6b5cb0c6beb9136f2d918|6e3ce0b42b8971f0b10958ab6982b441|8c3e4a320aafda37f162a12526c0d431|e05fdb0a48542ccbff5b28b100d083e3|eff315991af0911ae8c96b9500c1714f)
+         rm -f $CONF
+         ;;
+         *)
+         case $CONF in
+            *rscsi)
+            if ! test -e /etc/rscsi.conf ; then
+               cp $CONF /etc/rscsi.conf || true
+            fi
+            ;;
+            *)
+            if ! test -e /etc/wodim.conf ; then
+               cp $CONF /etc/wodim.conf || true
+            fi
+            ;;
+         esac
+         ;;
+      esac
+   done
+   # drop directories but only if beeing empty
+   yes n | rm -r /etc/cdrecord /etc/wodim 2>/dev/null || true
+fi
+
+#DEBHELPER#

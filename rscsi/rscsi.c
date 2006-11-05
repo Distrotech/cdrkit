@@ -154,9 +154,9 @@ main(argc, argv)
 	 * don't contribute work and don't give support, they are causing extra
 	 * work for me and this way slow down the development.
 	 */
-	if (defltopen("/etc/default/rscsi") < 0) {
+	if (defltopen("/etc/rscsi.conf") < 0) {
 		rscsierror(geterrno(), errmsgstr(geterrno()),
-			"Remote configuration error: Cannot open /etc/default/rscsi");
+			"Remote configuration error: Cannot open /etc/rscsi.conf");
 /*		rscsirespond(-1, geterrno());*/
 		exit(EX_BAD);
 	}
@@ -177,7 +177,7 @@ main(argc, argv)
 	/*
 	 * XXX If someone sets up debugging and allows the debug file to be
 	 * XXX replaced by a symlink to e.g. /etc/passwd this would be a
-	 * XXX security risk. But /etc/default/rscsi is only writable by root
+	 * XXX security risk. But /etc/rscsi.conf is only writable by root
 	 * XXX and for this reason a possible security risk would have been
 	 * XXX introduced by the administrator.
 	 */

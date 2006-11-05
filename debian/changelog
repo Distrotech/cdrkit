@@ -8,6 +8,10 @@ cdrkit (5:1.0~pre5-1) unstable; urgency=low
   * remove . from the include list, patch by Modestas Vainius
     (closes: #358497, acknowledging NMU by Steinar H. Gunderson)
   * readded mkzftree to the mkisofs files (closes: #387927)
+  * wodim.preinst: remove unchanged old config files, dangling symlinks to
+    them, old "convinience" symlinks, preinstalls user-modified files to the
+    new target locations /etc/{wodim,rscsi}.conf 
+    (closes: #388403, #390084, #388119, #387854)
 
  -- Eduard Bloch <blade@debian.org>  Tue, 12 Sep 2006 11:16:34 +0200
 

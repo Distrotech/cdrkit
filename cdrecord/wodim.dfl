@@ -1,6 +1,6 @@
 #ident @(#)wodim.dfl	1.5 06/22/06 Copyr 2006 E. Bloch
 #
-# This file is /etc/default/wodim
+# This file is /etc/wodim.conf
 #
 #ident @(#)cdrecord.dfl	1.5 05/08/09 Copyr 1998 J. Schilling
 #
@@ -19,7 +19,7 @@ CDR_DEVICE=cdrom
 # Note that newer cdrecord versions do not default
 # to speed=1. For MMC compliant drives, the default
 # is to write at maximum speed, so it in general does
-# not make sense to set up a default speed in /etc/default/wodim 
+# not make sense to set up a default speed in /etc/wodim.conf 
 #
 #CDR_SPEED=40
 

@@ -159,7 +159,7 @@ IMPORTANT:
 	If dev=0,0,0 does not work but -dev=0,0,0 works you found this
 	incompatibility. This problem is caused by an incompatibility
 	in ctype.h and it seems that there are other compatibility problems
-	e.g. with reading /etc/default/wodim.
+	e.g. with reading /etc/wodim.conf.
 
 	You cannot copy binaries between different Linux versions,
 	always compile the sources by yourself. 

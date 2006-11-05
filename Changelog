@@ -117,7 +117,7 @@ cdrkit (1.0pre1) RELEASED; urgency=low
       plattforms, though.
   * removed most of the anti-linux2.6  program messages (unless being
     in verbose mode). (closes: #377145)
-  * changed default config file location to /etc/default/wodim
+  * changed default config file location to /etc/wodim.conf
   * added more meaningful error message on -dvd-video failure (closes: #324586)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus
