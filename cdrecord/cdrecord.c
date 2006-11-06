@@ -330,7 +330,9 @@ main(ac, av)
       "please don't send your complaints to cdrkit maintainers; they already know.\n"
 			"They are not allowed to remove them by Joerg Schilling's license\n"
 			"modifications (restrictions), hidden in the source. Correcting the contents\n"
-      "of the messages is forbidden as well, so don't believe everything said there.\n\n\n" );
+      "of the messages is forbidden as well, so don't believe everything said there.\n"
+      "See http://svn.debian.org/wsvn/debburn/nonameyet/trunk/FAQ?op=file&rev=0&sc=0\n"
+      "for details.\n\n" );
 
 #endif /* SHUT_UP */
 
