@@ -245,7 +245,6 @@ scg_open(scsidev, errs, slen, debug, be_verbose)
 			}
 		}
 	}
-    fprintf(stderr, "wtf, open: %s\n", sdev);
 nulldevice:
 
 /*fprintf(stderr, "10 scsidev '%s' sdev '%s' devp '%s' b: %d t: %d l: %d\n", scsidev, sdev, devp, bus, tgt, lun);*/
