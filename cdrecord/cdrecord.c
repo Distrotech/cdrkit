@@ -4261,6 +4261,14 @@ get_dmaspeed(scgp, dp)
 	int	bs;
 	int	tsize;
 
+  if(getenv("CDR_NODMATEST"))
+     return -1;
+
+  if (debug || lverbose)
+     fprintf( stderr, 
+           "Beginning DMA speed test. Set CDR_NODMATEST environment variable if device\n"
+           "communication breaks or freezes immediately after that.\n" );
+
 	fillbytes((caddr_t)buf, 4, '\0');
 	tsize = 0;
 	scgp->silent++;
