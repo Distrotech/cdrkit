@@ -17,6 +17,8 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
     old workaround(s) for ATA now for SCSI too
   * renamed error function to schily_error because it started to wreak random
     havoc after harmless header moving (conflict with incompatible GNU version)
+  * restored scsi-remote.c compilation, moved to libscg sources, used instead
+    of rdummy.c
 
   [ Eugen Dedu ]
   * corrections and constructive help on cdda2ogg

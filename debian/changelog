@@ -2,7 +2,8 @@ cdrkit (5:1.0~pre5-1) unstable; urgency=low
 
   * New upstream source snapshot
     + typos in wodim.1 fixes, thanks to J. Alto (closes: #386898)
-    + reenabled libedc support (closes: #387429)
+    + reenabled libedc support (closes: #387429), reenabled REMOTE target
+      support (closes: #396460)
     + terminates FIFO process on exist (closes: #397271)
   * fixed installation of FAQ and FORK files (closes: #386735)
   * cdda2ogg/cdda2mp3 are unified, installing cdda2mp3 as symlink
