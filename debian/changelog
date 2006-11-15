@@ -1,6 +1,8 @@
 cdrkit (5:1.0~pre5-1.1) unstable; urgency=low
 
-  * ATAPI -> ATA mapping and better error messages
+  * ATAPI -> ATA mapping and better error messages (closes: #398465)
+  * more reliable FIFO process termination (closes: #398043)
+  * prints burn-free message only with higher verbosity (closes: 388770)
 
  -- Eduard Bloch <blade@debian.org>  Tue, 14 Nov 2006 15:08:16 +0100
 

@@ -10,7 +10,7 @@ Package: wodim
 Architecture: any
 Depends: ${shlibs:Depends}
 Recommends: mkisofs
-Replaces: cdrtools-doc (<< 5:1.0~pre1-0), cdrecord (<< 5:1.0~pre1-0)
+Replaces: cdrtools-doc (<< 5:1.0~pre1-1), cdrecord (<< 5:1.0~pre1-1)
 Suggests: cdrkit-doc
 Conflicts: cdrecord (<< 5:1.0~pre1-1)
 Description: command line CD/DVD writing tool

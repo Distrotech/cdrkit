@@ -2,10 +2,14 @@ cdrkit (1.0pre6) UNRELEASED; urgency=low
 
   [ Eduard Bloch ]
   * mapping of ATAPI: -> ATA: method on linux-2.6 and some code beautification
+  * added a atexit handler to stop the FIFO process more reliably, since
+    Schilling's constructs seem to terminate the application on too many
+    places
+  * print Burnfree state/preparation messages only with high verbosity
 
  -- Eduard Bloch <blade@debian.org>  Wed, 15 Nov 2006 12:30:01 +0100
 
-cdrkit (1.0pre5) UNRELEASED; urgency=low
+cdrkit (1.0pre5) RELEASED; urgency=low
 
   [ Eduard Bloch ]
   * added better check for capability.h and FATAL_ERROR if it's missing on Linux

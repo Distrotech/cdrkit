@@ -281,6 +281,10 @@ struct exargs {
 	int	exflags;
 } exargs;
 
+void fifo_cleanup(void) {
+   kill_faio();
+}
+
 EXPORT int
 main(ac, av)
 	int	ac;
@@ -1173,6 +1177,8 @@ if (lverbose > 2)
 			fs = 0L;
 		else
 			on_comerr(excdr, &exargs);
+
+    atexit(fifo_cleanup);
 
 #if defined(USE_POSIX_PRIORITY_SCHEDULING) && defined(HAVE_SETREUID)
 		/*
