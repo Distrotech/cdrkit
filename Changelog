@@ -1,3 +1,10 @@
+cdrkit (1.0pre6) UNRELEASED; urgency=low
+
+  [ Eduard Bloch ]
+  * mapping of ATAPI: -> ATA: method on linux-2.6 and some code beautification
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 15 Nov 2006 12:30:01 +0100
+
 cdrkit (1.0pre5) UNRELEASED; urgency=low
 
   [ Eduard Bloch ]

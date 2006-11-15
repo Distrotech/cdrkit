@@ -67,6 +67,11 @@ static	char sccsid[] =
 #include <scg/scsireg.h>
 #include <scg/scsitransp.h>
 
+#if    defined(linux) || defined(__linux) || defined(__linux__)
+#include <sys/utsname.h>
+#endif
+
+
 #define	strbeg(s1, s2)	(strstr((s2), (s1)) == (s2))
 
 extern	int	lverbose;
@@ -130,6 +135,22 @@ scg_open(scsidev, errs, slen, debug, be_verbose)
 	}
 	scgp->debug = debug;
 	scgp->overbose = be_verbose;
+
+#ifdef __linux__
+  struct utsname buf; 
+  if(scsidev) {
+     if(0==strncmp(scsidev, "ATAPI:", 6) &&
+           0==uname( &buf ) &&
+           0==strncmp(buf.release, "2.6", 3) ) {
+        scsidev+=6;
+        fprintf(stderr, "\nWarning, the ATAPI: method is considered deprecated on modern kernels!\n"
+              "Mapping device specification to dev=%s now.\n"
+              "To force the old ATAPI: method, replace ATAPI: with OLDATAPI:\n", scsidev);
+     }
+     else if(0==strncmp(scsidev, "OLDATAPI:", 9))
+        scsidev+=3;
+  }
+#endif
 
 	devname[0] = '\0';
 	if (scsidev != NULL && scsidev[0] != '\0') {

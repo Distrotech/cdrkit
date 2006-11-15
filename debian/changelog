@@ -1,3 +1,9 @@
+cdrkit (5:1.0~pre5-1.1) unstable; urgency=low
+
+  * ATAPI -> ATA mapping and better error messages
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 14 Nov 2006 15:08:16 +0100
+
 cdrkit (5:1.0~pre5-1) unstable; urgency=low
 
   * New upstream source snapshot

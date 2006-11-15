@@ -563,36 +563,25 @@ main(ac, av)
 		exit(0);
 	}
 
-	/*
-	 * XXX scg_open() needs root privilleges (According to Joerg Schilling, but let's try anyway)
-	 */
-	if (
-        (scgp = scg_open(dev, errstr, sizeof (errstr),
-                         debug, 
-                  /* disabled unless one can explain my what is so special about the F_MSINFO option that the absense of it requires printing of the uber-verbose scg messages  (flags & F_MSINFO) == 0 || */
-                         lverbose)) == (SCSI *)0
-        ) 
+  scgp = scg_open(dev, errstr, sizeof (errstr),
+        debug, lverbose);
+  if(!scgp && dev) {
+     char *dalt;
+     int len=5+strlen(dev);
+     dalt=calloc(len, sizeof(char));
+     strcat(dalt, "ATA:");
+     strcat(dalt+4, dev);
+     scgp = scg_open(dalt, errstr, sizeof (errstr),
+           debug, lverbose);
+  }
+  if(!scgp)
   {
-      if (dev != NULL 
-            || (flags & F_SCANBUS) == 0 
-            || (scgp = scg_open("ATA", errstr, sizeof (errstr),
-                  debug, 
-                  /* disabled unless one can explain my what is so special about the F_MSINFO option that the absense of it requires printing of the uber-verbose scg messages  (flags & F_MSINFO) == 0 || */
-                            lverbose)) == (SCSI *)0
-            )
-      {
-         errmsg("%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
-         errmsgno(EX_BAD, "For possible targets try 'wodim -scanbus'.%s\n",
-               geteuid() ? " Make sure you are root.":"");
-         errmsgno(EX_BAD, "For possible transport specifiers try 'wodim dev=help'.\n");
-         errmsgno(EX_BAD, "\n");
-         errmsgno(EX_BAD, "For more information, install the cdrkit-doc\n");
-         errmsgno(EX_BAD, "package and read /usr/share/doc/wodim/README.ATAPI.setup .\n");
-         exit(EX_BAD);
-      }
-      else {
-         dev = "ATA";
-      }
+     errmsg("\nCannot open SCSI driver!\n"
+           "For possible targets try 'wodim -scanbus'.\n"
+           "For possible transport specifiers try 'wodim dev=help'.\n"
+           "For IDE/ATAPI devices configuration, see the file README.ATAPI.setup from\n"
+           "the wodim documentation.\n");
+     exit(EX_BAD);
   }
 #ifdef	HAVE_PRIV_SET
 #ifdef	PRIV_DEBUG

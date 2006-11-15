@@ -738,7 +738,7 @@ sg_amapdev(scgp, f, device, schillybus, target, lun)
 		!(token[ID_TOKEN_DEV]) ||
 		strcmp(token[ID_TOKEN_DEV], TOKEN_DEV)) {
 
-		errmsgno(EX_BAD, "ERROR: unknow format\n");
+		errmsgno(EX_BAD, "ERROR: unknown format\n");
 		errmsgno(EX_BAD, "EXAMPLE: /dev/scsi/host1/bus2/target3/lun4/cd\n");
 		errmsgno(EX_BAD, "EXAMPLE: /dev/ide/host0/bus0/target1/lun0/cd\n");
 		errmsgno(EX_BAD, "EXAMPLE: /dev/hda or /dev/sr0\n");
