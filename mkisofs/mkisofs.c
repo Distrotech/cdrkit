@@ -3019,7 +3019,12 @@ parse_input_files:
 		 * This is the first ISO directory entry in the root dir.
 		 */
 		c = isonum_733((unsigned char *)mrootp->extent);
+#ifdef  USE_SCG
 		readsecs(c, sector, 1);
+#else
+    lseek(fileno(in_image), c*2048, SEEK_SET);
+    read(fileno(in_image), sector, sizeof (sector));
+#endif
 		c = rr_flags((struct iso_directory_record *)sector);
 		if (c & RR_FLAG_XA)
 			fprintf(stderr, "XA signatures found\n");
