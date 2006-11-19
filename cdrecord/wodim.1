@@ -165,7 +165,7 @@ option of
 described below.
 
 .PP
-If a file /etc/default/wodim exists, the parameter to the
+If a file /etc/wodim.conf exists, the parameter to the
 .B dev=
 option may also be a drive name label in said file (see FILES section).
 
@@ -575,13 +575,13 @@ If no
 option is present,
 .B wodim
 will try to get a drive specific speed value from the file
-.B /etc/default/wodim
+.B /etc/wodim.conf
 and if it cannot find one, it will try to get the speed value from the
 .B CDR_SPEED
 environment and later from the 
 .B CDR_SPEED=
 entry in
-.BR /etc/default/wodim .
+.BR /etc/wodim.conf .
 If no speed value could be found, wodim uses a drive specific default speed.
 The default for all new (MMC compliant) drives is to use the maximum supported by the drive.
 If you use 
@@ -785,7 +785,7 @@ If the argument to the
 .B dev=
 option does not contain the characters ',', '/', '@' or ':',
 it is interpreted as an label name that may be found in the file
-/etc/default/wodim (see FILES section).
+/etc/wodim.conf (see FILES section).
 .TP
 .BI gracetime= #
 Set the grace time before starting to write to
@@ -1968,7 +1968,7 @@ Then write the CD using:
 .TP
 .B CDR_DEVICE
 This may either hold a device identifier that is suitable to the open
-call of the SCSI transport library or a label in the file /etc/default/wodim.
+call of the SCSI transport library or a label in the file /etc/wodim.conf.
 .TP
 .B CDR_SPEED
 Sets the default speed value for writing (see also 
@@ -2031,8 +2031,8 @@ login shell.
 
 .SH FILES
 .TP
-/etc/default/wodim
-Default values can be set for the following options in /etc/default/wodim.
+/etc/wodim.conf
+Default values can be set for the following options in /etc/wodim.conf.
 For example:
 .SM CDR_FIFOSIZE=8m
 or
@@ -2041,7 +2041,7 @@ or
 .TP
 CDR_DEVICE
 This may either hold a device identifier that is suitable to the open
-call of the SCSI transport library or a label in the file /etc/default/wodim 
+call of the SCSI transport library or a label in the file /etc/wodim.conf 
 that allows to identify a specific drive on the system.
 .TP
 CDR_SPEED

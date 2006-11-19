@@ -23,7 +23,21 @@ cdrkit (1.0pre5+cleanup) UNRELEASED; urgency=low
 
 
 
-cdrkit (1.0pre5) UNRELEASED; urgency=low
+cdrkit (1.0pre5) RELEASED; urgency=low
+
+  [ Eduard Bloch ]
+  * mapping of ATAPI: -> ATA: method on linux-2.6 and some code beautification
+  * added a atexit handler to stop the FIFO process more reliably, since
+    Schilling's constructs seem to terminate the application on too many
+    places
+  * print Burnfree state/preparation messages only with high verbosity
+
+  [ Dennis Vshivkov ]
+  * sorted display of files when needed
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 15 Nov 2006 12:30:01 +0100
+
+cdrkit (1.0pre5) RELEASED; urgency=low
 
   [ Eduard Bloch ]
   * added better check for capability.h and FATAL_ERROR if it's missing on Linux
@@ -42,6 +56,9 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
     old workaround(s) for ATA now for SCSI too
   * renamed error function to schily_error because it started to wreak random
     havoc after harmless header moving (conflict with incompatible GNU version)
+  * restored scsi-remote.c compilation, moved to libscg sources, used instead
+    of rdummy.c
+  * added optional omiting of DMA speed tests
 
   [ Vladimir Nadvornik ]
   * enabled CLONE feature in wodim's config
@@ -139,7 +156,7 @@ cdrkit (1.0pre1) RELEASED; urgency=low
       plattforms, though.
   * removed most of the anti-linux2.6  program messages (unless being
     in verbose mode). (closes: #377145)
-  * changed default config file location to /etc/default/wodim
+  * changed default config file location to /etc/wodim.conf
   * added more meaningful error message on -dvd-video failure (closes: #324586)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus

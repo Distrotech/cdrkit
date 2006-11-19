@@ -80,8 +80,8 @@ binary-arch: build install \
 wodim: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
-	cp -a cdrecord/wodim.dfl $(b)/$@/etc/default/wodim
-	cp -a rscsi/rscsi.dfl $(b)/$@/etc/default/rscsi
+	cp -a cdrecord/wodim.dfl $(b)/$@/etc/wodim.conf
+	cp -a rscsi/rscsi.dfl $(b)/$@/etc/rscsi.conf
 #	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/wodim/presubj
 	dh_link              -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@

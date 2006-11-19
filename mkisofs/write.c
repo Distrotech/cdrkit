@@ -909,14 +909,29 @@ reassign_link_addresses(struct directory *dpnt)
 		s_entry = dpnt->contents;
 		for (s_entry = dpnt->contents; s_entry; s_entry = s_entry->next) {
 			/* link files have already been given the weight NOT_SORTED */
-			if (s_entry->sort != NOT_SORTED)
-				continue;
+			if (s_entry->sort == NOT_SORTED)
+			{
+				/* update the start extent */
+				s_hash = find_hash(s_entry->dev, s_entry->inode);
+				if (s_hash) {
+					set_733((char *) s_entry->isorec.extent,
+							s_hash->starting_block);
+					s_entry->starting_block = s_hash->starting_block;
+				}
+			}
 
-			/* update the start extent */
-			s_hash = find_hash(s_entry->dev, s_entry->inode);
-			if (s_hash) {
-				set_733((char *) s_entry->isorec.extent, s_hash->starting_block);
-				s_entry->starting_block = s_hash->starting_block;
+			if (verbose > 2 && s_entry->size != 0) {
+				fprintf(stderr, "%8d %8d ",
+					s_entry->starting_block,
+					s_entry->starting_block + ISO_BLOCKS(s_entry->size) - 1);
+
+				if (s_entry->inode != TABLE_INODE) {
+					fprintf(stderr, "%s\n", s_entry->whole_name);
+				} else {
+					fprintf(stderr, "%s%s%s\n",
+						s_entry->filedir->whole_name,
+						SPATH_SEPARATOR, trans_tbl);
+				}
 			}
 		}
 		if (dpnt->subdir) {
@@ -1253,8 +1268,8 @@ assign_file_addresses(struct directory *dpnt)
 					last_extent += dwpnt->pad;
 				}
 #endif /* DVD_VIDEO */
-				if (verbose > 2) {
-					fprintf(stderr, "%d %d %s\n",
+				if (verbose > 2 && !do_sort) {
+					fprintf(stderr, "%8d %8d %s\n",
 						s_entry->starting_block,
 						last_extent - 1, whole_path);
 				}

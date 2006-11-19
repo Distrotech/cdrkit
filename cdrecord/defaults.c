@@ -29,7 +29,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#define CFGPATH "/etc/default/wodim"
+#define CFGPATH "/etc/wodim.conf"
 /* The better way would be exporting the meta functions to getnum.h or so */
 extern int	getnum(char *arg, long *valp);
 

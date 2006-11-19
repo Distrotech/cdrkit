@@ -461,7 +461,7 @@ Rscsi:
 -	Workaround for missing struct sockaddr_storage on SCO UnixWare
 
 -	Security update. Forbid to write arbitrary debug files, only allow
-	a debug file name that has been configured in /etc/default/rscsi.
+	a debug file name that has been configured in /etc/rscsi.conf.
 	Writing arbitrary files with a siud root program could be used to become
 	root on a local machine if you are already logged into that local machine.
 

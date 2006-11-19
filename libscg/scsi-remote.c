@@ -112,55 +112,57 @@ LOCAL	BOOL	debug = 1;
 LOCAL	char	_scg_trans_version[] = "remote-1.18";	/* The version for remote SCSI	*/
 LOCAL	char	_scg_auth_cdrkit[]	= "cdrkit-team";	/* The author for this module	*/
 
-LOCAL	int	scgo_rsend(SCSI *scgp);
-LOCAL	char *	scgo_rversion(SCSI *scgp, int what);
-LOCAL	int	scgo_rhelp(SCSI *scgp, FILE *f);
-LOCAL	int	scgo_ropen(SCSI *scgp, char *device);
-LOCAL	int	scgo_rclose(SCSI *scgp);
-LOCAL	long	scgo_rmaxdma(SCSI *scgp, long amt);
-LOCAL	void *	scgo_rgetbuf(SCSI *scgp, long amt);
-LOCAL	void	scgo_rfreebuf(SCSI *scgp);
-LOCAL	BOOL	scgo_rhavebus(SCSI *scgp, int busno);
-LOCAL	int	scgo_rfileno(SCSI *scgp, int busno, int tgt, int tlun);
-LOCAL	int	scgo_rinitiator_id(SCSI *scgp);
-LOCAL	int	scgo_risatapi(SCSI *scgp);
-LOCAL	int	scgo_rreset(SCSI *scgp, int what);
+LOCAL	int	scgo_rsend		__PR((SCSI *scgp));
+LOCAL	char *	scgo_rversion		__PR((SCSI *scgp, int what));
+LOCAL	int	scgo_rhelp		__PR((SCSI *scgp, FILE *f));
+LOCAL	int	scgo_ropen		__PR((SCSI *scgp, char *device));
+LOCAL	int	scgo_rclose		__PR((SCSI *scgp));
+LOCAL	long	scgo_rmaxdma		__PR((SCSI *scgp, long amt));
+LOCAL	void *	scgo_rgetbuf		__PR((SCSI *scgp, long amt));
+LOCAL	void	scgo_rfreebuf		__PR((SCSI *scgp));
+LOCAL	BOOL	scgo_rhavebus		__PR((SCSI *scgp, int busno));
+LOCAL	int	scgo_rfileno		__PR((SCSI *scgp, int busno, int tgt, int tlun));
+LOCAL	int	scgo_rinitiator_id	__PR((SCSI *scgp));
+LOCAL	int	scgo_risatapi		__PR((SCSI *scgp));
+LOCAL	int	scgo_rreset		__PR((SCSI *scgp, int what));
 
 /*
  * XXX We should rethink the fd parameter now that we introduced
  * XXX the rscsirchar() function and most access of remfd is done
  * XXX via scglocal(scgp)->remfd.
  */
-LOCAL	void	rscsiabrt(int sig);
-LOCAL	int	rscsigetconn(SCSI *scgp, char *host);
-LOCAL	char	*rscsiversion(SCSI *scgp, int fd, int what);
-LOCAL	int	rscsiopen(SCSI *scgp, int fd, char *fname);
-LOCAL	int	rscsiclose(SCSI *scgp, int fd);
-LOCAL	int	rscsimaxdma(SCSI *scgp, int fd, long amt);
-LOCAL	int	rscsigetbuf(SCSI *scgp, int fd, long amt);
-LOCAL	int	rscsifreebuf(SCSI *scgp, int fd);
-LOCAL	int	rscsihavebus(SCSI *scgp, int fd, int bus);
-LOCAL	int	rscsifileno(SCSI *scgp, int fd, int busno, int tgt, int tlun);
-LOCAL	int	rscsiinitiator_id(SCSI *scgp, int fd);
-LOCAL	int	rscsiisatapi(SCSI *scgp, int fd);
-LOCAL	int	rscsireset(SCSI *scgp, int fd, int what);
-LOCAL	int	rscsiscmd(SCSI *scgp, int fd, struct scg_cmd *sp);
-LOCAL	int	rscsifillrbuf(SCSI *scgp);
-LOCAL	int	rscsirchar(SCSI *scgp, char *cp);
-LOCAL	int	rscsireadbuf(SCSI *scgp, int fd, char *buf, int count);
-LOCAL	void	rscsivoidarg(SCSI *scgp, int fd, int count);
-LOCAL	int	rscsicmd(SCSI *scgp, int fd, char *name, char *cbuf);
-LOCAL	void	rscsisendcmd(SCSI *scgp, int fd, char *name, char *cbuf);
-LOCAL	int	rscsigetline(SCSI *scgp, int fd, char *line, int count);
-LOCAL	int	rscsireadnum(SCSI *scgp, int fd);
-LOCAL	int	rscsigetstatus(SCSI *scgp, int fd, char *name);
-LOCAL	int	rscsiaborted(SCSI *scgp, int fd);
+LOCAL	void	rscsiabrt		__PR((int sig));
+LOCAL	int	rscsigetconn		__PR((SCSI *scgp, char *host));
+LOCAL	char	*rscsiversion		__PR((SCSI *scgp, int fd, int what));
+LOCAL	int	rscsiopen		__PR((SCSI *scgp, int fd, char *fname));
+LOCAL	int	rscsiclose		__PR((SCSI *scgp, int fd));
+LOCAL	int	rscsimaxdma		__PR((SCSI *scgp, int fd, long amt));
+LOCAL	int	rscsigetbuf		__PR((SCSI *scgp, int fd, long amt));
+LOCAL	int	rscsifreebuf		__PR((SCSI *scgp, int fd));
+LOCAL	int	rscsihavebus		__PR((SCSI *scgp, int fd, int bus));
+LOCAL	int	rscsifileno		__PR((SCSI *scgp, int fd, int busno, int tgt, int tlun));
+LOCAL	int	rscsiinitiator_id	__PR((SCSI *scgp, int fd));
+LOCAL	int	rscsiisatapi		__PR((SCSI *scgp, int fd));
+LOCAL	int	rscsireset		__PR((SCSI *scgp, int fd, int what));
+LOCAL	int	rscsiscmd		__PR((SCSI *scgp, int fd, struct scg_cmd *sp));
+LOCAL	int	rscsifillrbuf		__PR((SCSI *scgp));
+LOCAL	int	rscsirchar		__PR((SCSI *scgp, char *cp));
+LOCAL	int	rscsireadbuf		__PR((SCSI *scgp, int fd, char *buf, int count));
+LOCAL	void	rscsivoidarg		__PR((SCSI *scgp, int fd, int count));
+LOCAL	int	rscsicmd		__PR((SCSI *scgp, int fd, char *name, char *cbuf));
+LOCAL	void	rscsisendcmd		__PR((SCSI *scgp, int fd, char *name, char *cbuf));
+LOCAL	int	rscsigetline		__PR((SCSI *scgp, int fd, char *line, int count));
+LOCAL	int	rscsireadnum		__PR((SCSI *scgp, int fd));
+LOCAL	int	rscsigetstatus		__PR((SCSI *scgp, int fd, char *name));
+LOCAL	int	rscsiaborted		__PR((SCSI *scgp, int fd));
 #ifdef	USE_RCMD_RSH
-LOCAL	int	_rcmdrsh(char **ahost, int inport, const char *locuser,
-							const char *remuser, const char *cmd,
-							const char *rsh);
+LOCAL	int	_rcmdrsh		__PR((char **ahost, int inport,
+						const char *locuser,
+						const char *remuser,
+						const char *cmd,
+						const char *rsh));
 #ifdef	HAVE_GETPPRIV
-LOCAL	BOOL	ppriv_ok(void);
+LOCAL	BOOL	ppriv_ok		__PR((void));
 #endif
 #endif
 

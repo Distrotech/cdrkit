@@ -32,23 +32,23 @@ To enable remote SCSI via the login shell method you should do the following:
 
 	-	Install rscsi suid root into /opt/schily/sbin
 
-	-	Install a file /etc/default/rscsi and define access rights.
+	-	Install a file /etc/rscsi.conf and define access rights.
 		Without this file, rscsi will not work at all.
 
 		The template for this file is: rscsi/rscsi.dfl
 
 RSCSI Security:
 
--	When rscsi starts, it checks if /etc/default/rscsi exists.
+-	When rscsi starts, it checks if /etc/rscsi.conf exists.
 	If not, it dies.
 
--	If rscsi is not called by a user listed in /etc/default/rscsi
+-	If rscsi is not called by a user listed in /etc/rscsi.conf
 	it dies.
 
 -	To access a SCSI target there must be an entry that lists the user
 	rcsi hast been started from, the hostname and the SCSI target.
 
-	rscsi compares the hostname field in /etc/default/rscsi 
+	rscsi compares the hostname field in /etc/rscsi.conf 
 	to the peername retrived from STDIN:
 
 	- legal host name		IP connection
