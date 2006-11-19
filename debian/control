@@ -6,30 +6,6 @@ Uploaders: Eduard Bloch <blade@debian.org>, Steve McIntyre <93sam@debian.org>
 Build-Depends: debhelper (>=5.0.37.3), zlib1g-dev, autotools-dev, cmake (>= 2.4.3-1), libcap-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libcam-dev [kfreebsd-i386 kfreebsd-amd64], libmagic-dev
 Standards-Version: 3.7.2
 
-Package: wodim
-Architecture: any
-Depends: ${shlibs:Depends}
-Recommends: mkisofs
-Replaces: cdrtools-doc (<< 5:1.0~pre1-1), cdrecord (<< 5:1.0~pre1-1)
-Suggests: cdrkit-doc
-Conflicts: cdrecord (<< 5:1.0~pre1-1)
-Description: command line CD/DVD writing tool
- wodim allows you to create CDs or DVDs on a CD/DVD recorder.
- It supports writing data, audio, mixed, multi-session, and CD+ disc and DVD
- data and video disks on DVD capable devices, on just about every type of
- CD/DVD recorder out there.
- .
- Please install cdrkit-doc if you want most of the documentation and
- README files.
-
-Package: cdrecord
-Architecture: all
-Depends: wodim (>= 5:1.0~pre1-1), debconf | debconf-2.0
-Description: Dummy package for transition to wodim
- This is a dummy package to ease the transition to wodim, the fork
- of cdrecord. Please use wodim instead of cdrecord.
- It provides a cdrecord symlink to wodim for compatibility purposes.
-
 Package: mkisofs
 Architecture: any
 Depends: ${shlibs:Depends}
@@ -44,20 +20,6 @@ Description: Creates ISO-9660 CD-ROM filesystem images
  .
  The package also includes tools needed to create compressed isofs images
  (mkzftree from zisofs_tools source).
- .
- Please install cdrkit-doc if you want most of the documentation and
- Readme-files.
-
-Package: cdda2wav
-Architecture: any
-Suggests: vorbis-tools, cdrkit-doc
-Depends: ${shlibs:Depends}
-Section: sound
-Description: Creates WAV files from audio CDs
- cdda2wav lets you digitally copy audio tracks from a CD-ROM, avoiding
- the distortion that is introduced when recording via a sound card. Data 
- can be dumped into raw (cdr), wav or sun format sound files. Options control
- the recording format (stereo/mono; 8/16 bits; sampling rate, etc).
  .
  Please install cdrkit-doc if you want most of the documentation and
  Readme-files.

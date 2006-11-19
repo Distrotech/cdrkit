@@ -3,6 +3,7 @@ cdrkit (1.0pre5+cleanup) UNRELEASED; urgency=low
   [ Eduard Bloch ]
   * replacement of libdeflt and config parser rewrite; more user-friendly,
     flexibel, tolerant now
+  * removed non-free source parts
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in
