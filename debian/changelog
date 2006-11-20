@@ -1,4 +1,4 @@
-cdrkit (5:1.0-1) unstable; urgency=low
+cdrkit (5:1.0-1) unstable; urgency=high
 
   [ Eduard Bloch ]
   * ATAPI -> ATA mapping and better error messages (closes: #398465)
@@ -23,6 +23,7 @@ cdrkit (5:1.0-1) unstable; urgency=low
   * Was included earlier, close Bug "diff for 5:1.0~pre4-1.1 NMU" (Closes: #388595).
   * Bug fix: "wodim: Spelling error in output of -checkdrive", thanks to
     Alexey Feldgendler (Closes: #389135).
+  * Urgency high and aba wont hit me for it.
 
  -- Joerg Jaspert <joerg@debian.org>  Mon, 20 Nov 2006 19:42:09 +0100
 
