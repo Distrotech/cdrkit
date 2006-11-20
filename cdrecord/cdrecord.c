@@ -81,7 +81,7 @@ static	char sccsid[] =
 #include <sys/capability.h> 	/* for rawio capability */
 #endif
 
-#define cdr_version "1.0pre1"
+#define cdr_version "1.0"
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) && _POSIX_PRIORITY_SCHEDULING -0 >= 0
 #ifdef  HAVE_SYS_PRIOCNTL_H	/* The preferred SYSvR4 schduler */
@@ -299,36 +299,6 @@ int main(int argc, char *argv[])
 	BOOL	is_dvdwr = FALSE;
 
 
-	/* workaround for k3b */
-	int acpos;
-	for(acpos=0;acpos<argc;acpos++) {
-	   if(!strcmp(argv[acpos],"-version") || !strcmp(argv[acpos],"--version"))
-	      fprintf(stderr, "Cdrecord-yelling-line-to-tell-frontends-to-use-it-like-version 2.01.01a03-dvd \n");
-	}
-
-#ifndef SHUT_UP
-
-	fprintf(stderr,
-			"This is wodim, not cdrecord. Don't expect it to behave like cdrecord in any\n"
-			"way, don't refer to it as \"cdrecord\". Send problem reports to\n"
-			"debburn-devel@lists.alioth.debian.org, don't bother Joerg Schilling with any\n"
-			"problems caused by this application.\n"
-			"Copyright (C) 2006 cdrkit maintainers, (C) 1994-2006 Joerg Schilling\n\n" );
-	fprintf(stderr,
-			"WARNING WARNING WARNING:\n\n"
-			"If you are annoyed by the messages below about unofficial status or about\n"
-			"non-Schily-Makefilesystem or if your GUI/script breaks because of them,\n"
-      "please don't send your complaints to cdrkit maintainers; they already know.\n"
-			"They are not allowed to remove them by Joerg Schilling's license\n"
-			"modifications (restrictions), hidden in the source. Correcting the contents\n"
-      "of the messages is forbidden as well, so don't believe everything said there.\n"
-      "See http://svn.debian.org/wsvn/debburn/nonameyet/trunk/FAQ?op=file&rev=0&sc=0\n"
-      "for details.\n\n" );
-
-  if(strcmp(argv[0], "cdrecord") == 0)
-     strcpy(argv[0], "wodim");
-#endif /* SHUT_UP */
-
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
 	_wildcard(&argc, &argv);
@@ -348,138 +318,13 @@ int main(int argc, char *argv[])
 
 	if (flags & F_VERSION) {
 	   fprintf(stderr,
+			 "Cdrecord-yelling-line-to-tell-frontends-to-use-it-like-version 2.01.01a03-dvd \n"
 		 "Wodim " cdr_version "\n"
 		 "Copyright (C) 2006 Cdrkit suite contributors\n"
 		 "Based on works from Joerg Schilling, Copyright (C) 1995-2006, J. Schilling\n"
 		 );
-	   /*exit(0);*/
+	   exit(0);
 	}
-
-#ifndef SHUT_UP
-
-#define HOST_CPU "HOST_CPU-just-a-fake-string-to-make-Schilling's-invariant-section-compile-because-cdrkit-does-not-need-it-anymore"
-#define HOST_VENDOR "HOST_VENDOR-just-a-fake-string-to-make-Schilling's-invariant-section-compile-because-cdrkit-does-not-need-it-anymore"
-#define HOST_OS HOST_SYSTEM
-
-	/*
-	 * Begin restricted code for quality assurance.
-	 *
-	 * Warning: you are not allowed to modify or to remove the
-	 * Copyright and version printing code below!
-	 * See also GPL § 2 subclause c)
-	 *
-	 * If you modify cdrecord you need to include additional version
-	 * printing code that:
-	 *
-	 *	-	Clearly states that the current version is an
-	 *		inofficial (modified) version and thus may have bugs
-	 *		that are not present in the original.
-	 *
-	 *	-	Print your support e-mail address and tell people that
-	 *		you will do complete support for this version of
-	 *		cdrecord.
-	 *
-	 *		Or clearly state that there is absolutely no support
-	 *		for the modified version you did create.
-	 *
-	 *	-	Tell the users not to ask the original author for
-	 *		help.
-	 *
-	 * This limitation definitely also applies when you use any other
-	 * cdrecord release together with libscg-0.6 or later, or when you
-	 * use any amount of code from cdrecord-1.11a17 or later.
-	 * In fact, it applies to any version of cdrecord, see also
-	 * GPL Preamble, subsection 6.
-	 *
-	 * I am sorry for the inconvenience but I am forced to do this because
-	 * some people create inofficial branches. These branches create
-	 * problems but the initiators do not give support and thus cause the
-	 * development of the official cdrecord versions to slow down because
-	 * I am loaded with unneeded work.
-	 *
-	 * Please note that this is a memorandum on how I interpret the GPL.
-	 * If you use/modify/redistribute cdrecord, you need to accept it
-	 * this way.
-	 *
-	 *
-	 * The above statement is void if there has been neither a new version
-	 * of cdrecord nor a new version of star from the original author
-	 * within more then a year.
-	 */
-
-	/*
-	 * Ugly, but Linux incude files violate POSIX and #define printf
-	 * so we cannot include the #ifdef inside the printf() arg list.
-	 */
-#	define	PRODVD_TITLE	""
-#ifdef	CLONE_WRITE
-#	define	CLONE_TITLE	"-Clone"
-#else
-#	define	CLONE_TITLE	""
-#endif
-	if ((flags & F_MSINFO) == 0 || lverbose || flags & F_VERSION) {
-		printf("Cdrecord%s%s %s (%s-%s-%s) Copyright (C) 1995-2006 Jörg Schilling\n",
-								PRODVD_TITLE,
-								CLONE_TITLE,
-								cdr_version,
-								HOST_CPU, HOST_VENDOR, HOST_OS);
-
-#if	defined(SOURCE_MODIFIED) || !defined(IS_SCHILY_XCONFIG)
-#define	INSERT_YOUR_EMAIL_ADDRESS_HERE
-#define	NO_SUPPORT	0
-		printf("NOTE: this version of cdrecord is an inofficial (modified) release of cdrecord\n");
-		printf("      and thus may have bugs that are not present in the original version.\n");
-#if	NO_SUPPORT
-		printf("      The author of the modifications decided not to provide a support e-mail\n");
-		printf("      address so there is absolutely no support for this version.\n");
-#else
-		printf("      Please send bug reports and support requests to <%s>.\n", "debburn-devel@lists.alioth.debian.org");
-#endif
-		printf("      The original author should not be bothered with problems of this version.\n");
-		printf("\n");
-#endif
-#if	!defined(IS_SCHILY_XCONFIG)
-		printf("\nWarning: This version of cdrecord has not been configured via the standard\n");
-		printf("autoconfiguration method of the Schily makefile system. There is a high risk\n");
-		printf("that the code is not configured correctly and for this reason will not behave\n");
-		printf("as expected.\n");
-#endif
-
-
-	/*
-	 * I am sorry that even for version 1.310 of cdrecord.c, I am forced to do
-	 * things like this, but defective versions of cdrecord cause a lot of
-	 * work load to me and it seems to be impossible to otherwise convince
-	 * SuSE to cooperate.
-	 * As people contact me and bother me with the related problems,
-	 * it is obvious that SuSE is violating subsection 6 in the preamble of
-	 * the GPL.
-	 *
-	 * The reason for including a test against SuSE's private
-	 * distribution environment is only that SuSE violates the GPL for
-	 * a long time and seems not to be willing to follow the requirements
-	 * imposed by the GPL. If SuSE starts to ship non defective versions
-	 * of cdrecord or informs their customers that they would need to
-	 * compile cdrecord themselves in order to get a working cdrecord,
-	 * they should contact me for a permission to change the related test.
-	 *
-	 * Note that although the SuSE test is effective only for SuSE, the
-	 * intention to have non bastardized versions out is not limited
-	 * to SuSE. It is bad to see that in special in the "Linux" business,
-	 * companies prefer a model with many proprietary differing programs
-	 * instead of cooperating with the program authors.
-	 */
-
-	if (flags & F_VERSION)
-		exit(0);
-	/*
-	 * End restricted code for quality assurance.
-	 */
-        }
-#else
-	if (flags & F_VERSION)
-		exit(0);
-#endif /* SHUT_UP */
 
 	checkgui();
 
@@ -636,47 +481,21 @@ int main(int argc, char *argv[])
 	scgp->kdebug = kdebug;
 	scgp->cap->c_bsize = DATA_SEC_SIZE;
 
-#ifndef SHUT_UP
-
 	if ((flags & F_MSINFO) == 0 || lverbose) {
 		char	*vers;
 		char	*auth;
 
-		/*
-		 * Warning: you are not allowed to modify or to remove this
-		 * version checking code!
-		 */
 		vers = scg_version(0, SCG_VERSION);
 		auth = scg_version(0, SCG_AUTHOR);
-    printf("Using libscg version '%s-%s'.\n", auth, vers);
-		if (auth == 0 || strcmp("schily", auth) != 0) {
-			errmsgno(EX_BAD,
-			"Warning: using inofficial version of libscg (%s-%s '%s').\n",
-				auth, vers, scg_version(0, SCG_SCCS_ID));
-		}
+		if(lverbose >1 && auth && vers)
+		  fprintf(stderr, "Using libscg version '%s-%s'.\n", auth, vers);
 
-		vers = scg_version(scgp, SCG_VERSION);
-		auth = scg_version(scgp, SCG_AUTHOR);
-		if (lverbose > 1)
-			fprintf(stderr, "Using libscg transport code version '%s-%s'\n", auth, vers);
-		if (auth == 0 || strcmp("schily", auth) != 0) {
-			errmsgno(EX_BAD,
-			"Warning: using inofficial libscg transport code version (%s-%s '%s').\n",
-				auth, vers, scg_version(scgp, SCG_SCCS_ID));
-		}
 
 		vers = scg_version(scgp, SCG_RVERSION);
 		auth = scg_version(scgp, SCG_RAUTHOR);
 		if (lverbose > 1 && vers && auth)
-			fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
-		if (auth != 0 && strcmp("schily", auth) != 0) {
-			errmsgno(EX_BAD,
-			"Warning: using inofficial remote transport code version (%s-%s '%s').\n",
-				auth, vers, scg_version(scgp, SCG_RSCCS_ID));
-		}
+		  fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
 	}
-
-#endif /* SHUT_UP */
 
 	if (lverbose && driveropts)
 		printf("Driveropts: '%s'\n", driveropts);
@@ -759,12 +578,13 @@ if (lverbose > 2)
 
 	/* DVD does not support TAO */
 	if (dp->is_dvd) {
-	        fprintf(stderr, "Using Session At Once (SAO) for DVD mode.\n");
-		dp->cdr_flags |= F_SAO;
-		for (i = 0; i <= MAX_TRACK; i++) {
-		    track[i].flags &= ~TI_TAO;
-		    track[i].flags |= TI_SAO;
-		}
+	  if(lverbose>1)
+		fprintf(stderr, "Using Session At Once (SAO) for DVD mode.\n");
+	  dp->cdr_flags |= F_SAO;
+	  for (i = 0; i <= MAX_TRACK; i++) {
+		track[i].flags &= ~TI_TAO;
+		track[i].flags |= TI_SAO;
+	  }
 	}
 
 	if (!is_cddrive(scgp))

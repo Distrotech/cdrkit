@@ -2496,7 +2496,7 @@ printinq(SCSI *scgp, FILE *f)
 			inq->prod_ident[0] ||
 			inq->prod_revision[0]) {
 		fprintf(f, "Vendor_info    : '%.8s'\n", inq->vendor_info);
-		fprintf(f, "Identifikation : '%.16s'\n", inq->prod_ident);
+		fprintf(f, "Identification : '%.16s'\n", inq->prod_ident);
 		fprintf(f, "Revision       : '%.4s'\n", inq->prod_revision);
 	}
 }

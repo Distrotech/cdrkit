@@ -1,11 +1,31 @@
-cdrkit (5:1.0~pre5-1.1) unstable; urgency=low
+cdrkit (5:1.0-1) unstable; urgency=high
 
+  [ Eduard Bloch ]
   * ATAPI -> ATA mapping and better error messages (closes: #398465)
   * more reliable FIFO process termination (closes: #398043)
   * prints burn-free message only with higher verbosity (closes: 388770)
   * sorted file list printing, by Dennis Vshivkov (closes: #278071)
 
- -- Eduard Bloch <blade@debian.org>  Tue, 14 Nov 2006 15:08:16 +0100
+  [ Joerg Jaspert ]
+  *  Remove all the printing of useless messages. This is based on GPLed
+     code, so we follow the letter of the GPL as it is interpreted by 99%
+     of the world, including its authors. Especially as Joerg was never able
+     to give us any clear explanation what other license he may think
+     cdrtools had, despite us asking multiple times. So we have no other
+     choice than to take whats written down, and thats GPL.
+  * The above fixes "license needs to be clarified" as well as
+    "Cdrkit possibly made non-free by former upstream, refuses
+    clarification"(Closes: #387783, #392342).
+    Note that I do not remove the "You may not return schily" clauses.
+    They are, in my understanding, valid requests an upstream can make, not
+    including his name if he doesn't want it. They are also no problem for
+    anyone, anywhere, the other stuff was.
+  * Was included earlier, close Bug "diff for 5:1.0~pre4-1.1 NMU" (Closes: #388595).
+  * Bug fix: "wodim: Spelling error in output of -checkdrive", thanks to
+    Alexey Feldgendler (Closes: #389135).
+  * Urgency high.
+
+ -- Joerg Jaspert <joerg@debian.org>  Mon, 20 Nov 2006 19:42:09 +0100
 
 cdrkit (5:1.0~pre5-1) unstable; urgency=low
 
