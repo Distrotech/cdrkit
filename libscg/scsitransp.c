@@ -171,38 +171,6 @@ scg__open(scgp, device)
 	scg_ops_t *ops;
 extern	scg_ops_t scg_std_ops;
 
-#define printf(x) fprintf(stderr, x)
-/* The code is not modified. Only moved to where it belongs to, stopping sabotage of frontend programs' functionality */
-
-#ifndef SHUT_UP
-/* 
- * Who defines which changes decrease the quality and how? The one who hates
- * all changes not done by him personally? There are more harsh (but more
- * precise) words to describe stuff like that below, for now let's call it
- * "unpleasant easter egg" or "addition of code which is enabled by conditional
- * compilation when a condition appears which the creator of the code dislikes
- * by principle".
- */
-/*
-	 * Begin restricted code for quality assurance.
-	 *
-	 * Warning: you are not allowed to modify the quality ensurance code below.
-	 *
-	 * This restiction is introduced because this way, I hope that people
-	 * contribute to the project instead of creating branches.
-	 */
-#if	!defined(IS_SCHILY_XCONFIG)
-	printf("\nWarning: This version of libscg has not been configured via the standard\n");
-	printf("autoconfiguration method of the Schily makefile system. There is a high risk\n");
-	printf("that the code is not configured correctly and for this reason will not behave\n");
-	printf("as expected.\n");
-#endif
-	/*
-	 * End restricted code for quality assurance.
-	 */
-#endif /* SHUT_UP */
-#undef printf
-
 	scgp->ops = &scg_std_ops;
 
 	if (device && strncmp(device, "REMOTE", 6) == 0) {

@@ -53,18 +53,6 @@ LOCAL	char *	strsv		__PR((char *s));
 LOCAL int
 open_cdrdefaults()
 {
-	/*
-	 * WARNING you are only allowed to change this filename if you also
-	 * change the documentation and add a statement that makes clear
-	 * where the official location of the file is why you did choose a
-	 * nonstandard location and that the nonstandard location only refers
-	 * to inofficial cdrecord versions.
-	 *
-	 * I was forced to add this because some people change cdrecord without
-	 * rational reason and then publish the result. As those people
-	 * don't contribute work and don't give support, they are causing extra
-	 * work for me and this way slow down the cdrecord development.
-	 */
 	return (defltopen("/etc/wodim.conf"));
 }
 

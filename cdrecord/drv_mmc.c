@@ -739,7 +739,7 @@ identify_mmc(scgp, dp, ip)
 		fprintf(stderr, "identify_dvd: is_dvd: %d\n", is_dvd);
 #endif
 	}
-	if (is_dvd) {
+	if (is_dvd && lverbose>2) {
  	        errmsgno(EX_BAD, 
                  "Found DVD media: using cdr_mdvd.\n");  
                  dp = &cdr_mdvd; 
