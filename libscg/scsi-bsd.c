@@ -59,7 +59,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-bsd.c-1.42";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-bsd.c-1.42";	/* The version for this transport*/
 
 #define	MAX_SCG		16	/* Max # of SCSI controllers */
 #define	MAX_TGT		16
@@ -97,17 +97,15 @@ struct scg_local {
 #define	SADDR_LUN(a)	(a).lun
 #endif	/* __NetBSD__ && TYPE_ATAPI */
 
-LOCAL	BOOL	scg_setup	__PR((SCSI *scgp, int f, int busno, int tgt, int tlun));
+static	BOOL	scg_setup(SCSI *scgp, int f, int busno, int tgt, int tlun);
 
 /*
  * Return version information for the low level SCSI transport code.
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -127,20 +125,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "SCIOCCOMMAND", "SCSI for devices known by *BSD",
 		"", "device or bus,target,lun", "/dev/rcd0a:@ or 1,2,0", FALSE, TRUE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -253,9 +247,8 @@ openbydev:
 	return (nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	register int	f;
 	register int	b;
@@ -278,13 +271,8 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL BOOL
-scg_setup(scgp, f, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	f;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static BOOL
+scg_setup(SCSI *scgp, int f, int busno, int tgt, int tlun)
 {
 	struct scsi_addr saddr;
 	int	Bus;
@@ -328,20 +316,16 @@ scg_setup(scgp, f, busno, tgt, tlun)
 	return (FALSE);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	long maxdma = MAX_DMA_BSD;
 
 	return (maxdma);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -351,19 +335,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -382,12 +363,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= MAX_SCG ||
 	    tgt < 0 || tgt >= MAX_TGT ||
@@ -400,17 +377,14 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return ((int)scglocal(scgp)->scgfiles[busno][tgt][tlun]);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
-
+static int
+scgo_isatapi(SCSI *scgp)
 {
 #ifdef	MAYBE_ATAPI
 	struct scsi_addr saddr;
@@ -424,10 +398,8 @@ scgo_isatapi(scgp)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	if (what == SCG_RESET_NOP)
 		return (0);
@@ -441,9 +413,8 @@ scgo_reset(scgp, what)
 	return (ioctl(scgp->fd, SCIOCRESET, 0));
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	scsireq_t	req;
@@ -572,7 +543,7 @@ scgo_send(scgp)
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-bsd.c-1.42";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-bsd.c-1.42";	/* The version for this transport*/
 
 #define	CAM_MAXDEVS	128
 struct scg_local {
@@ -585,10 +556,8 @@ struct scg_local {
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -608,10 +577,8 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "CAM", "Generic transport independent SCSI (Common Access Method)",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
@@ -621,10 +588,8 @@ scgo_help(scgp, f)
 /*
  * Build a list of everything we can find.
  */
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	int				busno	= scg_scsibus(scgp);
 	int				tgt	= scg_target(scgp);
@@ -807,9 +772,8 @@ scgo_open(scgp, device)
 	return (nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	register int	i;
 
@@ -824,10 +788,8 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 #ifdef	DFLTPHYS
 	return (DFLTPHYS);
@@ -836,10 +798,8 @@ scgo_maxdma(scgp, amt)
 #endif
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -849,19 +809,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	int		unit;
 
@@ -881,12 +838,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, unit, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	unit;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int unit, int tlun)
 {
 	int		i;
 
@@ -904,33 +857,28 @@ scgo_fileno(scgp, busno, unit, tlun)
 	return (-1);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	/* XXX synchronous reset command - is this wise? */
 	errno = EINVAL;
 	return (-1);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI	*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd		*sp = scgp->scmd;
 	struct cam_device	*dev;

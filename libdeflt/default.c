@@ -1,22 +1,8 @@
-/*
- * This file has been modified for the cdrkit suite.
+/* 
+ * Copyright 2006 Eduard Bloch 
  *
- * The behaviour and appearence of the program code below can differ to a major
- * extent from the version distributed by the original author(s).
+ * Uses my config parser code and small wrappers to provide the old interface.
  *
- * For details, see Changelog file distributed with the cdrkit package. If you
- * received this file from another source then ask the distributing person for
- * a log of modifications.
- *
- */
-
-/* @(#)default.c	1.5 04/09/04 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)default.c	1.5 04/09/04 Copyright 1997 J. Schilling";
-#endif
-/*
- *	Copyright (c) 1997 J. Schilling
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -34,107 +20,160 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include <standard.h>
+#include <stdlib.h>
 #include <stdio.h>
-#include <strdefs.h>
-#include <deflts.h>
+#include <ctype.h>
+#include <string.h>
 
-#define	MAXLINE	512
+enum parstate {
+	KEYBEGINSEARCH,
+	KEYCOMPARE,
+	EQSIGNSEARCH,
+	VALBEGINSEARCH,
+	LASTCHARSEARCH
+};
 
-static	FILE	*dfltfile	= (FILE *)NULL;
+#define GETVAL_BUF_LEN 512
+#define isUspace(x) isspace( (int) (unsigned char) x)
 
-EXPORT	int	defltopen	__PR((const char *name));
-EXPORT	int	defltclose	__PR((void));
-EXPORT	void	defltfirst	__PR((void));
-EXPORT	char	*defltread	__PR((const char *name));
-EXPORT	char	*defltnext	__PR((const char *name));
-EXPORT	int	defltcntl	__PR((int cmd, int flags));
+static FILE *glob_cfg_ptr = NULL;
 
-EXPORT int
-defltopen(name)
-	const char	*name;
-{
-	if (dfltfile != (FILE *)NULL)
-		fclose(dfltfile);
+/*
+ * Warning, uses static line buffer, not reentrant. NULL returned if the key isn't found.
+ */
+static char *get_value(FILE *srcfile, const char *key, int dorewind) {
+	static char linebuf[GETVAL_BUF_LEN];
 
-	if (name == (char *)NULL) {
-		fclose(dfltfile);
-		dfltfile = NULL;
-		return (0);
-	}
+	if(!srcfile)
+		return ((char *) NULL);
 
-	if ((dfltfile = fopen(name, "r")) == (FILE *)NULL) {
-		return (-1);
-	}
-	return (0);
-}
+	if(dorewind)
+		rewind(srcfile);
 
-EXPORT int
-defltclose()
-{
-	int	ret;
+	if(!key)
+		return NULL;
 
-	if (dfltfile != (FILE *)NULL) {
-		ret = fclose(dfltfile);
-		dfltfile = NULL;
-		return (ret);
-	}
-	return (0);
-}
+next_line:
+	while(fgets(linebuf, sizeof(linebuf)-1, srcfile)) {
+		int i;
+		int keybeg;
+		int s=KEYBEGINSEARCH;
+		char *ret=NULL;
+		int lastchar=0;
 
-EXPORT void
-defltfirst()
-{
-	if (dfltfile == (FILE *)NULL) {
-		return;
-	}
-	rewind(dfltfile);
-}
+		/* simple state machine, char position moved by the states (or not),
+		 * state change is done by the state (or not) */
+		for( i=0 ; i<sizeof(linebuf) ; ) {
+			/* printf("key: %s, %s, s: %d\n", key,  linebuf, s); */
+			switch(s) {
+				case(KEYBEGINSEARCH):
+					{
+						if(isUspace(linebuf[i]))
+							i++;
+						else if(linebuf[i] == '#' || linebuf[i]=='\0')
+							goto next_line;
+						else {
+							s=KEYCOMPARE;
+							keybeg=i;
+						}
+					}
+					break;
+				case(KEYCOMPARE): /* compare the key */
+					{
+						if(key[i-keybeg]=='\0') 
+							/* end of key, next state decides what to do on this position */
+							s=EQSIGNSEARCH;
+						else {
+							if(linebuf[i-keybeg]!=key[i-keybeg])
+								goto next_line;
+							else
+								i++;
+						}
+					}
+					break;
+				case(EQSIGNSEARCH): /* skip whitespace, stop on =, break on anything else */
+					{
+						if(isUspace(linebuf[i]))
+							i++;
+						else if(linebuf[i]=='=') {
+							s=VALBEGINSEARCH;
+							i++;
+						}
+						else
+							goto next_line;
+					}
+					break;
+				case(VALBEGINSEARCH):
+					{
+						if(isUspace(linebuf[i]))
+							i++;
+						else {
+							/* possible at EOF */
+							if(linebuf[i] == '\0')
+								return NULL;
 
-EXPORT char *
-defltread(name)
-	const char	*name;
-{
-	if (dfltfile == (FILE *)NULL) {
-		return ((char *)NULL);
-	}
-	rewind(dfltfile);
-	return (defltnext(name));
-}
-
-EXPORT char *
-defltnext(name)
-	const char	*name;
-{
-	register int	len;
-	register int	namelen;
-	static	 char	buf[MAXLINE];
-
-	if (dfltfile == (FILE *)NULL) {
-		return ((char *)NULL);
-	}
-	namelen = strlen(name);
-
-	while (fgets(buf, sizeof (buf), dfltfile)) {
-		len = strlen(buf);
-		if (buf[len-1] == '\n') {
-			buf[len-1] = 0;
-		} else {
-			return ((char *)NULL);
+							lastchar=i-1; /* lastchar can be a space, see below */
+							ret= & linebuf[i];
+							s=LASTCHARSEARCH;
+						}
+					}
+					break;
+				case(LASTCHARSEARCH):
+					{
+						if(linebuf[i]) {
+							if(!isUspace(linebuf[i]))
+								lastchar=i;
+						}
+						else { /* got string end, terminate after the last seen char */
+							if(linebuf+lastchar < ret) /* no non-space found */
+								return NULL;
+							linebuf[lastchar+1]='\0';
+							return ret;
+						}
+						i++;
+					}
+					break;
+			}
 		}
-		if (strncmp(name, buf, namelen) == 0) {
-			return (&buf[namelen]);
-		}
 	}
-	return ((char *)NULL);
+	return NULL;
 }
 
-EXPORT int
-defltcntl(cmd, flags)
-	int	cmd;
-	int	flags;
+int cfg_open(const char *name)
 {
-	int  oldflags = 0;
+	if(glob_cfg_ptr) {
+		fclose(glob_cfg_ptr);
+		glob_cfg_ptr=NULL;
+	}
+	if(!name) {
+		glob_cfg_ptr=NULL;
+		return 0;
+	}
+	glob_cfg_ptr = fopen(name, "r");
+	return (glob_cfg_ptr ? 0 : -1);
+}
 
-	return (oldflags);
+int cfg_close()
+{
+	int r;
+	if(!glob_cfg_ptr)
+		return 0;
+	r=fclose(glob_cfg_ptr);
+	glob_cfg_ptr=NULL;
+	return r;
+}
+
+void cfg_restart()
+{
+	get_value(glob_cfg_ptr, NULL, 1);
+}
+
+char *cfg_get(const char *key)
+{
+	return get_value(glob_cfg_ptr, key, 1);
+}
+
+char *cfg_get_next(const char *key)
+{
+	return get_value(glob_cfg_ptr, key, 0);
 }

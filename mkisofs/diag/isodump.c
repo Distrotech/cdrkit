@@ -138,24 +138,22 @@ struct iso_directory_record {
 	unsigned char name			[1];
 };
 
-LOCAL int	isonum_731	__PR((char * p));
-LOCAL int	isonum_721	__PR((char * p));
-LOCAL int	isonum_723	__PR((char * p));
-LOCAL int	isonum_733	__PR((unsigned char * p));
-LOCAL void	reset_tty	__PR((void));
-LOCAL void	set_tty		__PR((void));
-LOCAL void	onsusp		__PR((int signo));
-LOCAL void	crsr2		__PR((int row, int col));
-LOCAL int	parse_rr	__PR((unsigned char * pnt, int len, int cont_flag));
-LOCAL void	dump_rr		__PR((struct iso_directory_record * idr));
-LOCAL void	showblock	__PR((int flag));
-LOCAL int	getbyte		__PR((void));
-LOCAL void	usage		__PR((int excode));
-EXPORT int	main		__PR((int argc, char *argv[]));
+static int	isonum_731(char * p);
+static int	isonum_72(char * p);
+static int	isonum_723(char * p);
+static int	isonum_733(unsigned char * p);
+static void	reset_tty(void);
+static void	set_tty(void);
+static void	onsusp(int signo);
+static void	crsr2(int row, int col);
+static int	parse_rr(unsigned char * pnt, int len, int cont_flag);
+static void	dump_rr(struct iso_directory_record * idr);
+static void	showblock(int flag);
+static int	getbyte(void);
+static void	usage(int excode);
 
-LOCAL int
-isonum_731(p)
-	char	*p;
+static int
+isonum_731(char *p)
 {
 	return ((p[0] & 0xff)
 		| ((p[1] & 0xff) << 8)
@@ -163,16 +161,14 @@ isonum_731(p)
 		| ((p[3] & 0xff) << 24));
 }
 
-LOCAL int
-isonum_721(p)
-	char	*p;
+static int
+isonum_721(char *p)
 {
 	return ((p[0] & 0xff) | ((p[1] & 0xff) << 8));
 }
 
-LOCAL int
-isonum_723(p)
-	char	*p;
+static int
+isonum_723(char *p)
 {
 #if 0
 	if (p[0] != p[3] || p[1] != p[2]) {
@@ -188,22 +184,21 @@ isonum_723(p)
 }
 
 
-LOCAL int
-isonum_733(p)
-	unsigned char *p;
+static int
+isonum_733(unsigned char *p)
 {
 	return (isonum_731((char *)p));
 }
 
 #ifdef	USE_V7_TTY
-LOCAL	struct sgttyb	savetty;
-LOCAL	struct sgttyb	newtty;
+static	struct sgttyb	savetty;
+static	struct sgttyb	newtty;
 #else
-LOCAL	struct termios savetty;
-LOCAL	struct termios newtty;
+static	struct termios savetty;
+static	struct termios newtty;
 #endif
 
-LOCAL void
+static void
 reset_tty()
 {
 #ifdef USE_V7_TTY
@@ -224,7 +219,7 @@ reset_tty()
 	}
 }
 
-LOCAL void
+static void
 set_tty()
 {
 #ifdef USE_V7_TTY
@@ -247,9 +242,8 @@ set_tty()
 
 /* Come here when we get a suspend signal from the terminal */
 
-LOCAL void
-onsusp(signo)
-	int	signo;
+static void
+onsusp(int signo)
 {
 #ifdef	SIGTTOU
 	/* ignore SIGTTOU so we don't get stopped if csh grabs the tty */
@@ -273,19 +267,14 @@ onsusp(signo)
 
 
 
-LOCAL void
-crsr2(row, col)
-	int	row;
-	int	col;
+static void
+crsr2(int row, int col)
 {
 	printf("\033[%d;%dH", row, col);
 }
 
-LOCAL int
-parse_rr(pnt, len, cont_flag)
-	unsigned char	*pnt;
-	int		len;
-	int		cont_flag;
+static int
+parse_rr(unsigned char *pnt, int len, int cont_flag)
 {
 	int		slen;
 	int		ncount;
@@ -432,9 +421,8 @@ parse_rr(pnt, len, cont_flag)
 	return (flag2);
 }
 
-LOCAL void
-dump_rr(idr)
-	struct iso_directory_record *idr;
+static void
+dump_rr(struct iso_directory_record *idr)
 {
 	int		len;
 	unsigned char	*pnt;
@@ -453,9 +441,8 @@ dump_rr(idr)
 }
 
 
-LOCAL void
-showblock(flag)
-	int	flag;
+static void
+showblock(int flag)
 {
 	int	i;
 	int	j;
@@ -513,7 +500,7 @@ showblock(flag)
 	fflush(stdout);
 }
 
-LOCAL int
+static int
 getbyte()
 {
 	char	c1;
@@ -525,9 +512,8 @@ getbyte()
 	return (c1);
 }
 
-LOCAL void
-usage(excode)
-	int	excode;
+static void
+usage(int excode)
 {
 	errmsgno(EX_BAD, "Usage: %s [options] image\n",
 						get_progname());
@@ -541,10 +527,8 @@ usage(excode)
 	exit(excode);
 }
 
-EXPORT int
-main(argc, argv)
-	int	argc;
-	char	*argv[];
+int
+main(int argc, char *argv[])
 {
 	int	cac;
 	char	* const *cav;
@@ -669,7 +653,7 @@ main(argc, argv)
 #ifdef	SIGTSTP
 	signal(SIGTSTP, onsusp);
 #endif
-	on_comerr((void(*)__PR((int, void *)))reset_tty, NULL);
+	on_comerr((void(*)(int, void *))reset_tty, NULL);
 
 	do {
 		if (file_addr < 0)

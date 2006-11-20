@@ -118,15 +118,15 @@
  * Maybe we need a lot more definitions here...
  * It is not clear whether we should have prototyped definitions.
  */
-extern	int	access	__PR((const char *, int));
-extern	int	close	__PR((int));
-extern	int	dup	__PR((int));
-extern	int	dup2	__PR((int, int));
-extern	void	_exit	__PR((int));
-extern	int	link	__PR((const char *, const char *));
-extern	int	read	__PR((int, void *, size_t));
-extern	int	unlink	__PR((const char *));
-extern	int	write	__PR((int, void *, size_t));
+extern	int	access(const char *, int);
+extern	int	close(int);
+extern	int	dup(int);
+extern	int	dup2(int, int);
+extern	void	_exit(int);
+extern	int	link(const char *, const char *);
+extern	int	read(int, void *, size_t);
+extern	int	unlink(const char *);
+extern	int	write(int, void *, size_t);
 #endif
 
 #endif	/* _UNIXSTD_H */

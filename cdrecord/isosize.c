@@ -43,11 +43,10 @@ static	char sccsid[] =
 #include "iso9660.h"
 #include "cdrecord.h"	/* to verify isosize() prototype */
 
-Llong	isosize		__PR((int f));
+Llong	isosize(int f);
 
 Llong
-isosize(f)
-	int	f;
+isosize(int f)
 {
 	struct iso9660_voldesc		vd;
 	struct iso9660_pr_voldesc	*vp;

@@ -45,14 +45,10 @@ static	char _sccsid[] =
 
 #include <scg/scsitransp.h>
 
-EXPORT	int	scg_settarget	__PR((SCSI *scgp, int, int, int));
+int	scg_settarget(SCSI *scgp, int, int, int);
 
-EXPORT int
-scg_settarget(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+int
+scg_settarget(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	int fd = -1;
 

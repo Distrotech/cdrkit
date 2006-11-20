@@ -17,12 +17,10 @@
 
 #include <ctype.h>
 
-static unsigned long Read_CD_Extra_File __PR((unsigned char *Extra_buf, unsigned long sector));
+static unsigned long Read_CD_Extra_File(unsigned char *Extra_buf, unsigned long sector);
 
 static unsigned long
-Read_CD_Extra_File(Extra_buf, sector)
-	unsigned char	*Extra_buf;
-	unsigned long	sector;
+Read_CD_Extra_File(unsigned char *Extra_buf, unsigned long sector)
 {
 	unsigned long mysec;
 	
@@ -104,9 +102,8 @@ static unsigned char Extra_buffer[CD_FRAMESIZE_RAW];
  * Of course, there are a lot dubious cd extras, which don't care :-(((
  * As an alternative method, we try reading through the iso9660 file system...
  */
-static int Read_CD_Extra_Info __PR(( unsigned long sector));
-static int Read_CD_Extra_Info(sector)
-	unsigned long sector;
+static int Read_CD_Extra_Info(unsigned long sector);
+static int Read_CD_Extra_Info(unsigned long sector)
 {
   unsigned i;
   static int offsets[] = {
@@ -152,10 +149,8 @@ static int Read_CD_Extra_Info(sector)
   return 0;
 }
 
-static void Read_Subinfo __PR(( unsigned pos, unsigned length));
-static void Read_Subinfo(pos, length)
-	unsigned pos;
-	unsigned length;
+static void Read_Subinfo(unsigned pos, unsigned length);
+static void Read_Subinfo(unsigned pos, unsigned length)
 {
   unsigned num_infos, num;
   unsigned char *Subp, *orgSubp;

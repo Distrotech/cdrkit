@@ -32,14 +32,14 @@
 /*
  * scgcheck.c
  */
-extern	void	flushit		__PR((void));
+extern	void	flushit(void);
 
 /*
  * sense.c
  */
-extern	void	sensetest	__PR((SCSI *scgp));
+extern	void	sensetest(SCSI *scgp);
 
 /*
  * dmaresid.c
  */
-extern	void	dmaresid	__PR((SCSI *scgp));
+extern	void	dmaresid(SCSI *scgp);

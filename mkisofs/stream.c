@@ -40,15 +40,15 @@ static	char sccsid[] =
 #include "mkisofs.h"
 #include "iso9660.h"
 
-LOCAL int	size_str_file	__PR((int starting_extent));
-LOCAL int	size_str_dir	__PR((int starting_extent));
-LOCAL int	size_str_path	__PR((int starting_extent));
+static int	size_str_file(int starting_extent);
+static int	size_str_dir(int starting_extent);
+static int	size_str_path(int starting_extent);
 
-LOCAL int	gen_str_path	__PR((void));
+static int	gen_str_path(void);
 
-LOCAL int	write_str_file	__PR((FILE *outfile));
-LOCAL int	write_str_dir	__PR((FILE *outfile));
-LOCAL int	write_str_path	__PR((FILE *outfile));
+static int	write_str_file(FILE *outfile);
+static int	write_str_dir(FILE *outfile);
+static int	write_str_path(FILE *outfile);
 
 extern struct directory *root;
 extern unsigned int	session_start;
@@ -57,21 +57,20 @@ extern char		*stream_filename;
 extern time_t		begun;
 extern int		volume_sequence_number;
 
-LOCAL unsigned int	avail_extent;
-LOCAL unsigned int	stream_extent;
-LOCAL unsigned int	stream_size;
-LOCAL unsigned int	stream_pad;
-LOCAL char		*l_path;
-LOCAL char		*m_path;
-LOCAL struct iso_directory_record s_dir;
-LOCAL int		stream_finished = 0;
+static unsigned int	avail_extent;
+static unsigned int	stream_extent;
+static unsigned int	stream_size;
+static unsigned int	stream_pad;
+static char		*l_path;
+static char		*m_path;
+static struct iso_directory_record s_dir;
+static int		stream_finished = 0;
 
 /*
  * Compute the size of the file
  */
-LOCAL int
-size_str_file(starting_extent)
-	int	starting_extent;
+static int
+size_str_file(int starting_extent)
 {
 	int	n;
 extern	int	dopad;
@@ -98,9 +97,8 @@ extern	int	dopad;
 /*
  * The size of the directory record - one sector
  */
-LOCAL int
-size_str_dir(starting_extent)
-	int	starting_extent;
+static int
+size_str_dir(int starting_extent)
 {
 	root->extent = last_extent;
 	last_extent += 1;
@@ -110,9 +108,8 @@ size_str_dir(starting_extent)
 /*
  * The size of the path tables - two sectors
  */
-LOCAL int
-size_str_path(starting_extent)
-	int	starting_extent;
+static int
+size_str_path(int starting_extent)
 {
 	path_table[0] = starting_extent;
 	path_table[1] = 0;
@@ -125,7 +122,7 @@ size_str_path(starting_extent)
 /*
  * Generate the path table data
  */
-LOCAL int
+static int
 gen_str_path()
 {
 	/*
@@ -149,9 +146,8 @@ gen_str_path()
 /*
  * Write the file content
  */
-LOCAL int
-write_str_file(outfile)
-	FILE	*outfile;
+static int
+write_str_file(FILE *outfile)
 {
 	unsigned int	idx = 0;
 	unsigned int	iso_blocks;
@@ -201,9 +197,8 @@ write_str_file(outfile)
 /*
  * Generate and write the directory record data
  */
-LOCAL int
-write_str_dir(outfile)
-	FILE	*outfile;
+static int
+write_str_dir(FILE *outfile)
 {
 	int	to_write;
 	char	*buf;
@@ -258,9 +253,8 @@ write_str_dir(outfile)
 /*
  * Generate the path table data
  */
-LOCAL int
-write_str_path(outfile)
-	FILE	*outfile;
+static int
+write_str_path(FILE *outfile)
 {
 	jtwrite(l_path, SECTOR_SIZE, 1, 0, FALSE);
 	xfwrite(l_path, SECTOR_SIZE, 1, outfile, 0, FALSE);

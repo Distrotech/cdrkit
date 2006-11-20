@@ -50,8 +50,7 @@ static	char sccsid[] =
  * NAME:	btree->getnode()
  * DESCRIPTION:	retrieve a numbered node from a B*-tree file
  */
-int bt_getnode(np)
-	node	*np;
+int bt_getnode(node *np)
 {
   btree *bt = np->bt;
   block *bp = &np->data;
@@ -111,8 +110,7 @@ int bt_getnode(np)
  * NAME:	btree->putnode()
  * DESCRIPTION:	store a numbered node into a B*-tree file
  */
-int bt_putnode(np)
-	node	*np;
+int bt_putnode(node *np)
 {
   btree *bt = np->bt;
   block *bp = &np->data;
@@ -164,8 +162,7 @@ int bt_putnode(np)
  * NAME:	btree->readhdr()
  * DESCRIPTION:	read the header node of a B*-tree
  */
-int bt_readhdr(bt)
-	btree	*bt;
+int bt_readhdr(btree *bt)
 {
   unsigned char *ptr;
   char *map;
@@ -277,8 +274,7 @@ int bt_readhdr(bt)
  * NAME:	btree->writehdr()
  * DESCRIPTION:	write the header node of a B*-tree
  */
-int bt_writehdr(bt)
-	btree	*bt;
+int bt_writehdr(btree *bt)
 {
   unsigned char *ptr;
   char *map;
@@ -363,9 +359,7 @@ int bt_writehdr(bt)
  * NAME:	btree->space()
  * DESCRIPTION:	assert space for new records, or extend the file
  */
-int bt_space(bt, nrecs)
-	btree		*bt;
-	unsigned int	nrecs;
+int bt_space(btree *bt, unsigned int nrecs)
 {
   unsigned int nnodes;
   int space;
@@ -465,10 +459,7 @@ int bt_space(bt, nrecs)
  * NAME:	btree->insertx()
  * DESCRIPTION:	recursively locate a node and insert a record
  */
-int bt_insertx(np, record, reclen)
-	node		*np;
-	unsigned char	*record;
-	int		*reclen;
+int bt_insertx(node *np, unsigned char *record, int *reclen)
 {
   node child;
   unsigned char *rec;
@@ -516,10 +507,7 @@ int bt_insertx(np, record, reclen)
  * NAME:	btree->insert()
  * DESCRIPTION:	insert a new node record into a tree
  */
-int bt_insert(bt, record, reclen)
-	btree		*bt;
-	unsigned char	*record;
-	int		reclen;
+int bt_insert(btree *bt, unsigned char *record, int reclen)
 {
   node root;
 
@@ -591,11 +579,7 @@ int bt_insert(bt, record, reclen)
  * NAME:	btree->deletex()
  * DESCRIPTION:	recursively locate a node and delete a record
  */
-int bt_deletex(np, key, record, flag)
-	node		*np;
-	unsigned char	*key;
-	unsigned char	*record;
-	int		*flag;
+int bt_deletex(node *np, unsigned char *key, unsigned char *record, int *flag)
 {
   node child;
   unsigned char *rec;
@@ -658,9 +642,7 @@ int bt_deletex(np, key, record, flag)
  * NAME:	btree->delete()
  * DESCRIPTION:	remove a node record from a tree
  */
-int bt_delete(bt, key)
-	btree		*bt;
-	unsigned char	*key;
+int bt_delete(btree *bt, unsigned char *key)
 {
   node root;
   unsigned char record[HFS_MAXRECLEN];
@@ -714,10 +696,7 @@ int bt_delete(bt, key)
  * NAME:	btree->search()
  * DESCRIPTION:	locate a data record given a search key
  */
-int bt_search(bt, key, np)
-	btree		*bt;
-	unsigned char	*key;
-	node		*np;
+int bt_search(btree *bt, unsigned char *key, node *np)
 {
   np->bt   = bt;
   np->nnum = bt->hdr.bthRoot;

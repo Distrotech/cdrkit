@@ -64,14 +64,14 @@ typedef struct {
 } afpmap;
 
 /* from "data.h" - libhfs routines */
-unsigned long d_toutime	__PR((unsigned long));
-unsigned long d_dtoutime __PR((long));
-long d_getl		__PR((unsigned char *));
-short d_getw		__PR((unsigned char *));
+unsigned long d_toutime(unsigned long);
+unsigned long d_dtoutime(long);
+long d_getl(unsigned char *);
+short d_getw(unsigned char *);
 
 /* for libfile routines */
-int init_magic		__PR((char *));
-char * get_magic_match	__PR((const char *));
+int init_magic(char *);
+char * get_magic_match(const char *);
 
 typedef unsigned char byte;
 typedef unsigned char word[2];

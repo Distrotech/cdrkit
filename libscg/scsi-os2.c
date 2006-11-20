@@ -60,7 +60,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-os2.c-1.25";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-os2.c-1.25";	/* The version for this transport*/
 
 #define	FILE_OPEN			0x0001
 #define	OPEN_SHARE_DENYREADWRITE	0x0010
@@ -91,19 +91,19 @@ struct scg_local {
 
 #define	MAX_DMA_OS2	(63*1024) /* ASPI-Router allows up to 64k */
 
-LOCAL	void	*buffer		= NULL;
-LOCAL	HFILE	driver_handle	= 0;
-LOCAL	HEV	postSema	= 0;
+static	void	*buffer		= NULL;
+static	HFILE	driver_handle	= 0;
+static	HEV	postSema	= 0;
 
-LOCAL	BOOL	open_driver	__PR((SCSI *scgp));
-LOCAL	BOOL	close_driver	__PR((void));
-LOCAL	ULONG	wait_post	__PR((ULONG ulTimeOut));
-LOCAL	BOOL 	init_buffer	__PR((void* mem));
-LOCAL	void	exit_func	__PR((void));
-LOCAL	void	set_error	__PR((SRB *srb, struct scg_cmd *sp));
+static	BOOL	open_driver(SCSI *scgp);
+static	BOOL	close_driver(void);
+static	ULONG	wait_post(ULONG ulTimeOut);
+static	BOOL 	init_buffer(void* mem);
+static	void	exit_func(void);
+static	void	set_error(SRB *srb, struct scg_cmd *sp);
 
 
-LOCAL void
+static void
 exit_func()
 {
 	if (!close_driver())
@@ -115,10 +115,8 @@ exit_func()
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -138,20 +136,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "ASPI", "Generic transport independent SCSI",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	int	busno	= scg_scsibus(scgp);
 	int	tgt	= scg_target(scgp);
@@ -190,27 +184,22 @@ scgo_open(scgp, device)
 	return (1);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	exit_func();
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *cgp, long amt)
 {
 	long maxdma = MAX_DMA_OS2;
 	return (maxdma);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	ULONG rc;
 
@@ -237,9 +226,8 @@ scgo_getbuf(scgp, amt)
 	return ((void *)0); /* Error */
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase && DosFreeMem(scgp->bufbase)) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -250,10 +238,8 @@ scgo_freebuf(scgp)
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -264,12 +250,8 @@ scgo_havebus(scgp, busno)
 	return (TRUE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= MAX_SCG ||
 	    tgt < 0 || tgt >= MAX_TGT ||
@@ -283,25 +265,21 @@ scgo_fileno(scgp, busno, tgt, tlun)
 }
 
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	ULONG	rc;				/* return value */
 	ULONG	cbreturn;
@@ -350,10 +328,8 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
 /*
  * Set error flags
  */
-LOCAL void
-set_error(srb, sp)
-	SRB	*srb;
-	struct scg_cmd	*sp;
+static void
+set_error(SRB *srb, struct scg_cmd *sp)
 {
 	switch (srb->status) {
 
@@ -377,9 +353,8 @@ set_error(srb, sp)
 	}
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI	*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	ULONG	rc;				/* return value */
@@ -544,9 +519,8 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
  *  Preconditions: ASPI Router driver has be loaded			   *
  *									   *
  ***************************************************************************/
-LOCAL BOOL
-open_driver(scgp)
-	SCSI	*scgp;
+static BOOL
+open_driver(SCSI *scgp)
 {
 	ULONG	rc;			/* return value */
 	ULONG	ActionTaken;		/* return value	*/
@@ -606,7 +580,7 @@ open_driver(scgp)
  *  Preconditions: ASPI Router driver has be opened with open_driver	   *
  *									   *
  ***************************************************************************/
-LOCAL BOOL
+static BOOL
 close_driver()
 {
 	ULONG rc;				/* return value */
@@ -627,7 +601,7 @@ close_driver()
 	return (TRUE);
 }
 
-LOCAL ULONG
+static ULONG
 wait_post(ULONG ulTimeOut)
 {
 	ULONG count = 0;
@@ -639,9 +613,8 @@ wait_post(ULONG ulTimeOut)
 	return (rc);
 }
 
-LOCAL BOOL
-init_buffer(mem)
-	void	*mem;
+static BOOL
+init_buffer(void *mem)
 {
 	ULONG	rc;					/* return value */
 	USHORT lockSegmentReturn;			/* return value */

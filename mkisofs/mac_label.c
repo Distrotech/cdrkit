@@ -62,16 +62,15 @@ static	char sccsid[] =
 #include "apple.h"
 
 #ifdef PREP_BOOT
-void	gen_prepboot_label	__PR((unsigned char *ml));
+void	gen_prepboot_label(unsigned char *ml);
 
 #endif	/* PREP_BOOT */
-int	gen_mac_label		__PR((defer * mac_boot));
-int	autostart		__PR((void));
+int	gen_mac_label(defer * mac_boot);
+int	autostart(void);
 
 #ifdef PREP_BOOT
 void
-gen_prepboot_label(ml)
-	unsigned char	*ml;
+gen_prepboot_label(unsigned char *ml)
 {
 	struct directory_entry *de;
 	int		i = 0;
@@ -166,8 +165,7 @@ gen_prepboot_label(ml)
 #endif	/* PREP_BOOT */
 
 int
-gen_mac_label(mac_boot)
-	defer		*mac_boot;
+gen_mac_label(defer *mac_boot)
 {
 	FILE		*fp;
 	MacLabel	*mac_label;

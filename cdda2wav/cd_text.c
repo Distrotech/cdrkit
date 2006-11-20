@@ -58,15 +58,11 @@ static unsigned short crctab[1<<8] = { /* as calculated by initcrctab() */
 
 #define SUBSIZE	18*8
 
-static unsigned short updcrc __PR((
-	    unsigned int    p_crc,
-            register unsigned char   *cp,
-            register size_t  cnt));
+static unsigned short updcrc(unsigned int p_crc, register unsigned char *cp,
+       							  register size_t cnt);
 
-static unsigned short updcrc(p_crc, cp, cnt)
-	unsigned int p_crc;
-        register unsigned char   *cp;
-        register size_t  cnt;
+static unsigned short updcrc(unsigned int p_crc, register unsigned char *cp, 
+                             register size_t cnt)
 {
       register unsigned short crc = (unsigned short)p_crc;
       while( cnt-- ) {
@@ -75,11 +71,9 @@ static unsigned short updcrc(p_crc, cp, cnt)
       return( crc );
 }
 
-static unsigned short calcCRC __PR((unsigned char *buf, unsigned bsize));
+static unsigned short calcCRC(unsigned char *buf, unsigned bsize);
 
-static unsigned short calcCRC(buf, bsize)
-	unsigned char *buf;
-	unsigned bsize;
+static unsigned short calcCRC(unsigned char *buf, unsigned bsize)
 {
       return updcrc( 0x0, (unsigned char *)buf, bsize );
 }
@@ -95,11 +89,9 @@ static unsigned char    fliptab[8] = {
         0x80,
 };
 
-static int flip_error_corr __PR((unsigned char *b, int crc));
+static int flip_error_corr(unsigned char *b, int crc);
 
-static int flip_error_corr(b, crc)
-	unsigned char *b;
-	int crc;
+static int flip_error_corr(unsigned char *b, int crc)
 {
   if (crc != 0) {
     int i;
@@ -118,10 +110,9 @@ static int flip_error_corr(b, crc)
 }
 
 
-static int cdtext_crc_ok __PR((cdtextpackdata *c));
+static int cdtext_crc_ok(cdtextpackdata *c);
 
-static int cdtext_crc_ok (c)
-	cdtextpackdata *c;
+static int cdtext_crc_ok(cdtextpackdata *c)
 {
 	int crc;
 	int retval;
@@ -161,10 +152,9 @@ static int cdtext_crc_ok (c)
 #define DETAILED 0
 
 #if	DETAILED
-static void dump_binary __PR((cdtextpackdata *c));
+static void dump_binary(cdtextpackdata *c);
 
-static void dump_binary(c)
-	cdtextpackdata *c;
+static void dump_binary(cdtextpackdata *c)
 {
           fprintf(stderr, ": header fields %02x %02x %02x  ",
                           c->headerfield[1], c->headerfield[2], c->headerfield[3]);
@@ -186,13 +176,11 @@ static void dump_binary(c)
 }
 #endif
 
-static int process_header __PR((cdtextpackdata *c, unsigned tracknr, int dbcc, unsigned char *line));
+static int process_header(cdtextpackdata *c, unsigned tracknr, int dbcc, 
+								  unsigned char *line);
 
-static int process_header(c, tracknr, dbcc, line)
-	cdtextpackdata *c;
-	unsigned tracknr;
-	int dbcc;
-	unsigned char *line;
+static int process_header(cdtextpackdata *c, unsigned tracknr, int dbcc, 
+                          unsigned char *line)
 {
       switch ((int)c->headerfield[0]) {
 

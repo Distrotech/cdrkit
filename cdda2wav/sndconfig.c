@@ -84,8 +84,7 @@ static unsigned BufferInd;
 
 static char snd_device[200] = SOUND_DEV;
 
-int set_snd_device(devicename)
-	const char *devicename;
+int set_snd_device(const char *devicename)
 {
 	strncpy(snd_device, devicename, sizeof(snd_device));
 	return 0;
@@ -97,12 +96,9 @@ static HWAVEOUT	DeviceID;
 static WAVEHDR	wavehdr[WAVEHDRS];
 static unsigned lastwav = 0;
 
-static int check_winsound_caps __PR((int bits, double rate, int channels));
+static int check_winsound_caps(int bits, double rate, int channels);
 
-static int check_winsound_caps(bits, rate, channels)
-	int bits;
-	double rate;
-	int channels;
+static int check_winsound_caps(int bits, double rate, int channels)
 {
   int result = 0;
 
@@ -155,9 +151,7 @@ snd_pcm_t	*pcm_handle;
 audio_buf_info abinfo;
 #endif
 
-int init_soundcard(rate, bits)
-	double rate;
-	int bits;
+int init_soundcard(double rate, int bits)
 {
 #ifdef	ECHO_TO_SOUNDCARD
   if (global.echo) {
@@ -468,7 +462,7 @@ int init_soundcard(rate, bits)
   return 0;
 }
 
-int open_snd_device ()
+int open_snd_device()
 {
 #if	defined(F_GETFL) && defined(F_SETFL) && defined(O_NONBLOCK)
 	int	fl;
@@ -525,9 +519,7 @@ int close_snd_device ()
 #endif /* ifdef ECHO_TO_SOUNDCARD */
 }
 
-int write_snd_device (buffer, todo)
-	char *buffer;
-	unsigned todo;
+int write_snd_device(char *buffer, unsigned todo)
 {
 	int result = 0;
 #ifdef	ECHO_TO_SOUNDCARD

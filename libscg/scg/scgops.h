@@ -37,26 +37,26 @@ extern "C" {
 #endif
 
 typedef struct scg_ops {
-	int	(*scgo_send)		__PR((SCSI *scgp));
+	int	(*scgo_send)(SCSI *scgp);
 
-	char *	(*scgo_version)		__PR((SCSI *scgp, int what));
+	char *	(*scgo_version)(SCSI *scgp, int what);
 #ifdef	EOF	/* stdio.h has been included */
-	int	(*scgo_help)		__PR((SCSI *scgp, FILE *f));
+	int	(*scgo_help)(SCSI *scgp, FILE *f);
 #else
-	int	(*scgo_help)		__PR((SCSI *scgp, void *f));
+	int	(*scgo_help)(SCSI *scgp, void *f);
 #endif
-	int	(*scgo_open)		__PR((SCSI *scgp, char *device));
-	int	(*scgo_close)		__PR((SCSI *scgp));
-	long	(*scgo_maxdma)		__PR((SCSI *scgp, long amt));
-	void *	(*scgo_getbuf)		__PR((SCSI *scgp, long amt));
-	void	(*scgo_freebuf)		__PR((SCSI *scgp));
+	int	(*scgo_open)(SCSI *scgp, char *device);
+	int	(*scgo_close)(SCSI *scgp);
+	long	(*scgo_maxdma)(SCSI *scgp, long amt);
+	void *	(*scgo_getbuf)(SCSI *scgp, long amt);
+	void	(*scgo_freebuf)(SCSI *scgp);
 
 
-	BOOL	(*scgo_havebus)		__PR((SCSI *scgp, int busno));
-	int	(*scgo_fileno)		__PR((SCSI *scgp, int busno, int tgt, int tlun));
-	int	(*scgo_initiator_id)	__PR((SCSI *scgp));
-	int	(*scgo_isatapi)		__PR((SCSI *scgp));
-	int	(*scgo_reset)		__PR((SCSI *scgp, int what));
+	BOOL	(*scgo_havebus)(SCSI *scgp, int busno);
+	int	(*scgo_fileno)(SCSI *scgp, int busno, int tgt, int tlun);
+	int	(*scgo_initiator_id)(SCSI *scgp);
+	int	(*scgo_isatapi)(SCSI *scgp);
+	int	(*scgo_reset)(SCSI *scgp, int what);
 } scg_ops_t;
 
 #define	SCGO_SEND(scgp)				(*(scgp)->ops->scgo_send)(scgp)

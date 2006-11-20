@@ -75,7 +75,6 @@ $opt_dir = !$opt_flat;
 
 $opt_ver = 1 if $opt_sim;
 $opt_move=1 if ($opt_sln || $opt_ln);
-die "Invalid filesystem exploration mode!\n" if ($emode<1 || $emode>4);
 
 # big list @sizes containing the "items" (object sizes)
 # %names hash mapping "items" (size as key) to arrays with filenames/subarrays for coalesced files
@@ -119,18 +118,8 @@ else {
 # check for pointless requests
 my $testsize=0;
 for(@sizes) {
-   if($_>$max) {
-      print STDERR "Too large object(s) ($_) for the given max size($max):\n";
-      foreach my $item (@{$names{$_}}) {
-        if(ref($item) eq "ARRAY") {
-           print ("{\n\t".join("\n\t",@{$item})."\n}\n");
-        }
-        else {
-           print "$item\n";
-        }
-      }
-      die "Aborting...\n";
-   }
+   die "Too large object(s) ($_) for the given max size: @{$names{$_}}\n" if($_>$max);
+
    $testsize+=$_;
 }
 
@@ -239,7 +228,7 @@ exit $ret;
 # parameter: directory
 # mode 1: descend as far as possible and index all non-directories
 # mode 2++:
-# put all files of a dir into coalesced-object, then descend into each dir
+# put all files of a dir into coaleseced-object, then descend into each dir
 sub explore {
    (my $dir) = @_;
    my @stuff;
@@ -249,7 +238,9 @@ sub explore {
    opendir(DIR, $dir) || die "Could not open $dir\n";
    @stuff=readdir(DIR);
    
-   @stuff=sort { lc($a) cmp lc($b) } @stuff;
+   if($opt_simple) {
+      @stuff=sort { lc($a) cmp lc($b) } @stuff;
+   }
       
    foreach my $f (@stuff) {
       next if ($f eq "." || $f eq "..");
@@ -298,39 +289,45 @@ sub explore {
          }
          $filesum += $tmp;
       };
-      #print "D: filesum: $filesum\n";
-      if($filesum<=$max) {
-         # ok, building a coalesced object, the simplest case
-         &insitem($filesum, \@files);
-      }
-      elsif($emode==2) {
-         die "Coalesced data object became too large for one medium, expriment with -e option.\n";
-      }
-      # oversized, deal with oversized coal. objects
-      elsif($emode==3) {
-         # don't coalesc in this mode, do like mode 1 above, leave them alone
-         &insitem(getsize($_), $_) for(@files);
-         return;
-      }
-      # a bit more complicated, split file set
-      elsif($emode==4) {
 
-         my @tmpvol;
-         my $tmpsize=0;
-         for my $f (@files) {
-            my $newsize=getsize($f);
-            if($tmpsize+$newsize > $max) { # wouldn't fit
-               &insitem($tmpsize, [@tmpvol]);
-               $tmpsize=$newsize;
-               @tmpvol=($f);
-            }
-            else {
-               push(@tmpvol, $f);
-               $tmpsize+=$newsize;
-            }
+      # handle coal. objects becoming too large
+      if($filesum>$max) {
+         # too large coal. object...
+         if($emode==3) {
+            # don't coalesc in this mode, do like mode 1 above, leave them alone
+            &insitem(getsize($_), $_) for(@files);
+            return;
          }
-         # the last incomplete volume, not copying the [array], it's local here already
-         &insitem($tmpsize, \@tmpvol)
+         # a bit complicated, split file set while creating coal.objects
+         if($emode==4) {
+            my $partsum=0;
+            my @sorted=sort(@files);
+            my @tmpvol;
+            for(my $i=0;$i<=$#sorted;$i++) {
+#            print "D: i: $i, partsum: $partsum, file: $sorted[$i]\n";
+               my $tmp=getsize($sorted[$i]);
+               $partsum+=$tmp;
+               if($partsum>$max) {
+                  # undo the last step then build the coal.object
+                  $partsum-=$tmp;
+                  $i--;
+
+                  &insitem($partsum, \@tmpvol);
+                  # reset temporaries
+                  undef @tmpvol;
+                  undef $partsum;
+               }
+               else {
+                  push(@tmpvol, $sorted[$i]);
+               }
+            }
+            return;
+         }
+      }
+
+      # ok, building a coalesced object for simple cases
+      if($filesum) {
+         &insitem($filesum, \@files);
       }
    }
 }
@@ -341,7 +338,6 @@ my @simpleBinSizes;
 # args: size, object (filename or list reference)
 sub insitem {
    my ($size, $object) = @_;
-   #print "D: $size, $object\n";
    # normaly, put the items into the pool for calculation. In simple mode, calculate here
    
    push(@sizes, $size);
@@ -463,7 +459,7 @@ dirsplit [options] [advanced options] < directory >
  -a|--accuracy NUMBER (1=faster, large number=better efficiency, default: 500)
  -S|--simple   Simple/stupid/alphabetic mode
  -T|--input    FILENAME (or - for STDIN):  List with sizes and paths, try:
-               find dir -type f -printf \"%s %p\\n\"
+               find dir -type f -printf \"%s %p\n\"
                to get an example. Avoid duplicates! Unit suffixes are allowed.
  -h|--help     Show this option summary
  -v|--verbose  More verbosity

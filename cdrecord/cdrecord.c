@@ -81,7 +81,7 @@ static	char sccsid[] =
 #include <sys/capability.h> 	/* for rawio capability */
 #endif
 
-#define cdr_version "1.0"
+#define cdr_version "1.0pre1"
 
 #if defined(_POSIX_PRIORITY_SCHEDULING) && _POSIX_PRIORITY_SCHEDULING -0 >= 0
 #ifdef  HAVE_SYS_PRIOCNTL_H	/* The preferred SYSvR4 schduler */
@@ -143,8 +143,8 @@ char	*db2name[] = {
 /*
  * Map write modes into names.
  */
-LOCAL	char	wm_none[] = "unknown";
-LOCAL	char	wm_ill[]  = "illegal";
+static	char	wm_none[] = "unknown";
+static	char	wm_ill[]  = "illegal";
 
 char	*wm2name[] = {
 		wm_none,
@@ -170,24 +170,24 @@ char	*wm2name[] = {
 };
 
 int		debug;		/* print debug messages */
-LOCAL	int	kdebug;		/* print kernel debug messages */
-LOCAL	int	scsi_verbose;	/* SCSI verbose flag */
-LOCAL	int	silent;		/* SCSI silent flag */
-int		lverbose;	/* local verbose flag */
+static	int	kdebug;		/* print kernel debug messages */
+static	int	scsi_verbose;	/* SCSI verbose flag */
+static	int	silent;		/* SCSI silent flag */
+int		lverbose;	/* static verbose flag */
 int		xdebug;		/* extended debug flag */
 
 char	*buf;			/* The transfer buffer */
 long	bufsize = -1;		/* The size of the transfer buffer */
 
-LOCAL	int	gracetime = GRACE_TIME;
-LOCAL	int	raw_speed = -1;
-LOCAL	int	dma_speed = -1;
-LOCAL	int	dminbuf = -1;	/* XXX Hack for now drive min buf fill */
-EXPORT	BOOL	isgui;
-LOCAL	int	didintr;
-EXPORT	char	*driveropts;
-LOCAL	char	*cuefilename;
-LOCAL	uid_t	oeuid = (uid_t)-1;
+static	int	gracetime = GRACE_TIME;
+static	int	raw_speed = -1;
+static	int	dma_speed = -1;
+static	int	dminbuf = -1;	/* XXX Hack for now drive min buf fill */
+BOOL	isgui;
+static	int	didintr;
+char	*driveropts;
+static	char	*cuefilename;
+static	uid_t	oeuid = (uid_t)-1;
 
 struct timeval	starttime;
 struct timeval	wstarttime;
@@ -196,81 +196,71 @@ struct timeval	fixtime;
 
 static	long	fs = -1L;	/* fifo (ring buffer) size */
 
-EXPORT	int 	main		__PR((int ac, char **av));
-LOCAL	int	gracewait	__PR((cdr_t *dp, BOOL *didgracep));
-LOCAL	void	cdrstats	__PR((cdr_t *dp));
-LOCAL	void	susage		__PR((int));
-LOCAL	void	usage		__PR((int));
-LOCAL	void	blusage		__PR((int));
-LOCAL	void	formattypeusage	__PR((int));
-LOCAL	void	intr		__PR((int sig));
-LOCAL	void	catchsig	__PR((int sig));
-LOCAL	int	scsi_cb		__PR((void *arg));
-LOCAL	void	intfifo		__PR((int sig));
-LOCAL	void	exscsi		__PR((int excode, void *arg));
-LOCAL	void	excdr		__PR((int excode, void *arg));
-EXPORT	int	read_buf	__PR((int f, char *bp, int size));
-EXPORT	int	fill_buf	__PR((int f, track_t *trackp, long secno,
-							char *bp, int size));
-EXPORT	int	get_buf		__PR((int f, track_t *trackp, long secno,
-							char **bpp, int size));
-EXPORT	int	write_secs	__PR((SCSI *scgp, cdr_t *dp, char *bp,
-						long startsec, int bytespt,
-						int secspt, BOOL islast));
-LOCAL	int	write_track_data __PR((SCSI *scgp, cdr_t *, track_t *));
-EXPORT	int	pad_track	__PR((SCSI *scgp, cdr_t *dp,
-					track_t *trackp,
-					long startsec, Llong amt,
-					BOOL dolast, Llong *bytesp));
-EXPORT	int	write_buf	__PR((SCSI *scgp, cdr_t *dp,
-					track_t *trackp,
-					char *bp, long startsec, Llong amt,
-					int secsize,
-					BOOL dolast, Llong *bytesp));
-LOCAL	void	printdata	__PR((int, track_t *));
-LOCAL	void	printaudio	__PR((int, track_t *));
-LOCAL	void	checkfile	__PR((int, track_t *));
-LOCAL	int	checkfiles	__PR((int, track_t *));
-LOCAL	void	setleadinout	__PR((int, track_t *));
-LOCAL	void	setpregaps	__PR((int, track_t *));
-LOCAL	long	checktsize	__PR((int, track_t *));
-LOCAL	void	opentracks	__PR((track_t *));
-LOCAL	void	checksize	__PR((track_t *));
-LOCAL	BOOL	checkdsize	__PR((SCSI *scgp, cdr_t *dp,
-					long tsize, int flags));
-LOCAL	void	raise_fdlim	__PR((void));
-LOCAL	void	raise_memlock	__PR((void));
-LOCAL	int	gargs		__PR((int, char **, int *, track_t *, char **,
-					int *, cdr_t **,
-					int *, long *, int *, int *));
-LOCAL	void	set_trsizes	__PR((cdr_t *, int, track_t *));
-EXPORT	void	load_media	__PR((SCSI *scgp, cdr_t *, BOOL));
-EXPORT	void	unload_media	__PR((SCSI *scgp, cdr_t *, int));
-EXPORT	void	reload_media	__PR((SCSI *scgp, cdr_t *));
-EXPORT	void	set_secsize	__PR((SCSI *scgp, int secsize));
-LOCAL	int	get_dmaspeed	__PR((SCSI *scgp, cdr_t *));
-LOCAL	BOOL	do_opc		__PR((SCSI *scgp, cdr_t *, int));
-LOCAL	void	check_recovery	__PR((SCSI *scgp, cdr_t *, int));
-	void	audioread	__PR((SCSI *scgp, cdr_t *, int));
-LOCAL	void	print_msinfo	__PR((SCSI *scgp, cdr_t *));
-LOCAL	void	print_toc	__PR((SCSI *scgp, cdr_t *));
-LOCAL	void	print_track	__PR((int, long, struct msf *, int, int, int));
+static	int	gracewait(cdr_t *dp, BOOL *didgracep);
+static	void	cdrstats(cdr_t *dp);
+static	void	susage(int);
+static	void	usage(int);
+static	void	blusage(int);
+static	void	formattypeusage(int);
+static	void	intr(int sig);
+static	void	catchsig(int sig);
+static	int	scsi_cb(void *arg);
+static	void	intfifo(int sig);
+static	void	exscsi(int excode, void *arg);
+static	void	excdr(int excode, void *arg);
+int	read_buf(int f, char *bp, int size);
+int	fill_buf(int f, track_t *trackp, long secno, char *bp, int size);
+int	get_buf(int f, track_t *trackp, long secno, char **bpp, int size);
+int	write_secs(SCSI *scgp, cdr_t *dp, char *bp, long startsec, int bytespt,
+					  int secspt, BOOL islast);
+static	int	write_track_data(SCSI *scgp, cdr_t *, track_t *);
+int	pad_track(SCSI *scgp, cdr_t *dp, track_t *trackp, long startsec, 
+					 Llong amt, BOOL dolast, Llong *bytesp);
+int	write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, 
+					 long startsec, Llong amt, int secsize, BOOL dolast, 
+					 Llong *bytesp);
+static	void	printdata(int, track_t *);
+static	void	printaudio(int, track_t *);
+static	void	checkfile(int, track_t *);
+static	int	checkfiles(int, track_t *);
+static	void	setleadinout(int, track_t *);
+static	void	setpregaps(int, track_t *);
+static	long	checktsize(int, track_t *);
+static	void	opentracks(track_t *);
+static	void	checksize(track_t *);
+static	BOOL	checkdsize(SCSI *scgp, cdr_t *dp, long tsize, int flags);
+static	void	raise_fdlim(void);
+static	void	raise_memlock(void);
+static	int	gargs(int, char **, int *, track_t *, char **, int *, cdr_t **,
+							int *, long *, int *, int *);
+static	void	set_trsizes(cdr_t *, int, track_t *);
+void		load_media(SCSI *scgp, cdr_t *, BOOL);
+void		unload_media(SCSI *scgp, cdr_t *, int);
+void		reload_media(SCSI *scgp, cdr_t *);
+void		set_secsize(SCSI *scgp, int secsize);
+static	int	get_dmaspeed(SCSI *scgp, cdr_t *);
+static	BOOL	do_opc(SCSI *scgp, cdr_t *, int);
+static	void	check_recovery(SCSI *scgp, cdr_t *, int);
+void		audioread(SCSI *scgp, cdr_t *, int);
+static	void	print_msinfo(SCSI *scgp, cdr_t *);
+static	void	print_toc(SCSI *scgp, cdr_t *);
+static	void	print_track(int, long, struct msf *, int, int, int);
 #if !defined(HAVE_SYS_PRIOCNTL_H)
-LOCAL	int	rt_raisepri	__PR((int));
+static	int	rt_raisepri(int);
 #endif
-EXPORT	void	raisepri	__PR((int));
-LOCAL	void	wait_input	__PR((void));
-LOCAL	void	checkgui	__PR((void));
-LOCAL	int	getbltype	__PR((char *optstr, long *typep));
-LOCAL	int	getformattype	__PR((char *optstr, long *typep));
-LOCAL	void	print_drflags	__PR((cdr_t *dp));
-LOCAL	void	print_wrmodes	__PR((cdr_t *dp));
-LOCAL	BOOL	check_wrmode	__PR((cdr_t *dp, int wmode, int tflags));
-LOCAL	void	set_wrmode	__PR((cdr_t *dp, int wmode, int tflags));
-LOCAL	void	linuxcheck	__PR((void));
+void		raisepri(int);
+static	void	wait_input(void);
+static	void	checkgui(void);
+static	int	getbltype(char *optstr, long *typep);
+static	int	getformattype(char *optstr, long *typep);
+static	void	print_drflags(cdr_t *dp);
+static	void	print_wrmodes(cdr_t *dp);
+static	BOOL	check_wrmode(cdr_t *dp, int wmode, int tflags);
+static	void	set_wrmode(cdr_t *dp, int wmode, int tflags);
+static	void	linuxcheck(void);
 
 #ifdef __linux__
-LOCAL int get_cap   __PR((cap_value_t cap_array));
+static int get_cap(cap_value_t cap_array);
 #endif
 
 struct exargs {
@@ -285,10 +275,7 @@ void fifo_cleanup(void) {
    kill_faio();
 }
 
-EXPORT int
-main(ac, av)
-	int	ac;
-	char	*av[];
+int main(int argc, char *argv[])
 {
 	char	*dev = NULL;
 	int	timeout = 40;	/* Set default timeout to 40s CW-7502 is slow*/
@@ -312,14 +299,41 @@ main(ac, av)
 	BOOL	is_dvdwr = FALSE;
 
 
-  if(strcmp(av[0], "cdrecord") == 0)
-     strcpy(av[0], "wodim");
+	/* workaround for k3b */
+	int acpos;
+	for(acpos=0;acpos<argc;acpos++) {
+	   if(!strcmp(argv[acpos],"-version") || !strcmp(argv[acpos],"--version"))
+	      fprintf(stderr, "Cdrecord-yelling-line-to-tell-frontends-to-use-it-like-version 2.01.01a03-dvd \n");
+	}
+
+#ifndef SHUT_UP
+
+	fprintf(stderr,
+			"This is wodim, not cdrecord. Don't expect it to behave like cdrecord in any\n"
+			"way, don't refer to it as \"cdrecord\". Send problem reports to\n"
+			"debburn-devel@lists.alioth.debian.org, don't bother Joerg Schilling with any\n"
+			"problems caused by this application.\n"
+			"Copyright (C) 2006 cdrkit maintainers, (C) 1994-2006 Joerg Schilling\n\n" );
+	fprintf(stderr,
+			"WARNING WARNING WARNING:\n\n"
+			"If you are annoyed by the messages below about unofficial status or about\n"
+			"non-Schily-Makefilesystem or if your GUI/script breaks because of them,\n"
+      "please don't send your complaints to cdrkit maintainers; they already know.\n"
+			"They are not allowed to remove them by Joerg Schilling's license\n"
+			"modifications (restrictions), hidden in the source. Correcting the contents\n"
+      "of the messages is forbidden as well, so don't believe everything said there.\n"
+      "See http://svn.debian.org/wsvn/debburn/nonameyet/trunk/FAQ?op=file&rev=0&sc=0\n"
+      "for details.\n\n" );
+
+  if(strcmp(argv[0], "cdrecord") == 0)
+     strcpy(argv[0], "wodim");
+#endif /* SHUT_UP */
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
-	_wildcard(&ac, &av);
+	_wildcard(&argc, &argv);
 #endif
-	save_args(ac, av);
+	save_args(argc, argv);
 	oeuid = geteuid();		/* Remember saved set uid	*/
 
 	fillbytes(track, sizeof (track), '\0');
@@ -327,20 +341,145 @@ main(ac, av)
 		track[i].track = track[i].trackno = i;
 	track[0].tracktype = TOC_MASK;
 	raise_fdlim();
-	ispacket = gargs(ac, av, &tracks, track, &dev, &timeout, &dp, &speed, &flags,
+	ispacket = gargs(argc, argv, &tracks, track, &dev, &timeout, &dp, &speed, &flags,
 							&blanktype, &formattype);
 	if ((track[0].tracktype & TOC_MASK) == TOC_MASK)
 		comerrno(EX_BAD, "Internal error: Bad TOC type.\n");
 
 	if (flags & F_VERSION) {
 	   fprintf(stderr,
-			 "Cdrecord-yelling-line-to-tell-frontends-to-use-it-like-version 2.01.01a03-dvd \n"
 		 "Wodim " cdr_version "\n"
 		 "Copyright (C) 2006 Cdrkit suite contributors\n"
 		 "Based on works from Joerg Schilling, Copyright (C) 1995-2006, J. Schilling\n"
 		 );
-	   exit(0);
+	   /*exit(0);*/
 	}
+
+#ifndef SHUT_UP
+
+#define HOST_CPU "HOST_CPU-just-a-fake-string-to-make-Schilling's-invariant-section-compile-because-cdrkit-does-not-need-it-anymore"
+#define HOST_VENDOR "HOST_VENDOR-just-a-fake-string-to-make-Schilling's-invariant-section-compile-because-cdrkit-does-not-need-it-anymore"
+#define HOST_OS HOST_SYSTEM
+
+	/*
+	 * Begin restricted code for quality assurance.
+	 *
+	 * Warning: you are not allowed to modify or to remove the
+	 * Copyright and version printing code below!
+	 * See also GPL § 2 subclause c)
+	 *
+	 * If you modify cdrecord you need to include additional version
+	 * printing code that:
+	 *
+	 *	-	Clearly states that the current version is an
+	 *		inofficial (modified) version and thus may have bugs
+	 *		that are not present in the original.
+	 *
+	 *	-	Print your support e-mail address and tell people that
+	 *		you will do complete support for this version of
+	 *		cdrecord.
+	 *
+	 *		Or clearly state that there is absolutely no support
+	 *		for the modified version you did create.
+	 *
+	 *	-	Tell the users not to ask the original author for
+	 *		help.
+	 *
+	 * This limitation definitely also applies when you use any other
+	 * cdrecord release together with libscg-0.6 or later, or when you
+	 * use any amount of code from cdrecord-1.11a17 or later.
+	 * In fact, it applies to any version of cdrecord, see also
+	 * GPL Preamble, subsection 6.
+	 *
+	 * I am sorry for the inconvenience but I am forced to do this because
+	 * some people create inofficial branches. These branches create
+	 * problems but the initiators do not give support and thus cause the
+	 * development of the official cdrecord versions to slow down because
+	 * I am loaded with unneeded work.
+	 *
+	 * Please note that this is a memorandum on how I interpret the GPL.
+	 * If you use/modify/redistribute cdrecord, you need to accept it
+	 * this way.
+	 *
+	 *
+	 * The above statement is void if there has been neither a new version
+	 * of cdrecord nor a new version of star from the original author
+	 * within more then a year.
+	 */
+
+	/*
+	 * Ugly, but Linux incude files violate POSIX and #define printf
+	 * so we cannot include the #ifdef inside the printf() arg list.
+	 */
+#	define	PRODVD_TITLE	""
+#ifdef	CLONE_WRITE
+#	define	CLONE_TITLE	"-Clone"
+#else
+#	define	CLONE_TITLE	""
+#endif
+	if ((flags & F_MSINFO) == 0 || lverbose || flags & F_VERSION) {
+		printf("Cdrecord%s%s %s (%s-%s-%s) Copyright (C) 1995-2006 Jörg Schilling\n",
+								PRODVD_TITLE,
+								CLONE_TITLE,
+								cdr_version,
+								HOST_CPU, HOST_VENDOR, HOST_OS);
+
+#if	defined(SOURCE_MODIFIED) || !defined(IS_SCHILY_XCONFIG)
+#define	INSERT_YOUR_EMAIL_ADDRESS_HERE
+#define	NO_SUPPORT	0
+		printf("NOTE: this version of cdrecord is an inofficial (modified) release of cdrecord\n");
+		printf("      and thus may have bugs that are not present in the original version.\n");
+#if	NO_SUPPORT
+		printf("      The author of the modifications decided not to provide a support e-mail\n");
+		printf("      address so there is absolutely no support for this version.\n");
+#else
+		printf("      Please send bug reports and support requests to <%s>.\n", "debburn-devel@lists.alioth.debian.org");
+#endif
+		printf("      The original author should not be bothered with problems of this version.\n");
+		printf("\n");
+#endif
+#if	!defined(IS_SCHILY_XCONFIG)
+		printf("\nWarning: This version of cdrecord has not been configured via the standard\n");
+		printf("autoconfiguration method of the Schily makefile system. There is a high risk\n");
+		printf("that the code is not configured correctly and for this reason will not behave\n");
+		printf("as expected.\n");
+#endif
+
+
+	/*
+	 * I am sorry that even for version 1.310 of cdrecord.c, I am forced to do
+	 * things like this, but defective versions of cdrecord cause a lot of
+	 * work load to me and it seems to be impossible to otherwise convince
+	 * SuSE to cooperate.
+	 * As people contact me and bother me with the related problems,
+	 * it is obvious that SuSE is violating subsection 6 in the preamble of
+	 * the GPL.
+	 *
+	 * The reason for including a test against SuSE's private
+	 * distribution environment is only that SuSE violates the GPL for
+	 * a long time and seems not to be willing to follow the requirements
+	 * imposed by the GPL. If SuSE starts to ship non defective versions
+	 * of cdrecord or informs their customers that they would need to
+	 * compile cdrecord themselves in order to get a working cdrecord,
+	 * they should contact me for a permission to change the related test.
+	 *
+	 * Note that although the SuSE test is effective only for SuSE, the
+	 * intention to have non bastardized versions out is not limited
+	 * to SuSE. It is bad to see that in special in the "Linux" business,
+	 * companies prefer a model with many proprietary differing programs
+	 * instead of cooperating with the program authors.
+	 */
+
+	if (flags & F_VERSION)
+		exit(0);
+	/*
+	 * End restricted code for quality assurance.
+	 */
+        }
+#else
+	if (flags & F_VERSION)
+		exit(0);
+#endif /* SHUT_UP */
 
 	checkgui();
 
@@ -497,21 +636,47 @@ main(ac, av)
 	scgp->kdebug = kdebug;
 	scgp->cap->c_bsize = DATA_SEC_SIZE;
 
+#ifndef SHUT_UP
+
 	if ((flags & F_MSINFO) == 0 || lverbose) {
 		char	*vers;
 		char	*auth;
 
+		/*
+		 * Warning: you are not allowed to modify or to remove this
+		 * version checking code!
+		 */
 		vers = scg_version(0, SCG_VERSION);
 		auth = scg_version(0, SCG_AUTHOR);
-		if(lverbose >1 && auth && vers)
-		  fprintf(stderr, "Using libscg version '%s-%s'.\n", auth, vers);
+    printf("Using libscg version '%s-%s'.\n", auth, vers);
+		if (auth == 0 || strcmp("schily", auth) != 0) {
+			errmsgno(EX_BAD,
+			"Warning: using inofficial version of libscg (%s-%s '%s').\n",
+				auth, vers, scg_version(0, SCG_SCCS_ID));
+		}
 
+		vers = scg_version(scgp, SCG_VERSION);
+		auth = scg_version(scgp, SCG_AUTHOR);
+		if (lverbose > 1)
+			fprintf(stderr, "Using libscg transport code version '%s-%s'\n", auth, vers);
+		if (auth == 0 || strcmp("schily", auth) != 0) {
+			errmsgno(EX_BAD,
+			"Warning: using inofficial libscg transport code version (%s-%s '%s').\n",
+				auth, vers, scg_version(scgp, SCG_SCCS_ID));
+		}
 
 		vers = scg_version(scgp, SCG_RVERSION);
 		auth = scg_version(scgp, SCG_RAUTHOR);
 		if (lverbose > 1 && vers && auth)
-		  fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
+			fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
+		if (auth != 0 && strcmp("schily", auth) != 0) {
+			errmsgno(EX_BAD,
+			"Warning: using inofficial remote transport code version (%s-%s '%s').\n",
+				auth, vers, scg_version(scgp, SCG_RSCCS_ID));
+		}
 	}
+
+#endif /* SHUT_UP */
 
 	if (lverbose && driveropts)
 		printf("Driveropts: '%s'\n", driveropts);
@@ -557,7 +722,7 @@ main(ac, av)
  * Debug only
  */
 {
-extern	void	gconf	__PR((SCSI *));
+extern	void	gconf(SCSI *);
 
 if (lverbose > 2)
 	gconf(scgp);
@@ -594,13 +759,12 @@ if (lverbose > 2)
 
 	/* DVD does not support TAO */
 	if (dp->is_dvd) {
-	  if(lverbose>1)
-		fprintf(stderr, "Using Session At Once (SAO) for DVD mode.\n");
-	  dp->cdr_flags |= F_SAO;
-	  for (i = 0; i <= MAX_TRACK; i++) {
-		track[i].flags &= ~TI_TAO;
-		track[i].flags |= TI_SAO;
-	  }
+	        fprintf(stderr, "Using Session At Once (SAO) for DVD mode.\n");
+		dp->cdr_flags |= F_SAO;
+		for (i = 0; i <= MAX_TRACK; i++) {
+		    track[i].flags &= ~TI_TAO;
+		    track[i].flags |= TI_SAO;
+		}
 	}
 
 	if (!is_cddrive(scgp))
@@ -1454,10 +1618,8 @@ restore_it:
 	return (0);
 }
 
-LOCAL int
-gracewait(dp, didgracep)
-	cdr_t	*dp;
-	BOOL	*didgracep;
+static int 
+gracewait(cdr_t *dp, BOOL *didgracep)
 {
 	int	i;
 	BOOL	didgrace = FALSE;
@@ -1520,9 +1682,8 @@ grace_done:
 	return (0);
 }
 
-LOCAL void
-cdrstats(dp)
-	cdr_t	*dp;
+static void 
+cdrstats(cdr_t *dp)
 {
 	float	secsps = 75.0;
 	int	nsecs;
@@ -1597,9 +1758,8 @@ cdrstats(dp)
 /*
  * Short usage
  */
-LOCAL void
-susage(ret)
-	int	ret;
+static void
+susage(int ret)
 {
 	fprintf(stderr, "Usage: %s [options] track1...trackn\n", get_progname());
 	fprintf(stderr, "\nUse\t%s -help\n", get_progname());
@@ -1614,9 +1774,8 @@ susage(ret)
 	/* NOTREACHED */
 }
 
-LOCAL void
-usage(excode)
-	int excode;
+static void 
+usage(int excode)
 {
 	fprintf(stderr, "Usage: %s [options] track1...trackn\n", get_progname());
 	fprintf(stderr, "Options:\n");
@@ -1710,9 +1869,8 @@ usage(excode)
 	exit(excode);
 }
 
-LOCAL void
-blusage(ret)
-	int	ret;
+static void 
+blusage(int ret)
 {
 	fprintf(stderr, "Blanking options:\n");
 	fprintf(stderr, "\tall\t\tblank the entire disk\n");
@@ -1730,9 +1888,8 @@ blusage(ret)
 	/* NOTREACHED */
 }
 
-LOCAL void
-formattypeusage(ret)
-	int	ret;
+static void 
+formattypeusage(int ret)
 {
 	fprintf(stderr, "Formating options:\n");
 	fprintf(stderr, "\tfull\t\tstandard formating\n");
@@ -1744,9 +1901,8 @@ formattypeusage(ret)
 }
 
 /* ARGSUSED */
-LOCAL void
-intr(sig)
-	int	sig;
+static void
+intr(int sig)
 {
 	sig = 0;	/* Fake usage for gcc */
 
@@ -1755,25 +1911,22 @@ intr(sig)
 	didintr++;
 }
 
-LOCAL void
-catchsig(sig)
-	int	sig;
+static void 
+catchsig(int sig)
 {
 	signal(sig, catchsig);
 }
 
-LOCAL int
-scsi_cb(arg)
-	void	*arg;
+static int 
+scsi_cb(void *arg)
 {
 	comexit(EX_BAD);
 	/* NOTREACHED */
 	return (0);	/* Keep lint happy */
 }
 
-LOCAL void
-intfifo(sig)
-	int	sig;
+static void 
+intfifo(int sig)
 {
 	errmsgno(EX_BAD, "Caught interrupt.\n");
 	if (exargs.scgp) {
@@ -1793,10 +1946,8 @@ intfifo(sig)
 }
 
 /* ARGSUSED */
-LOCAL void
-exscsi(excode, arg)
-	int	excode;
-	void	*arg;
+static void 
+exscsi(int excode, void *arg)
 {
 	struct exargs	*exp = (struct exargs *)arg;
 
@@ -1821,10 +1972,8 @@ exscsi(excode, arg)
 	}
 }
 
-LOCAL void
-excdr(excode, arg)
-	int	excode;
-	void	*arg;
+static void 
+excdr(int excode, void *arg)
 {
 	struct exargs	*exp = (struct exargs *)arg;
 
@@ -1844,11 +1993,8 @@ excdr(excode, arg)
 #endif
 }
 
-EXPORT int
-read_buf(f, bp, size)
-	int	f;
-	char	*bp;
-	int	size;
+int 
+read_buf(int f, char *bp, int size)
 {
 	char	*p = bp;
 	int	amount = 0;
@@ -1867,13 +2013,8 @@ read_buf(f, bp, size)
 	return (amount);
 }
 
-EXPORT int
-fill_buf(f, trackp, secno, bp, size)
-	int	f;
-	track_t	*trackp;
-	long	secno;
-	char	*bp;
-	int	size;
+int 
+fill_buf(int f, track_t *trackp, long secno, char *bp, int size)
 {
 	int	amount = 0;
 	int	nsecs;
@@ -1948,13 +2089,8 @@ fill_buf(f, trackp, secno, bp, size)
 	return (amount);
 }
 
-EXPORT int
-get_buf(f, trackp, secno, bpp, size)
-	int	f;
-	track_t	*trackp;
-	long	secno;
-	char	**bpp;
-	int	size;
+int 
+get_buf(int f, track_t *trackp, long secno, char **bpp, int size)
 {
 	if (fs > 0) {
 /*		return (faio_read_buf(f, *bpp, size));*/
@@ -1964,15 +2100,9 @@ get_buf(f, trackp, secno, bpp, size)
 	}
 }
 
-EXPORT int
-write_secs(scgp, dp, bp, startsec, bytespt, secspt, islast)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	char	*bp;
-	long	startsec;
-	int	bytespt;
-	int	secspt;
-	BOOL	islast;
+int 
+write_secs(SCSI *scgp, cdr_t *dp, char *bp, long startsec, int bytespt, 
+        		int secspt, BOOL islast)
 {
 	int	amount;
 
@@ -2010,11 +2140,8 @@ again:
 	return (amount);
 }
 
-LOCAL int
-write_track_data(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int 
+write_track_data(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	int	track = trackp->trackno;
 	int	f = -1;
@@ -2296,15 +2423,9 @@ int oper = -1;
 	return (0);
 }
 
-EXPORT int
-pad_track(scgp, dp, trackp, startsec, amt, dolast, bytesp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
-	long	startsec;
-	Llong	amt;
-	BOOL	dolast;
-	Llong	*bytesp;
+int 
+pad_track(SCSI *scgp, cdr_t	*dp, track_t *trackp, long startsec, Llong amt,
+				BOOL dolast, Llong *bytesp)
 {
 	int	track = trackp->trackno;
 	Llong	bytes	= 0;
@@ -2436,17 +2557,9 @@ int oper = -1;
 }
 
 #ifdef	USE_WRITE_BUF
-EXPORT int
-write_buf(scgp, dp, trackp, bp, startsec, amt, secsize, dolast, bytesp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
-	char	*bp;
-	long	startsec;
-	Llong	amt;
-	int	secsize;
-	BOOL	dolast;
-	Llong	*bytesp;
+int 
+write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, long startsec, 
+        	  Llong amt, int secsize, BOOL dolast, Llong *bytesp)
 {
 	int	track = trackp->trackno;
 	Llong	bytes	= 0;
@@ -2507,10 +2620,8 @@ write_buf(scgp, dp, trackp, bp, startsec, amt, secsize, dolast, bytesp)
 }
 #endif	/* USE_WRITE_BUF */
 
-LOCAL void
-printdata(track, trackp)
-	int	track;
-	track_t	*trackp;
+static void 
+printdata(int track, track_t *trackp)
 {
 	if (trackp->itracksize >= 0) {
 		printf("Track %02d: data  %4lld MB        ",
@@ -2536,10 +2647,8 @@ printdata(track, trackp)
 	printf("\n");
 }
 
-LOCAL void
-printaudio(track, trackp)
-	int	track;
-	track_t	*trackp;
+static void 
+printaudio(int track, track_t *trackp)
 {
 	if (trackp->itracksize >= 0) {
 		printf("Track %02d: audio %4lld MB (%02d:%02d.%02d) %spreemp%s%s",
@@ -2586,10 +2695,8 @@ printaudio(track, trackp)
 	printf("\n");
 }
 
-LOCAL void
-checkfile(track, trackp)
-	int	track;
-	track_t	*trackp;
+static void 
+checkfile(int track, track_t *trackp)
 {
 	if (trackp->itracksize > 0 &&
 			is_audio(trackp) &&
@@ -2617,10 +2724,8 @@ checkfile(track, trackp)
 		printdata(track, trackp);
 }
 
-LOCAL int
-checkfiles(tracks, trackp)
-	int	tracks;
-	track_t	*trackp;
+static int 
+checkfiles(int tracks, track_t *trackp)
 {
 	int	i;
 	int	isaudio = 1;
@@ -2644,10 +2749,8 @@ checkfiles(tracks, trackp)
 	return (isaudio);
 }
 
-LOCAL void
-setleadinout(tracks, trackp)
-	int	tracks;
-	track_t	*trackp;
+static void 
+setleadinout(int tracks, track_t *trackp)
 {
 	/*
 	 * Set some values for track 0 (the lead-in)
@@ -2681,10 +2784,8 @@ setleadinout(tracks, trackp)
 	trackp[tracks+1].flags = trackp[tracks].flags;
 }
 
-LOCAL void
-setpregaps(tracks, trackp)
-	int	tracks;
-	track_t	*trackp;
+static void 
+setpregaps(int tracks, track_t *trackp)
 {
 	int	i;
 	int	sectype;
@@ -2726,10 +2827,8 @@ setpregaps(tracks, trackp)
 /*
  * Check total size of the medium
  */
-LOCAL long
-checktsize(tracks, trackp)
-	int	tracks;
-	track_t	*trackp;
+static long 
+checktsize(int tracks, track_t *trackp)
 {
 	int	i;
 	Llong	curr;
@@ -2805,9 +2904,8 @@ checktsize(tracks, trackp)
 	return (total);
 }
 
-LOCAL void
-opentracks(trackp)
-	track_t	*trackp;
+static void 
+opentracks(track_t *trackp)
 {
 	track_t	*tp;
 	int	i;
@@ -2880,9 +2978,8 @@ opentracks(trackp)
 	}
 }
 
-LOCAL void
-checksize(trackp)
-	track_t	*trackp;
+static void 
+checksize(track_t *trackp)
 {
 	struct stat	st;
 	Llong		lsize;
@@ -2938,12 +3035,8 @@ checksize(trackp)
 	}
 }
 
-LOCAL BOOL
-checkdsize(scgp, dp, tsize, flags)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	long	tsize;
-	int	flags;
+static BOOL 
+checkdsize(SCSI *scgp, cdr_t *dp, long tsize, int flags)
 {
 	long	startsec = 0L;
 	long	endsec = 0L;
@@ -3111,7 +3204,7 @@ toolarge:
 	return (FALSE);
 }
 
-LOCAL void
+static void 
 raise_fdlim()
 {
 #ifdef	RLIMIT_NOFILE
@@ -3135,7 +3228,7 @@ raise_fdlim()
 #endif	/* RLIMIT_NOFILE */
 }
 
-LOCAL void
+static void 
 raise_memlock()
 {
 #ifdef	RLIMIT_MEMLOCK
@@ -3158,20 +3251,10 @@ char	*opts =
 #define	M_SAO		2	/* Session at Once mode (also known as DAO) */
 #define	M_RAW		4	/* Raw mode */
 #define	M_PACKET	8	/* Packed mode */
-
-LOCAL int
-gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, formatp)
-	int	ac;
-	char	**av;
-	int	*tracksp;
-	track_t	*trackp;
-	cdr_t	**dpp;
-	char	**devp;
-	int	*timeoutp;
-	int	*speedp;
-	long	*flagsp;
-	int	*blankp;
-	int	*formatp;
+static int 
+gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp, 
+		int *timeoutp, cdr_t **dpp, int *speedp, long *flagsp, int *blankp, 
+		int *formatp)
 {
 	int	cac;
 	char	* const*cav;
@@ -3876,11 +3959,8 @@ gargs(ac, av, tracksp, trackp, devp, timeoutp, dpp, speedp, flagsp, blankp, form
 	return ispacket;
 }
 
-LOCAL void
-set_trsizes(dp, tracks, trackp)
-	cdr_t	*dp;
-	int	tracks;
-	track_t	*trackp;
+static void 
+set_trsizes(cdr_t *dp, int tracks, track_t *trackp)
 {
 	int	i;
 	int	secsize;
@@ -3934,11 +4014,8 @@ set_trsizes(dp, tracks, trackp)
 		printf("Set Transfersizes end\n");
 }
 
-EXPORT void
-load_media(scgp, dp, doexit)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	BOOL	doexit;
+void 
+load_media(SCSI *scgp, cdr_t *dp, BOOL doexit)
 {
 	int	code;
 	int	key;
@@ -3983,11 +4060,8 @@ load_media(scgp, dp, doexit)
 	wait_unit_ready(scgp, 120);
 }
 
-EXPORT void
-unload_media(scgp, dp, flags)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	flags;
+void 
+unload_media(SCSI *scgp, cdr_t *dp, int flags)
 {
 	scsi_prevent_removal(scgp, 0);
 	if ((flags & F_EJECT) != 0) {
@@ -3996,10 +4070,8 @@ unload_media(scgp, dp, flags)
 	}
 }
 
-EXPORT void
-reload_media(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+void 
+reload_media(SCSI *scgp, cdr_t *dp)
 {
 	char	ans[2];
 #ifdef	F_GETFL
@@ -4053,10 +4125,8 @@ reload_media(scgp, dp)
 	load_media(scgp, dp, TRUE);
 }
 
-EXPORT void
-set_secsize(scgp, secsize)
-	SCSI	*scgp;
-	int	secsize;
+void 
+set_secsize(SCSI *scgp, int secsize)
 {
 	if (secsize > 0) {
 		/*
@@ -4068,10 +4138,8 @@ set_secsize(scgp, secsize)
 	}
 }
 
-LOCAL int
-get_dmaspeed(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+get_dmaspeed(SCSI *scgp, cdr_t *dp)
 {
 	int	i;
 	long	t;
@@ -4125,11 +4193,8 @@ get_dmaspeed(scgp, dp)
 }
 
 
-LOCAL BOOL
-do_opc(scgp, dp, flags)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	flags;
+static BOOL 
+do_opc(SCSI *scgp, cdr_t *dp, int flags)
 {
 	if ((flags & F_DUMMY) == 0 && dp->cdr_opc) {
 		if (debug || lverbose) {
@@ -4145,11 +4210,8 @@ do_opc(scgp, dp, flags)
 	return (TRUE);
 }
 
-LOCAL void
-check_recovery(scgp, dp, flags)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	flags;
+static void 
+check_recovery(SCSI *scgp, cdr_t *dp, int flags)
 {
 	if ((*dp->cdr_check_recovery)(scgp, dp)) {
 		errmsgno(EX_BAD, "Recovery needed.\n");
@@ -4161,11 +4223,8 @@ check_recovery(scgp, dp, flags)
 #ifndef	DEBUG
 #define	DEBUG
 #endif
-void
-audioread(scgp, dp, flags)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	flags;
+void 
+audioread(SCSI *scgp, cdr_t *dp, int flags)
 {
 #ifdef	DEBUG
 	int speed = 1;
@@ -4189,10 +4248,8 @@ audioread(scgp, dp, flags)
 #endif
 }
 
-LOCAL void
-print_msinfo(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static void 
+print_msinfo(SCSI *scgp, cdr_t *dp)
 {
 	long	off;
 	long	fa;
@@ -4211,10 +4268,8 @@ print_msinfo(scgp, dp)
 	printf("%ld,%ld\n", off, fa);
 }
 
-LOCAL void
-print_toc(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static void 
+print_toc(SCSI *scgp, cdr_t *dp)
 {
 	int	first;
 	int	last;
@@ -4261,14 +4316,9 @@ print_toc(scgp, dp)
 	}
 }
 
-LOCAL void
-print_track(track, lba, msp, adr, control, mode)
-	int	track;
-	long	lba;
-	struct msf *msp;
-	int	adr;
-	int	control;
-	int	mode;
+static void 
+print_track(int track, long lba, struct msf *msp, int adr, 
+				int control, int mode)
 {
 	long	lba_512 = lba*4;
 
@@ -4291,9 +4341,8 @@ print_track(track, lba, msp, adr, control, mode)
 #include <sys/priocntl.h>
 #include <sys/rtpriocntl.h>
 
-EXPORT	void
-raisepri(pri)
-	int pri;
+void 
+raisepri(int pri)
 {
 	int		pid;
 	int		classes;
@@ -4346,9 +4395,8 @@ raisepri(pri)
 #undef	_P
 #endif
 
-LOCAL	int
-rt_raisepri(pri)
-	int pri;
+static int 
+rt_raisepri(int pri)
 {
 	struct sched_param scp;
 
@@ -4378,7 +4426,7 @@ rt_raisepri(pri)
  */
 /*
  * NOTE: Base.h from Cygwin-B20 has a second typedef for BOOL.
- *	 We define BOOL to make all local code use BOOL
+ *	 We define BOOL to make all static code use BOOL
  *	 from Windows.h and use the hidden __SBOOL for
  *	 our global interfaces.
  *
@@ -4398,9 +4446,8 @@ rt_raisepri(pri)
 #undef format
 #undef interface
 
-LOCAL	int
-rt_raisepri(pri)
-	int pri;
+static int 
+rt_raisepri(int pri)
 {
 	int prios[] = {THREAD_PRIORITY_TIME_CRITICAL, THREAD_PRIORITY_HIGHEST};
 
@@ -4422,9 +4469,8 @@ rt_raisepri(pri)
 /*
  * This OS does not support real time scheduling.
  */
-LOCAL	int
-rt_raisepri(pri)
-	int pri;
+static int 
+rt_raisepri(int pri)
 {
 	return (-1);
 }
@@ -4433,9 +4479,8 @@ rt_raisepri(pri)
 
 #endif	/* _POSIX_PRIORITY_SCHEDULING */
 
-EXPORT	void
-raisepri(pri)
-	int pri;
+void 
+raisepri(int pri)
 {
 	if (rt_raisepri(pri) >= 0)
 		return;
@@ -4488,7 +4533,7 @@ raisepri(pri)
 #include <sys/socket.h>
 #endif
 
-LOCAL void
+static void 
 wait_input()
 {
 #ifdef	HAVE_SELECT
@@ -4507,7 +4552,7 @@ wait_input()
 #endif
 }
 
-LOCAL void
+static void 
 checkgui()
 {
 	struct stat st;
@@ -4519,10 +4564,8 @@ checkgui()
 	}
 }
 
-LOCAL int
-getbltype(optstr, typep)
-	char	*optstr;
-	long	*typep;
+static int 
+getbltype(char *optstr, long *typep)
 {
 	if (streql(optstr, "all")) {
 		*typep = BLANK_DISC;
@@ -4554,10 +4597,8 @@ getbltype(optstr, typep)
 	return (TRUE);
 }
 
-LOCAL int
-getformattype(optstr, typep)
-	char	*optstr;
-	long	*typep;
+static int 
+getformattype(char *optstr, long *typep)
 {
 	if (streql(optstr, "full")) {
 		*typep = FULL_FORMAT;
@@ -4574,9 +4615,8 @@ getformattype(optstr, typep)
 	}
 	return (TRUE);
 }
-LOCAL void
-print_drflags(dp)
-	cdr_t	*dp;
+static void 
+print_drflags(cdr_t *dp)
 {
 	printf("Driver flags   : ");
 
@@ -4613,9 +4653,8 @@ print_drflags(dp)
 	printf("\n");
 }
 
-LOCAL void
-print_wrmodes(dp)
-	cdr_t	*dp;
+static void 
+print_wrmodes(cdr_t *dp)
 {
 	BOOL	needblank = FALSE;
 
@@ -4661,11 +4700,8 @@ print_wrmodes(dp)
 	printf("\n");
 }
 
-LOCAL BOOL
-check_wrmode(dp, wmode, tflags)
-	cdr_t	*dp;
-	int	wmode;
-	int	tflags;
+static BOOL 
+check_wrmode(cdr_t *dp, int wmode, int tflags)
 {
 	int	cdflags = dp->cdr_flags;
 
@@ -4734,11 +4770,8 @@ badsecs:
 	return (FALSE);
 }
 
-LOCAL void
-set_wrmode(dp, wmode, tflags)
-	cdr_t	*dp;
-	int	wmode;
-	int	tflags;
+static void 
+set_wrmode(cdr_t *dp, int wmode, int tflags)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
 
@@ -4792,9 +4825,8 @@ set_wrmode(dp, wmode, tflags)
 #endif
 
 #ifdef __linux__
-LOCAL int
-get_cap(cap_array)
-	cap_value_t cap_array;
+static int 
+get_cap(cap_value_t cap_array)
 { 
     	  int ret;
 	  cap_t capa;

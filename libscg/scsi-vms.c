@@ -62,7 +62,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-vms.c-1.33";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-vms.c-1.33";	/* The version for this transport*/
 
 #define	VMS_MAX_DK	4		/* DK[A-D] VMS device controllers */
 #define	VMS_MAX_GK	4		/* GK[A-D] VMS device controllers */
@@ -91,15 +91,15 @@ LOCAL	char	_scg_trans_version[] = "scsi-vms.c-1.33";	/* The version for this tra
  * The offset of the busno value within its range is used to define the
  * third character, using the vmschar2[] array.
  */
-LOCAL	char	vmschar[]	= {'d', 'g', 'd'};
-LOCAL	char	vmschar1[]	= {'k', 'k', 'q'};
-LOCAL	char	vmschar2[]	= {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+static	char	vmschar[]	= {'d', 'g', 'd'};
+static	char	vmschar1[]	= {'k', 'k', 'q'};
+static	char	vmschar2[]	= {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
 				    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
 				    'u', 'v', 'w', 'x', 'y', 'z'};
 
 
-LOCAL	int	do_scg_cmd	__PR((SCSI *scgp, struct scg_cmd *sp));
-LOCAL	int	do_scg_sense	__PR((SCSI *scgp, struct scg_cmd *sp));
+static	int	do_scg_cmd(SCSI *scgp, struct scg_cmd *sp);
+static	int	do_scg_sense(SCSI *scgp, struct scg_cmd *sp);
 
 #define	DEVICE_NAMELEN 8
 
@@ -175,10 +175,8 @@ struct scg_local {
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -198,20 +196,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "IO$_DIAGNOSE", "Generic SCSI",
 		"", "bus,target,lun", "1,2,0", FALSE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	int	busno	= scg_scsibus(scgp);
 	int	tgt	= scg_target(scgp);
@@ -290,9 +284,8 @@ scgo_open(scgp, device)
 	return (status);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	/*
 	 * XXX close gk_chan ???
@@ -306,46 +299,36 @@ scgo_close(scgp)
 	return (status);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	return (MAX_DMA_VMS);
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	if (gk_chan == 0)
 		return (FALSE);
 	return (TRUE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (gk_chan == 0)
 		return (-1);
 	return (gk_chan);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	int	busno = scg_scsibus(scgp);
 
@@ -355,19 +338,15 @@ scgo_isatapi(scgp)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	errno = EINVAL;
 	return (-1);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -377,19 +356,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL int
-do_scg_cmd(scgp, sp)
-	SCSI		*scgp;
-	struct scg_cmd	*sp;
+static int
+do_scg_cmd(SCSI *scgp, struct scg_cmd *sp)
 {
 	char		*cmdadr;
 	int		notcmdretry;
@@ -523,10 +499,8 @@ do_scg_cmd(scgp, sp)
 	return (0);
 }
 
-LOCAL int
-do_scg_sense(scgp, sp)
-	SCSI		*scgp;
-	struct scg_cmd	*sp;
+static int
+do_scg_sense(SCSI *scgp, struct scg_cmd *sp)
 {
 	int		ret;
 	struct scg_cmd	s_cmd;
@@ -551,9 +525,8 @@ do_scg_sense(scgp, sp)
 	return (ret);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	int	ret;

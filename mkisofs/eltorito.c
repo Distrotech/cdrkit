@@ -58,23 +58,22 @@ static struct eltorito_boot_descriptor gboot_desc;
 static struct disk_master_boot_record disk_mbr;
 static unsigned int bcat_de_flags;
 
-	void	init_boot_catalog	__PR((const char *path));
-	void	insert_boot_cat		__PR((void));
-static	void	get_torito_desc		__PR((struct eltorito_boot_descriptor *boot_desc));
-static	void	fill_boot_desc		__PR((struct eltorito_defaultboot_entry *boot_desc_entry,
-						struct eltorito_boot_entry_info *boot_entry));
-	void	get_boot_entry		__PR((void));
-	void	new_boot_entry		__PR((void));
-static	int	tvd_write		__PR((FILE * outfile));
+void	init_boot_catalog(const char *path);
+void	insert_boot_cat(void);
+static	void	get_torito_desc(struct eltorito_boot_descriptor *boot_desc);
+static	void	fill_boot_desc(struct eltorito_defaultboot_entry *boot_desc_entry,
+										struct eltorito_boot_entry_info *boot_entry);
+void	get_boot_entry(void);
+void	new_boot_entry(void);
+static	int	tvd_write(FILE *outfile);
 
 
-LOCAL	char	*bootcat_path;		/* filename of boot catalog */
+static	char	*bootcat_path;		/* filename of boot catalog */
 /*
  * Make sure any existing boot catalog is excluded
  */
 void
-init_boot_catalog(path)
-	const char	*path;
+init_boot_catalog(const char *path)
 {
 #ifdef	SORTING
 	struct eltorito_boot_entry_info * cbe;
@@ -272,8 +271,7 @@ insert_boot_cat()
 }
 
 static void
-get_torito_desc(boot_desc)
-	struct eltorito_boot_descriptor	*boot_desc;
+get_torito_desc(struct eltorito_boot_descriptor *boot_desc)
 {
 	int			checksum;
 	unsigned char		*checksum_ptr;
@@ -367,9 +365,8 @@ get_torito_desc(boot_desc)
 }/* get_torito_desc(... */
 
 static void
-fill_boot_desc(boot_desc_entry, boot_entry)
-	struct eltorito_defaultboot_entry *boot_desc_entry;
-	struct eltorito_boot_entry_info *boot_entry;
+fill_boot_desc(struct eltorito_defaultboot_entry *boot_desc_entry, 
+					struct eltorito_boot_entry_info *boot_entry)
 {
 	struct directory_entry	*de;	/* Boot file */
 	int			bootmbr;
@@ -694,8 +691,7 @@ new_boot_entry()
  * Function to write the EVD for the disc.
  */
 static int
-tvd_write(outfile)
-	FILE	*outfile;
+tvd_write(FILE *outfile)
 {
 	/* check the boot image is not NULL */
 	if (!boot_image) {

@@ -57,21 +57,21 @@ static	char ata_sccsid[] =
 
 #ifdef	USE_ATA
 
-LOCAL	char	_scg_atrans_version[] = "scsi-linux-ata.c-1.7";	/* The version for ATAPI transport*/
+static	char	_scg_atrans_version[] = "scsi-linux-ata.c-1.7";	/* The version for ATAPI transport*/
 
-LOCAL	char *	scgo_aversion	__PR((SCSI *scgp, int what));
-LOCAL	int	scgo_ahelp	__PR((SCSI *scgp, FILE *f));
-LOCAL	int	scgo_aopen	__PR((SCSI *scgp, char *device));
-LOCAL	int	scgo_aclose	__PR((SCSI *scgp));
-LOCAL	long	scgo_amaxdma	__PR((SCSI *scgp, long amt));
-LOCAL	BOOL	scgo_ahavebus	__PR((SCSI *scgp, int));
-LOCAL	int	scgo_afileno	__PR((SCSI *scgp, int, int, int));
-LOCAL	int	scgo_ainitiator_id __PR((SCSI *scgp));
-LOCAL	int	scgo_aisatapi	__PR((SCSI *scgp));
-LOCAL	int	scgo_areset	__PR((SCSI *scgp, int what));
-LOCAL	int	scgo_asend	__PR((SCSI *scgp));
+static	char *scgo_aversion(SCSI *scgp, int what);
+static	int	scgo_ahelp(SCSI *scgp, FILE *f);
+static	int	scgo_aopen(SCSI *scgp, char *device);
+static	int	scgo_aclose(SCSI *scgp);
+static	long	scgo_amaxdma(SCSI *scgp, long amt);
+static	BOOL	scgo_ahavebus(SCSI *scgp, int);
+static	int	scgo_afileno(SCSI *scgp, int, int, int);
+static	int	scgo_ainitiator_id(SCSI *scgp);
+static	int	scgo_aisatapi(SCSI *scgp);
+static	int	scgo_areset(SCSI *scgp, int what);
+static	int	scgo_asend(SCSI *scgp);
 
-LOCAL scg_ops_t ata_ops = {
+static scg_ops_t ata_ops = {
 	scgo_asend,
 	scgo_aversion,
 	scgo_ahelp,
@@ -103,15 +103,14 @@ LOCAL scg_ops_t ata_ops = {
 #define	MAX_DMA_ATA (131072-1)	/* EINVAL (hart) ENOMEM (weich) bei mehr ... */
 				/* Bei fehlerhaftem Sense Pointer kommt EFAULT */
 
-LOCAL int scgo_send		__PR((SCSI * scgp));
-LOCAL BOOL sg_amapdev		__PR((SCSI * scgp, int f, char *device, int *bus,
-					int *target, int *lun));
-LOCAL BOOL sg_amapdev_scsi	__PR((SCSI * scgp, int f, int *busp, int *tgtp,
-					int *lunp, int *chanp, int *inop));
-LOCAL int scgo_aget_first_free_shillybus __PR((SCSI * scgp, int subsystem,
-					int host, int bus));
-LOCAL int scgo_amerge		__PR((char *path, char *readedlink,
-					char *buffer, int buflen));
+static int scgo_send(SCSI * scgp);
+static BOOL sg_amapdev(SCSI * scgp, int f, char *device, int *bus, 
+							  int *target, int *lun);
+static BOOL sg_amapdev_scsi(SCSI * scgp, int f, int *busp, int *tgtp,
+									 int *lunp, int *chanp, int *inop);
+static int scgo_aget_first_free_shillybus(SCSI * scgp, int subsystem,
+														int host, int bus);
+static int scgo_amerge(char *path, char *readedlink, char *buffer, int buflen);
 
 /*
  * uncomment this when you will get a debug file #define DEBUG
@@ -120,20 +119,13 @@ LOCAL int scgo_amerge		__PR((char *path, char *readedlink,
 #define	LOGFILE "scsi-linux-ata.log"
 #define	log(a)	sglog a
 
-LOCAL	void	sglog		__PR((const char *fmt, ...));
+static	void	sglog(const char *fmt, ...);
 
 #include <vadefs.h>
 
 /* VARARGS1 */
-#ifdef	PROTOTYPES
-LOCAL void
+static void
 sglog(const char *fmt, ...)
-#else
-LOCAL void
-sglog(fmt, va_alist)
-	char	*fmt;
-	va_dcl
-#endif
 {
 	va_list	args;
 	FILE	*f	 = fopen(LOGFILE, "a");
@@ -141,11 +133,7 @@ sglog(fmt, va_alist)
 	if (f == NULL)
 		return;
 
-#ifdef	PROTOTYPES
 	va_start(args, fmt);
-#else
-	va_start(args);
-#endif
 	vfprintf(f, fmt, args);
 	va_end(args);
 	fclose(f);
@@ -154,17 +142,15 @@ sglog(fmt, va_alist)
 #define	log(a)
 #endif	/* DEBUG */
 
-LOCAL	int	scan_internal __PR((SCSI * scgp, int *fatal));
+static	int	scan_internal(SCSI * scgp, int *fatal);
 
 /*
  * Return version information for the low level SCSI transport code.
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_aversion(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_aversion(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -184,20 +170,16 @@ scgo_aversion(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_ahelp(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_ahelp(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "ATA", "ATA Packet specific SCSI transport",
 		"ATAPI:", "bus,target,lun", "ATAPI:1,2,0", TRUE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_aopen(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_aopen(SCSI *scgp, char *device)
 {
 	int	bus = scg_scsibus(scgp);
 	int	target = scg_target(scgp);
@@ -294,10 +276,8 @@ openbydev:
 	return (nopen);
 }
 
-LOCAL int
-scan_internal(scgp, nopen)
-	SCSI	*scgp;
-	int	*nopen;
+static int
+scan_internal(SCSI *scgp, int *nopen)
 {
 	int	i,
 		f;
@@ -419,9 +399,8 @@ scan_internal(scgp, nopen)
 	return (0);
 }
 
-LOCAL int
-scgo_aclose(scgp)
-	SCSI	*scgp;
+static int
+scgo_aclose(SCSI *scgp)
 {
 	register int	f;
 	register int	h;
@@ -452,12 +431,8 @@ scgo_aclose(scgp)
 	return (0);
 }
 
-LOCAL int
-scgo_aget_first_free_shillybus(scgp, subsystem, host, bus)
-	SCSI	*scgp;
-	int	subsystem;
-	int	host;
-	int	bus;
+static int
+scgo_aget_first_free_shillybus(SCSI *scgp, int subsystem, int host, int bus)
 {
 	int	first_free_schilly_bus;
 
@@ -481,12 +456,8 @@ scgo_aget_first_free_shillybus(scgp, subsystem, host, bus)
 	return (first_free_schilly_bus);
 }
 
-LOCAL int
-scgo_amerge(path, readedlink, buffer, buflen)
-	char	*path;
-	char	*readedlink;
-	char	*buffer;
-	int	buflen;
+static int
+scgo_amerge(char *path, char *readedlink, char *buffer, int buflen)
 {
 	char	*aa;
 
@@ -623,14 +594,9 @@ scgo_amerge(path, readedlink, buffer, buflen)
  *	Example /dev/cdroms/cdrom1 ->  /dev/ide/host1/bus0/target1/lun4/cd
  *
  */
-LOCAL BOOL
-sg_amapdev(scgp, f, device, schillybus, target, lun)
-	SCSI	*scgp;
-	int	f;
-	char	*device;
-	int	*schillybus;
-	int	*target;
-	int	*lun;
+static BOOL
+sg_amapdev(SCSI *scgp, int f, char *device, int *schillybus, int *target, 
+			  int *lun)
 {
 	struct host {
 		char	host[4];
@@ -880,15 +846,9 @@ sg_amapdev(scgp, f, device, schillybus, target, lun)
 	return (TRUE);
 }
 
-LOCAL BOOL
-sg_amapdev_scsi(scgp, f, busp, tgtp, lunp, chanp, inop)
-	SCSI	*scgp;
-	int	f;
-	int	*busp;
-	int	*tgtp;
-	int	*lunp;
-	int	*chanp;
-	int	*inop;
+static BOOL
+sg_amapdev_scsi(SCSI *scgp, int f, int *busp, int *tgtp, int *lunp, 
+					 int *chanp, int *inop)
 {
 	struct sg_id {
 		long	l1;	/* target | lun << 8 | channel << 16 | low_ino << 24 */
@@ -929,10 +889,8 @@ sg_amapdev_scsi(scgp, f, busp, tgtp, lunp, chanp, inop)
 	return (TRUE);
 }
 
-LOCAL long
-scgo_amaxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_amaxdma(SCSI *scgp, long amt)
 {
 	/*
 	 * EINVAL (hart) ENOMEM (weich) bei mehr ...
@@ -941,10 +899,8 @@ scgo_amaxdma(scgp, amt)
 	return (MAX_DMA_ATA);
 }
 
-LOCAL BOOL
-scgo_ahavebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_ahavebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -963,12 +919,8 @@ scgo_ahavebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_afileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_afileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= MAX_SCHILLY_HOSTS ||
 		tgt < 0 || tgt >= MAX_TGT ||
@@ -981,17 +933,15 @@ scgo_afileno(scgp, busno, tgt, tlun)
 	return ((int) scglocal(scgp)->scgfiles[busno][tgt][tlun]);
 }
 
-LOCAL int
-scgo_ainitiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_ainitiator_id(SCSI *scgp)
 {
 	js_printf(scgp->errstr, "NOT IMPELEMENTED: scgo_initiator_id");
 	return (-1);
 }
 
-LOCAL int
-scgo_aisatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_aisatapi(SCSI *scgp)
 {
 	int schillybus = scgp->addr.scsibus;
 	int typ = typlocal(scgp, schillybus);
@@ -1003,10 +953,8 @@ scgo_aisatapi(scgp)
 		return (0);
 }
 
-LOCAL int
-scgo_areset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_areset(SCSI *scgp, int what)
 {
 	if (what == SCG_RESET_NOP)
 		return (0);
@@ -1017,9 +965,8 @@ scgo_areset(scgp, what)
 	return (-1);
 }
 
-LOCAL int
-scgo_asend(scgp)
-	SCSI	*scgp;
+static int
+scgo_asend(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	int		ret,

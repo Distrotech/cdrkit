@@ -81,12 +81,11 @@ void initsecurity()
 
 #if defined _POSIX_SAVED_IDS && defined (HAVE_SETEUID) && defined SCO
 /* SCO seems to lack the prototypes... */
-int	seteuid __PR((uid_t euid));
-int	setegid __PR((gid_t guid));
+int	seteuid(uid_t euid);
+int	setegid(gid_t guid);
 #endif
 
-void needroot(necessary)
-	int necessary;
+void needroot(int necessary)
 {
 #ifdef DEBUG
     fprintf(stderr, "call to     needroot (_euid_=%d, uid=%d), current=%d/%d, pid=%d\n",
@@ -215,8 +214,7 @@ void neverneedroot()
 
 /* Temporarily gain group privileges. */
 
-void needgroup(necessary)
-	int necessary;
+void needgroup(int necessary)
 {
 #ifdef DEBUG
     fprintf(stderr, "call to     needgroup (egid=%d, gid=%d), current=%d/%d, pid=%d\n",
@@ -322,22 +320,17 @@ void neverneedgroup()
 }
 
 #if defined (HPUX)
-int seteuid(uid)
-	uid_t uid;
+int seteuid(uid_t uid)
 {
   return setresuid(-1, uid, -1);
 }
 
-int setreuid(uid1, uid2)
-	uid_t uid1;
-	uid_t uid2;
+int setreuid(uid_t uid1, uid_t uid2)
 {
   return setresuid(uid2, uid2, uid1 == uid2 ? uid2 : 0);
 }
 
-int setregid(gid1, gid2)
-	gid_t gid1;
-	gid_t gid2;
+int setregid(gid_t gid1, gid_t gid2)
 {
   return setresgid(gid2, gid2, gid1 == gid2 ? gid2 : 0);
 }

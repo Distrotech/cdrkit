@@ -21,7 +21,15 @@ cmakepurge:
 	rm */Makefile */*/Makefile
 
 clean:
+#	-cd build && make clean
+#	rm -f include/xconfig.h include/align.h
 	rm -rf build
+
+%: build/Makefile
+ifneq ($(CFLAGS),)
+	cmake build -DCMAKE_C_FLAGS="$(CFLAGS)"
+endif
+	$(MAKE) -C build $(MAKE_FLAGS) $@
 
 ifneq ($(PREFIX),)
 install: build/Makefile
@@ -39,9 +47,4 @@ release:
 	rm -rf tmp
 	test -e /etc/debian_version && ln -f ../$(DISTNAME).tar.gz ../cdrkit_$(shell cat VERSION | sed -e "s,pre,~pre,").orig.tar.gz || true
 
-%::
-	$(MAKE) build/Makefile
-ifneq ($(CFLAGS),)
-	cmake build -DCMAKE_C_FLAGS="$(CFLAGS)"
-endif
-	$(MAKE) -C build $(MAKE_FLAGS) $@
+

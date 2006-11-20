@@ -66,14 +66,14 @@ extern "C" {
  * manager IFO file is read.
  * Returns a handle to a tiny parsed fraction of a IFO strcuture
  */
-extern	ifo_handle_t *ifoOpen	__PR((dvd_reader_t *, int));
+extern	ifo_handle_t *ifoOpen(dvd_reader_t *, int);
 
 
 /*
  * ifoClose(ifofile);
  * Cleans up the IFO information. This will free all data allocated.
  */
-extern	void ifoClose		__PR((ifo_handle_t *));
+extern	void ifoClose(ifo_handle_t *);
 
 #ifdef __cplusplus
 };

@@ -22,15 +22,13 @@
 #include <utypes.h>
 
 struct soundfile {
-	int	(* InitSound)		__PR((int audio, long channels,
-						Ulong rate,
-						long nBitsPerSample,
-						Ulong expected_bytes));
-	int	(* ExitSound)		__PR((int audio, Ulong nBytesDone));
-	Ulong	(* GetHdrSize)		__PR((void));
-	int	(* WriteSound)		__PR((int audio, unsigned char *buf,
-						Ulong BytesToDo));
-	Ulong	(* InSizeToOutSize)	__PR((Ulong BytesToDo));
+	int	(* InitSound)(int audio, long channels, Ulong rate,
+							  long nBitsPerSample,
+							  Ulong expected_bytes);
+	int	(* ExitSound)(int audio, Ulong nBytesDone);
+	Ulong	(* GetHdrSize)(void);
+	int	(* WriteSound)(int audio, unsigned char *buf, Ulong BytesToDo);
+	Ulong	(* InSizeToOutSize)(Ulong BytesToDo);
 
 	int	need_big_endian;
 };

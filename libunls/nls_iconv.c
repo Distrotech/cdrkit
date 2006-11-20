@@ -49,8 +49,8 @@ static	char sccsid[] =
 #include "nls.h"
 #include <iconv.h>
 
-static void	inc_use_count	__PR((void));
-static void	dec_use_count	__PR((void));
+static void	inc_use_count(void);
+static void	dec_use_count(void);
 
 
 static void
@@ -66,8 +66,7 @@ dec_use_count()
 }
 
 int
-init_nls_iconv(charset)
-	char	*charset;
+init_nls_iconv(char *charset)
 {
 	iconv_t iconv_d;  /* iconv conversion descriptor */
 	struct unls_table *table;

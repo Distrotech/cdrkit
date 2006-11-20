@@ -34,13 +34,12 @@ static	char sccsid[] =
 
 static char		*excl[MAXEXCL];
 
-void	exclude		__PR((char *fn));
-int	is_excluded	__PR((char *fn));
+void	exclude(char *fn);
+int	is_excluded(char *fn);
 
 
 void
-exclude(fn)
-	char		*fn;
+exclude(char *fn)
 {
 	register int	i;
 
@@ -67,8 +66,7 @@ exclude(fn)
 }
 
 int
-is_excluded(fn)
-	char		*fn;
+is_excluded(char *fn)
 {
 	register int	i;
 

@@ -76,17 +76,16 @@ static	char sccsid[] =
 
 extern	int	lverbose;
 
-EXPORT	SCSI	*scg_open	__PR((char *scsidev, char *errs, int slen, int debug,
-								int be_verbose));
-EXPORT	int	scg_help	__PR((FILE *f));
-LOCAL	int	scg_scandev	__PR((char *devp, char *errs, int slen,
-							int *busp, int *tgtp, int *lunp));
-EXPORT	int	scg_close	__PR((SCSI * scgp));
+SCSI	*scg_open(char *scsidev, char *errs, int slen, int debug, int be_verbose);
+int	scg_help(FILE *f);
+static	int	scg_scandev(char *devp, char *errs, int slen, int *busp, 
+									int *tgtp, int *lunp);
+int	scg_close(SCSI * scgp);
 
-EXPORT	void	scg_settimeout	__PR((SCSI * scgp, int timeout));
+void	scg_settimeout(SCSI * scgp, int timeout);
 
-EXPORT	SCSI	*scg_smalloc	__PR((void));
-EXPORT	void	scg_sfree	__PR((SCSI *scgp));
+SCSI	*scg_smalloc(void);
+void	scg_sfree(SCSI *scgp);
 
 /*
  * Open a SCSI device.
@@ -107,13 +106,8 @@ EXPORT	void	scg_sfree	__PR((SCSI *scgp));
  *	 must always be known. If the OS cannot map it, it must be
  *	 specified on command line.
  */
-EXPORT SCSI *
-scg_open(scsidev, errs, slen, debug, be_verbose)
-	char	*scsidev;
-	char	*errs;
-	int	slen;
-	int	debug;
-	int	be_verbose;
+SCSI *
+scg_open(char *scsidev, char *errs, int slen, int debug, int be_verbose)
 {
 	char	devname[256];
 	char	*devp = NULL;
@@ -309,9 +303,8 @@ nulldevice:
 	return (scgp);
 }
 
-EXPORT int
-scg_help(f)
-	FILE	*f;
+int
+scg_help(FILE *f)
 {
 	SCSI	*scgp;
 
@@ -334,14 +327,8 @@ extern	scg_ops_t scg_std_ops;
  * Check for bad syntax and invalid values.
  * This is definitely better than using scanf() as it checks for syntax errors.
  */
-LOCAL int
-scg_scandev(devp, errs, slen, busp, tgtp, lunp)
-	char	*devp;
-	char	*errs;
-	int	slen;
-	int	*busp;
-	int	*tgtp;
-	int	*lunp;
+static int
+scg_scandev(char *devp, char *errs, int slen, int *busp, int *tgtp, int *lunp)
 {
 	int	x1, x2, x3;
 	int	n = 0;
@@ -405,19 +392,16 @@ scg_scandev(devp, errs, slen, busp, tgtp, lunp)
 	return (n);
 }
 
-EXPORT int
-scg_close(scgp)
-	SCSI	*scgp;
+int
+scg_close(SCSI *scgp)
 {
 	scg__close(scgp);
 	scg_sfree(scgp);
 	return (0);
 }
 
-EXPORT void
-scg_settimeout(scgp, timeout)
-	SCSI	*scgp;
-	int	timeout;
+void
+scg_settimeout(SCSI *scgp, int timeout)
 {
 #ifdef	nonono
 	if (timeout >= 0)
@@ -427,7 +411,7 @@ scg_settimeout(scgp, timeout)
 #endif
 }
 
-EXPORT SCSI *
+SCSI *
 scg_smalloc()
 {
 	SCSI	*scgp;
@@ -472,9 +456,8 @@ err:
 	return ((SCSI *)0);
 }
 
-EXPORT void
-scg_sfree(scgp)
-	SCSI	*scgp;
+void
+scg_sfree(SCSI *scgp)
 {
 	if (scgp->cmdstart)
 		free(scgp->cmdstart);

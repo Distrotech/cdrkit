@@ -69,67 +69,50 @@ static	char sccsid[] =
 #define	TF_ACCESS 4
 #define	TF_ATTRIBUTES 8
 
-LOCAL	int	isonum_711	__PR((unsigned char *p));
-LOCAL	int	isonum_721	__PR((unsigned char *p));
-LOCAL	int	isonum_723	__PR((unsigned char *p));
-LOCAL	int	isonum_731	__PR((unsigned char *p));
+static	int	isonum_711(unsigned char *p);
+static	int	isonum_721(unsigned char *p);
+static	int	isonum_723(unsigned char *p);
+static	int	isonum_731(unsigned char *p);
 
-LOCAL	void	printasc	__PR((char *txt, unsigned char *p, int len));
-LOCAL	void	prbytes		__PR((char *txt, unsigned char *p, int len));
-unsigned char	*parse_xa	__PR((unsigned char *pnt, int *lenp,
-					struct directory_entry *dpnt));
-EXPORT	int	rr_flags	__PR((struct iso_directory_record *idr));
-LOCAL	int	parse_rrflags	__PR((Uchar *pnt, int len, int cont_flag));
-LOCAL	BOOL	find_rr		__PR((struct iso_directory_record *idr, Uchar **pntp, int *lenp));
-LOCAL	 int	parse_rr	__PR((unsigned char *pnt, int len,
-					struct directory_entry *dpnt));
-LOCAL	int	check_rr_dates	__PR((struct directory_entry *dpnt,
-					struct directory_entry *current,
-					struct stat *statbuf,
-					struct stat *lstatbuf));
-LOCAL	struct directory_entry **
-		read_merging_directory __PR((struct iso_directory_record *, int *));
-LOCAL	int	free_mdinfo	__PR((struct directory_entry **, int len));
-LOCAL	void	free_directory_entry __PR((struct directory_entry * dirp));
-LOCAL	void	merge_remaining_entries __PR((struct directory *,
-					struct directory_entry **, int));
+static	void	printasc(char *txt, unsigned char *p, int len);
+static	void	prbytes(char *txt, unsigned char *p, int len);
+unsigned char	*parse_xa(unsigned char *pnt, int *lenp,
+								 struct directory_entry *dpnt);
+int	rr_flags(struct iso_directory_record *idr);
+static	int	parse_rrflags(Uchar *pnt, int len, int cont_flag);
+static	BOOL	find_rr(struct iso_directory_record *idr, Uchar **pntp, 
+							  int *lenp);
+static	 int	parse_rr(unsigned char *pnt, int len, 
+								struct directory_entry *dpnt);
+static	int	check_rr_dates(struct directory_entry *dpnt,
+										struct directory_entry *current,
+										struct stat *statbuf,
+										struct stat *lstatbuf);
+static	struct directory_entry **
+		read_merging_directory(struct iso_directory_record *, int *);
+static	int	free_mdinfo(struct directory_entry **, int len);
+static	void	free_directory_entry(struct directory_entry * dirp);
+static	void	merge_remaining_entries(struct directory *,
+													struct directory_entry **, int);
 
-LOCAL	int	merge_old_directory_into_tree __PR((struct directory_entry *,
-							struct directory *));
-LOCAL	void	check_rr_relocation __PR((struct directory_entry * de));
+static	int	merge_old_directory_into_tree(struct directory_entry *,
+															struct directory *);
+static	void	check_rr_relocation(struct directory_entry *de);
 
-#ifdef	PROTOTYPES
-LOCAL int
+static int
 isonum_711(unsigned char *p)
-#else
-LOCAL int
-isonum_711(p)
-	unsigned char	*p;
-#endif
 {
 	return (*p & 0xff);
 }
 
-#ifdef	PROTOTYPES
-LOCAL int
+static int
 isonum_721(unsigned char *p)
-#else
-LOCAL int
-isonum_721(p)
-	unsigned char	*p;
-#endif
 {
 	return ((p[0] & 0xff) | ((p[1] & 0xff) << 8));
 }
 
-#ifdef	PROTOTYPES
-LOCAL int
+static int
 isonum_723(unsigned char *p)
-#else
-LOCAL int
-isonum_723(p)
-	unsigned char	*p;
-#endif
 {
 #if 0
 	if (p[0] != p[3] || p[1] != p[2]) {
@@ -144,14 +127,8 @@ isonum_723(p)
 	return (isonum_721(p));
 }
 
-#ifdef	PROTOTYPES
-LOCAL int
+static int
 isonum_731(unsigned char *p)
-#else
-LOCAL int
-isonum_731(p)
-	unsigned char	*p;
-#endif
 {
 	return ((p[0] & 0xff)
 		| ((p[1] & 0xff) << 8)
@@ -159,14 +136,8 @@ isonum_731(p)
 		| ((p[3] & 0xff) << 24));
 }
 
-#ifdef	PROTOTYPES
 int
 isonum_733(unsigned char *p)
-#else
-int
-isonum_733(p)
-	unsigned char	*p;
-#endif
 {
 	return (isonum_731(p));
 }
@@ -188,16 +159,8 @@ FILE	*in_image = NULL;
  * Anyways, this allows the use of a scsi-generics type of interface on
  * Solaris.
  */
-#ifdef	PROTOTYPES
-LOCAL int
+static int
 readsecs(int startsecno, void *buffer, int sectorcount)
-#else
-LOCAL int
-readsecs(startsecno, buffer, sectorcount)
-	int		startsecno;
-	void		*buffer;
-	int		sectorcount;
-#endif
 {
 	int		f = fileno(in_image);
 
@@ -223,11 +186,8 @@ readsecs(startsecno, buffer, sectorcount)
 
 #endif
 
-LOCAL void
-printasc(txt, p, len)
-	char		*txt;
-	unsigned char	*p;
-	int		len;
+static void
+printasc(char *txt, unsigned char *p, int len)
 {
 	int		i;
 
@@ -241,11 +201,8 @@ printasc(txt, p, len)
 	fprintf(stderr, "\n");
 }
 
-LOCAL void
-prbytes(txt, p, len)
-		char	*txt;
-	register Uchar	*p;
-	register int	len;
+static void
+prbytes(char *txt, register Uchar *p, register int len)
 {
 	fprintf(stderr, "%s", txt);
 	while (--len >= 0)
@@ -254,10 +211,7 @@ prbytes(txt, p, len)
 }
 
 unsigned char *
-parse_xa(pnt, lenp, dpnt)
-	unsigned char	*pnt;
-	int		*lenp;
-	struct directory_entry *dpnt;
+parse_xa(unsigned char *pnt, int *lenp, struct directory_entry *dpnt)
 {
 	struct iso_xa_dir_record *xadp;
 	int		len = *lenp;
@@ -309,11 +263,8 @@ static	int		did_xa = 0;
 	return (pnt);
 }
 
-LOCAL BOOL
-find_rr(idr, pntp, lenp)
-	struct iso_directory_record *idr;
-	Uchar		**pntp;
-	int		*lenp;
+static BOOL
+find_rr(struct iso_directory_record *idr, Uchar **pntp, int *lenp)
 {
 	struct iso_xa_dir_record *xadp;
 	int		len;
@@ -348,11 +299,8 @@ find_rr(idr, pntp, lenp)
 	return (ret);
 }
 
-LOCAL int
-parse_rrflags(pnt, len, cont_flag)
-	Uchar	*pnt;
-	int	len;
-	int	cont_flag;
+static int
+parse_rrflags(Uchar *pnt, int len, int cont_flag)
 {
 	int	ncount;
 	int	cont_extent;
@@ -426,8 +374,7 @@ parse_rrflags(pnt, len, cont_flag)
 }
 
 int
-rr_flags(idr)
-	struct iso_directory_record *idr;
+rr_flags(struct iso_directory_record *idr)
 {
 	int		len;
 	unsigned char	*pnt;
@@ -442,11 +389,8 @@ rr_flags(idr)
 /*
  * Parse the RR attributes so we can find the file name.
  */
-LOCAL int
-parse_rr(pnt, len, dpnt)
-	unsigned char	*pnt;
-	int		len;
-	struct directory_entry *dpnt;
+static int
+parse_rr(unsigned char *pnt, int len, struct directory_entry *dpnt)
 {
 	int		cont_extent;
 	int		cont_offset;
@@ -524,12 +468,11 @@ parse_rr(pnt, len, dpnt)
  * Returns 1 if the two files are identical
  * Returns 0 if the two files differ
  */
-LOCAL int
-check_rr_dates(dpnt, current, statbuf, lstatbuf)
-	struct directory_entry *dpnt;
-	struct directory_entry *current;
-	struct stat	*statbuf;
-	struct stat	*lstatbuf;
+static int
+check_rr_dates(struct directory_entry *dpnt, 
+					struct directory_entry *current, 
+					struct stat *statbuf, 
+					struct stat *lstatbuf)
 {
 	int		cont_extent;
 	int		cont_offset;
@@ -635,10 +578,8 @@ check_rr_dates(dpnt, current, statbuf, lstatbuf)
 	return (same_file);
 }
 
-LOCAL struct directory_entry **
-read_merging_directory(mrootp, nentp)
-	struct iso_directory_record *mrootp;
-	int		*nentp;
+static struct directory_entry **
+read_merging_directory(struct iso_directory_record *mrootp, int *nentp)
 {
 	unsigned char	*cpnt;
 	unsigned char	*cpnt1;
@@ -997,10 +938,8 @@ read_merging_directory(mrootp, nentp)
 /*
  * Free any associated data related to the structures.
  */
-LOCAL int
-free_mdinfo(ptr, len)
-	struct directory_entry **ptr;
-	int		len;
+static int
+free_mdinfo(struct directory_entry **ptr, int len)
 {
 	int		i;
 	struct directory_entry **p;
@@ -1022,9 +961,8 @@ free_mdinfo(ptr, len)
 	return (0);
 }
 
-LOCAL void
-free_directory_entry(dirp)
-	struct directory_entry *dirp;
+static void
+free_directory_entry(struct directory_entry *dirp)
 {
 	if (dirp->name != NULL)
 		free(dirp->name);
@@ -1047,13 +985,11 @@ free_directory_entry(dirp)
  * over so we don't bother to write it out to the new session.
  */
 int
-check_prev_session(ptr, len, curr_entry, statbuf, lstatbuf, odpnt)
-	struct directory_entry	**ptr;
-	int		len;
-	struct directory_entry *curr_entry;
-	struct stat	*statbuf;
-	struct stat	*lstatbuf;
-	struct directory_entry **odpnt;
+check_prev_session(struct directory_entry **ptr, int len, 
+						 struct directory_entry *curr_entry, 
+						 struct stat *statbuf, 
+						 struct stat *lstatbuf, 
+						 struct directory_entry **odpnt)
 {
 	int		i;
 	int		rr;
@@ -1151,8 +1087,7 @@ found_it:
  * open_merge_image:  Open an existing image.
  */
 int
-open_merge_image(path)
-	char	*path;
+open_merge_image(char *path)
 {
 #ifndef	USE_SCG
 	in_image = fopen(path, "rb");
@@ -1187,8 +1122,7 @@ close_merge_image()
  * to the root directory for this image.
  */
 struct iso_directory_record *
-merge_isofs(path)
-	char	*path;
+merge_isofs(char *path)
 {
 	char		buffer[SECTOR_SIZE];
 	int		file_addr;
@@ -1250,11 +1184,9 @@ merge_isofs(path)
 	return (rootp);
 }
 
-LOCAL void
-merge_remaining_entries(this_dir, pnt, n_orig)
-	struct directory *this_dir;
-	struct directory_entry **pnt;
-	int		n_orig;
+static void
+merge_remaining_entries(struct directory *this_dir, 
+								struct directory_entry **pnt, int n_orig)
 {
 	int		i;
 	struct directory_entry *s_entry;
@@ -1379,10 +1311,9 @@ merge_remaining_entries(this_dir, pnt, n_orig)
  * incorrectly pick it up and attempt to merge it back into the old
  * location.  FIXME(eric).
  */
-LOCAL int
-merge_old_directory_into_tree(dpnt, parent)
-	struct directory_entry	*dpnt;
-	struct directory *parent;
+static int
+merge_old_directory_into_tree(struct directory_entry *dpnt, 
+										struct directory *parent)
 {
 	struct directory_entry **contents = NULL;
 	int		i;
@@ -1499,8 +1430,7 @@ merge_old_directory_into_tree(dpnt, parent)
 char	*cdrecord_data = NULL;
 
 int
-get_session_start(file_addr)
-	int		*file_addr;
+get_session_start(int *file_addr)
 {
 	char		*pnt;
 
@@ -1570,11 +1500,10 @@ get_session_start(file_addr)
  * directory entries, so that we can determine how large each directory is.
  */
 int
-merge_previous_session(this_dir, mrootp, reloc_root, reloc_old_root)
-	struct directory *this_dir;
-	struct iso_directory_record *mrootp;
-	char *reloc_root;
-	char *reloc_old_root;
+merge_previous_session(struct directory *this_dir, 
+							  struct iso_directory_record *mrootp, 
+							  char *reloc_root, 
+							  char *reloc_old_root)
 {
 	struct directory_entry **orig_contents = NULL;
 	struct directory_entry *odpnt = NULL;
@@ -1818,9 +1747,8 @@ struct dir_extent_link  {
 static struct dir_extent_link	*cl_dirs = NULL;
 static struct dir_extent_link	*re_dirs = NULL;
 
-LOCAL void
-check_rr_relocation(de)
-	struct directory_entry *de;
+static void
+check_rr_relocation(struct directory_entry *de)
 {
 	unsigned char	sector[SECTOR_SIZE];
 	unsigned char	*pnt = de->rr_attributes;

@@ -44,13 +44,11 @@ static	char sccsid[] =
 #include <mac_label.h>
 #include <schily.h>
 
-EXPORT	int	get_732	__PR((char *p));
-EXPORT	int	get_722	__PR((char *p));
-EXPORT	int	main	__PR((int argc, char **argv));
+int	get_732(char *p);
+int	get_722(char *p);
 
-EXPORT int
-get_732(p)
-	char	*p;
+int
+get_732(char *p)
 {
 	return ((p[3] & 0xff)
 		| ((p[2] & 0xff) << 8)
@@ -58,9 +56,8 @@ get_732(p)
 		| ((p[0] & 0xff) << 24));
 }
 
-EXPORT int
-get_722(p)
-	char	*p;
+int
+get_722(char *p)
 {
 	return ((p[1] & 0xff)
 		| ((p[0] & 0xff) << 8));

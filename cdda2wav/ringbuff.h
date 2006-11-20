@@ -87,11 +87,11 @@ extern volatile int *eorecording;
 #define INC(a) (myringbuff *)(((char *)RB_BASE) + (((((char *) (a))-((char *)RB_BASE))/ENTRY_SIZE_PAGE_AL + 1) % total_buffers)*ENTRY_SIZE_PAGE_AL)
 
 
-void set_total_buffers __PR((unsigned int num_buffers, int mysem_id));
-const myringbuff *get_previous_read_buffer __PR((void));
-const myringbuff *get_he_fill_buffer __PR((void));
-myringbuff *get_next_buffer __PR((void));
-myringbuff *get_oldest_buffer __PR((void));
-void define_buffer __PR((void));
-void drop_buffer __PR((void));
-void drop_all_buffers __PR((void));
+void set_total_buffers(unsigned int num_buffers, int mysem_id);
+const myringbuff *get_previous_read_buffer(void);
+const myringbuff *get_he_fill_buffer(void);
+myringbuff *get_next_buffer(void);
+myringbuff *get_oldest_buffer(void);
+void define_buffer(void);
+void drop_buffer(void);
+void drop_all_buffers(void);

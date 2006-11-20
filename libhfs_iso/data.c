@@ -56,7 +56,7 @@ static	char sccsid[] =
 #define MUTDIFF	2082844800L
 #define	TZNONE	0x0FFFFFFFL	/* A timezone diff that cannot occur */
 
-static	void	calctzdiff	__PR((void));
+static	void	calctzdiff(void);
 
 static
 unsigned long tzdiff = TZNONE;
@@ -108,8 +108,7 @@ unsigned char hfs_charorder[256] = {
  * NAME:	data->getb()
  * DESCRIPTION:	marshal 1 byte into local host format
  */
-char d_getb(ptr)
-	unsigned char	*ptr;
+char d_getb(unsigned char *ptr)
 {
   return (char) ptr[0];
 }
@@ -118,8 +117,7 @@ char d_getb(ptr)
  * NAME:	data->getw()
  * DESCRIPTION:	marshal 2 bytes into local host format
  */
-short d_getw(ptr)
-	unsigned char	*ptr;
+short d_getw(unsigned char *ptr)
 {
   return (short)
     ((ptr[0] << 8) |
@@ -130,8 +128,7 @@ short d_getw(ptr)
  * NAME:	data->getl()
  * DESCRIPTION:	marshal 4 bytes into local host format
  */
-long d_getl(ptr)
-	unsigned char	*ptr;
+long d_getl(unsigned char *ptr)
 {
   return (long)
     ((ptr[0] << 24) |
@@ -147,9 +144,7 @@ long d_getl(ptr)
 #ifdef	PROTOTYPES
 void d_putb(unsigned char *ptr, char data)
 #else
-void d_putb(ptr, data)
-	unsigned char	*ptr;
-	char		data;
+void d_putb(unsigned char *ptr, char data)
 #endif
 {
   ptr[0] = (unsigned char) data;
@@ -162,9 +157,7 @@ void d_putb(ptr, data)
 #ifdef	PROTOTYPES
 void d_putw(unsigned char *ptr, short data)
 #else
-void d_putw(ptr, data)
-	unsigned char	*ptr;
-	short		data;
+void d_putw(unsigned char *ptr, short data)
 #endif
 {
   ptr[0] = ((unsigned) data & 0xff00) >> 8;
@@ -175,9 +168,7 @@ void d_putw(ptr, data)
  * NAME:	data->putl()
  * DESCRIPTION:	marshal 4 bytes out to Macintosh (big-endian) format
  */
-void d_putl(ptr, data)
-	unsigned char	*ptr;
-	long		data;
+void d_putl(unsigned char *ptr, long data)
 {
   ptr[0] = ((unsigned long) data & 0xff000000) >> 24;
   ptr[1] = ((unsigned long) data & 0x00ff0000) >> 16;
@@ -189,9 +180,7 @@ void d_putl(ptr, data)
  * NAME:	data->fetchb()
  * DESCRIPTION:	incrementally retrieve a byte of data
  */
-void d_fetchb(ptr, dest)
-	unsigned char	**ptr;
-	char		*dest;
+void d_fetchb(unsigned char **ptr, char *dest)
 {
   *dest = d_getb(*ptr);
   *ptr += 1;
@@ -201,9 +190,7 @@ void d_fetchb(ptr, dest)
  * NAME:	data->fetchw()
  * DESCRIPTION:	incrementally retrieve a word of data
  */
-void d_fetchw(ptr, dest)
-	unsigned char	**ptr;
-	short		*dest;
+void d_fetchw(unsigned char **ptr, short *dest)
 {
   *dest = d_getw(*ptr);
   *ptr += 2;
@@ -213,9 +200,7 @@ void d_fetchw(ptr, dest)
  * NAME:	data->fetchl()
  * DESCRIPTION:	incrementally retrieve a long word of data
  */
-void d_fetchl(ptr, dest)
-	unsigned char	**ptr;
-	long		*dest;
+void d_fetchl(unsigned char **ptr, long *dest)
 {
   *dest = d_getl(*ptr);
   *ptr += 4;
@@ -225,10 +210,7 @@ void d_fetchl(ptr, dest)
  * NAME:	data->fetchs()
  * DESCRIPTION:	incrementally retrieve a string
  */
-void d_fetchs(ptr, dest, size)
-	unsigned char	**ptr;
-	char		*dest;
-	int		size;
+void d_fetchs(unsigned char **ptr, char *dest, int size)
 {
   int len;
   char blen;
@@ -253,9 +235,7 @@ void d_fetchs(ptr, dest, size)
 #ifdef	PROTOTYPES
 void d_storeb(unsigned char **ptr, char data)
 #else
-void d_storeb(ptr, data)
-	unsigned char	**ptr;
-	char		data;
+void d_storeb(unsigned char **ptr, char data)
 #endif
 {
   d_putb(*ptr, data);
@@ -269,9 +249,7 @@ void d_storeb(ptr, data)
 #ifdef	PROTOTYPES
 void d_storew(unsigned char **ptr, short data)
 #else
-void d_storew(ptr, data)
-	unsigned char	**ptr;
-	short		data;
+void d_storew(unsigned char **ptr, short data)
 #endif
 {
   d_putw(*ptr, data);
@@ -282,9 +260,7 @@ void d_storew(ptr, data)
  * NAME:	data->storel()
  * DESCRIPTION:	incrementally store a long word of data
  */
-void d_storel(ptr, data)
-	unsigned char	**ptr;
-	long		data;
+void d_storel(unsigned char **ptr, long data)
 {
   d_putl(*ptr, data);
   *ptr += 4;
@@ -294,10 +270,7 @@ void d_storel(ptr, data)
  * NAME:	data->stores()
  * DESCRIPTION:	incrementally store a string
  */
-void d_stores(ptr, src, size)
-	unsigned char	**ptr;
-	char		*src;
-	int		size;
+void d_stores(unsigned char **ptr, char *src, int size)
 {
   int len;
 
@@ -317,8 +290,7 @@ void d_stores(ptr, src, size)
  * NAME:	calctzdiff()
  * DESCRIPTION:	calculate the timezone difference between local time and UTC
  */
-static
-void calctzdiff()
+static void calctzdiff()
 {
   time_t t;
   int isdst;
@@ -343,8 +315,7 @@ void calctzdiff()
  * NAME:	data->tomtime()
  * DESCRIPTION:	convert UNIX time to Macintosh time
  */
-unsigned long d_tomtime(secs)
-	unsigned long	secs;
+unsigned long d_tomtime(unsigned long secs)
 {
   time_t utime = secs;
 
@@ -358,8 +329,7 @@ unsigned long d_tomtime(secs)
  * NAME:	data->toutime()
  * DESCRIPTION:	convert Macintosh time to UNIX time
  */
-unsigned long d_toutime(secs)
-	unsigned long	secs;
+unsigned long d_toutime(unsigned long secs)
 {
   time_t utime = secs;
 
@@ -374,8 +344,7 @@ unsigned long d_toutime(secs)
  * NAME:	data->dtoutime()
  * DESCRIPTION:	convert Apple Double v2 time to UNIX time
  */
-unsigned long d_dtoutime(secs)
-	long		secs;
+unsigned long d_dtoutime(long secs)
 {
   time_t utime = secs;
 
@@ -390,9 +359,7 @@ unsigned long d_dtoutime(secs)
  * NAME:	data->relstring()
  * DESCRIPTION:	compare two strings as per MacOS for HFS
  */
-int d_relstring(str1, str2)
-	char	*str1;
-	char	*str2;
+int d_relstring(char *str1, char *str2)
 {
   int diff;
 

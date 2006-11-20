@@ -57,7 +57,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-osf.c-1.26";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-osf.c-1.26";	/* The version for this transport*/
 
 #define	MAX_SCG		16	/* Max # of SCSI controllers */
 #define	MAX_TGT		16
@@ -69,7 +69,7 @@ struct scg_local {
 };
 #define	scglocal(p)	((struct scg_local *)((p)->local))
 
-LOCAL	BOOL	scsi_checktgt	__PR((SCSI *scgp, int f, int busno, int tgt, int tlun));
+static	BOOL	scsi_checktgt(SCSI *scgp, int f, int busno, int tgt, int tlun);
 
 /*
  * I don't have any documentation about CAM
@@ -85,10 +85,8 @@ LOCAL	BOOL	scsi_checktgt	__PR((SCSI *scgp, int f, int busno, int tgt, int tlun))
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -108,20 +106,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "CAM", "Generic transport independent SCSI (Common Access Method)",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -198,9 +192,8 @@ scgo_open(scgp, device)
 	return (1);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	if (scgp->local == NULL)
 		return (-1);
@@ -216,13 +209,8 @@ scgo_close(scgp)
  * OS is considering this target to be valid.
  * XXX Is this really needed? We should rather let the cmd fail later.
  */
-LOCAL BOOL
-scsi_checktgt(scgp, f, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	f;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static BOOL
+scsi_checktgt(SCSI *scgp, int f, int busno, int tgt, int tlun)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	struct scg_cmd	sc;
@@ -257,20 +245,16 @@ scsi_checktgt(scgp, f, busno, tgt, tlun)
 }
 
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	long maxdma = MAX_DMA_OSF_CAM;
 
 	return (maxdma);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -280,19 +264,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 
@@ -310,12 +291,8 @@ scgo_havebus(scgp, busno)
 }
 
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (scgp->local == NULL)
 		return (-1);
@@ -323,32 +300,27 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return ((busno < 0 || busno >= MAX_SCG) ? -1 : scglocal(scgp)->scgfile);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	errno = EINVAL;
 	return (-1);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	CCB_SCSIIO	ccb;

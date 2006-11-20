@@ -64,10 +64,8 @@ typedef struct sort_match sort_match;
 
 static sort_match	*s_mats;
 
-EXPORT int
-add_sort_match(fn, val)
-	char	*fn;
-	int	val;
+int
+add_sort_match(char *fn, int val)
 {
 	sort_match *s_mat;
 
@@ -101,9 +99,8 @@ add_sort_match(fn, val)
 	return (1);
 }
 
-EXPORT void
-add_sort_list(file)
-	char	*file;
+void
+add_sort_list(char *file)
 {
 	FILE	*fp;
 	char	name[4096];
@@ -148,10 +145,8 @@ add_sort_list(file)
 	fclose(fp);
 }
 
-EXPORT int
-sort_matches(fn, val)
-	char	*fn;
-	int	val;
+int
+sort_matches(char *fn, int val)
 {
 	register sort_match	*s_mat;
 
@@ -163,7 +158,7 @@ sort_matches(fn, val)
 	return (val); /* not found - default sort value */
 }
 
-EXPORT void
+void
 del_sort()
 {
 	register sort_match * s_mat, *s_mat1;
@@ -184,10 +179,8 @@ del_sort()
 #endif /* SORTING */
 
 
-EXPORT int
-gen_add_match(fn, n)
-	char	*fn;
-	int	n;
+int
+gen_add_match(char *fn, int n)
 {
 	match	*mat;
 
@@ -219,10 +212,8 @@ gen_add_match(fn, n)
 	return (1);
 }
 
-EXPORT void
-gen_add_list(file, n)
-	char	*file;
-	int	n;
+void
+gen_add_list(char *file, int n)
 {
 	FILE	*fp;
 	char	name[4096];
@@ -254,10 +245,8 @@ gen_add_list(file, n)
 	fclose(fp);
 }
 
-EXPORT int
-gen_matches(fn, n)
-	char	*fn;
-	int	n;
+int
+gen_matches(char *fn, int n)
 {
 	register match * mat;
 
@@ -272,9 +261,8 @@ gen_matches(fn, n)
 	return (0);			/* not found -> not excluded */
 }
 
-EXPORT int
-gen_ishidden(n)
-	int	n;
+int
+gen_ishidden(int n)
 {
 	if (n >= MAX_MAT)
 		return (0);
@@ -282,9 +270,8 @@ gen_ishidden(n)
 	return ((int)(mats[n] != 0));
 }
 
-EXPORT void
-gen_del_match(n)
-	int	n;
+void
+gen_del_match(int n)
 {
 	register match	*mat;
 	register match 	*mat1;

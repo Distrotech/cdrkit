@@ -50,7 +50,7 @@ typedef struct {
 #include <scg/scgops.h>
 #endif
 
-typedef	int	(*scg_cb_t)	__PR((void *));
+typedef	int	(*scg_cb_t)(void *);
 
 struct scg_scsi {
 	scg_ops_t *ops;		/* Ptr to low level SCSI transport ops	*/
@@ -149,116 +149,112 @@ struct scg_scsi {
 /*
  * From scsitransp.c:
  */
-extern	char	*scg_version		__PR((SCSI *scgp, int what));
-extern	int	scg__open		__PR((SCSI *scgp, char *device));
-extern	int	scg__close		__PR((SCSI *scgp));
-extern	BOOL	scg_havebus		__PR((SCSI *scgp, int));
-extern	int	scg_initiator_id	__PR((SCSI *scgp));
-extern	int	scg_isatapi		__PR((SCSI *scgp));
-extern	int	scg_reset		__PR((SCSI *scgp, int what));
-extern	void	*scg_getbuf		__PR((SCSI *scgp, long));
-extern	void	scg_freebuf		__PR((SCSI *scgp));
-extern	long	scg_bufsize		__PR((SCSI *scgp, long));
-extern	void	scg_setnonstderrs	__PR((SCSI *scgp, const char **));
-extern	BOOL	scg_yes			__PR((char *));
-extern	int	scg_cmd			__PR((SCSI *scgp));
-extern	void	scg_vhead		__PR((SCSI *scgp));
-extern	int	scg_svhead		__PR((SCSI *scgp, char *buf, int maxcnt));
-extern	int	scg_vtail		__PR((SCSI *scgp));
-extern	int	scg_svtail		__PR((SCSI *scgp, int *retp, char *buf, int maxcnt));
-extern	void	scg_vsetup		__PR((SCSI *scgp));
-extern	int	scg_getresid		__PR((SCSI *scgp));
-extern	int	scg_getdmacnt		__PR((SCSI *scgp));
-extern	BOOL	scg_cmd_err		__PR((SCSI *scgp));
-extern	void	scg_printerr		__PR((SCSI *scgp));
+extern	char	*scg_version(SCSI *scgp, int what);
+extern	int	scg__open(SCSI *scgp, char *device);
+extern	int	scg__close(SCSI *scgp);
+extern	BOOL	scg_havebus(SCSI *scgp, int);
+extern	int	scg_initiator_id(SCSI *scgp);
+extern	int	scg_isatapi(SCSI *scgp);
+extern	int	scg_reset(SCSI *scgp, int what);
+extern	void	*scg_getbuf(SCSI *scgp, long);
+extern	void	scg_freebuf(SCSI *scgp);
+extern	long	scg_bufsize(SCSI *scgp, long);
+extern	void	scg_setnonstderrs(SCSI *scgp, const char **);
+extern	BOOL	scg_yes(char *);
+extern	int	scg_cmd(SCSI *scgp);
+extern	void	scg_vhead(SCSI *scgp);
+extern	int	scg_svhead(SCSI *scgp, char *buf, int maxcnt);
+extern	int	scg_vtail(SCSI *scgp);
+extern	int	scg_svtail(SCSI *scgp, int *retp, char *buf, int maxcnt);
+extern	void	scg_vsetup(SCSI *scgp);
+extern	int	scg_getresid(SCSI *scgp);
+extern	int	scg_getdmacnt(SCSI *scgp);
+extern	BOOL	scg_cmd_err(SCSI *scgp);
+extern	void	scg_printerr(SCSI *scgp);
 #ifdef	EOF	/* stdio.h has been included */
-extern	void	scg_fprinterr		__PR((SCSI *scgp, FILE *f));
+extern	void	scg_fprinterr(SCSI *scgp, FILE *f);
 #endif
-extern	int	scg_sprinterr		__PR((SCSI *scgp, char *buf, int maxcnt));
-extern	int	scg__sprinterr		__PR((SCSI *scgp, char *buf, int maxcnt));
-extern	void	scg_printcdb		__PR((SCSI *scgp));
-extern	int	scg_sprintcdb		__PR((SCSI *scgp, char *buf, int maxcnt));
-extern	void	scg_printwdata		__PR((SCSI *scgp));
-extern	int	scg_sprintwdata		__PR((SCSI *scgp, char *buf, int maxcnt));
-extern	void	scg_printrdata		__PR((SCSI *scgp));
-extern	int	scg_sprintrdata		__PR((SCSI *scgp, char *buf, int maxcnt));
-extern	void	scg_printresult		__PR((SCSI *scgp));
-extern	int	scg_sprintresult 	__PR((SCSI *scgp, char *buf, int maxcnt));
-extern	void	scg_printstatus		__PR((SCSI *scgp));
-extern	int	scg_sprintstatus 	__PR((SCSI *scgp, char *buf, int maxcnt));
+extern	int	scg_sprinterr(SCSI *scgp, char *buf, int maxcnt);
+extern	int	scg__sprinterr(SCSI *scgp, char *buf, int maxcnt);
+extern	void	scg_printcdb(SCSI *scgp);
+extern	int	scg_sprintcdb(SCSI *scgp, char *buf, int maxcnt);
+extern	void	scg_printwdata(SCSI *scgp);
+extern	int	scg_sprintwdata(SCSI *scgp, char *buf, int maxcnt);
+extern	void	scg_printrdata(SCSI *scgp);
+extern	int	scg_sprintrdata(SCSI *scgp, char *buf, int maxcnt);
+extern	void	scg_printresult(SCSI *scgp);
+extern	int	scg_sprintresult(SCSI *scgp, char *buf, int maxcnt);
+extern	void	scg_printstatus(SCSI *scgp);
+extern	int	scg_sprintstatus(SCSI *scgp, char *buf, int maxcnt);
 #ifdef	EOF	/* stdio.h has been included */
-extern	void	scg_fprbytes		__PR((FILE *, char *, unsigned char *, int));
-extern	void	scg_fprascii		__PR((FILE *, char *, unsigned char *, int));
+extern	void	scg_fprbytes(FILE *, char *, unsigned char *, int);
+extern	void	scg_fprascii(FILE *, char *, unsigned char *, int);
 #endif
-extern	void	scg_prbytes		__PR((char *, unsigned char *, int));
-extern	void	scg_prascii		__PR((char *, unsigned char *, int));
-extern	int	scg_sprbytes		__PR((char *buf, int maxcnt, char *, unsigned char *, int));
-extern	int	scg_sprascii		__PR((char *buf, int maxcnt, char *, unsigned char *, int));
+extern	void	scg_prbytes(char *, unsigned char *, int);
+extern	void	scg_prascii(char *, unsigned char *, int);
+extern	int	scg_sprbytes(char *buf, int maxcnt, char *, unsigned char *, int);
+extern	int	scg_sprascii(char *buf, int maxcnt, char *, unsigned char *, int);
 #ifdef	EOF	/* stdio.h has been included */
-extern	void	scg_fprsense		__PR((FILE *f, unsigned char *, int));
+extern	void	scg_fprsense(FILE *f, unsigned char *, int);
 #endif
-extern	void	scg_prsense		__PR((unsigned char *, int));
-extern	int	scg_sprsense		__PR((char *buf, int maxcnt, unsigned char *, int));
-extern	int	scg_cmd_status		__PR((SCSI *scgp));
-extern	int	scg_sense_key		__PR((SCSI *scgp));
-extern	int	scg_sense_code		__PR((SCSI *scgp));
-extern	int	scg_sense_qual		__PR((SCSI *scgp));
+extern	void	scg_prsense(unsigned char *, int);
+extern	int	scg_sprsense(char *buf, int maxcnt, unsigned char *, int);
+extern	int	scg_cmd_status(SCSI *scgp);
+extern	int	scg_sense_key(SCSI *scgp);
+extern	int	scg_sense_code(SCSI *scgp);
+extern	int	scg_sense_qual(SCSI *scgp);
 #ifdef	_SCG_SCSIREG_H
 #ifdef	EOF	/* stdio.h has been included */
-extern	void	scg_fprintdev		__PR((FILE *, struct scsi_inquiry *));
+extern	void	scg_fprintdev(FILE *, struct scsi_inquiry *);
 #endif
-extern	void	scg_printdev		__PR((struct scsi_inquiry *));
+extern	void	scg_printdev(struct scsi_inquiry *);
 #endif
-extern	int	scg_printf		__PR((SCSI *scgp, const char *form, ...));
-extern	int	scg_errflush		__PR((SCSI *scgp));
+extern	int	scg_printf(SCSI *scgp, const char *form, ...);
+extern	int	scg_errflush(SCSI *scgp);
 #ifdef	EOF	/* stdio.h has been included */
-extern	int	scg_errfflush		__PR((SCSI *scgp, FILE *f));
+extern	int	scg_errfflush(SCSI *scgp, FILE *f);
 #endif
 
 /*
  * From scsierrmsg.c:
  */
-extern	const char	*scg_sensemsg	__PR((int, int, int,
-						const char **, char *, int maxcnt));
+extern	const char	*scg_sensemsg(int, int, int, const char **, char *, 
+											  int maxcnt);
 #ifdef	_SCG_SCSISENSE_H
-extern	int		scg__errmsg	__PR((SCSI *scgp, char *obuf, int maxcnt,
-						struct scsi_sense *,
-						struct scsi_status *,
-						int));
+extern	int		scg__errmsg(SCSI *scgp, char *obuf, int maxcnt,
+										struct scsi_sense *, struct scsi_status *, int);
 #endif
 
 /*
  * From scsiopen.c:
  */
 #ifdef	EOF	/* stdio.h has been included */
-extern	int	scg_help	__PR((FILE *f));
+extern	int	scg_help(FILE *f);
 #endif
-extern	SCSI	*scg_open	__PR((char *scsidev, char *errs, int slen, int odebug, int be_verbose));
-extern	int	scg_close	__PR((SCSI * scgp));
-extern	void	scg_settimeout	__PR((SCSI * scgp, int timeout));
-extern	SCSI	*scg_smalloc	__PR((void));
-extern	void	scg_sfree	__PR((SCSI *scgp));
+extern	SCSI	*scg_open(char *scsidev, char *errs, int slen, int odebug, 
+								 int be_verbose);
+extern	int	scg_close(SCSI * scgp);
+extern	void	scg_settimeout(SCSI * scgp, int timeout);
+extern	SCSI	*scg_smalloc(void);
+extern	void	scg_sfree(SCSI *scgp);
 
 /*
  * From scgsettarget.c:
  */
-extern	int	scg_settarget		__PR((SCSI *scgp, int scsibus, int target, int lun));
+extern	int	scg_settarget(SCSI *scgp, int scsibus, int target, int lun);
 
 /*
  * From scsi-remote.c:
  */
-extern	scg_ops_t *scg_remote	__PR((void));
+extern	scg_ops_t *scg_remote(void);
 
 /*
  * From scsihelp.c:
  */
 #ifdef	EOF	/* stdio.h has been included */
-extern	void	__scg_help	__PR((FILE *f, char *name, char *tcomment,
-					char *tind,
-					char *tspec,
-					char *texample,
-					BOOL mayscan,
-					BOOL bydev));
+extern	void	__scg_help(FILE *f, char *name, char *tcomment, char *tind,
+								  char *tspec, char *texample, BOOL mayscan, 
+								  BOOL bydev);
 #endif
 
 #ifdef	__cplusplus

@@ -1,22 +1,11 @@
-/*
- * This file has been modified for the cdrkit suite.
+/* 
+ * Copyright 2006 Eduard Bloch 
  *
- * The behaviour and appearence of the program code below can differ to a major
- * extent from the version distributed by the original author(s).
+ * This code emulates the interface of the original defaults.c file. However,
+ * it improves its behaviour and deals with corner cases: prepended and
+ * trailing spaces on variable and value, no requirement for using TABs
+ * anymore. No requirements to insert dummy values like -1 or "".
  *
- * For details, see Changelog file distributed with the cdrkit package. If you
- * received this file from another source then ask the distributing person for
- * a log of modifications.
- *
- */
-
-/* @(#)defaults.c	1.17 06/02/15 Copyright 1998-2005 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)defaults.c	1.17 06/02/15 Copyright 1998-2005 J. Schilling";
-#endif
-/*
- *	Copyright (c) 1998-2005 J. Schilling
  */
 /*
  * This program is free software; you can redistribute it and/or modify
@@ -34,205 +23,121 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include <stdxlib.h>
-#include <unixstd.h>
-#include <strdefs.h>
+#include <stdlib.h>
 #include <stdio.h>
-#include <standard.h>
 #include <deflts.h>
-#include <utypes.h>
-#include <schily.h>
-#include "cdrecord.h"	/* only for getnum() */
-#include "defaults.h"
+#include <ctype.h>
+#include <string.h>
 
-LOCAL	int	open_cdrdefaults __PR((void));
-EXPORT	void	cdr_defaults	__PR((char **devp, int *speedp, long *fsp, char **drvoptp));
-LOCAL	void	cdr_xdefaults	__PR((char **devp, int *speedp, long *fsp, char **drvoptp));
-LOCAL	char *	strsv		__PR((char *s));
+#define CFGPATH "/etc/wodim.conf"
+/* The better way would be exporting the meta functions to getnum.h or so */
+extern int	getnum(char *arg, long *valp);
 
-LOCAL int
-open_cdrdefaults()
+void 
+cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, 
+					char **p_drv_opts)
 {
-	return (defltopen("/etc/wodim.conf"));
-}
+	FILE *stream;
+	char *t; /* tmp */
+	int wc=0;
+	char loc[256], sSpeed[11], sFs[11], sOpts[81];
+	char *devcand=NULL;
 
-EXPORT void
-cdr_defaults(devp, speedp, fsp, drvoptp)
-	char	**devp;
-	int	*speedp;
-	long	*fsp;
-	char	**drvoptp;
-{
-	char	*dev	= NULL;
-	int	speed	= 0;
-	long	fs	= 0L;
+  cfg_open(CFGPATH);
 
-	if (devp != NULL)
-		dev = *devp;
-	if (speedp != NULL)
-		speed = *speedp;
-	if (fsp != NULL)
-		fs = *fsp;
+	if(p_dev_name && *p_dev_name)
+		devcand=*p_dev_name;
+	else if(NULL!=(t=getenv("CDR_DEVICE")))
+		devcand=t;
+	else if(NULL!=(t=cfg_get("CDR_DEVICE")))
+		devcand=strdup(t); // needs to use it as a key later, same stat. memory
 
-	if (!dev && devp != NULL) {
-		*devp = getenv("CDR_DEVICE");
-
-		if (!*devp && open_cdrdefaults() == 0) {
-			dev = defltread("CDR_DEVICE=");
-			if (dev != NULL)
-				*devp = strsv(dev);
-		}
-	}
-	if (devp != NULL && *devp)
-		cdr_xdefaults(devp, &speed, &fs, drvoptp);
-
-	if (speed < 0) {
-		char	*p = getenv("CDR_SPEED");
-
-		if (!p) {
-			if (open_cdrdefaults() == 0) {
-				p = defltread("CDR_SPEED=");
-			}
-		}
-		if (p) {
-			speed = atoi(p);
-			if (speed < 0 && speed != -1) {
-				comerrno(EX_BAD,
-					"Bad speed environment (%s).\n", p);
-			}
-		}
-	}
-	if (speed >= 0 && speedp != NULL)
-		*speedp = speed;
-
-	if (fs < 0L) {
-		char	*p = getenv("CDR_FIFOSIZE");
-
-		if (!p) {
-			if (open_cdrdefaults() == 0) {
-				p = defltread("CDR_FIFOSIZE=");
-			}
-		}
-		if (p) {
-			if (getnum(p, &fs) != 1) {
-				comerrno(EX_BAD,
-					"Bad fifo size environment (%s).\n", p);
-			}
-		}
-	}
-	if (fs > 0L && fsp != NULL) {
-		char	*p = NULL;
-		long	maxfs;
-
-		if (open_cdrdefaults() == 0) {
-			p = defltread("CDR_MAXFIFOSIZE=");
-		}
-		if (p) {
-			if (getnum(p, &maxfs) != 1) {
-				comerrno(EX_BAD,
-					"Bad max fifo size default (%s).\n", p);
-			}
-			if (fs > maxfs)
-				fs = maxfs;
-		}
-		*fsp = fs;
+	if(devcand && NULL != (t=cfg_get(devcand))) {
+		/* extract them now, may be used later */
+		wc=sscanf(t, "%255s %10s %10s %80s", loc, sSpeed, sFs, sOpts);
 	}
 
-
-	defltclose();
-}
-
-/*
- * All args execpt "drvoptp" are granted to be non NULL pointers.
- */
-LOCAL void
-cdr_xdefaults(devp, speedp, fsp, drvoptp)
-	char	**devp;
-	int	*speedp;
-	long	*fsp;
-	char	**drvoptp;
-{
-	char	dname[256];
-	char	*p = *devp;
-	char	*x = ",:/@";
-
-	while (*x) {
-		if (strchr(p, *x))
-			return;
-		x++;
+	if(p_dev_name) {
+		if(wc>0)
+			*p_dev_name = strdup(loc);
+		else if(devcand) // small mem. leak possible, does not matter, checks for that would require more code size than we loose
+			*p_dev_name=strdup(devcand);
 	}
-	js_snprintf(dname, sizeof (dname), "%s=", p);
-	if (open_cdrdefaults() != 0)
-		return;
+	if(p_speed) { /* sth. to write back */
+		char *bad;
+		int cfg_speed=-1;
 
-	p = defltread(dname);
-	if (p != NULL) {
-		while (*p == '\t' || *p == ' ')
-			p++;
-		if ((x = strchr(p, '\t')) != NULL)
-			*x = '\0';
-		else if ((x = strchr(p, ' ')) != NULL)
-			*x = '\0';
-		*devp = strsv(p);
-		if (x) {
-			p = ++x;
-			while (*p == '\t' || *p == ' ')
-				p++;
-			if ((x = strchr(p, '\t')) != NULL)
-				*x = '\0';
-			else if ((x = strchr(p, ' ')) != NULL)
-				*x = '\0';
-			if (*speedp < 0)
-				*speedp = atoi(p);
-			if (*speedp < 0 && *speedp != -1) {
-				comerrno(EX_BAD,
-					"Bad speed in defaults (%s).\n", p);
+		/* that value may be used twice */
+		if(NULL!=(t=cfg_get("CDR_SPEED"))) {
+			cfg_speed=strtol(t,&bad,10);
+			if(*bad || cfg_speed<-1) {
+				fprintf(stderr, "Bad default CDR_SPEED setting (%s).\n", t);
+				exit(EXIT_FAILURE);
 			}
 		}
-		if (x) {
-			p = ++x;
-			while (*p == '\t' || *p == ' ')
-				p++;
-			if ((x = strchr(p, '\t')) != NULL)
-				*x = '\0';
-			else if ((x = strchr(p, ' ')) != NULL)
-				*x = '\0';
-			if (*fsp < 0L) {
-				if (getnum(p, fsp) != 1) {
-					comerrno(EX_BAD,
-					"Bad fifo size in defaults (%s).\n",
-					p);
-				}
+
+		if(*p_speed>0) { 
+			/* ok, already set by the program arguments */
+		}
+		else if(NULL!=(t=getenv("CDR_SPEED"))) {
+			*p_speed=strtol(t,&bad,10);
+			if(*bad || *p_speed<-1) {
+				fprintf(stderr, "Bad CDR_SPEED environment (%s).\n", t);
+				exit(EXIT_FAILURE);
 			}
 		}
-		if (x) {
-			p = ++x;
-			while (*p == '\t' || *p == ' ')
-				p++;
-			if ((x = strchr(p, '\t')) != NULL)
-				*x = '\0';
-			else if ((x = strchr(p, ' ')) != NULL)
-				*x = '\0';
-			if (strcmp(p, "\"\"") != '\0') {
-				/*
-				 * Driver opts found.
-				 */
-				if (drvoptp && *drvoptp == NULL)
-					*drvoptp = strsv(p);
+		else if(wc>1 && *sSpeed) {
+			*p_speed=strtol(sSpeed, &bad, 10);
+			if(*bad || *p_speed<-1) {
+				fprintf(stderr, "Bad speed (%s) in the config, drive description.\n", sSpeed);
+				exit(EXIT_FAILURE);
 			}
+			if(*p_speed==-1) 
+				/* that's autodetect, use the config default as last ressort */
+				*p_speed=cfg_speed;
+		}
+		else 
+			*p_speed=cfg_speed;
+	}
+	if(p_fifosize) { /* sth. to write back */
+		if(*p_fifosize>0) { 
+			/* ok, already set by the user */
+		}
+		else if(NULL!=(t=getenv("CDR_FIFOSIZE"))) {
+			if(getnum(t, p_fifosize)!=1 || *p_fifosize<-1) {
+				fprintf(stderr, "Bad CDR_FIFOSIZE environment (%s).\n", t);
+				exit(EXIT_FAILURE);
+			}
+		}
+		else if(wc>2 && *sFs) {
+			if(getnum(sFs, p_fifosize)!=1 || *p_fifosize<-1) {
+				fprintf(stderr, "Bad fifo size (%s) in the config, device description.\n", sSpeed);
+				exit(EXIT_FAILURE);
+			}
+		}
+		else if(NULL!=(t=cfg_get("CDR_FIFOSIZE"))) {
+			if(getnum(t, p_fifosize)!=1 || *p_fifosize<-1) {
+				fprintf(stderr, "Bad speed default setting (%s).\n", t);
+				exit(EXIT_FAILURE);
+			}
+		}
+		/* undocumented option. Most likely to prevent killing Schily's
+		 * underpowered machines (see docs) by allocating too much memory after
+		 * doing a mistake in the config. */
+		if(NULL!=(t=cfg_get("CDR_MAXFIFOSIZE"))) {
+			long max;
+			if(getnum(t, &max)!=1 || *p_fifosize<-1) {
+				fprintf(stderr, "Bad CDR_MAXFIFOSIZE setting (%s).\n", t);
+				exit(EXIT_FAILURE);
+			}
+			if(*p_fifosize>max)
+				*p_fifosize=max;
 		}
 	}
-}
 
-LOCAL char *
-strsv(s)
-	char	*s;
-{
-	char	*p;
-	int len = strlen(s);
+	if(p_drv_opts && !*p_drv_opts && wc>3 && strcmp(sOpts, "\"\""))
+		*p_drv_opts=strdup(sOpts);
 
-	p = malloc(len+1);
-	if (p)
-		strcpy(p, s);
-	return (p);
+  cfg_close();
+
 }

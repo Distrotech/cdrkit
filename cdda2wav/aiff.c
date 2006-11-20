@@ -70,14 +70,19 @@ typedef struct AIFFHDR {
 
 static AIFFHDR AiffHdr;
 
+/* Prototypes */
+static int Format_samplerate(unsigned long rate, unsigned char the_rate[10]);
+static int InitSound(int audio, long channels, unsigned long rate, 
+							long nBitsPerSample, unsigned long expected_bytes);
+static int ExitSound(int audio, unsigned long nBytesDone);
+static unsigned long GetHdrSize(void);
+static unsigned long InSizeToOutSize(unsigned long BytesToDo);
+
+
 /* format the sample rate into an
    bigendian 10-byte IEEE-754 floating point number
  */
-static int Format_samplerate __PR((unsigned long rate, unsigned char the_rate[10]));
-
-static int Format_samplerate(rate, the_rate)
-	unsigned long rate;
-	unsigned char the_rate[10];
+static int Format_samplerate(unsigned long rate, unsigned char the_rate[10])
 {
   int i;
 
@@ -103,14 +108,8 @@ static int Format_samplerate(rate, the_rate)
   return 0;
 }
 
-static int InitSound __PR(( int audio, long channels, unsigned long rate, long nBitsPerSample, unsigned long expected_bytes ));
-
-static int InitSound ( audio, channels, rate, nBitsPerSample, expected_bytes)
-	int audio;
-	long channels;
-	unsigned long rate;
-	long nBitsPerSample;
-	unsigned long expected_bytes;
+static int InitSound(int audio, long channels, unsigned long rate, 
+                     long nBitsPerSample, unsigned long expected_bytes)
 {
   UINT4 tmp;
 
@@ -144,11 +143,7 @@ static int InitSound ( audio, channels, rate, nBitsPerSample, expected_bytes)
   return write (audio, &AiffHdr, sizeof (AiffHdr));
 }
 
-static int ExitSound __PR(( int audio, unsigned long nBytesDone ));
-
-static int ExitSound ( audio, nBytesDone )
-	int audio;
-	unsigned long nBytesDone;
+static int ExitSound(int audio, unsigned long nBytesDone )
 {
   UINT4 tmp;
 
@@ -174,17 +169,12 @@ static int ExitSound ( audio, nBytesDone )
   return write (audio, &AiffHdr, sizeof (AiffHdr));
 }
 
-static unsigned long GetHdrSize __PR(( void ));
-
-static unsigned long GetHdrSize( )
+static unsigned long GetHdrSize()
 {
   return sizeof( AiffHdr );
 }
 
-static unsigned long InSizeToOutSize __PR(( unsigned long BytesToDo ));
-
-static unsigned long InSizeToOutSize ( BytesToDo )
-        unsigned long BytesToDo;
+static unsigned long InSizeToOutSize(unsigned long BytesToDo)
 {
         return BytesToDo;
 }
@@ -194,7 +184,10 @@ struct soundfile aiffsound =
 	InitSound,		/* init header method */
 	ExitSound,		/* exit header method */
 	GetHdrSize,		/* report header size method */
-	(int (*) __PR(( int audio, unsigned char *buf, unsigned long BytesToDo ))) write,			/* get sound samples out */
+	/* get sound samples out */
+	(int (*)(int audio, unsigned char *buf, unsigned long BytesToDo))write,
 	InSizeToOutSize,	/* compressed? output file size */
-	1			/* needs big endian samples */
+	1						/* needs big endian samples */
 };
+
+

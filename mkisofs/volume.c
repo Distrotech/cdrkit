@@ -54,22 +54,21 @@ static	char sccsid[] =
 
 #define	HFS_MIN_SIZE	1600	/* 800k == 1600 HFS blocks */
 
-LOCAL hfsvol  *vol_save = 0;	/* used to "destroy" an HFS volume */
+static hfsvol  *vol_save = 0;	/* used to "destroy" an HFS volume */
 
-LOCAL	int	AlcSiz		__PR((Ulong));
-LOCAL	int	XClpSiz		__PR((Ulong));
-LOCAL	int	get_vol_size	__PR((int));
-EXPORT	int	write_fork	__PR((hfsfile * hfp, long tot));
-EXPORT	int	make_mac_volume	__PR((struct directory *, int));
-LOCAL	int	copy_to_mac_vol	__PR((hfsvol *, struct directory *));
-LOCAL void	set_dir_info	__PR((hfsvol *, struct directory *));
+static	int	AlcSiz(Ulong);
+static	int	XClpSiz(Ulong);
+static	int	get_vol_size(int);
+int	write_fork(hfsfile * hfp, long tot);
+int	make_mac_volume(struct directory *, int);
+static	int	copy_to_mac_vol(hfsvol *, struct directory *);
+static void	set_dir_info(hfsvol *, struct directory *);
 
 /*
  *	AlcSiz: find allocation size for given volume size
  */
-LOCAL int
-AlcSiz(vlen)
-	Ulong	vlen;
+static int
+AlcSiz(Ulong vlen)
 {
 	int	lpa,
 		drAlBlkSiz;
@@ -90,9 +89,8 @@ AlcSiz(vlen)
 /*
  *	XClpSiz: find the default size of the catalog/extent file
  */
-LOCAL int
-XClpSiz(vlen)
-	Ulong	vlen;
+static int
+XClpSiz(Ulong vlen)
 {
 	int	olpa,
 		lpa,
@@ -134,9 +132,8 @@ XClpSiz(vlen)
 /*
  *	get_vol_size: get the size of the volume including the extent/catalog
  */
-LOCAL int
-get_vol_size(vblen)
-	int	vblen;
+static int
+get_vol_size(int vblen)
 {
 	int	drXTClpSiz;
 	int	drAlBlkSiz;
@@ -169,10 +166,8 @@ get_vol_size(vblen)
  *	but no data is actually written (it's trapped deep down in
  *	libhfs).
  */
-EXPORT int
-write_fork(hfp, tot)
-	hfsfile	*hfp;
-	long	tot;
+int
+write_fork(hfsfile *hfp, long tot)
 {
 	char		blk[HFS_BLOCKSZ];
 	unsigned short	start;
@@ -212,10 +207,8 @@ write_fork(hfp, tot)
  *	size, so we may have to update the ISO structures to add in any
  *	padding.
  */
-EXPORT int
-make_mac_volume(dpnt, start_extent)
-	struct directory	*dpnt;
-	int			start_extent;
+int
+make_mac_volume(struct directory  *dpnt, int start_extent)
 {
 	char	vol_name[HFS_MAX_VLEN + 1];	/* Mac volume name */
 	hfsvol	*vol;			/* Mac volume */
@@ -349,10 +342,8 @@ make_mac_volume(dpnt, start_extent)
  *	volume. The caller routine needs to do a hfs_chdir before calling this
  *	routine.
  */
-LOCAL int
-copy_to_mac_vol(vol, node)
-	hfsvol		*vol;
-	struct directory *node;
+static int
+copy_to_mac_vol(hfsvol *vol, struct directory *node)
 {
 	struct directory_entry	*s_entry;	/* ISO directory entry */
 	struct directory_entry	*s_entry1;	/* tmp ISO directory entry */
@@ -686,10 +677,8 @@ copy_to_mac_vol(vol, node)
 
 #define	ICON	"Icon"
 
-LOCAL void
-set_dir_info(vol, de)
-	hfsvol			*vol;
-	struct directory	*de;
+static void
+set_dir_info(hfsvol *vol, struct directory *de)
 {
 	hfsdirent	*ent = de->hfs_ent;
 	hfsdirent	ent1;

@@ -120,15 +120,13 @@ struct	iso9660_pr_voldesc {
 #define	GET_BINT(a)	a_to_4_byte(&((unsigned char *) (a))[4])
 
 #define	infile	in_image
-EXPORT	FILE		*infile = NULL;
+FILE		*infile = NULL;
 
-LOCAL void	usage		__PR((int excode));
-LOCAL char	*isodinfo	__PR((FILE *f));
-EXPORT int	main		__PR((int argc, char *argv[]));
+static void	usage(int excode);
+static char	*isodinfo(FILE *f);
 
-LOCAL void
-usage(excode)
-	int	excode;
+static void
+usage(int excode)
 {
 	errmsgno(EX_BAD, "Usage: %s [options] image\n",
 						get_progname());
@@ -142,9 +140,8 @@ usage(excode)
 	exit(excode);
 }
 
-LOCAL char *
-isodinfo(f)
-	FILE	*f;
+static char *
+isodinfo(FILE *f)
 {
 static	struct iso9660_voldesc		vd;
 	struct iso9660_pr_voldesc	*vp;
@@ -204,10 +201,8 @@ static	struct iso9660_voldesc		vd;
 	return ((char *)&vd);
 }
 
-EXPORT int
-main(argc, argv)
-	int	argc;
-	char	*argv[];
+int
+main(int argc, char *argv[])
 {
 	int	cac;
 	char	* const *cav;

@@ -65,33 +65,32 @@ static	char sccsid[] =
 #define	ISO_BLOCKS(X)	(((X) / SECTOR_SIZE) + (((X)%SECTOR_SIZE)?1:0))
 
 #define	infile	in_image
-EXPORT	FILE		*infile = NULL;
-LOCAL	off_t		file_addr;
-LOCAL	off_t		sec_addr = (off_t)-1;
-LOCAL	Uchar		sector[2048];
+FILE		*infile = NULL;
+static	off_t		file_addr;
+static	off_t		sec_addr = (off_t)-1;
+static	Uchar		sector[2048];
 #define	PAGE	256
-LOCAL	Uchar		buffer[PAGE];
-LOCAL	Uchar		search[64];
+static	Uchar		buffer[PAGE];
+static	Uchar		search[64];
 
 #ifdef	USE_V7_TTY
-LOCAL	struct sgttyb	savetty;
-LOCAL	struct sgttyb	newtty;
+static	struct sgttyb	savetty;
+static	struct sgttyb	newtty;
 #else
-LOCAL	struct termios	savetty;
-LOCAL	struct termios	newtty;
+static	struct termios	savetty;
+static	struct termios	newtty;
 #endif
 
-LOCAL void	reset_tty	__PR((void));
-LOCAL void	set_tty		__PR((void));
-LOCAL void	onsusp		__PR((int sig));
-LOCAL void	crsr2		__PR((int row, int col));
-LOCAL void	readblock	__PR((void));
-LOCAL void	showblock	__PR((int flag));
-LOCAL int	getbyte		__PR((void));
-LOCAL void	usage		__PR((int excode));
-EXPORT int	main		__PR((int argc, char *argv[]));
+static void	reset_tty(void);
+static void	set_tty(void);
+static void	onsusp(int sig);
+static void	crsr2(int row, int col);
+static void	readblock(void);
+static void	showblock(int flag);
+static int	getbyte(void);
+static void	usage(int excode);
 
-LOCAL void
+static void
 reset_tty()
 {
 #ifdef USE_V7_TTY
@@ -112,7 +111,7 @@ reset_tty()
 	}
 }
 
-LOCAL void
+static void
 set_tty()
 {
 #ifdef USE_V7_TTY
@@ -137,9 +136,8 @@ set_tty()
 /*
  * Come here when we get a suspend signal from the terminal
  */
-LOCAL void
-onsusp(sig)
-	int	sig;
+static void
+onsusp(int sig)
 {
 #ifdef	SIGTTOU
 	/* ignore SIGTTOU so we don't get stopped if csh grabs the tty */
@@ -162,15 +160,13 @@ onsusp(sig)
 }
 
 
-LOCAL void
-crsr2(row, col)
-	int	row;
-	int	col;
+static void
+crsr2(int row, int col)
 {
 	printf("\033[%d;%dH", row, col);
 }
 
-LOCAL void
+static void
 readblock()
 {
 	off_t	dpos = file_addr - sec_addr;
@@ -189,9 +185,8 @@ readblock()
 	movebytes(&sector[dpos], buffer, sizeof (buffer));
 }
 
-LOCAL void
-showblock(flag)
-	int	flag;
+static void
+showblock(int flag)
 {
 	unsigned int	k;
 	int		i;
@@ -231,7 +226,7 @@ showblock(flag)
 	fflush(stdout);
 }
 
-LOCAL int
+static int
 getbyte()
 {
 	char	c1;
@@ -243,9 +238,8 @@ getbyte()
 	return (c1);
 }
 
-LOCAL void
-usage(excode)
-	int	excode;
+static void
+usage(int excode)
 {
 	errmsgno(EX_BAD, "Usage: %s [options] [image]\n",
 						get_progname());
@@ -259,10 +253,8 @@ usage(excode)
 	exit(excode);
 }
 
-EXPORT int
-main(argc, argv)
-	int	argc;
-	char	*argv[];
+int
+main(int argc, char *argv[])
 {
 	int	cac;
 	char	* const *cav;
@@ -375,7 +367,7 @@ main(argc, argv)
 #ifdef	SIGTSTP
 	signal(SIGTSTP, onsusp);
 #endif
-	on_comerr((void(*)__PR((int, void *)))reset_tty, NULL);
+	on_comerr((void(*)(int, void *))reset_tty, NULL);
 
 	do {
 		if (file_addr < (off_t)0) file_addr = (off_t)0;

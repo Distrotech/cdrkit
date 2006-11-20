@@ -40,6 +40,6 @@
 #define	fill2048(p, val)	fillbytes(p, 2048, val)
 #define	fill96(p, val)		fillbytes(p, 96, val)
 
-extern	void	scatter_secs	__PR((track_t *trackp, char *bp, int nsecs));
+extern	void	scatter_secs(track_t *trackp, char *bp, int nsecs);
 
 #endif

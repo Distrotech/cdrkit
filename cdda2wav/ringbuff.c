@@ -41,7 +41,7 @@ static char     sccsid[] =
 #undef _DEBUG
 #include <assert.h>
 
-static void occupy_buffer	__PR((void));
+static void occupy_buffer(void);
 
 myringbuff **he_fill_buffer;
 myringbuff **last_buffer;
@@ -62,9 +62,7 @@ static unsigned int total_buffers;
 #define occupied_buffers() (defined_buffers())
 
 /* ARGSUSED */
-void set_total_buffers(num_buffers, mysem_id)
-	unsigned int num_buffers;
-	int mysem_id;
+void set_total_buffers(unsigned int num_buffers, int mysem_id)
 {
 #if defined(HAVE_SEMGET) && defined(USE_SEMAPHORES)
   union my_semun mysemun;

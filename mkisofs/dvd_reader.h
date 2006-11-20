@@ -85,7 +85,7 @@ typedef struct dvd_file_s	dvd_file_t;
  */
 
 
-extern	dvd_reader_t *DVDOpen	__PR((const char *));
+extern	dvd_reader_t *DVDOpen(const char *);
 
 
 /*
@@ -96,7 +96,7 @@ extern	dvd_reader_t *DVDOpen	__PR((const char *));
  */
 
 
-extern	void DVDClose		__PR((dvd_reader_t *));
+extern	void DVDClose(dvd_reader_t *);
 
 /*
  * INFO_FILE       : VIDEO_TS.IFO     (manager)
@@ -127,14 +127,14 @@ typedef enum {
  * (VIDEO_TS.[IFO,BUP,VOB]).  Returns a file structure which may be used for
  * reads, or 0 if the file was not found.
  */
-extern	dvd_file_t * DVDOpenFile	__PR((dvd_reader_t *, int, dvd_read_domain_t));
+extern	dvd_file_t * DVDOpenFile(dvd_reader_t *, int, dvd_read_domain_t);
 
 /*
  * DVDCloseFile(dvd_file);
  *
  * Closes a file and frees the associated structure.
  */
-extern	void DVDCloseFile		__PR((dvd_file_t *));
+extern	void DVDCloseFile(dvd_file_t *);
 
 
 /*
@@ -142,7 +142,7 @@ extern	void DVDCloseFile		__PR((dvd_file_t *));
  *
  * Returns the file size in blocks.
  */
-extern	ssize_t DVDFileSize		__PR((dvd_file_t *));
+extern	ssize_t DVDFileSize(dvd_file_t *);
 
 
 #ifdef __cplusplus

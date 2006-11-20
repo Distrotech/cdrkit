@@ -73,18 +73,18 @@ extern	cdr_t	cdr_cw7501;
 extern	cdr_t	cdr_cdr_simul;
 extern	cdr_t	cdr_dvd_simul;
 
-EXPORT	cdr_t 	*drive_identify		__PR((SCSI *scgp, cdr_t *, struct scsi_inquiry *ip));
-EXPORT	int	drive_attach		__PR((SCSI *scgp, cdr_t *));
-EXPORT	int	attach_unknown		__PR((void));
-EXPORT	int	blank_dummy		__PR((SCSI *scgp, cdr_t *, long addr, int blanktype));
-EXPORT	int	format_dummy		__PR((SCSI *scgp, cdr_t *, int fmtflags));
-EXPORT	int	drive_getdisktype	__PR((SCSI *scgp, cdr_t *dp));
-EXPORT	int	cmd_ill			__PR((SCSI *scgp));
-EXPORT	int	cmd_dummy		__PR((SCSI *scgp, cdr_t *));
-EXPORT	int	no_sendcue		__PR((SCSI *scgp, cdr_t *, track_t *trackp));
-EXPORT	int	buf_dummy		__PR((SCSI *scgp, long *sp, long *fp));
-EXPORT	BOOL	set_cdrcmds		__PR((char *name, cdr_t **dpp));
-EXPORT	cdr_t	*get_cdrcmds		__PR((SCSI *scgp));
+cdr_t 	*drive_identify(SCSI *scgp, cdr_t *, struct scsi_inquiry *ip);
+int	drive_attach(SCSI *scgp, cdr_t *);
+int	attach_unknown(void);
+int	blank_dummy(SCSI *scgp, cdr_t *, long addr, int blanktype);
+int	format_dummy(SCSI *scgp, cdr_t *, int fmtflags);
+int	drive_getdisktype(SCSI *scgp, cdr_t *dp);
+int	cmd_ill(SCSI *scgp);
+int	cmd_dummy(SCSI *scgp, cdr_t *);
+int	no_sendcue(SCSI *scgp, cdr_t *, track_t *trackp);
+int	buf_dummy(SCSI *scgp, long *sp, long *fp);
+BOOL	set_cdrcmds(char *name, cdr_t **dpp);
+cdr_t	*get_cdrcmds(SCSI *scgp);
 
 /*
  * List of CD-R drivers
@@ -115,99 +115,74 @@ cdr_t	*drivers[] = {
 	(cdr_t *)NULL,
 };
 
-EXPORT cdr_t *
-drive_identify(scgp, dp, ip)
-	SCSI			*scgp;
-	cdr_t			*dp;
-	struct scsi_inquiry	*ip;
+cdr_t *
+drive_identify(SCSI *scgp, cdr_t *dp, struct scsi_inquiry *ip)
 {
 	return (dp);
 }
 
-EXPORT int
-drive_attach(scgp, dp)
-	SCSI			*scgp;
-	cdr_t			*dp;
+int 
+drive_attach(SCSI *scgp, cdr_t *dp)
 {
 	return (0);
 }
 
-EXPORT int
+int 
 attach_unknown()
 {
 	errmsgno(EX_BAD, "Unsupported drive type\n");
 	return (-1);
 }
 
-EXPORT int
-blank_dummy(scgp, dp, addr, blanktype)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	long	addr;
-	int	blanktype;
+int 
+blank_dummy(SCSI *scgp, cdr_t *dp, long addr, int blanktype)
 {
 	printf("This drive or media does not support the 'BLANK media' command\n");
 	return (-1);
 }
 
-EXPORT int
-format_dummy(scgp, dp, fmtflags)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	fmtflags;
+int 
+format_dummy(SCSI *scgp, cdr_t *dp, int fmtflags)
 {
 	printf("This drive or media does not support the 'FORMAT media' command\n");
 	return (-1);
 }
 
-EXPORT int
-drive_getdisktype(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+int 
+drive_getdisktype(SCSI *scgp, cdr_t *dp)
 {
 /*	dstat_t	*dsp = dp->cdr_dstat;*/
 	return (0);
 }
 
-EXPORT int
-cmd_ill(scgp)
-	SCSI	*scgp;
+int 
+cmd_ill(SCSI *scgp)
 {
 	errmsgno(EX_BAD, "Unspecified command not implemented for this drive.\n");
 	return (-1);
 }
 
-EXPORT int
-cmd_dummy(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+int 
+cmd_dummy(SCSI *scgp, cdr_t *dp)
 {
 	return (0);
 }
 
-EXPORT int
-no_sendcue(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+int 
+no_sendcue(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	errmsgno(EX_BAD, "SAO writing not available or not implemented for this drive.\n");
 	return (-1);
 }
 
-EXPORT int
-buf_dummy(scgp, sp, fp)
-	SCSI	*scgp;
-	long	*sp;
-	long	*fp;
+int 
+buf_dummy(SCSI *scgp, long *sp, long *fp)
 {
 	return (-1);
 }
 
-EXPORT BOOL
-set_cdrcmds(name, dpp)
-	char	*name;
-	cdr_t	**dpp;
+BOOL 
+set_cdrcmds(char *name, cdr_t **dpp)
 {
 	cdr_t	**d;
 	int	n;
@@ -239,9 +214,8 @@ set_cdrcmds(name, dpp)
 	return (FALSE);		/* Make lint happy */
 }
 
-EXPORT cdr_t *
-get_cdrcmds(scgp)
-	SCSI	*scgp;
+cdr_t *
+get_cdrcmds(SCSI *scgp)
 {
 	cdr_t	*dp = (cdr_t *)0;
 	cdr_t	*odp = (cdr_t *)0;

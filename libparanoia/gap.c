@@ -35,39 +35,29 @@ static	char sccsid[] =
 #include "cdda_paranoia.h"
 #include "gap.h"
 
-EXPORT long	i_paranoia_overlap_r	__PR((Int16_t * buffA, Int16_t * buffB,
-						long offsetA, long offsetB));
-EXPORT long	i_paranoia_overlap_f	__PR((Int16_t * buffA, Int16_t * buffB,
-						long offsetA, long offsetB,
-						long sizeA, long sizeB));
-EXPORT int	i_stutter_or_gap	__PR((Int16_t * A, Int16_t * B,
-						long offA, long offB,
-						long gap));
-EXPORT void	i_analyze_rift_f	__PR((Int16_t * A, Int16_t * B,
-						long sizeA, long sizeB,
-						long aoffset, long boffset,
-						long *matchA, long *matchB,
-						long *matchC));
-EXPORT void	i_analyze_rift_r	__PR((Int16_t * A, Int16_t * B,
-						long sizeA, long sizeB,
-						long aoffset, long boffset,
-						long *matchA, long *matchB,
-						long *matchC));
-
-EXPORT void	analyze_rift_silence_f	__PR((Int16_t * A, Int16_t * B,
-						long sizeA, long sizeB,
-						long aoffset, long boffset,
-						long *matchA, long *matchB));
+long i_paranoia_overlap_r(Int16_t * buffA, Int16_t * buffB, long offsetA, 
+								  long offsetB);
+long i_paranoia_overlap_f(Int16_t * buffA, Int16_t * buffB, long offsetA, 
+								  long offsetB, long sizeA, long sizeB);
+int i_stutter_or_gap(Int16_t * A, Int16_t * B, long offA, long offB, long gap);
+void i_analyze_rift_f(Int16_t * A, Int16_t * B, 
+						    long sizeA, long sizeB, 
+							 long aoffset, long boffset, 
+							 long *matchA, long *matchB, long *matchC);
+void i_analyze_rift_r(Int16_t * A, Int16_t * B,
+                      long sizeA, long sizeB,
+                      long aoffset, long boffset,
+                      long *matchA, long *matchB, long *matchC);
+void analyze_rift_silence_f(Int16_t * A, Int16_t * B,
+                            long sizeA, long sizeB,
+                            long aoffset, long boffset,
+                            long *matchA, long *matchB);
 
 /*
  * Gap analysis code
  */
-EXPORT long
-i_paranoia_overlap_r(buffA, buffB, offsetA, offsetB)
-	Int16_t	*buffA;
-	Int16_t	*buffB;
-	long	offsetA;
-	long	offsetB;
+long i_paranoia_overlap_r(Int16_t *buffA, Int16_t *buffB, long offsetA, 
+                          long offsetB)
 {
 	long		beginA = offsetA;
 	long		beginB = offsetB;
@@ -81,14 +71,8 @@ i_paranoia_overlap_r(buffA, buffB, offsetA, offsetB)
 	return (offsetA - beginA);
 }
 
-EXPORT long
-i_paranoia_overlap_f(buffA, buffB, offsetA, offsetB, sizeA, sizeB)
-	Int16_t	*buffA;
-	Int16_t	*buffB;
-	long	offsetA;
-	long	offsetB;
-	long	sizeA;
-	long	sizeB;
+long i_paranoia_overlap_f(Int16_t *buffA, Int16_t *buffB, long offsetA, 
+                          long offsetB, long sizeA, long sizeB)
 {
 	long		endA = offsetA;
 	long		endB = offsetB;
@@ -100,13 +84,7 @@ i_paranoia_overlap_f(buffA, buffB, offsetA, offsetB, sizeA, sizeB)
 	return (endA - offsetA);
 }
 
-EXPORT int
-i_stutter_or_gap(A, B, offA, offB, gap)
-	Int16_t	*A;
-	Int16_t	*B;
-	long	offA;
-	long	offB;
-	long	gap;
+int i_stutter_or_gap(Int16_t *A, Int16_t *B, long offA, long offB, long gap)
 {
 	long		a1 = offA;
 	long		b1 = offB;
@@ -122,17 +100,9 @@ i_stutter_or_gap(A, B, offA, offB, gap)
 /*
  * riftv is the first value into the rift -> or <-
  */
-EXPORT void
-i_analyze_rift_f(A, B, sizeA, sizeB, aoffset, boffset, matchA, matchB, matchC)
-	Int16_t	*A;
-	Int16_t	*B;
-	long	sizeA;
-	long	sizeB;
-	long	aoffset;
-	long	boffset;
-	long	*matchA;
-	long	*matchB;
-	long	*matchC;
+void i_analyze_rift_f(Int16_t *A, Int16_t *B, long sizeA, long sizeB,
+                      long aoffset, long boffset, long *matchA, long *matchB, 
+                      long *matchC)
 {
 
 	long		apast = sizeA - aoffset;
@@ -190,17 +160,9 @@ i_analyze_rift_f(A, B, sizeA, sizeB, aoffset, boffset, matchA, matchB, matchC)
 /*
  * riftv must be first even val of rift moving back
  */
-EXPORT void
-i_analyze_rift_r(A, B, sizeA, sizeB, aoffset, boffset, matchA, matchB, matchC)
-	Int16_t	*A;
-	Int16_t	*B;
-	long	sizeA;
-	long	sizeB;
-	long	aoffset;
-	long	boffset;
-	long	*matchA;
-	long	*matchB;
-	long	*matchC;
+void i_analyze_rift_r(Int16_t *A, Int16_t *B, long sizeA, long sizeB, 
+                      long aoffset, long boffset, long *matchA, long *matchB, 
+                      long *matchC)
 {
 
 	long		apast = aoffset + 1;
@@ -256,16 +218,9 @@ i_analyze_rift_r(A, B, sizeA, sizeB, aoffset, boffset, matchA, matchB, matchC)
 	}
 }
 
-EXPORT void
-analyze_rift_silence_f(A, B, sizeA, sizeB, aoffset, boffset, matchA, matchB)
-	Int16_t	*A;
-	Int16_t	*B;
-	long	sizeA;
-	long	sizeB;
-	long	aoffset;
-	long	boffset;
-	long	*matchA;
-	long	*matchB;
+void analyze_rift_silence_f(Int16_t *A, Int16_t *B, long sizeA, long sizeB, 
+                            long aoffset, long boffset, long *matchA, 
+                            long *matchB)
 {
 	*matchA = -1;
 	*matchB = -1;

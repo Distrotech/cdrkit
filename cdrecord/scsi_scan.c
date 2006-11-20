@@ -53,14 +53,12 @@ static	char sccsid[] =
 #include "scsi_scan.h"
 #include "cdrecord.h"
 
-LOCAL	void	print_product		__PR((FILE *f, struct scsi_inquiry *ip));
-EXPORT	int	select_target		__PR((SCSI *scgp, FILE *f));
-LOCAL	int	select_unit		__PR((SCSI *scgp, FILE *f));
+static	void	print_product(FILE *f, struct scsi_inquiry *ip);
+int	select_target(SCSI *scgp, FILE *f);
+static	int	select_unit(SCSI *scgp, FILE *f);
 
-LOCAL void
-print_product(f, ip)
-	FILE			*f;
-	struct	scsi_inquiry	*ip;
+static void
+print_product(FILE *f, struct  scsi_inquiry *ip)
 {
 	fprintf(f, "'%.8s' ", ip->vendor_info);
 	fprintf(f, "'%.16s' ", ip->prod_ident);
@@ -71,10 +69,8 @@ print_product(f, ip)
 	scg_fprintdev(f, ip);
 }
 
-EXPORT int
-select_target(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+int
+select_target(SCSI *scgp, FILE *f)
 {
 	int	initiator;
 #ifdef	FMT
@@ -166,10 +162,8 @@ select_target(scgp, f)
 	return (amt);
 }
 
-LOCAL int
-select_unit(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+select_unit(SCSI *scgp, FILE *f)
 {
 	int	initiator;
 	int	clun	= scg_lun(scgp);

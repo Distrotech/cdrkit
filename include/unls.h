@@ -64,18 +64,18 @@ struct unls_table {
 #endif
 };
 
-extern int		init_unls		__PR((void));
-extern int		register_unls		__PR((struct unls_table *));
-extern int		unregister_unls		__PR((struct unls_table *));
-extern struct unls_table *find_unls		__PR((char *));
-extern void		list_unls		__PR((void));
-extern struct unls_table *load_unls		__PR((char *));
-extern void 		unload_unls		__PR((struct unls_table *));
-extern struct unls_table *load_unls_default	__PR((void));
-extern int		init_unls_file		__PR((char * name));
+extern int		init_unls(void);
+extern int		register_unls(struct unls_table *);
+extern int		unregister_unls(struct unls_table *);
+extern struct unls_table *find_unls(char *);
+extern void		list_unls(void);
+extern struct unls_table *load_unls(char *);
+extern void 		unload_unls(struct unls_table *);
+extern struct unls_table *load_unls_default(void);
+extern int		init_unls_file(char * name);
 
 #ifdef USE_ICONV
-extern int             init_nls_iconv          __PR((char * name));
+extern int             init_nls_iconv(char * name);
 #endif
 
 #ifdef	__cplusplus

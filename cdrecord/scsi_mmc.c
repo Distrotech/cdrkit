@@ -66,25 +66,22 @@ extern	int	xdebug;
 
 
 
-EXPORT	int	get_configuration	__PR((SCSI *scgp, caddr_t bp, int cnt, int st_feature, int rt));
-LOCAL	int	get_conflen		__PR((SCSI *scgp, int st_feature, int rt));
-EXPORT	int	get_curprofile		__PR((SCSI *scgp));
-LOCAL	int	get_profiles		__PR((SCSI *scgp, caddr_t bp, int cnt));
-EXPORT	int	print_profiles		__PR((SCSI *scgp));
-EXPORT	int	get_proflist		__PR((SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp));
-EXPORT	int	get_wproflist		__PR((SCSI *scgp, BOOL *cdp, BOOL *dvdp,
-							BOOL *dvdplusp, BOOL *ddcdp));
+int	get_configuration(SCSI *scgp, caddr_t bp, int cnt, int st_feature, 
+								int rt);
+static	int	get_conflen(SCSI *scgp, int st_feature, int rt);
+int	get_curprofile(SCSI *scgp);
+static	int	get_profiles(SCSI *scgp, caddr_t bp, int cnt);
+int	print_profiles(SCSI *scgp);
+int	get_proflist(SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
+						 BOOL *ddcdp);
+int	get_wproflist(SCSI *scgp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, 
+						  BOOL *ddcdp);
 
 /*
  * Get feature codes
  */
-EXPORT int
-get_configuration(scgp, bp, cnt, st_feature, rt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	int	cnt;
-	int	st_feature;
-	int	rt;
+int
+get_configuration(SCSI *scgp, caddr_t bp, int cnt, int st_feature, int rt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -112,11 +109,8 @@ get_configuration(scgp, bp, cnt, st_feature, rt)
 /*
  * Retrieve feature code list length
  */
-LOCAL int
-get_conflen(scgp, st_feature, rt)
-	SCSI	*scgp;
-	int	st_feature;
-	int	rt;
+static int
+get_conflen(SCSI *scgp, int st_feature, int rt)
 {
 	Uchar	cbuf[8];
 	int	flen;
@@ -138,9 +132,8 @@ get_conflen(scgp, st_feature, rt)
 	return (flen);
 }
 
-EXPORT int
-get_curprofile(scgp)
-	SCSI	*scgp;
+int
+get_curprofile(SCSI *scgp)
 {
 	Uchar	cbuf[8];
 	int	amt;
@@ -174,11 +167,8 @@ get_curprofile(scgp)
 	return (profile);
 }
 
-LOCAL int
-get_profiles(scgp, bp, cnt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	int	cnt;
+static int
+get_profiles(SCSI *scgp, caddr_t bp, int cnt)
 {
 	int	amt;
 	int	flen;
@@ -205,9 +195,8 @@ get_profiles(scgp, bp, cnt)
 	return (amt);
 }
 
-EXPORT int
-print_profiles(scgp)
-	SCSI	*scgp;
+int
+print_profiles(SCSI *scgp)
 {
 	Uchar	cbuf[1024];
 	Uchar	*p;
@@ -249,14 +238,9 @@ print_profiles(scgp)
 	return (curprofile);
 }
 
-EXPORT int
-get_proflist(scgp, wp, cdp, dvdp, dvdplusp, ddcdp)
-	SCSI	*scgp;
-	BOOL	*wp;
-	BOOL	*cdp;
-	BOOL	*dvdp;
-	BOOL	*dvdplusp;
-	BOOL	*ddcdp;
+int
+get_proflist(SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, 
+             BOOL *ddcdp)
 {
 	Uchar	cbuf[1024];
 	Uchar	*p;
@@ -326,13 +310,8 @@ get_proflist(scgp, wp, cdp, dvdp, dvdplusp, ddcdp)
 	return (curprofile);
 }
 
-EXPORT int
-get_wproflist(scgp, cdp, dvdp, dvdplusp, ddcdp)
-	SCSI	*scgp;
-	BOOL	*cdp;
-	BOOL	*dvdp;
-	BOOL	*dvdplusp;
-	BOOL	*ddcdp;
+int
+get_wproflist(SCSI *scgp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp)
 {
 	Uchar	cbuf[1024];
 	Uchar	*p;

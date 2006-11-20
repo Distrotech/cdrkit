@@ -71,48 +71,48 @@ typedef struct directory_entry dir_ent;
 
 /* routines for getting HFS names and info */
 #ifndef	HAVE_STRCASECMP
-static int	strcasecmp	__PR((const char *s1, const char *s2));
+static int	strcasecmp(const char *s1, const char *s2);
 #endif
-static int	get_none_dir	__PR((char *, char *, dir_ent *, int));
-static int	get_none_info	__PR((char *, char *, dir_ent *, int));
-static int	get_cap_dir	__PR((char *, char *, dir_ent *, int));
-static int	get_cap_info	__PR((char *, char *, dir_ent *, int));
-static int	get_es_dir	__PR((char *, char *, dir_ent *, int));
-static int	get_es_info	__PR((char *, char *, dir_ent *, int));
-static int	get_dbl_dir	__PR((char *, char *, dir_ent *, int));
-static int	get_dbl_info	__PR((char *, char *, dir_ent *, int));
-static int	get_mb_info	__PR((char *, char *, dir_ent *, int));
-static int	get_sgl_info	__PR((char *, char *, dir_ent *, int));
-static int	get_fe_dir	__PR((char *, char *, dir_ent *, int));
-static int	get_fe_info	__PR((char *, char *, dir_ent *, int));
-static int	get_sgi_dir	__PR((char *, char *, dir_ent *, int));
-static int	get_sgi_info	__PR((char *, char *, dir_ent *, int));
-static int	get_sfm_info	__PR((char *, char *, dir_ent *, int));
+static int	get_none_dir(char *, char *, dir_ent *, int);
+static int	get_none_info(char *, char *, dir_ent *, int);
+static int	get_cap_dir(char *, char *, dir_ent *, int);
+static int	get_cap_info(char *, char *, dir_ent *, int);
+static int	get_es_dir(char *, char *, dir_ent *, int);
+static int	get_es_info(char *, char *, dir_ent *, int);
+static int	get_dbl_dir(char *, char *, dir_ent *, int);
+static int	get_dbl_info(char *, char *, dir_ent *, int);
+static int	get_mb_info(char *, char *, dir_ent *, int);
+static int	get_sgl_info(char *, char *, dir_ent *, int);
+static int	get_fe_dir(char *, char *, dir_ent *, int);
+static int	get_fe_info(char *, char *, dir_ent *, int);
+static int	get_sgi_dir(char *, char *, dir_ent *, int);
+static int	get_sgi_info(char *, char *, dir_ent *, int);
+static int	get_sfm_info(char *, char *, dir_ent *, int);
 
 #ifdef IS_MACOS_X
-static int	get_xhfs_dir	__PR((char *, char *, dir_ent *, int));
-static int	get_xhfs_info	__PR((char *, char *, dir_ent *, int));
+static int	get_xhfs_dir(char *, char *, dir_ent *, int);
+static int	get_xhfs_info(char *, char *, dir_ent *, int);
 #else
 #define	get_xhfs_dir	get_none_dir
 #define	get_xhfs_info	get_none_info
 #endif /* IS_MACOS_X */
 
-static void	set_ct		__PR((hfsdirent *, char *, char *));
-static void	set_Dinfo	__PR((byte *, hfsdirent *));
-static void	set_Finfo	__PR((byte *, hfsdirent *));
-static void	cstrncpy	__PR((char *, char *, int));
-static unsigned char dehex	__PR((char));
-static unsigned char hex2char	__PR((char *));
-static void	hstrncpy	__PR((unsigned char *, char *, int));
-static int	read_info_file	__PR((char *, void *, int));
+static void	set_ct(hfsdirent *, char *, char *);
+static void	set_Dinfo(byte *, hfsdirent *);
+static void	set_Finfo(byte *, hfsdirent *);
+static void	cstrncpy(char *, char *, int);
+static unsigned char dehex(char);
+static unsigned char hex2char(char *);
+static void	hstrncpy(unsigned char *, char *, int);
+static int	read_info_file(char *, void *, int);
 
 /*static unsigned short	calc_mb_crc	__PR((unsigned char *, long, unsigned short));*/
-static struct hfs_info *get_hfs_fe_info	__PR((struct hfs_info *, char *));
-static struct hfs_info *get_hfs_sgi_info __PR((struct hfs_info *, char *));
-static struct hfs_info *match_key	__PR((struct hfs_info *, char *));
+static struct hfs_info *get_hfs_fe_info(struct hfs_info *, char *);
+static struct hfs_info *get_hfs_sgi_info(struct hfs_info *, char *);
+static struct hfs_info *match_key(struct hfs_info *, char *);
 
-static int	get_hfs_itype	__PR((char *, char *, char *));
-static void	map_ext		__PR((char *, char **, char **, short *, char *));
+static int	get_hfs_itype(char *, char *, char *);
+static void	map_ext(char *, char **, char **, short *, char *);
 
 static afpmap	**map;		/* list of mappings */
 static afpmap	*defmap;	/* the default mapping */
@@ -131,9 +131,9 @@ struct hfs_type {	/* Types of various HFS Unix files */
 	int	flags;	/* special flags */
 	char	*info;	/* finderinfo name */
 	char	*rsrc;	/* resource fork name */
-	int	(*get_info) __PR((char *, char *, dir_ent *, int)); /* finderinfo */
+	int	(*get_info)(char *, char *, dir_ent *, int); /* finderinfo */
 								    /*	function */
-	int	(*get_dir) __PR((char *, char *, dir_ent *, int));  /* directory */
+	int	(*get_dir)(char *, char *, dir_ent *, int);  /* directory */
 								    /* name */
 								    /* function */
 	char	*desc;	/* description */
@@ -216,9 +216,7 @@ static unsigned short mb_magic[] = {
 
 #ifndef	HAVE_STRCASECMP
 static int
-strcasecmp(s1, s2)
-	const char	*s1;
-	const char	*s2;
+strcasecmp(const char *s1, const char *s2)
 {
 	while (tolower(*s1) == tolower(*s2)) {
 		if (*s1 == 0)
@@ -237,10 +235,7 @@ strcasecmp(s1, s2)
  */
 
 static void
-set_ct(hfs_ent, c, t)
-	hfsdirent	*hfs_ent;
-	char		*c;
-	char		*t;
+set_ct(hfsdirent *hfs_ent, char *c, char *t)
 {
 	memset(hfs_ent->u.file.type, ' ', CT_SIZE);
 	memset(hfs_ent->u.file.creator, ' ', CT_SIZE);
@@ -258,10 +253,7 @@ set_ct(hfs_ent, c, t)
  *	':' is replaced by '%' and string is terminated with '\0'
  */
 static void
-cstrncpy(t, f, c)
-	char		*t;
-	char		*f;
-	int		c;
+cstrncpy(char *t, char *f, int c)
 {
 	while (c-- && *f) {
 		switch (*f) {
@@ -286,15 +278,8 @@ cstrncpy(t, f, c)
  *
  *	Taken from linux/fs/hfs/trans.c by Paul H. Hargrove
  */
-#ifdef	PROTOTYPES
 static unsigned char
 dehex(char c)
-#else
-static unsigned char
-dehex(c)
-	char	c;
-
-#endif
 {
 	if ((c >= '0') && (c <= '9')) {
 		return (c - '0');
@@ -310,8 +295,7 @@ dehex(c)
 }
 
 static unsigned char
-hex2char(s)
-	char		*s;
+hex2char(char *s)
 {
 	unsigned char	i1;
 	unsigned char	i2;
@@ -345,10 +329,7 @@ hex2char(s)
  *
  */
 static void
-hstrncpy(t, f, c)
-	unsigned char	*t;
-	char		*f;
-	int		c;
+hstrncpy(unsigned char *t, char *f, int c)
 {
 	unsigned char	o;
 
@@ -396,9 +377,7 @@ basename(a)
  *	set_Dinfo: set directory info
  */
 static void
-set_Dinfo(ptr, ent)
-	byte		*ptr;
-	hfsdirent	*ent;
+set_Dinfo(byte *ptr, hfsdirent *ent)
 {
 	Dinfo	*dinfo = (Dinfo *)ptr;
 
@@ -440,9 +419,7 @@ set_Dinfo(ptr, ent)
  *	set_Finfo: set file info
  */
 static void
-set_Finfo(ptr, ent)
-	byte		*ptr;
-	hfsdirent	*ent;
+set_Finfo(byte *ptr, hfsdirent *ent)
 {
 	Finfo	*finfo = (Finfo *)ptr;
 
@@ -469,11 +446,7 @@ set_Finfo(ptr, ent)
  *	get_none_dir: ordinary Unix directory
  */
 static int
-get_none_dir(hname, dname, s_entry, ret)
-	char		*hname;
-	char		*dname;
-	dir_ent		*s_entry;
-	int		ret;
+get_none_dir(char *hname, char *dname, dir_ent *s_entry, int ret)
 {
 	/* just copy the given name */
 	hstrncpy((unsigned char *) (s_entry->hfs_ent->name),
@@ -486,11 +459,7 @@ get_none_dir(hname, dname, s_entry, ret)
  *	get_none_info: ordinary Unix file - try to map extension
  */
 static int
-get_none_info(hname, dname, s_entry, ret)
-	char		*hname;
-	char		*dname;
-	dir_ent		*s_entry;
-	int		ret;
+get_none_info(char *hname, char *dname, dir_ent *s_entry, int ret)
 {
 	char		*t,
 			*c;
@@ -511,10 +480,9 @@ get_none_info(hname, dname, s_entry, ret)
  *			or directory
  */
 static int
-read_info_file(name, info, len)
-	char		*name;	/* finderinfo filename */
-	void		*info;	/* info buffer */
-	int		len;	/* length of above */
+read_info_file(char *name, /* finderinfo filename */
+					void *info, /* info buffer */
+					int len		/* length of above */)
 {
 	FILE		*fp;
 	int		num;
@@ -537,11 +505,10 @@ read_info_file(name, info, len)
  *	get_cap_dir: get the CAP name for a directory
  */
 static int
-get_cap_dir(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_cap_dir(char *hname, /* whole path */ 
+				char *dname, /* this dir name */
+				dir_ent *s_entry, /* directory entry */ 
+				int ret)
 {
 	FileInfo	info;		/* finderinfo struct */
 	int		num = -1;	/* bytes read */
@@ -573,11 +540,10 @@ get_cap_dir(hname, dname, s_entry, ret)
 **	get_cap_info:	get CAP finderinfo for a file
 */
 static int
-get_cap_info(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_cap_info(char *hname, /* whole path */
+				 char *dname, /* this dir name */
+				 dir_ent *s_entry, /* directory entry */
+				 int ret)
 {
 	FileInfo	info;		/* finderinfo struct */
 	int		num = -1;	/* bytes read */
@@ -636,11 +602,10 @@ get_cap_info(hname, dname, s_entry, ret)
  *	<psylvstr@interaccess.com>
  */
 static int
-get_es_dir(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_es_dir(char *hname, /* whole path */ 
+			  char *dname, /* this dir name */
+			  dir_ent *s_entry, /* directory entry */
+			  int ret)
 {
 	es_FileInfo	*einfo;		/* EtherShare info struct */
 	us_FileInfo	*uinfo;		/* UShare info struct */
@@ -696,11 +661,10 @@ get_es_dir(hname, dname, s_entry, ret)
  *	<psylvstr@interaccess.com>
  */
 static int
-get_es_info(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_es_info(char *hname, /* whole path */
+				char *dname, /* this dir name */
+				dir_ent *s_entry, /* directory entry */
+				int ret)
 {
 	es_FileInfo	*einfo;		/* EtherShare info struct */
 	us_FileInfo	*uinfo;		/* UShare info struct */
@@ -789,17 +753,8 @@ get_es_info(hname, dname, s_entry, ret)
  *   Modified by Jim Van Verth to use the magic array for efficiency.
  */
 #ifdef	__used__
-#ifdef	PROTOTYPES
 static unsigned short
 calc_mb_crc(unsigned char *p, long len, unsigned short seed)
-#else
-static unsigned short
-calc_mb_crc(p, len, seed)
-	unsigned char	*p;
-	long		len;
-	unsigned short	seed;
-
-#endif
 {
 	unsigned short	hold;	/* crc computed so far */
 	long		i;	/* index into data */
@@ -816,11 +771,10 @@ calc_mb_crc(p, len, seed)
 #endif	/* __used__ */
 
 static int
-get_mb_info(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_mb_info(char *hname, /* whole path */
+				char *dname, /* this dir name */
+				dir_ent *s_entry, /* directory entry */
+				int ret)
 {
 	mb_info		*info;		/* finderinfo struct */
 	char		*c;
@@ -954,11 +908,10 @@ get_mb_info(hname, dname, s_entry, ret)
  *	Based on code from cvt2cap.c (c) May 1988, Paul Campbell
  */
 static int
-get_dbl_dir(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_dbl_dir(char *hname, /* whole path */
+				char *dname, /* this dir name */
+				dir_ent *s_entry, /* directory entry */
+				int ret)
 {
 	FileInfo	info;		/* finderinfo struct */
 	a_hdr		*hp;
@@ -1087,11 +1040,10 @@ get_dbl_dir(hname, dname, s_entry, ret)
  *	Based on code from cvt2cap.c (c) May 1988, Paul Campbell
  */
 static int
-get_dbl_info(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_dbl_info(char *hname, /* whole path */
+				 char *dname, /* this dir name */
+				 dir_ent *s_entry, /* directory entry */
+				 int ret)
 {
 	FileInfo	info;		/* finderinfo struct */
 	a_hdr		*hp;
@@ -1253,11 +1205,10 @@ get_dbl_info(hname, dname, s_entry, ret)
  *	Based on code from cvt2cap.c (c) May 1988, Paul Campbell
  */
 static int
-get_sgl_info(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_sgl_info(char *hname, /* whole path */
+				 char *dname, /* this dir name */
+				 dir_ent *s_entry, /* directory entry */
+				 int ret)
 {
 	FileInfo	*info = 0;	/* finderinfo struct */
 	a_hdr		*hp;
@@ -1419,9 +1370,7 @@ get_sgl_info(hname, dname, s_entry, ret)
  *	with v2.2 and above.
  */
 static struct hfs_info *
-get_hfs_fe_info(hfs_info, name)
-	struct hfs_info	*hfs_info;
-	char		*name;
+get_hfs_fe_info(struct hfs_info *hfs_info, char *name)
 {
 	FILE		*fp;
 	int		fe_num,
@@ -1520,9 +1469,7 @@ get_hfs_fe_info(hfs_info, name)
  *		file.
  */
 static struct hfs_info *
-get_hfs_sgi_info(hfs_info, name)
-	struct hfs_info	*hfs_info;
-	char		*name;
+get_hfs_sgi_info(struct hfs_info *hfs_info, char *name)
 {
 	FILE		*fp;
 	sgi_info	info;
@@ -1556,8 +1503,7 @@ get_hfs_sgi_info(hfs_info, name)
  *	del_hfs_info: delete the info list and recover memory
  */
 void
-del_hfs_info(hfs_info)
-	struct hfs_info	*hfs_info;
+del_hfs_info(struct hfs_info *hfs_info)
 {
 	struct hfs_info	*hfs_info1;
 
@@ -1578,10 +1524,7 @@ del_hfs_info(hfs_info)
  *		as the key
  */
 static struct hfs_info *
-match_key(hfs_info, key)
-	struct hfs_info	*hfs_info;
-	char		*key;
-
+match_key(struct hfs_info *hfs_info, char *key)
 {
 	while (hfs_info) {
 		if (strcasecmp(key, hfs_info->keyname) == 0)
@@ -1598,11 +1541,10 @@ match_key(hfs_info, key)
  *	base on probing with od ...
  */
 static int
-get_fe_dir(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_fe_dir(char *hname, /* whole path */
+			  char *dname, /* this dir name */
+			  dir_ent *s_entry, /* directory entry */
+			  int ret)
 {
 	struct hfs_info	*hfs_info;
 	hfsdirent	*hfs_ent = s_entry->hfs_ent;
@@ -1640,11 +1582,10 @@ get_fe_dir(hname, dname, s_entry, ret)
  *	<mrwesq@earthlink.net>
  */
 static int
-get_fe_info(hname, dname, s_entry, ret)
-	char	*hname;		/* whole path */
-	char	*dname;		/* this dir name */
-	dir_ent	*s_entry;	/* directory entry */
-	int	ret;
+get_fe_info(char *hname, /* whole path */
+			   char *dname, /* this dir name */
+			   dir_ent *s_entry, /* directory entry */
+			   int ret)
 {
 	struct hfs_info	*hfs_info;
 	hfsdirent	*hfs_ent = s_entry->hfs_ent;
@@ -1708,11 +1649,10 @@ get_fe_info(hname, dname, s_entry, ret)
  *	base on probing with od ...
  */
 static int
-get_sgi_dir(hname, dname, s_entry, ret)
-	char	*hname;		/* whole path */
-	char	*dname;		/* this dir name */
-	dir_ent	*s_entry;	/* directory entry */
-	int	ret;
+get_sgi_dir(char *hname, /* whole path */
+			   char *dname, /* this dir name */
+			   dir_ent *s_entry, /* directory entry */
+			   int ret)
 {
 	struct hfs_info	*hfs_info;
 	hfsdirent	*hfs_ent = s_entry->hfs_ent;
@@ -1751,11 +1691,10 @@ get_sgi_dir(hname, dname, s_entry, ret)
  *	base on probing with od ...
  */
 static int
-get_sgi_info(hname, dname, s_entry, ret)
-	char	*hname;		/* whole path */
-	char	*dname;		/* this dir name */
-	dir_ent	*s_entry;	/* directory entry */
-	int	ret;
+get_sgi_info(char *hname, /* whole path */
+			    char *dname, /* this dir name */
+			    dir_ent *s_entry, /* directory entry */
+			    int ret)
 {
 	struct hfs_info	*hfs_info;
 	hfsdirent	*hfs_ent = s_entry->hfs_ent;
@@ -1804,11 +1743,10 @@ static byte	sfm_magic[4] = {0x41, 0x46, 0x50, 0x00};
 static byte	sfm_version[4] = {0x00, 0x00, 0x01, 0x00};
 
 static int
-get_sfm_info(hname, dname, s_entry, ret)
-	char	*hname;		/* whole path */
-	char	*dname;		/* this dir name */
-	dir_ent	*s_entry;	/* directory entry */
-	int	ret;
+get_sfm_info(char *hname, /* whole path */
+			    char *dname, /* this dir name */
+			    dir_ent *s_entry, /* directory entry */
+			    int ret)
 {
 	sfm_info	info;	/* finderinfo struct */
 	int		num = -1; /* bytes read */
@@ -1851,11 +1789,10 @@ get_sfm_info(hname, dname, s_entry, ret)
  *	The file name here is the pseudo name for the resource fork
  */
 static int
-get_xhfs_dir(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_xhfs_dir(char *hname, /* whole path */
+			    char *dname, /* this dir name */
+			    dir_ent *s_entry, /* directory entry */
+			    int ret)
 {
 	int		err;
 	hfsdirent	*hfs_ent = s_entry->hfs_ent;
@@ -1917,11 +1854,10 @@ get_xhfs_dir(hname, dname, s_entry, ret)
  *	The file name here is the pseudo name for the resource fork
  */
 static int
-get_xhfs_info(hname, dname, s_entry, ret)
-	char		*hname;		/* whole path */
-	char		*dname;		/* this dir name */
-	dir_ent		*s_entry;	/* directory entry */
-	int		ret;
+get_xhfs_info(char *hname, /* whole path */
+			     char *dname, /* this dir name */
+			     dir_ent *s_entry, /* directory entry */
+			     int ret)
 {
 	int		err;
 	hfsdirent	*hfs_ent = s_entry->hfs_ent;
@@ -2005,10 +1941,7 @@ get_xhfs_info(hname, dname, s_entry, ret)
  *	get_hfs_itype: get the type of HFS info for a file
  */
 static int
-get_hfs_itype(wname, dname, htmp)
-	char	*wname;
-	char	*dname;
-	char	*htmp;
+get_hfs_itype(char *wname, char *dname, char *htmp)
 {
 	int	wlen,
 		i;
@@ -2062,8 +1995,7 @@ get_hfs_itype(wname, dname, htmp)
  *	set_root_info: set the root folder hfs_ent from given file
  */
 void
-set_root_info(name)
-	char	*name;
+set_root_info(char *name)
 {
 	dir_ent		*s_entry;
 	hfsdirent	*hfs_ent;
@@ -2093,10 +2025,7 @@ set_root_info(name)
  *	get_hfs_dir: set the HFS directory name
  */
 int
-get_hfs_dir(wname, dname, s_entry)
-	char	*wname;
-	char	*dname;
-	dir_ent	*s_entry;
+get_hfs_dir(char *wname, char *dname, dir_ent *s_entry)
 {
 	int	type;
 
@@ -2113,10 +2042,7 @@ get_hfs_dir(wname, dname, s_entry)
  *	get_hfs_info: set the HFS info for a file
  */
 int
-get_hfs_info(wname, dname, s_entry)
-	char	*wname;
-	char	*dname;
-	dir_ent	*s_entry;
+get_hfs_info(char *wname, char *dname, dir_ent *s_entry)
 {
 	int	type,
 		wlen,
@@ -2186,10 +2112,7 @@ get_hfs_info(wname, dname, s_entry)
  *	the 'info' filename is OK ...
  */
 int
-get_hfs_rname(wname, dname, rname)
-	char	*wname;
-	char	*dname;
-	char	*rname;
+get_hfs_rname(char *wname, char *dname, char *rname)
 {
 	int	wlen,
 		type,
@@ -2296,8 +2219,7 @@ get_hfs_rname(wname, dname, rname)
  *		     These files/directories are processed later ...
  */
 int
-hfs_exclude(d_name)
-	char	*d_name;
+hfs_exclude(char *d_name)
 {
 	/* we don't exclude "." and ".." */
 	if (strcmp(d_name, ".") == 0)
@@ -2427,8 +2349,7 @@ hfs_exclude(d_name)
  *
  */
 void
-print_hfs_info(s_entry)
-	dir_ent	*s_entry;
+print_hfs_info(dir_ent *s_entry)
 {
 	fprintf(stderr, "Name: %s\n", s_entry->whole_name);
 	fprintf(stderr, "\tFile type: %s\n", hfs_types[s_entry->hfs_type].desc);
@@ -2443,17 +2364,8 @@ print_hfs_info(s_entry)
  *	hfs_init: sets up the mapping list from the afpfile as well
  *		 the default mapping (with or without) an afpfile
  */
-#ifdef	PROTOTYPES
 void
 hfs_init(char *name, Ushort fdflags, Uint hfs_select)
-#else
-void
-hfs_init(name, fdflags, hfs_select)
-	char	*name;		/* afpfile name */
-	Ushort	fdflags;	/* default finder flags */
-	Uint	hfs_select;	/* select certain mac files */
-
-#endif
 {
 	FILE	*fp;		/* File pointer */
 	int	count = NUMMAP;	/* max number of entries */
@@ -2616,10 +2528,8 @@ hfs_init(name, fdflags, hfs_select)
 
 #ifdef USE_MAGIC
 static int
-try_map_magic(whole_name, type, creator)
-	char	*whole_name;
-	char	**type;		/* set type */
-	char	**creator;	/* set creator */
+try_map_magic(char *whole_name, char **type, /* set type */
+				  char **creator /* set creator */)
 {
 	const char * ret = magic_file(magic_state, whole_name);
 
@@ -2655,12 +2565,11 @@ try_map_magic(whole_name, type, creator)
  *	map_ext: map a files extension with the list to get type/creator
  */
 static void
-map_ext(name, type, creator, fdflags, whole_name)
-	char	*name;		/* filename */
-	char	**type;		/* set type */
-	char	**creator;	/* set creator */
-	short	*fdflags;	/* set finder flags */
-	char	*whole_name;
+map_ext(char *name, /* filename */
+		  char **type, /* set type */
+		  char **creator, /* set creator */
+		  short *fdflags, /* set finder flags */
+		  char *whole_name)
 {
 	int	i;		/* loop counter */
 	int	len;		/* filename length */
@@ -2727,8 +2636,7 @@ map_ext(name, type, creator, fdflags, whole_name)
 }
 
 void
-delete_rsrc_ent(s_entry)
-	dir_ent	*s_entry;
+delete_rsrc_ent(dir_ent *s_entry)
 {
 	dir_ent	*s_entry1 = s_entry->next;
 
@@ -2764,8 +2672,7 @@ clean_hfs()
 #endif	/* APPLE_HYB */
 
 void
-perr(a)
-	char	*a;
+perr(char *a)
 {
 #ifdef	USE_LIBSCHILY
 	if (a)

@@ -68,8 +68,8 @@
 #include <errno.h>
 #include <glibc_elf.h>
 
-int             add_boot_mipsel_filename  __PR((char *filename));
-static  int     boot_mipsel_write         __PR((FILE *outfile));
+int             add_boot_mipsel_filename(char *filename);
+static  int     boot_mipsel_write(FILE *outfile);
 
 static  char   *boot_file_name = NULL;
 
@@ -124,8 +124,7 @@ static void swap_in_elf32_phdr(Elf32_Phdr *phdr)
 
 /* Simple function: store the filename to be used later when we need
    to find the boot file */
-extern int add_boot_mipsel_filename(filename)
-    char *filename;
+extern int add_boot_mipsel_filename(char *filename)
 {
     boot_file_name = filename;
     return 0;
@@ -185,8 +184,7 @@ static int parse_boot_file(char *filename, int32_t *loadaddr, int32_t *execaddr,
     return 0;
 }
 
-static int boot_mipsel_write(outfile)
-    FILE *outfile;
+static int boot_mipsel_write(FILE *outfile)
 {
     char sector[2048];
     struct dec_bootblock *bb = (struct dec_bootblock *)sector;
@@ -251,4 +249,3 @@ static int boot_mipsel_write(outfile)
 }
 
 struct output_fragment mipselboot_desc = {NULL, oneblock_size, NULL, boot_mipsel_write, "mipsel boot block"};
-

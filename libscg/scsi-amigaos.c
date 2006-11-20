@@ -63,60 +63,58 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-amigaos.c-1.6";	/* The version for this transport */
-LOCAL	char	_scg_auth[] = "T. Langer";
+static	char	_scg_trans_version[] = "scsi-amigaos.c-1.6";	/* The version for this transport */
+static	char	_scg_auth[] = "T. Langer";
 
 #define	MAX_SCG		8	/* Max # of SCSI controllers */
 #define	MAX_TGT		8
 #define	MAX_LUN		8
 #define	MAX_DEV		MAX_SCG*MAX_TGT*MAX_LUN
 
-struct scg_local {
+struct scg_local{
 	int	scgfiles[MAX_SCG][MAX_TGT][MAX_LUN];
 };
 
-#define	scglocal(p)	((struct scg_local *)((p)->local))
+#define	scglocal(p)	((struct scg_local*)((p)->local))
 
 #define	MAX_DMA_AMIGAOS (64*1024)
 
-LOCAL struct IOReq {
+static struct IOReq {
 	struct IOStdReq *ioReq;
 	int		ref_count;
 } request[MAX_DEV];
 
-LOCAL	char			*devs[MAX_SCG];
-LOCAL	struct MsgPort		*ioMsgPort = NULL;
-LOCAL	struct timerequest	*timer_io = NULL;
-LOCAL	struct MsgPort		*timerMsgPort = NULL;
-LOCAL	int			initialized = 0;
-LOCAL	int			last_bus = -1;
+static	char					*devs[MAX_SCG];
+static	struct MsgPort		*ioMsgPort = NULL;
+static	struct timerequest	*timer_io = NULL;
+static	struct MsgPort		*timerMsgPort = NULL;
+static	int			initialized = 0;
+static	int			last_bus = -1;
 /* my private var: for debug purpose only */
-LOCAL	int			ami_debug = 0;
+static	int			ami_debug = 0;
 
 extern	struct ExecBase		*SysBase;
 #define	IOERR_TIMEOUT		(-8)
 #define	CHECK_CONDITION		0x02
 #define	DUNIT(b, t, l)		(100 * b) + (10 * (l < 0 ? 0:l)) + t
 
-LOCAL	void	amiga_init		__PR((void));
-LOCAL	int	amiga_open_scsi		__PR((int bus, int tgt, int lun, SCSI *scgp));
-LOCAL	void	amiga_close_scsi	__PR((int fd));
-LOCAL	void	amiga_close_scsi_all	__PR((void));
-LOCAL	void	amiga_scan_devices	__PR((void));
-LOCAL	int	amiga_find_device	__PR((char *device));
-LOCAL	int	amiga_open_timer	__PR((void));
-LOCAL	void	amiga_close_timer	__PR((void));
-LOCAL	int	amiga_get_scsi_bus	__PR((char *device));
+static	void	amiga_init(void);
+static	int	amiga_open_scsi(int bus, int tgt, int lun, SCSI *scgp);
+static	void	amiga_close_scsi(int fd);
+static	void	amiga_close_scsi_all(void);
+static	void	amiga_scan_devices(void);
+static	int	amiga_find_device(char *device);
+static	int	amiga_open_timer(void);
+static	void	amiga_close_timer(void);
+static	int	amiga_get_scsi_bus(char *device);
 
 /*
  * Return version information for the low level SCSI transport code.
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -137,20 +135,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "Amiga SCSI", "Generic SCSI",
 		"", "bus,target,lun or xxx.device:b,t,l", "1,2,0 or scsi.device:1,2,0", TRUE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -258,9 +252,8 @@ scgo_open(scgp, device)
 	return (nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	register int    b;
 	register int    t;
@@ -281,18 +274,14 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	return (MAX_DMA_AMIGAOS);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -302,19 +291,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -333,12 +319,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= MAX_SCG ||
 	    tgt < 0 || tgt >= MAX_TGT ||
@@ -351,33 +333,28 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return ((int)scglocal(scgp)->scgfiles[busno][tgt][tlun]);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (FALSE);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	/* XXX Is there really no reset function on AmigaOS? */
 	errno = EINVAL;
 	return (-1);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	register struct IOStdReq *ioreq = NULL;
 	struct SCSICmd	Cmd;
@@ -467,10 +444,8 @@ scgo_send(scgp)
 	return (ret);
 }
 
-LOCAL int
-do_scsi_cmd(scsi_io, timeout)
-	struct IOStdReq	*scsi_io;
-	int		timeout;
+static int
+do_scsi_cmd(struct IOStdReq *scsi_io, int timeout)
 {
 	ULONG	scsi_flag = 0;
 	ULONG	timer_flag = 0;
@@ -518,9 +493,8 @@ do_scsi_cmd(scsi_io, timeout)
 /*--------------------------------------------------------------------------*/
 
 /* strlwr: seems not to be implemented in ixemul */
-LOCAL char *
-strlwr(s)
-	char *s;
+static char *
+strlwr(char *s)
 {
 	unsigned char *s1;
 
@@ -536,7 +510,7 @@ strlwr(s)
 /*
  * amiga specific functions
  */
-LOCAL void
+static void
 amiga_init()
 {
 	memset(request, 0, sizeof (request));
@@ -547,7 +521,7 @@ amiga_init()
 	atexit(amiga_close_scsi_all);
 }
 
-LOCAL void
+static void
 amiga_scan_devices()
 {
 	/*
@@ -593,9 +567,8 @@ amiga_scan_devices()
 	}
 }
 
-LOCAL void
-amiga_close_scsi(fd)
-	int	fd;
+static void
+amiga_close_scsi(int fd)
 {
 	if (request[fd].ref_count > 0) {
 		request[fd].ref_count--;
@@ -610,7 +583,7 @@ amiga_close_scsi(fd)
 	}
 }
 
-LOCAL void
+static void
 amiga_close_scsi_all()
 {
 	int	i;
@@ -637,12 +610,8 @@ amiga_close_scsi_all()
 	}
 }
 
-LOCAL int
-amiga_open_scsi(bus, tgt, lun, scgp)
-	int	bus;
-	int	tgt;
-	int	lun;
-	SCSI	*scgp;
+static int
+amiga_open_scsi(int bus, int tgt, int lun, SCSI *scgp)
 {
 	int	fd = bus * MAX_TGT * MAX_LUN + tgt * MAX_LUN + lun;
 	int	unit = DUNIT(bus, tgt, lun);
@@ -699,7 +668,7 @@ amiga_open_scsi(bus, tgt, lun, scgp)
 	return (fd);
 }
 
-LOCAL int
+static int
 amiga_open_timer()
 {
 	int	ret = 0;
@@ -738,7 +707,7 @@ amiga_open_timer()
 	return (ret);
 }
 
-LOCAL void
+static void
 amiga_close_timer()
 {
 	if (timer_io) {
@@ -755,9 +724,8 @@ amiga_close_timer()
 	}
 }
 
-LOCAL int
-amiga_get_scsi_bus(device)
-	char	*device;
+static int
+amiga_get_scsi_bus(char *device)
 {
 	int 	i;
 	char	*tmp = strdup(device);
@@ -778,9 +746,8 @@ amiga_get_scsi_bus(device)
 	return (-1);
 }
 
-LOCAL int
-amiga_find_device(device)
-	char	*device;
+static int
+amiga_find_device(char *device)
 {
 	char		tmp[256];
 	struct Node	*DeviceLibNode = SysBase->DeviceList.lh_Head;

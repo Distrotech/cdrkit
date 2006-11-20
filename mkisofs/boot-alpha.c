@@ -45,23 +45,21 @@
 #include <schily.h>
 #include "endianconv.h"
 
-        int     add_boot_alpha_filename   __PR((char *filename));
-static  int     boot_alpha_write          __PR((FILE *outfile));
+        int     add_boot_alpha_filename(char *filename);
+static  int     boot_alpha_write(FILE *outfile);
 static  char   *boot_file_name = NULL;
 
 #define BOOT_STRING "Linux/Alpha aboot for ISO filesystem."
 
 /* Simple function: store the filename to be used later when we need
    to find the boot file */
-extern int add_boot_alpha_filename(filename)
-    char *filename;
+extern int add_boot_alpha_filename(char *filename)
 {
     boot_file_name = filename;
     return 0;
 }
 
-static int boot_alpha_write(outfile)
-    FILE *outfile;
+static int boot_alpha_write(FILE *outfile)
 {
     unsigned long long boot_sector[256]; /* One (ISO) sector */
     unsigned long long sum = 0;

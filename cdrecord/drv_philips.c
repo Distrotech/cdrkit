@@ -54,38 +54,40 @@ static	char sccsid[] =
 extern	int	debug;
 extern	int	lverbose;
 
-LOCAL	int	load_unload_philips		__PR((SCSI *scgp, int));
-LOCAL	int	philips_load			__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	philips_unload			__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	philips_dumbload		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	philips_dumbunload		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	plasmon_buf			__PR((SCSI *, long *, long *));
-LOCAL	int	recover_philips			__PR((SCSI *scgp, cdr_t *dp, int));
-LOCAL	int	speed_select_yamaha		__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL	int	speed_select_philips		__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL	int	speed_select_oldphilips		__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL	int	speed_select_dumbphilips	__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL	int	speed_select_pioneer		__PR((SCSI *scgp, cdr_t *dp, int *speedp));
-LOCAL	int	philips_init			__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	int	philips_getdisktype		__PR((SCSI *scgp, cdr_t *dp));
-LOCAL	BOOL	capacity_philips		__PR((SCSI *scgp, long *lp));
-LOCAL	int	first_writable_addr_philips	__PR((SCSI *scgp, long *, int, int, int, int));
-LOCAL	int	next_wr_addr_philips		__PR((SCSI *scgp, track_t *trackp, long *ap));
-LOCAL	int	reserve_track_philips		__PR((SCSI *scgp, unsigned long));
-LOCAL	int	scsi_cdr_write_philips		__PR((SCSI *scgp, caddr_t bp, long sectaddr, long size, int blocks, BOOL islast));
-LOCAL	int	write_track_info_philips	__PR((SCSI *scgp, int));
-LOCAL	int	write_track_philips		__PR((SCSI *scgp, long, int));
-LOCAL	int	open_track_philips		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	open_track_plasmon		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	open_track_oldphilips		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	open_track_yamaha		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	close_track_philips		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
-LOCAL	int	fixation_philips		__PR((SCSI *scgp, cdr_t *dp, track_t *trackp));
+static	int	load_unload_philips(SCSI *scgp, int);
+static	int	philips_load(SCSI *scgp, cdr_t *dp);
+static	int	philips_unload(SCSI *scgp, cdr_t *dp);
+static	int	philips_dumbload(SCSI *scgp, cdr_t *dp);
+static	int	philips_dumbunload(SCSI *scgp, cdr_t *dp);
+static	int	plasmon_buf(SCSI *, long *, long *);
+static	int	recover_philips(SCSI *scgp, cdr_t *dp, int);
+static	int	speed_select_yamaha(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	speed_select_philips(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	speed_select_oldphilips(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	speed_select_dumbphilips(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	speed_select_pioneer(SCSI *scgp, cdr_t *dp, int *speedp);
+static	int	philips_init(SCSI *scgp, cdr_t *dp);
+static	int	philips_getdisktype(SCSI *scgp, cdr_t *dp);
+static	BOOL	capacity_philips(SCSI *scgp, long *lp);
+static	int	first_writable_addr_philips(SCSI *scgp, long *, int, int, int, 
+														 int);
+static	int	next_wr_addr_philips(SCSI *scgp, track_t *trackp, long *ap);
+static	int	reserve_track_philips(SCSI *scgp, unsigned long);
+static	int	scsi_cdr_write_philips(SCSI *scgp, caddr_t bp, long sectaddr, 
+												  long size, int blocks, BOOL islast);
+static	int	write_track_info_philips(SCSI *scgp, int);
+static	int	write_track_philips(SCSI *scgp, long, int);
+static	int	open_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	open_track_plasmon(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	open_track_oldphilips(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	open_track_yamaha(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	close_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	fixation_philips(SCSI *scgp, cdr_t *dp, track_t *trackp);
 
-LOCAL	int	philips_attach			__PR((SCSI *scgp, cdr_t *));
-LOCAL	int	plasmon_attach			__PR((SCSI *scgp, cdr_t *));
-LOCAL	int	ricoh_attach			__PR((SCSI *scgp, cdr_t *));
-LOCAL	int	philips_getlilo			__PR((SCSI *scgp, long *lilenp, long *lolenp));
+static	int	philips_attach(SCSI *scgp, cdr_t *);
+static	int	plasmon_attach(SCSI *scgp, cdr_t *);
+static	int	ricoh_attach(SCSI *scgp, cdr_t *);
+static	int	philips_getlilo(SCSI *scgp, long *lilenp, long *lolenp);
 
 
 struct cdd_52x_mode_page_21 {	/* write track information */
@@ -161,12 +163,12 @@ cdr_t	cdr_philips_cdd521O = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_oldphilips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -174,7 +176,7 @@ cdr_t	cdr_philips_cdd521O = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -202,12 +204,12 @@ cdr_t	cdr_philips_dumb = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_oldphilips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -215,7 +217,7 @@ cdr_t	cdr_philips_dumb = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -243,12 +245,12 @@ cdr_t	cdr_philips_cdd521 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_philips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -256,7 +258,7 @@ cdr_t	cdr_philips_cdd521 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -285,12 +287,12 @@ cdr_t	cdr_philips_cdd522 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_philips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -298,7 +300,7 @@ cdr_t	cdr_philips_cdd522 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -326,12 +328,12 @@ cdr_t	cdr_tyuden_ew50 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_philips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -339,7 +341,7 @@ cdr_t	cdr_tyuden_ew50 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -367,12 +369,12 @@ cdr_t	cdr_kodak_pcd600 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_oldphilips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -380,7 +382,7 @@ cdr_t	cdr_kodak_pcd600 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -408,12 +410,12 @@ cdr_t	cdr_plasmon_rf4100 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_plasmon,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -421,7 +423,7 @@ cdr_t	cdr_plasmon_rf4100 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -449,13 +451,13 @@ cdr_t	cdr_pioneer_dw_s114x = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 /*	open_track_yamaha,*/
 /*???*/	open_track_oldphilips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -463,7 +465,7 @@ cdr_t	cdr_pioneer_dw_s114x = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -492,12 +494,12 @@ cdr_t	cdr_yamaha_cdr100 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_yamaha,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -505,7 +507,7 @@ cdr_t	cdr_yamaha_cdr100 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -534,12 +536,12 @@ cdr_t	cdr_ricoh_ro1060 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_philips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -547,7 +549,7 @@ cdr_t	cdr_ricoh_ro1060 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
@@ -576,12 +578,12 @@ cdr_t	cdr_ricoh_ro1420 = {
 	next_wr_addr_philips,
 	reserve_track_philips,
 	scsi_cdr_write_philips,
-	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy,	/* gen_cue */
+	(int(*)(track_t *, void *, BOOL))cmd_dummy,	/* gen_cue */
 	no_sendcue,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy, /* leadin */
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy, /* leadin */
 	open_track_philips,
 	close_track_philips,
-	(int(*)__PR((SCSI *, cdr_t *, track_t *)))cmd_dummy,
+	(int(*)(SCSI *, cdr_t *, track_t *))cmd_dummy,
 	cmd_dummy,
 	cmd_dummy,					/* abort	*/
 	read_session_offset_philips,
@@ -589,16 +591,13 @@ cdr_t	cdr_ricoh_ro1420 = {
 	cmd_dummy,					/* stats	*/
 	blank_dummy,
 	format_dummy,
-	(int(*)__PR((SCSI *, caddr_t, int, int)))NULL,	/* no OPC	*/
+	(int(*)(SCSI *, caddr_t, int, int))NULL,	/* no OPC	*/
 	cmd_dummy,					/* opt1		*/
 	cmd_dummy,					/* opt2		*/
 };
 
 
-LOCAL int
-load_unload_philips(scgp, load)
-	SCSI	*scgp;
-	int	load;
+static int load_unload_philips(SCSI *scgp, int load)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -617,26 +616,20 @@ load_unload_philips(scgp, load)
 	return (0);
 }
 
-LOCAL int
-philips_load(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+philips_load(SCSI *scgp, cdr_t *dp)
 {
 	return (load_unload_philips(scgp, 1));
 }
 
-LOCAL int
-philips_unload(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+philips_unload(SCSI *scgp, cdr_t *dp)
 {
 	return (load_unload_philips(scgp, 0));
 }
 
-LOCAL int
-philips_dumbload(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+philips_dumbload(SCSI *scgp, cdr_t *dp)
 {
 	int	ret;
 
@@ -648,10 +641,8 @@ philips_dumbload(scgp, dp)
 	return (0);
 }
 
-LOCAL int
-philips_dumbunload(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+philips_dumbunload(SCSI *scgp, cdr_t *dp)
 {
 	int	ret;
 
@@ -663,11 +654,10 @@ philips_dumbunload(scgp, dp)
 	return (0);
 }
 
-LOCAL int
-plasmon_buf(scgp, sp, fp)
-	SCSI	*scgp;
-	long	*sp;	/* Size pointer */
-	long	*fp;	/* Free space pointer */
+static int 
+plasmon_buf(SCSI *scgp, 
+            long *sp /* Size pointer */, 
+            long *fp /* Free space pointer */)
 {
 	/*
 	 * There's no way to obtain these values from the
@@ -687,11 +677,8 @@ plasmon_buf(scgp, sp, fp)
 	return (100);	/* 100 % */
 }
 
-LOCAL int
-recover_philips(scgp, dp, track)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	track;
+static int 
+recover_philips(SCSI *scgp, cdr_t *dp, int track)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -709,11 +696,8 @@ recover_philips(scgp, dp, track)
 	return (0);
 }
 
-LOCAL int
-speed_select_yamaha(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	*speedp;
+static int 
+speed_select_yamaha(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	struct	scsi_mode_page_header	*mp;
 	char				mode[256];
@@ -759,11 +743,8 @@ speed_select_yamaha(scgp, dp, speedp)
 	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
 }
 
-LOCAL int
-speed_select_philips(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	*speedp;
+static int 
+speed_select_philips(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	struct	scsi_mode_page_header	*mp;
 	char				mode[256];
@@ -808,11 +789,8 @@ speed_select_philips(scgp, dp, speedp)
 	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
 }
 
-LOCAL int
-speed_select_pioneer(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	*speedp;
+static int 
+speed_select_pioneer(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	if (speedp != 0 && *speedp < 2) {
 		*speedp = 2;
@@ -822,11 +800,8 @@ speed_select_pioneer(scgp, dp, speedp)
 	return (speed_select_philips(scgp, dp, speedp));
 }
 
-LOCAL int
-speed_select_oldphilips(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	*speedp;
+static int 
+speed_select_oldphilips(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	BOOL	dummy = (dp->cdr_cmdflags & F_DUMMY) != 0;
 
@@ -839,21 +814,16 @@ speed_select_oldphilips(scgp, dp, speedp)
 	return (0);
 }
 
-LOCAL int
-speed_select_dumbphilips(scgp, dp, speedp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	int	*speedp;
+static int 
+speed_select_dumbphilips(SCSI *scgp, cdr_t *dp, int *speedp)
 {
 	if (speed_select_philips(scgp, dp, speedp) < 0)
 		return (speed_select_oldphilips(scgp, dp, speedp));
 	return (0);
 }
 
-LOCAL int
-philips_init(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+philips_init(SCSI *scgp, cdr_t *dp)
 {
 	return ((*dp->cdr_set_speed_dummy)(scgp, dp, NULL));
 }
@@ -861,10 +831,8 @@ philips_init(scgp, dp)
 
 #define	IS(what, flag)	printf("  Is %s%s\n", flag?"":"not ", what);
 
-LOCAL int
-philips_getdisktype(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+philips_getdisktype(SCSI *scgp, cdr_t *dp)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
 	char	sbuf[16];
@@ -942,10 +910,8 @@ philips_getdisktype(scgp, dp)
 	return (drive_getdisktype(scgp, dp));
 }
 
-LOCAL BOOL
-capacity_philips(scgp, lp)
-	SCSI	*scgp;
-	long	*lp;
+static BOOL 
+capacity_philips(SCSI *scgp, long *lp)
 {
 	long	l = 0L;
 	BOOL	succeed = TRUE;
@@ -977,16 +943,11 @@ struct	fwa {
 	char	res;
 };
 
-LOCAL int
-first_writable_addr_philips(scgp, ap, track, isaudio, preemp, npa)
-	SCSI	*scgp;
-	long	*ap;
-	int	track;
-	int	isaudio;
-	int	preemp;
-	int	npa;
+static int 
+first_writable_addr_philips(SCSI *scgp, long *ap, int track, int isaudio, 
+										int preemp, int npa)
 {
-		struct	fwa	fwa;
+	struct	fwa	fwa;
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
 	fillbytes((caddr_t)&fwa, sizeof (fwa), '\0');
@@ -1014,11 +975,8 @@ first_writable_addr_philips(scgp, ap, track, isaudio, preemp, npa)
 	return (0);
 }
 
-LOCAL int
-next_wr_addr_philips(scgp, trackp, ap)
-	SCSI	*scgp;
-	track_t	*trackp;
-	long	*ap;
+static int 
+next_wr_addr_philips(SCSI *scgp, track_t *trackp, long *ap)
 {
 
 /*	if (first_writable_addr_philips(scgp, ap, 0, 0, 0, 1) < 0)*/
@@ -1027,10 +985,8 @@ next_wr_addr_philips(scgp, trackp, ap)
 	return (0);
 }
 
-LOCAL int
-reserve_track_philips(scgp, len)
-	SCSI	*scgp;
-	unsigned long len;
+static int 
+reserve_track_philips(SCSI *scgp, unsigned long len)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1049,22 +1005,19 @@ reserve_track_philips(scgp, len)
 	return (0);
 }
 
-LOCAL int
-scsi_cdr_write_philips(scgp, bp, sectaddr, size, blocks, islast)
-	SCSI	*scgp;
-	caddr_t	bp;		/* address of buffer */
-	long	sectaddr;	/* disk address (sector) to put */
-	long	size;		/* number of bytes to transfer */
-	int	blocks;		/* sector count */
-	BOOL	islast;		/* last write for track */
+static int 
+scsi_cdr_write_philips(SCSI *scgp, 
+                       caddr_t bp       /* address of buffer */,
+                       long sectaddr    /* disk address (sector) to put */,
+                       long size        /* number of bytes to transfer */, 
+                       int blocks       /* sector count */, 
+                       BOOL islast      /* last write for track */)
 {
 	return (write_xg0(scgp, bp, 0, size, blocks));
 }
 
-LOCAL int
-write_track_info_philips(scgp, sectype)
-	SCSI	*scgp;
-	int	sectype;
+static int 
+write_track_info_philips(SCSI *scgp, int sectype)
 {
 	struct cdd_52x_mode_data md;
 	int	count = sizeof (struct scsi_mode_header) +
@@ -1080,11 +1033,10 @@ write_track_info_philips(scgp, sectype)
 	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
 }
 
-LOCAL int
-write_track_philips(scgp, track, sectype)
-	SCSI	*scgp;
-	long	track;		/* track number 0 == new track */
-	int	sectype;
+static int 
+write_track_philips(SCSI *scgp, 
+							long track /* track number 0 == new track */, 
+                    	int sectype)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1105,11 +1057,8 @@ write_track_philips(scgp, track, sectype)
 	return (0);
 }
 
-LOCAL int
-open_track_philips(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t *trackp;
+static int 
+open_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	if (select_secsize(scgp, trackp->secsize) < 0)
 		return (-1);
@@ -1123,11 +1072,8 @@ open_track_philips(scgp, dp, trackp)
 	return (0);
 }
 
-LOCAL int
-open_track_plasmon(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t *trackp;
+static int 
+open_track_plasmon(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	if (select_secsize(scgp, trackp->secsize) < 0)
 		return (-1);
@@ -1138,11 +1084,8 @@ open_track_plasmon(scgp, dp, trackp)
 	return (0);
 }
 
-LOCAL int
-open_track_oldphilips(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int 
+open_track_oldphilips(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	if (write_track_philips(scgp, 0, trackp->sectype) < 0)
 		return (-1);
@@ -1150,11 +1093,8 @@ open_track_oldphilips(scgp, dp, trackp)
 	return (0);
 }
 
-LOCAL int
-open_track_yamaha(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int 
+open_track_yamaha(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	if (select_secsize(scgp, trackp->secsize) < 0)
 		return (-1);
@@ -1165,20 +1105,13 @@ open_track_yamaha(scgp, dp, trackp)
 	return (0);
 }
 
-LOCAL int
-close_track_philips(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int 
+close_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	return (scsi_flush_cache(scgp, FALSE));
 }
 
-LOCAL int
-fixation_philips(scgp, dp, trackp)
-	SCSI	*scgp;
-	cdr_t	*dp;
-	track_t	*trackp;
+static int fixation_philips(SCSI *scgp, cdr_t *dp, track_t *trackp)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
@@ -1353,19 +1286,15 @@ static const char *sd_ro1420_error_str[] = {
 	NULL
 };
 
-LOCAL int
-philips_attach(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+philips_attach(SCSI *scgp, cdr_t *dp)
 {
 	scg_setnonstderrs(scgp, sd_cdd_521_error_str);
 	return (0);
 }
 
-LOCAL int
-plasmon_attach(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+plasmon_attach(SCSI *scgp, cdr_t *dp)
 {
 	scgp->inq->data_format = 1;	/* Correct the ly */
 
@@ -1373,10 +1302,8 @@ plasmon_attach(scgp, dp)
 	return (0);
 }
 
-LOCAL int
-ricoh_attach(scgp, dp)
-	SCSI	*scgp;
-	cdr_t	*dp;
+static int 
+ricoh_attach(SCSI *scgp, cdr_t *dp)
 {
 	if (dp == &cdr_ricoh_ro1060) {
 		errmsgno(EX_BAD, "No support for Ricoh RO-1060C\n");
@@ -1386,14 +1313,11 @@ ricoh_attach(scgp, dp)
 	return (0);
 }
 
-LOCAL int
-philips_getlilo(scgp, lilenp, lolenp)
-	SCSI	*scgp;
-	long	*lilenp;
-	long	*lolenp;
+static int 
+philips_getlilo(SCSI *scgp, long *lilenp, long *lolenp)
 {
-		char	buf[4];
-		long	li, lo;
+	char	buf[4];
+	long	li, lo;
 	register struct	scg_cmd	*scmd = scgp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');

@@ -43,15 +43,14 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>
 #include "scgtimes.h"
 
-EXPORT	void	__scg_times	__PR((SCSI *scgp));
+void	__scg_times(SCSI *scgp);
 
 /*
  * We don't like to make this a public interface to prevent bad users
  * from making our timing incorrect.
  */
-EXPORT void
-__scg_times(scgp)
-	SCSI	*scgp;
+void
+__scg_times(SCSI *scgp)
 {
 	struct timeval	*stp = scgp->cmdstop;
 

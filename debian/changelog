@@ -1,41 +1,22 @@
-cdrkit (5:1.0-1) unstable; urgency=high
+cdrkit (5:1.0~pre5-1.1) unstable; urgency=low
 
-  [ Eduard Bloch ]
   * ATAPI -> ATA mapping and better error messages (closes: #398465)
   * more reliable FIFO process termination (closes: #398043)
   * prints burn-free message only with higher verbosity (closes: 388770)
   * sorted file list printing, by Dennis Vshivkov (closes: #278071)
 
-  [ Joerg Jaspert ]
-  *  Remove all the printing of useless messages. This is based on GPLed
-     code, so we follow the letter of the GPL as it is interpreted by 99%
-     of the world, including its authors. Especially as Joerg was never able
-     to give us any clear explanation what other license he may think
-     cdrtools had, despite us asking multiple times. So we have no other
-     choice than to take whats written down, and thats GPL.
-  * The above fixes "license needs to be clarified" as well as
-    "Cdrkit possibly made non-free by former upstream, refuses
-    clarification"(Closes: #387783, #392342).
-    Note that I do not remove the "You may not return schily" clauses.
-    They are, in my understanding, valid requests an upstream can make, not
-    including his name if he doesn't want it. They are also no problem for
-    anyone, anywhere, the other stuff was.
-  * Was included earlier, close Bug "diff for 5:1.0~pre4-1.1 NMU" (Closes: #388595).
-  * Bug fix: "wodim: Spelling error in output of -checkdrive", thanks to
-    Alexey Feldgendler (Closes: #389135).
-  * Urgency high.
-
- -- Joerg Jaspert <joerg@debian.org>  Mon, 20 Nov 2006 19:42:09 +0100
+ -- Eduard Bloch <blade@debian.org>  Tue, 14 Nov 2006 15:08:16 +0100
 
 cdrkit (5:1.0~pre5-1) unstable; urgency=low
 
   * New upstream source snapshot
     + typos in wodim.1 fixes, thanks to J. Alto (closes: #386898)
-    + reenabled libedc support (closes: #387429)
+    + enabled libedc support (closes: #387429)
     + reenabled REMOTE target support (closes: #396460)
     + terminates FIFO process on exist (closes: #397271)
     + option (env. variable) to skip DMA tests (closes: #293953)
   * fixed installation of FAQ and FORK files (closes: #386735)
+  * remove . from the include list, patch by Modestas Vainius (closes: 358497)
   * cdda2ogg/cdda2mp3 are unified, installing cdda2mp3 as symlink
   * remove . from the include list, patch by Modestas Vainius
     (closes: #358497, acknowledging NMU by Steinar H. Gunderson)
@@ -46,15 +27,6 @@ cdrkit (5:1.0~pre5-1) unstable; urgency=low
     (closes: #388403, #390084, #388119, #387854)
 
  -- Eduard Bloch <blade@debian.org>  Tue, 07 Nov 2006 11:56:05 +0100
-
-cdrkit (5:1.0~pre4-1.1) unstable; urgency=medium
-
-  * Non-maintainer upload.
-  * Don't build with -I. -- fixes include of wrong endian.h, which in turn
-    makes sure mkisofs capitalizes filenames correctly; patch from 
-    Modestas Vainius. (Closes: #358497)
-
- -- Steinar H. Gunderson <sesse@debian.org>  Thu, 21 Sep 2006 13:58:12 +0200
 
 cdrkit (5:1.0~pre4-1) unstable; urgency=low
 

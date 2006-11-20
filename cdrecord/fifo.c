@@ -175,49 +175,48 @@ struct faio_stats {
 #define	READER_DELAY	(80*MSECS)
 #define	READER_MAXWAIT	(240*SECS)	/* 240 seconds max wait for reader */
 
-LOCAL	char	*buf;
-LOCAL	char	*bufbase;
-LOCAL	char	*bufend;
-LOCAL	long	buflen;			/* The size of the FIFO buffer */
+static	char	*buf;
+static	char	*bufbase;
+static	char	*bufend;
+static	long	buflen;			/* The size of the FIFO buffer */
 
 extern	int	debug;
 extern	int	lverbose;
 
-EXPORT	void	init_fifo	__PR((long));
+void	init_fifo(long);
 #ifdef	USE_MMAP
-LOCAL	char	*mkshare	__PR((int size));
+static	char	*mkshare(int size);
 #endif
 #ifdef	USE_USGSHM
-LOCAL	char	*mkshm		__PR((int size));
+static	char	*mkshm(int size);
 #endif
 #ifdef	USE_OS2SHM
-LOCAL	char	*mkos2shm	__PR((int size));
+static	char	*mkos2shm(int size);
 #endif
 #ifdef	USE_BEOS_AREAS
-LOCAL	char	*mkbeosshm	__PR((int size));
-LOCAL	void	beosshm_child	__PR((void));
+static	char	*mkbeosshm(int size);
+static	void	beosshm_child(void);
 #endif
 
-EXPORT	BOOL	init_faio	__PR((track_t *trackp, int));
-EXPORT	BOOL	await_faio	__PR((void));
-EXPORT	void	kill_faio	__PR((void));
-EXPORT	int	wait_faio	__PR((void));
-LOCAL	void	faio_reader	__PR((track_t *trackp));
-LOCAL	void	faio_read_track	__PR((track_t *trackp));
-LOCAL	void	faio_wait_on_buffer __PR((faio_t *f, fowner_t s,
-					unsigned long delay,
-					unsigned long max_wait));
-LOCAL	int	faio_read_segment __PR((int fd, faio_t *f, track_t *track, long secno, int len));
-LOCAL	faio_t	*faio_ref	__PR((int n));
-EXPORT	int	faio_read_buf	__PR((int f, char *bp, int size));
-EXPORT	int	faio_get_buf	__PR((int f, char **bpp, int size));
-EXPORT	void	fifo_stats	__PR((void));
-EXPORT	int	fifo_percent	__PR((BOOL addone));
+BOOL	init_faio(track_t *trackp, int);
+BOOL	await_faio(void);
+void	kill_faio(void);
+int	wait_faio(void);
+static	void	faio_reader(track_t *trackp);
+static	void	faio_read_track(track_t *trackp);
+static	void	faio_wait_on_buffer(faio_t *f, fowner_t s, unsigned long delay,
+											  unsigned long max_wait);
+static	int	faio_read_segment(int fd, faio_t *f, track_t *track, long secno, 
+											int len);
+static	faio_t	*faio_ref(int n);
+int	faio_read_buf(int f, char *bp, int size);
+int	faio_get_buf(int f, char **bpp, int size);
+void	fifo_stats(void);
+int	fifo_percent(BOOL addone);
 
 
-EXPORT void
-init_fifo(fs)
-	long	fs;
+void
+init_fifo(long fs)
 {
 	int	pagesize;
 
@@ -265,9 +264,8 @@ init_fifo(fs)
 }
 
 #ifdef	USE_MMAP
-LOCAL char *
-mkshare(size)
-	int	size;
+static char *
+mkshare(int size)
 {
 	int	f;
 	char	*addr;
@@ -297,9 +295,8 @@ mkshare(size)
 #ifdef	USE_USGSHM
 #include <sys/ipc.h>
 #include <sys/shm.h>
-LOCAL char *
-mkshm(size)
-	int	size;
+static char *
+mkshm(int size)
 {
 	int	id;
 	char	*addr;
@@ -345,9 +342,8 @@ mkshm(size)
 #endif
 
 #ifdef	USE_OS2SHM
-LOCAL char *
-mkos2shm(size)
-	int	size;
+static char *
+mkos2shm(int size)
 {
 	char	*addr;
 
@@ -367,13 +363,12 @@ mkos2shm(size)
 #endif
 
 #ifdef	USE_BEOS_AREAS
-LOCAL	area_id	faio_aid;
-LOCAL	void	*faio_addr;
-LOCAL	char	faio_name[32];
+static	area_id	faio_aid;
+static	void	*faio_addr;
+static	char	faio_name[32];
 
-LOCAL char *
-mkbeosshm(size)
-	int	size;
+static char *
+mkbeosshm(int size)
 {
 	snprintf(faio_name, sizeof (faio_name), "cdrecord FIFO %lld",
 		(Llong)getpid());
@@ -391,7 +386,7 @@ mkbeosshm(size)
 	return (faio_addr);
 }
 
-LOCAL void
+static void
 beosshm_child()
 {
 	/*
@@ -411,14 +406,14 @@ beosshm_child()
 }
 #endif
 
-LOCAL	int	faio_buffers;
-LOCAL	int	faio_buf_size;
-LOCAL	int	buf_idx = 0;		/* Initialize to fix an Amiga bug   */
-LOCAL	int	buf_idx_reader = 0;	/* Separate var to allow vfork()    */
+static	int	faio_buffers;
+static	int	faio_buf_size;
+static	int	buf_idx = 0;		/* Initialize to fix an Amiga bug   */
+static	int	buf_idx_reader = 0;	/* Separate var to allow vfork()    */
 					/* buf_idx_reader is for the process */
 					/* that fills the FIFO		    */
-LOCAL	pid_t	faio_pid = -1;
-LOCAL	BOOL	faio_didwait;
+static	pid_t	faio_pid = -1;
+static	BOOL	faio_didwait;
 
 #ifdef AMIGA
 /*
@@ -437,10 +432,8 @@ LOCAL	BOOL	faio_didwait;
 /*#define	faio_ref(n)	(&((faio_t *)buf)[n])*/
 
 
-EXPORT BOOL
-init_faio(trackp, bufsize)
-	track_t	*trackp;
-	int	bufsize;	/* The size of a single transfer buffer */
+BOOL
+init_faio(track_t *trackp, int bufsize)
 {
 	int	n;
 	faio_t	*f;
@@ -547,7 +540,7 @@ init_faio(trackp, bufsize)
 	return (TRUE);
 }
 
-EXPORT BOOL
+BOOL
 await_faio()
 {
 	int	n;
@@ -584,7 +577,7 @@ await_faio()
 	return (TRUE);
 }
 
-EXPORT void
+void
 kill_faio()
 {
 	if (faio_pid > 0)
@@ -592,7 +585,7 @@ kill_faio()
   faio_pid=-1;
 }
 
-EXPORT int
+int
 wait_faio()
 {
 	if (faio_pid > 0 && !faio_didwait)
@@ -601,9 +594,8 @@ wait_faio()
 	return (0);
 }
 
-LOCAL void
-faio_reader(trackp)
-	track_t	*trackp;
+static void
+faio_reader(track_t *trackp)
 {
 	/* This function should not return, but _exit. */
 	Uint	trackno;
@@ -635,18 +627,16 @@ faio_reader(trackp)
 }
 
 #ifndef	faio_ref
-LOCAL faio_t *
-faio_ref(n)
-	int	n;
+static faio_t *
+faio_ref(int n)
 {
 	return (&((faio_t *)buf)[n]);
 }
 #endif
 
 
-LOCAL void
-faio_read_track(trackp)
-	track_t *trackp;
+static void
+faio_read_track(track_t *trackp)
 {
 	int	fd = -1;
 	int	bytespt = trackp->secsize * trackp->secspt;
@@ -688,17 +678,13 @@ faio_read_track(trackp)
 	xclose(trackp->xfp);	/* Don't keep files open longer than neccesary */
 }
 
-LOCAL void
+static void
 #ifdef	PROTOTYPES
 faio_wait_on_buffer(faio_t *f, fowner_t s,
 			unsigned long delay,
 			unsigned long max_wait)
 #else
-faio_wait_on_buffer(f, s, delay, max_wait)
-	faio_t	*f;
-	fowner_t s;
-	unsigned long delay;
-	unsigned long max_wait;
+faio_wait_on_buffer(faio_t *f, fowner_t *s, unsigned long delay, unsigned long max_wait)
 #endif
 {
 	unsigned long max_loops;
@@ -730,13 +716,8 @@ faio_wait_on_buffer(f, s, delay, max_wait)
 	(s > owner_reader || s < owner_none) ? "bad_owner" : onames[s-owner_none]);
 }
 
-LOCAL int
-faio_read_segment(fd, f, trackp, secno, len)
-	int	fd;
-	faio_t	*f;
-	track_t	*trackp;
-	long	secno;
-	int	len;
+static int
+faio_read_segment(int fd, faio_t *f, track_t *trackp, long secno, int len)
 {
 	int l;
 
@@ -754,11 +735,8 @@ faio_read_segment(fd, f, trackp, secno, len)
 	return (l);
 }
 
-EXPORT int
-faio_read_buf(fd, bp, size)
-	int fd;
-	char *bp;
-	int size;
+int
+faio_read_buf(int fd, char *bp, int size)
 {
 	char *bufp;
 
@@ -769,11 +747,8 @@ faio_read_buf(fd, bp, size)
 	return (len);
 }
 
-EXPORT int
-faio_get_buf(fd, bpp, size)
-	int fd;
-	char **bpp;
-	int size;
+int
+faio_get_buf(int fd, char **bpp, int size)
 {
 	faio_t	*f;
 	int	len;
@@ -823,7 +798,7 @@ again:
 	return (len);
 }
 
-EXPORT void
+void
 fifo_stats()
 {
 	if (sp == NULL)	/* We might not use a FIFO */
@@ -835,9 +810,8 @@ fifo_stats()
 		sp->empty, sp->full, (100L*sp->cont_low)/faio_buffers);
 }
 
-EXPORT int
-fifo_percent(addone)
-	BOOL	addone;
+int
+fifo_percent(BOOL addone)
 {
 	int	percent;
 
@@ -859,75 +833,57 @@ fifo_percent(addone)
 
 #include "cdrecord.h"
 
-EXPORT	void	init_fifo	__PR((long));
-EXPORT	BOOL	init_faio	__PR((track_t *track, int));
-EXPORT	BOOL	await_faio	__PR((void));
-EXPORT	void	kill_faio	__PR((void));
-EXPORT	int	wait_faio	__PR((void));
-EXPORT	int	faio_read_buf	__PR((int f, char *bp, int size));
-EXPORT	int	faio_get_buf	__PR((int f, char **bpp, int size));
-EXPORT	void	fifo_stats	__PR((void));
-EXPORT	int	fifo_percent	__PR((BOOL addone));
+void	init_fifo(long);
+BOOL	init_faio(track_t *track, int);
+BOOL	await_faio(void);
+void	kill_faio(void);
+int	wait_faio(void);
+int	faio_read_buf(int f, char *bp, int size);
+int	faio_get_buf(int f, char **bpp, int size);
+void	fifo_stats(void);
+int	fifo_percent(BOOL addone);
 
 
-EXPORT void
-init_fifo(fs)
-	long	fs;
+void init_fifo(long fs)
 {
 	errmsgno(EX_BAD, "Fifo not supported.\n");
 }
 
-EXPORT BOOL
-init_faio(track, bufsize)
-	track_t	*track;
-	int	bufsize;
+BOOL init_faio(track_t *track, 
+               int bufsize /* The size of a single transfer buffer */)
 {
 	return (FALSE);
 }
 
-EXPORT BOOL
-await_faio()
+BOOL await_faio()
 {
 	return (TRUE);
 }
 
-EXPORT void
-kill_faio()
+void kill_faio()
 {
 }
 
-EXPORT int
-wait_faio()
+int wait_faio()
 {
 	return (0);
 }
 
-EXPORT int
-faio_read_buf(fd, bp, size)
-	int fd;
-	char *bp;
-	int size;
+int faio_read_buf(int fd, char *bp, int size)
 {
 	return (0);
 }
 
-EXPORT int
-faio_get_buf(fd, bpp, size)
-	int fd;
-	char **bpp;
-	int size;
+int faio_get_buf(int fd, char **bpp, int size)
 {
 	return (0);
 }
 
-EXPORT void
-fifo_stats()
+void fifo_stats()
 {
 }
 
-EXPORT int
-fifo_percent(addone)
-	BOOL	addone;
+int fifo_percent(BOOL addone)
 {
 	return (-1);
 }

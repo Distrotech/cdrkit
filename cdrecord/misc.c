@@ -41,15 +41,11 @@ static	char sccsid[] =
 #include <standard.h>
 #include <schily.h>
 
-EXPORT	void	timevaldiff	__PR((struct timeval *start, struct timeval *stop));
-EXPORT	void	prtimediff	__PR((const char *fmt,
-					struct timeval *start,
-					struct timeval *stop));
+void	timevaldiff(struct timeval *start, struct timeval *stop);
+void	prtimediff(const char *fmt, struct timeval *start, struct timeval *stop);
 
-EXPORT void
-timevaldiff(start, stop)
-	struct timeval	*start;
-	struct timeval	*stop;
+void
+timevaldiff(struct timeval *start, struct timeval *stop)
 {
 	struct timeval tv;
 
@@ -66,11 +62,8 @@ timevaldiff(start, stop)
 	*stop = tv;
 }
 
-EXPORT void
-prtimediff(fmt, start, stop)
-	const	char	*fmt;
-	struct timeval	*start;
-	struct timeval	*stop;
+void
+prtimediff(const char *fmt, struct timeval *start, struct timeval *stop)
 {
 	struct timeval tv;
 

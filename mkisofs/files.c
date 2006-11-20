@@ -48,13 +48,12 @@ static	char sccsid[] =
 
 #ifdef ADD_FILES
 
-void	add_one_file	__PR((char *addpath, char *path));
-void	add_file_list	__PR((int argc, char **argv, int ind));
-void	add_file	__PR((char *filename));
-char *	look_up_addition __PR((char **newpath, char *path,
-					struct dirent **de));
-void	nuke_duplicates	__PR((char *path, struct dirent **de));
-struct dirent  *readdir_add_files __PR((char **pathp, char *path, DIR *dir));
+void	add_one_file(char *addpath, char *path);
+void	add_file_list(int argc, char **argv, int ind);
+void	add_file(char *filename);
+char *look_up_addition(char **newpath, char *path, struct dirent **de);
+void	nuke_duplicates(char *path, struct dirent **de);
+struct dirent  *readdir_add_files(char **pathp, char *path, DIR *dir);
 
 struct file_adds {
 	char			*name;
@@ -100,9 +99,7 @@ extern struct file_adds *root_file_adds;
 struct file_adds *root_file_adds = NULL;
 
 void
-add_one_file(addpath, path)
-	char	*addpath;
-	char	*path;
+add_one_file(char *addpath, char *path)
 {
 	char			*cp;
 	char			*name;
@@ -193,10 +190,7 @@ next:
  * Arguments:
  */
 void
-add_file_list(argc, argv, ind)
-	int	argc;
-	char	**argv;
-	int	ind;
+add_file_list(int argc, char **argv, int ind)
 {
 	char	*ptr;
 	char	*dup_arg;
@@ -217,8 +211,7 @@ add_file_list(argc, argv, ind)
 }
 
 void
-add_file(filename)
-	char	*filename;
+add_file(char *filename)
 {
 	char	buff[PATH_MAX];
 	FILE	*f;
@@ -272,10 +265,7 @@ add_file(filename)
 
 /* This function looks up additions. */
 char *
-look_up_addition(newpath, path, de)
-	char		**newpath;
-	char		*path;
-	struct dirent	**de;
+look_up_addition(char **newpath, char *path, struct dirent **de)
 {
 	char			*dup_path;
 	char			*cp;
@@ -323,9 +313,7 @@ look_up_addition(newpath, path, de)
 
 /* This function looks up additions. */
 void
-nuke_duplicates(path, de)
-	char		*path;
-	struct dirent	**de;
+nuke_duplicates(char *path, struct dirent **de)
 {
 	char			*dup_path;
 	char			*cp;
@@ -374,10 +362,7 @@ nuke_duplicates(path, de)
  */
 
 struct dirent  *
-readdir_add_files(pathp, path, dir)
-	char	**pathp;
-	char	*path;
-	DIR	*dir;
+readdir_add_files(char **pathp, char **path, DIR *dir)
 {
 	struct dirent  *de;
 
@@ -410,10 +395,7 @@ readdir_add_files(pathp, path, dir)
 
 #else
 struct dirent  *
-readdir_add_files(pathp, path, dir)
-	char	**pathp;
-	char	*path;
-	DIR	*dir;
+readdir_add_files(char **pathp, char *path, DIR *dir)
 {
 	return (readdir(dir));
 }

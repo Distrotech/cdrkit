@@ -102,7 +102,7 @@ char *start_of_shm;
 char *end_of_shm;
 #endif
 
-int flush_buffers __PR((void));
+int flush_buffers(void);
 
 
 /*------ Semaphore interfacing (for special cases only) ----------*/
@@ -111,11 +111,9 @@ int flush_buffers __PR((void));
 #if defined(HAVE_SEMGET) && defined(USE_SEMAPHORES)
 
 int sem_id;
-static int seminstall	__PR((key_t key, int amount));
+static int seminstall(key_t key, int amount);
 
-static int seminstall(key, amount)
-	key_t key;
-	int amount;
+static int seminstall(key_t key, int amount)
 {
   int           ret_val;
   int           semflag;
@@ -136,9 +134,7 @@ static int seminstall(key, amount)
 }
 
 /*-----------------------------------------------------------------*/
-int semrequest(semid, semnum)
-	int semid;
-	int semnum;
+int semrequest(int semid, int semnum)
 {
   struct sembuf sops[1];
   int    ret_val;
@@ -163,10 +159,7 @@ int semrequest(semid, semnum)
 }
 
 /*-----------------------------------------------------------------*/
-int semrelease(semid, semnum, amount)
-	int semid;
-	int semnum;
-	int amount;
+int semrelease(int semid, int semnum, int amount)
 {
   struct sembuf sops[1];
   int    ret_val;
@@ -219,9 +212,7 @@ void init_child()
   close(pipefdc2p[0]);
 }
 
-int semrequest(dummy, semnum)
-	int dummy;
-	int semnum;
+int semrequest(int dummy, int semnum)
 {
 
   if (semnum == FREE_SEM /* 0 */)  {
@@ -246,10 +237,7 @@ int semrequest(dummy, semnum)
 }
 
 /* ARGSUSED */
-int semrelease(dummy, semnum, amount)
-	int dummy;
-	int semnum;
-	int amount;
+int semrelease(int dummy, int semnum, int amount)
 {
   if (semnum == FREE_SEM /* 0 */)  {
     if (*parent_waits == 1) {
@@ -286,12 +274,10 @@ int flush_buffers()
 
 
 #if defined(HAVE_SHMAT) && (HAVE_SHMAT == 1)
-static int shm_request_nommap	__PR((int size, unsigned char **memptr));
+static int shm_request_nommap(int size, unsigned char **memptr);
 
 /* request a shared memory block */
-static int shm_request_nommap(size, memptr)
-	int size;
-	unsigned char **memptr;
+static int shm_request_nommap(int size, unsigned char **memptr)
 {
   int   ret_val;
   int   shmflag;
@@ -344,20 +330,18 @@ static int shm_request_nommap(size, memptr)
 #endif	/* #if defined(HAVE_SHMAT) && (HAVE_SHMAT == 1) */
 
 
-static int shm_request	__PR((int size, unsigned char **memptr));
+static int shm_request(int size, unsigned char **memptr);
 
 #ifdef  USE_USGSHM
 /* request a shared memory block */
-static int shm_request(size, memptr)
-	int size;
-	unsigned char **memptr;
+static int shm_request(int size, unsigned char **memptr)
 {
 	return shm_request_nommap(size, memptr);
 }
 #endif
 
 /* release semaphores */
-void free_sem __PR(( void ));
+void free_sem(void);
 void free_sem()
 {
 #if defined(HAVE_SEMGET) && defined(USE_SEMAPHORES)
@@ -381,9 +365,7 @@ void free_sem()
 
 int shm_id;
 /* request a shared memory block */
-static int shm_request(size, memptr)
-	int size;
-	unsigned char **memptr;
+static int shm_request(int size, unsigned char **memptr)
 {
 	int     f;
 	char    *addr;
@@ -418,9 +400,7 @@ static int shm_request(size, memptr)
 #ifdef	USE_OS2SHM
 
 /* request a shared memory block */
-static int shm_request(size, memptr)
-	int size;
-	unsigned char **memptr;
+static int shm_request(int size, unsigned char **memptr)
 {
 	char    *addr;
 
@@ -442,9 +422,7 @@ static int shm_request(size, memptr)
 #ifdef	USE_BEOS_AREAS
 
 /* request a shared memory block */
-static int shm_request(size, memptr)
-	int size;
-	unsigned char **memptr;
+static int shm_request(int size, unsigned char **memptr)
 {
 	char    *addr;
 	area_id aid;	/* positive id of the mapping */
@@ -471,9 +449,7 @@ static int shm_request(size, memptr)
 }
 #endif
 
-void *request_shm_sem(amount_of_sh_mem, pointer)
-	unsigned amount_of_sh_mem;
-	unsigned char **pointer;
+void *request_shm_sem(unsigned amount_of_sh_mem, unsigned char **pointer)
 {
 #if defined(HAVE_SEMGET) && defined(USE_SEMAPHORES)
     /* install semaphores for double buffer usage */

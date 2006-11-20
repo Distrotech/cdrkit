@@ -40,14 +40,12 @@ static	char sccsid[] =
 #include <utypes.h>
 #include <schily.h>
 
-LOCAL	Llong	number		__PR((char *arg, int *retp));
-EXPORT	int	getnum		__PR((char *arg, long *valp));
-EXPORT	int	getllnum	__PR((char *arg, Llong *lvalp));
+static	Llong	number(char *arg, int *retp);
+int	getnum(char *arg, long *valp);
+int	getllnum(char *arg, Llong *lvalp);
 
-LOCAL Llong
-number(arg, retp)
-	register char	*arg;
-		int	*retp;
+static Llong
+number(register char *arg, int *retp)
 {
 	Llong	val	= 0;
 
@@ -102,10 +100,8 @@ number(arg, retp)
 	return (val);
 }
 
-EXPORT int
-getnum(arg, valp)
-	char	*arg;
-	long	*valp;
+int
+getnum(char *arg, long *valp)
 {
 	Llong	llval;
 	int	ret = 1;
@@ -121,10 +117,8 @@ getnum(arg, valp)
 	return (ret);
 }
 
-EXPORT int
-getllnum(arg, lvalp)
-	char	*arg;
-	Llong	*lvalp;
+int
+getllnum(char *arg, Llong *lvalp)
 {
 	int	ret = 1;
 

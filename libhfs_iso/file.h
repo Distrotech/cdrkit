@@ -35,15 +35,14 @@ enum {
   fkRsrc = 0xff
 };
 
-void f_selectfork	__PR((hfsfile *, int));
-void f_getptrs		__PR((hfsfile *, unsigned long **, unsigned long **, ExtDataRec **));
+void f_selectfork(hfsfile *, int);
+void f_getptrs(hfsfile *, unsigned long **, unsigned long **, ExtDataRec **);
 
-int f_doblock		__PR((hfsfile *, unsigned long, block *,
-	   		   int (*)(hfsvol *, unsigned int, unsigned int, block *)));
+int f_doblock(hfsfile *, unsigned long, block *, 
+				  int (*)(hfsvol *, unsigned int, unsigned int, block *));
 
 # define f_getblock(file, num, bp)	f_doblock(file, num, bp, b_readab)
 # define f_putblock(file, num, bp)	f_doblock(file, num, bp, b_writeab)
 
-int f_alloc		__PR((hfsfile *));
-int f_trunc		__PR((hfsfile *));
-int f_flush		__PR((hfsfile *));
+int f_alloc(hfsfile *);
+int f_flush(hfsfile *);

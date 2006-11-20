@@ -51,14 +51,14 @@ extern "C" {
 #define	BADFMT		(-2)	/* Error in format string	*/
 #define	NOTAFILE	(-3)	/* Seems to be a flag type	*/
 
-typedef	int	(*getargfun)	__PR((const void *, void *));
+typedef	int	(*getargfun)(const void *, void *);
 
 /*
  * Keep in sync with schily.h
  */
-extern	int	getallargs __PR((int *, char * const**, const char *, ...));
-extern	int	getargs __PR((int *, char * const**, const char *, ...));
-extern	int	getfiles __PR((int *, char * const**, const char *));
+extern	int	getallargs(int *, char * const**, const char *, ...);
+extern	int	getargs(int *, char * const**, const char *, ...);
+extern	int	getfiles(int *, char * const**, const char *);
 
 #ifdef	__cplusplus
 }

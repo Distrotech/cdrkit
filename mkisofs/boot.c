@@ -46,32 +46,32 @@ static	char sccsid[] =
 
 extern	int	use_sunx86boot;
 
-LOCAL struct sun_label cd_label;
-LOCAL struct x86_label sx86_label;
-LOCAL struct pc_part	fdisk_part;
-LOCAL char	*boot_files[NDKMAP];	/* Change this for > 8 x86 parts */
+static struct sun_label cd_label;
+static struct x86_label sx86_label;
+static struct pc_part	fdisk_part;
+static char	*boot_files[NDKMAP];	/* Change this for > 8 x86 parts */
 
-LOCAL	void	init_sparc_label	__PR((void));
-LOCAL	void	init_sunx86_label	__PR((void));
-EXPORT	void	sparc_boot_label	__PR((char *label));
-EXPORT	void	sunx86_boot_label	__PR((char *label));
-EXPORT	void	scan_sparc_boot		__PR((char *files));
-EXPORT	void	scan_sunx86_boot	__PR((char *files));
-EXPORT	int	make_sun_label		__PR((void));
-EXPORT	int	make_sunx86_label	__PR((void));
-LOCAL	void	dup_sun_label		__PR((int part));
-LOCAL	int	sunboot_write		__PR((FILE *outfile));
-LOCAL	int	sunlabel_size		__PR((int starting_extent));
-LOCAL	int	sunlabel_write		__PR((FILE * outfile));
-LOCAL	int	genboot_size		__PR((int starting_extent));
-LOCAL	int	genboot_write		__PR((FILE * outfile));
+static	void	init_sparc_label(void);
+static	void	init_sunx86_label(void);
+void	sparc_boot_label(char *label);
+void	sunx86_boot_label(char *label);
+void	scan_sparc_boot(char *files);
+void	scan_sunx86_boot(char *files);
+int	make_sun_label(void);
+int	make_sunx86_label(void);
+static	void	dup_sun_label(int part);
+static	int	sunboot_write(FILE *outfile);
+static	int	sunlabel_size(int starting_extent);
+static	int	sunlabel_write(FILE * outfile);
+static	int	genboot_size(int starting_extent);
+static	int	genboot_write(FILE * outfile);
 
 /*
  * Set the virtual geometry in the disk label.
  * If we like to make the geometry variable, we may change
  * dkl_ncyl and dkl_pcyl later.
  */
-LOCAL void
+static void
 init_sparc_label()
 {
 	i_to_4_byte(cd_label.dkl_vtoc.v_version, V_VERSION);
@@ -91,7 +91,7 @@ init_sparc_label()
 	cd_label.dkl_magic[1] =	DKL_MAGIC_1;
 }
 
-LOCAL void
+static void
 init_sunx86_label()
 {
 	li_to_4_byte(sx86_label.dkl_vtoc.v_sanity, VTOC_SANE);
@@ -120,17 +120,15 @@ init_sunx86_label()
 /*
  * For command line parser: set ASCII label.
  */
-EXPORT void
-sparc_boot_label(label)
-	char	*label;
+void
+sparc_boot_label(char *label)
 {
 	strncpy(cd_label.dkl_ascilabel, label, 127);
 	cd_label.dkl_ascilabel[127] = '\0';
 }
 
-EXPORT void
-sunx86_boot_label(label)
-	char	*label;
+void
+sunx86_boot_label(char *label)
 {
 	strncpy(sx86_label.dkl_vtoc.v_asciilabel, label, 127);
 	sx86_label.dkl_vtoc.v_asciilabel[127] = '\0';
@@ -139,9 +137,8 @@ sunx86_boot_label(label)
 /*
  * Parse the command line argument for boot images.
  */
-EXPORT void
-scan_sparc_boot(files)
-	char	*files;
+void
+scan_sparc_boot(char *files)
 {
 	char		*p;
 	int		i = 1;
@@ -180,9 +177,8 @@ scan_sparc_boot(files)
 	}
 }
 
-EXPORT void
-scan_sunx86_boot(files)
-	char	*files;
+void
+scan_sunx86_boot(char *files)
 {
 	char		*p;
 	int		i = 0;
@@ -232,7 +228,7 @@ scan_sunx86_boot(files)
 /*
  * Finish the Sun disk label and compute the size of the additional data.
  */
-EXPORT int
+int
 make_sun_label()
 {
 	int	last;
@@ -276,7 +272,7 @@ make_sun_label()
  * ISO	Part 1 tag 4 flag 10 start    0 size    3839
  * ALL	Part 2 tag 0 flag  0 start    0 size 1318400
  */
-EXPORT int
+int
 make_sunx86_label()
 {
 	int	last;
@@ -338,9 +334,8 @@ make_sunx86_label()
 /*
  * Duplicate a partition of the Sun disk label until all partitions are filled up.
  */
-LOCAL void
-dup_sun_label(part)
-	int	part;
+static void
+dup_sun_label(int part)
 {
 	int	cyl;
 	int	nblk;
@@ -364,9 +359,8 @@ dup_sun_label(part)
 /*
  * Write out Sun boot partitions.
  */
-LOCAL int
-sunboot_write(outfile)
-	FILE	*outfile;
+static int
+sunboot_write(FILE *outfile)
 {
 	char	buffer[SECTOR_SIZE];
 	int	i;
@@ -431,9 +425,8 @@ sunboot_write(outfile)
  * Do size management for the Sun disk label that is located in the first
  * sector of a disk.
  */
-LOCAL int
-sunlabel_size(starting_extent)
-	int	starting_extent;
+static int
+sunlabel_size(int starting_extent)
 {
 	if (last_extent != session_start)
 		comerrno(EX_BAD, "Cannot create sparc boot on offset != 0.\n");
@@ -447,9 +440,8 @@ sunlabel_size(starting_extent)
  * If the -generic-boot option has been specified too, overlay the
  * Sun disk label on the firs 512 bytes of the generic boot code.
  */
-LOCAL int
-sunlabel_write(outfile)
-	FILE	*outfile;
+static int
+sunlabel_write(FILE *outfile)
 {
 		char	buffer[SECTOR_SIZE];
 	register char	*p;
@@ -506,9 +498,8 @@ sunlabel_write(outfile)
 /*
  * Do size management for the generic boot code on sectors 0..16.
  */
-LOCAL int
-genboot_size(starting_extent)
-	int	starting_extent;
+static int
+genboot_size(int starting_extent)
 {
 	if (last_extent > (session_start + 1))
 		comerrno(EX_BAD, "Cannot create generic boot on offset != 0.\n");
@@ -520,9 +511,8 @@ genboot_size(starting_extent)
  * Write the generic boot code to sectors 0..16.
  * If there is a Sun disk label, start writing at sector 1.
  */
-LOCAL int
-genboot_write(outfile)
-	FILE	*outfile;
+static int
+genboot_write(FILE *outfile)
 {
 	char	buffer[SECTOR_SIZE];
 	int	i;

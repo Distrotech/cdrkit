@@ -51,4 +51,4 @@ extern	int	lverbose;
 
 extern	char	*buf;			/* The transfer buffer */
 
-EXPORT	int	write_track_data __PR((cdr_t *dp, int track, track_t *trackp));
+int	write_track_data(cdr_t *dp, int track, track_t *trackp);

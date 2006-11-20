@@ -99,13 +99,13 @@ typedef struct {
   Integer	pmPad[188];	/* reserved */
 } Partition;
 
-int l_lockvol		__PR((hfsvol *));
+int l_lockvol(hfsvol *);
 
-int l_readblock0	__PR((hfsvol *));
-int l_readpm		__PR((hfsvol *));
+int l_readblock0(hfsvol *);
+int l_readpm(hfsvol *);
 
-int l_readmdb		__PR((hfsvol *));
-int l_writemdb		__PR((hfsvol *));
+int l_readmdb(hfsvol *);
+int l_writemdb(hfsvol *);
 
-int l_readvbm		__PR((hfsvol *));
-int l_writevbm		__PR((hfsvol *));
+int l_readvbm(hfsvol *);
+int l_writevbm(hfsvol *);

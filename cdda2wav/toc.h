@@ -24,45 +24,46 @@ extern	int	have_CDDB;
 #undef	USE_REMOTE
 #else
 #define	USE_REMOTE	1
-extern	int		request_titles	__PR((void));
+extern	int		request_titles(void);
 #endif
 
-extern	int		ReadToc		__PR((void));
-extern	void		Check_Toc	__PR((void));
-extern	int		TOC_entries	__PR((unsigned tracks, unsigned char *a, unsigned char *b,
-						int bvalid));
-extern	void		toc_entry	__PR((unsigned nr, unsigned flag, unsigned tr,
-						unsigned char *ISRC,
-						unsigned long lba, int m, int s, int f));
-extern	int		patch_real_end	__PR((unsigned long sector));
-extern	int		no_disguised_audiotracks __PR((void));
+extern	int		ReadToc(void);
+extern	void		Check_Toc(void);
+extern	int		TOC_entries(unsigned tracks, 
+										unsigned char *a, unsigned char *b,
+										int bvalid);
+extern	void		toc_entry(unsigned nr, unsigned flag, unsigned tr,
+									 unsigned char *ISRC,
+									 unsigned long lba, int m, int s, int f);
+extern	int		patch_real_end(unsigned long sector);
+extern	int		no_disguised_audiotracks(void);
 
-extern	int		Get_Track	__PR((unsigned long sector));
-extern	long		FirstTrack	__PR((void));
-extern	long		LastTrack	__PR((void));
-extern	long		FirstAudioTrack	__PR((void));
-extern	long		FirstDataTrack	__PR((void));
-extern	long		LastAudioTrack	__PR((void));
-extern	long		Get_EndSector	__PR((unsigned long p_track));
-extern	long		Get_StartSector	__PR((unsigned long p_track));
-extern	long		Get_AudioStartSector	__PR((unsigned long p_track));
-extern	long		Get_LastSectorOnCd	__PR((unsigned long p_track));
-extern	int		CheckTrackrange	__PR((unsigned long from, unsigned long upto));
+extern	int		Get_Track(unsigned long sector);
+extern	long		FirstTrack(void);
+extern	long		LastTrack(void);
+extern	long		FirstAudioTrack(void);
+extern	long		FirstDataTrack(void);
+extern	long		LastAudioTrack(void);
+extern	long		Get_EndSector(unsigned long p_track);
+extern	long		Get_StartSector(unsigned long p_track);
+extern	long		Get_AudioStartSector(unsigned long p_track);
+extern	long		Get_LastSectorOnCd(unsigned long p_track);
+extern	int		CheckTrackrange(unsigned long from, unsigned long upto);
 
-extern	int		Get_Preemphasis	__PR((unsigned long p_track));
-extern	int		Get_Channels	__PR((unsigned long p_track));
-extern	int		Get_Copyright	__PR((unsigned long p_track));
-extern	int		Get_Datatrack	__PR((unsigned long p_track));
-extern	int		Get_Tracknumber	__PR((unsigned long p_track));
-extern	unsigned char *	Get_MCN		__PR((void));
-extern	unsigned char *	Get_ISRC	__PR((unsigned long p_track));
+extern	int		Get_Preemphasis(unsigned long p_track);
+extern	int		Get_Channels(unsigned long p_track);
+extern	int		Get_Copyright(unsigned long p_track);
+extern	int		Get_Datatrack(unsigned long p_track);
+extern	int		Get_Tracknumber(unsigned long p_track);
+extern	unsigned char *Get_MCN(void);
+extern	unsigned char *Get_ISRC(unsigned long p_track);
 
-extern	unsigned	find_an_off_sector __PR((unsigned lSector, unsigned SectorBurstVal));
-extern	void		DisplayToc	__PR((void));
-extern	unsigned	FixupTOC	__PR((unsigned no_tracks));
-extern	void		calc_cddb_id	__PR((void));
-extern	void		calc_cdindex_id	__PR((void));
-extern	void		Read_MCN_ISRC	__PR((void));
-extern	unsigned	ScanIndices	__PR((unsigned trackval, unsigned indexval, int bulk));
-extern	int		handle_cdtext	__PR((void));
-extern	int		lba_2_msf	__PR((long lba, int *m, int *s, int *f));
+extern	unsigned	find_an_off_sector(unsigned lSector, unsigned SectorBurstVal);
+extern	void		DisplayToc(void);
+extern	unsigned	FixupTOC(unsigned no_tracks);
+extern	void		calc_cddb_id(void);
+extern	void		calc_cdindex_id(void);
+extern	void		Read_MCN_ISRC(void);
+extern	unsigned	ScanIndices(unsigned trackval, unsigned indexval, int bulk);
+extern	int		handle_cdtext(void);
+extern	int		lba_2_msf(long lba, int *m, int *s, int *f);

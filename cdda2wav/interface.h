@@ -102,30 +102,34 @@ typedef struct subq_track_isrc {
 struct TOC;
 
 /* cdrom access function pointer */
-extern void     (*EnableCdda) __PR((SCSI *scgp, int Switch, unsigned uSectorsize));
-extern unsigned (*doReadToc) __PR(( SCSI *scgp ));
-extern void	(*ReadTocText) __PR(( SCSI *scgp ));
-extern unsigned (*ReadLastAudio) __PR(( SCSI *scgp ));
-extern int      (*ReadCdRom) __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal ));
-extern int      (*ReadCdRomSub) __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal ));
-extern int      (*ReadCdRomData) __PR((SCSI *scgp, unsigned char *p, unsigned lSector, unsigned SectorBurstVal ));
-extern subq_chnl *(*ReadSubQ) __PR(( SCSI *scgp, unsigned char sq_format, unsigned char track ));
-extern subq_chnl *(*ReadSubChannels) __PR(( SCSI *scgp, unsigned lSector ));
-extern void     (*SelectSpeed) __PR(( SCSI *scgp, unsigned speed ));
-extern int	(*Play_at) __PR(( SCSI *scgp, unsigned from_sector, unsigned sectors));
-extern int	(*StopPlay) __PR(( SCSI *scgp));
-extern void	(*trash_cache) __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
+extern void     (*EnableCdda)(SCSI *scgp, int Switch, unsigned uSectorsize);
+extern unsigned (*doReadToc)(SCSI *scgp);
+extern void	(*ReadTocText)(SCSI *scgp);
+extern unsigned (*ReadLastAudio)(SCSI *scgp);
+extern int      (*ReadCdRom)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+									  unsigned SectorBurstVal);
+extern int      (*ReadCdRomSub)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+										  unsigned SectorBurstVal);
+extern int      (*ReadCdRomData)(SCSI *scgp, unsigned char *p, unsigned lSector,
+											unsigned SectorBurstVal);
+extern subq_chnl *(*ReadSubQ)(SCSI *scgp, unsigned char sq_format, 
+										unsigned char track);
+extern subq_chnl *(*ReadSubChannels)(SCSI *scgp, unsigned lSector);
+extern void     (*SelectSpeed)(SCSI *scgp, unsigned speed);
+extern int	(*Play_at)(SCSI *scgp, unsigned from_sector, unsigned sectors);
+extern int	(*StopPlay)(SCSI *scgp);
+extern void	(*trash_cache)(UINT4 *p, unsigned lSector, unsigned SectorBurstVal);
 
-SCSI    *get_scsi_p __PR(( void ));
+SCSI    *get_scsi_p(void);
 #endif
 
 extern unsigned char *bufferTOC;
 extern subq_chnl *SubQbuffer;
 
 
-void SetupInterface __PR(( void ));
-int	Toshiba3401 __PR(( void ));
+void SetupInterface(void);
+int	Toshiba3401(void);
 
-EXPORT	void	priv_init	__PR((void));
-EXPORT	void	priv_on		__PR((void));
-EXPORT	void	priv_off	__PR((void));
+void	priv_init(void);
+void	priv_on(void);
+void	priv_off(void);

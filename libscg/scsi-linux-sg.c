@@ -119,7 +119,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-linux-sg.c-1.86";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-linux-sg.c-1.86";	/* The version for this transport*/
 
 #ifndef	SCSI_IOCTL_GET_BUS_NUMBER
 #define	SCSI_IOCTL_GET_BUS_NUMBER 0x5386
@@ -225,29 +225,29 @@ struct scg_local {
 
 
 #ifdef	MISALIGN
-LOCAL	int	sg_getint	__PR((int *ip));
+static	int	sg_getint(int *ip);
 #endif
-LOCAL	int	scgo_send	__PR((SCSI *scgp));
+static	int	scgo_send(SCSI *scgp);
 #ifdef	SG_IO
-LOCAL	int	sg_rwsend	__PR((SCSI *scgp));
+static	int	sg_rwsend(SCSI *scgp);
 #endif
-LOCAL	void	sg_clearnblock	__PR((int f));
-LOCAL	BOOL	sg_setup	__PR((SCSI *scgp, int f, int busno, int tgt, int tlun, int ataidx));
-LOCAL	void	sg_initdev	__PR((SCSI *scgp, int f));
-LOCAL	int	sg_mapbus	__PR((SCSI *scgp, int busno, int ino));
-LOCAL	BOOL	sg_mapdev	__PR((SCSI *scgp, int f, int *busp, int *tgtp, int *lunp,
-							int *chanp, int *inop, int ataidx));
+static	void	sg_clearnblock(int f);
+static	BOOL	sg_setup(SCSI *scgp, int f, int busno, int tgt, int tlun, 
+								int ataidx);
+static	void	sg_initdev(SCSI *scgp, int f);
+static	int	sg_mapbus(SCSI *scgp, int busno, int ino);
+static	BOOL	sg_mapdev(SCSI *scgp, int f, int *busp, int *tgtp, int *lunp,
+								 int *chanp, int *inop, int ataidx);
 #if defined(SG_SET_RESERVED_SIZE) && defined(SG_GET_RESERVED_SIZE)
-LOCAL	long	sg_raisedma	__PR((SCSI *scgp, long newmax));
+static	long	sg_raisedma(SCSI *scgp, long newmax);
 #endif
-LOCAL	void	sg_settimeout	__PR((int f, int timeout));
+static	void	sg_settimeout(int f, int timeout);
 
-int    sg_open_excl    __PR((char *device, int mode));
+int    sg_open_excl(char *device, int mode);
 
 int
-sg_open_excl(device, mode)
-       char    *device;
-       int     mode;
+sg_open_excl(char *device, int mode)
+
 {
        int f;
        int i;
@@ -269,10 +269,8 @@ sg_open_excl(device, mode)
  * This has been introduced to make it easier to trace down problems
  * in applications.
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 #ifdef	USE_PG
@@ -316,10 +314,8 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "sg", "Generic transport independent SCSI",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
@@ -334,10 +330,8 @@ scgo_help(scgp, f)
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 		int	busno	= scg_scsibus(scgp);
 		int	tgt	= scg_target(scgp);
@@ -615,9 +609,8 @@ openpg:
 	return (nopen);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	register int	f;
 	register int	b;
@@ -659,9 +652,8 @@ scgo_close(scgp)
  * of the drivers requires O_NONBLOCK to be set during open().
  * This is used to clear O_NONBLOCK immediately after open() succeeded.
  */
-LOCAL void
-sg_clearnblock(f)
-	int	f;
+static void
+sg_clearnblock(int f)
 {
 	int	n;
 
@@ -670,14 +662,8 @@ sg_clearnblock(f)
 	fcntl(f, F_SETFL, n);
 }
 
-LOCAL BOOL
-sg_setup(scgp, f, busno, tgt, tlun, ataidx)
-	SCSI	*scgp;
-	int	f;
-	int	busno;
-	int	tgt;
-	int	tlun;
-	int	ataidx;
+static BOOL
+sg_setup(SCSI *scgp, int f, int busno, int tgt, int tlun, int ataidx)
 {
 	int	n;
 	int	Chan;
@@ -748,10 +734,8 @@ sg_setup(scgp, f, busno, tgt, tlun, ataidx)
 	return (FALSE);
 }
 
-LOCAL void
-sg_initdev(scgp, f)
-	SCSI	*scgp;
-	int	f;
+static void
+sg_initdev(SCSI *scgp, int f)
 {
 	struct sg_rep {
 		struct sg_header	hd;
@@ -804,11 +788,8 @@ sg_initdev(scgp, f)
 	fcntl(f, F_SETFL, n);
 }
 
-LOCAL int
-sg_mapbus(scgp, busno, ino)
-	SCSI	*scgp;
-	int	busno;
-	int	ino;
+static int
+sg_mapbus(SCSI *scgp, int busno, int ino)
 {
 	register int	i;
 
@@ -840,16 +821,9 @@ sg_mapbus(scgp, busno, ino)
 	return (0);
 }
 
-LOCAL BOOL
-sg_mapdev(scgp, f, busp, tgtp, lunp, chanp, inop, ataidx)
-	SCSI	*scgp;
-	int	f;
-	int	*busp;
-	int	*tgtp;
-	int	*lunp;
-	int	*chanp;
-	int	*inop;
-	int	ataidx;
+static BOOL
+sg_mapdev(SCSI *scgp, int f, int *busp, int *tgtp, int *lunp, int *chanp, 
+			 int *inop, int ataidx)
 {
 	struct	sg_id {
 		long	l1; /* target | lun << 8 | channel << 16 | low_ino << 24 */
@@ -916,10 +890,8 @@ sg_mapdev(scgp, f, busp, tgtp, lunp, chanp, inop, ataidx)
  * on whether the request did fail. The only way to find if it worked
  * is to use SG_GET_RESERVED_SIZE to read back the current values.
  */
-LOCAL long
-sg_raisedma(scgp, newmax)
-	SCSI	*scgp;
-	long	newmax;
+static long
+sg_raisedma(SCSI *scgp, long newmax)
 {
 	register int	b;
 	register int	t;
@@ -995,10 +967,8 @@ sg_raisedma(scgp, newmax)
 }
 #endif
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	long maxdma = MAX_DMA_LINUX;
 
@@ -1037,10 +1007,8 @@ scgo_maxdma(scgp, amt)
 	return (maxdma);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	char	*ret;
 
@@ -1063,19 +1031,16 @@ scgo_getbuf(scgp, amt)
 	return ((void *)ret);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -1094,12 +1059,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= MAX_SCG ||
 	    tgt < 0 || tgt >= MAX_TGT ||
@@ -1112,9 +1073,8 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return ((int)scglocal(scgp)->scgfiles[busno][tgt][tlun]);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 #ifdef	USE_PG
 	if (scg_scsibus(scgp) == scglocal(scgp)->pgbus)
@@ -1123,9 +1083,8 @@ scgo_initiator_id(scgp)
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 #ifdef	USE_PG
 	if (scg_scsibus(scgp) == scglocal(scgp)->pgbus)
@@ -1155,10 +1114,8 @@ scgo_isatapi(scgp)
 	return (-1);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 #ifdef	SG_SCSI_RESET
 	int	f = scgp->fd;
@@ -1200,10 +1157,8 @@ scgo_reset(scgp, what)
 	return (-1);
 }
 
-LOCAL void
-sg_settimeout(f, tmo)
-	int	f;
-	int	tmo;
+static void
+sg_settimeout(int f, int tmo)
 {
 	tmo *= HZ;
 	if (tmo)
@@ -1220,9 +1175,8 @@ sg_settimeout(f, tmo)
  * reads of integers.
  */
 #ifdef	MISALIGN
-LOCAL int
-sg_getint(ip)
-	int	*ip;
+static int
+sg_getint(int *ip)
 {
 		int	ret;
 	register char	*cp = (char *)ip;
@@ -1240,9 +1194,8 @@ sg_getint(ip)
 #endif
 
 #ifdef	SG_IO
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	int		ret;
@@ -1401,9 +1354,8 @@ scgo_send(scgp)
 #	define	sg_rwsend	scgo_send
 #endif
 
-LOCAL int
-sg_rwsend(scgp)
-	SCSI		*scgp;
+static int
+sg_rwsend(SCSI *scgp)
 {
 	int		f = scgp->fd;
 	struct scg_cmd	*sp = scgp->scmd;

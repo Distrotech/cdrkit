@@ -46,20 +46,15 @@ static	char sccsid[] =
 #include "record.h"
 #include "volume.h"
 
-static	void	markexts	__PR((block *vbm, ExtDataRec *exts));
+static	void	markexts(block *vbm, ExtDataRec *exts);
 
 
 /*
  * NAME:	vol->catsearch()
  * DESCRIPTION:	search catalog tree
  */
-int v_catsearch(vol, parid, name, data, cname, np)
-	hfsvol		*vol;
-	long		parid;
-	char		*name;
-	CatDataRec	*data;
-	char		*cname;
-	node		*np;
+int v_catsearch(hfsvol *vol, long parid, char *name, CatDataRec *data, 
+                char *cname, node *np)
 {
   CatKeyRec key;
   unsigned char pkey[HFS_CATKEYLEN];
@@ -95,11 +90,7 @@ int v_catsearch(vol, parid, name, data, cname, np)
  * NAME:	vol->extsearch()
  * DESCRIPTION:	search extents tree
  */
-int v_extsearch(file, fabn, data, np)
-	hfsfile		*file;
-	unsigned int	fabn;
-	ExtDataRec	*data;
-	node		*np;
+int v_extsearch(hfsfile *file, unsigned int fabn, ExtDataRec *data, node *np)
 {
   ExtKeyRec key;
   ExtDataRec extsave;
@@ -141,12 +132,7 @@ int v_extsearch(file, fabn, data, np)
  * NAME:	vol->getthread()
  * DESCRIPTION:	retrieve catalog thread information for a file or directory
  */
-int v_getthread(vol, id, thread, np, type)
-	hfsvol		*vol;
-	long		id;
-	CatDataRec	*thread;
-	node		*np;
-	int		type;
+int v_getthread(hfsvol *vol, long id, CatDataRec *thread, node *np, int type)
 {
   CatDataRec rec;
   int found;
@@ -171,9 +157,7 @@ int v_getthread(vol, id, thread, np, type)
  * NAME:	vol->putcatrec()
  * DESCRIPTION:	store catalog information
  */
-int v_putcatrec(data, np)
-	CatDataRec	*data;
-	node		*np;
+int v_putcatrec(CatDataRec *data, node *np)
 {
   unsigned char pdata[HFS_CATDATALEN], *ptr;
   int len = 0;
@@ -190,9 +174,7 @@ int v_putcatrec(data, np)
  * NAME:	vol->putextrec()
  * DESCRIPTION:	store extent information
  */
-int v_putextrec(data, np)
-	ExtDataRec	*data;
-	node		*np;
+int v_putextrec(ExtDataRec *data, node *np)
 {
   unsigned char pdata[HFS_EXTDATALEN], *ptr;
   int len = 0;
@@ -209,9 +191,7 @@ int v_putextrec(data, np)
  * NAME:	vol->allocblocks()
  * DESCRIPTION:	allocate a contiguous range of blocks
  */
-int v_allocblocks(vol, blocks)
-	hfsvol		*vol;
-	ExtDescriptor	*blocks;
+int v_allocblocks(hfsvol *vol, ExtDescriptor *blocks)
 {
   unsigned int request, found, foundat, start, end, pt;
   block *vbm;
@@ -289,9 +269,7 @@ int v_allocblocks(vol, blocks)
  * NAME:	vol->freeblocks()
  * DESCRIPTION:	deallocate a contiguous range of blocks
  */
-void v_freeblocks(vol, blocks)
-	hfsvol		*vol;
-	ExtDescriptor	*blocks;
+void v_freeblocks(hfsvol *vol, ExtDescriptor *blocks)
 {
   unsigned int start, len, pt;
   block *vbm;
@@ -312,13 +290,8 @@ void v_freeblocks(vol, blocks)
  * NAME:	vol->resolve()
  * DESCRIPTION:	translate a pathname; return catalog information
  */
-int v_resolve(vol, path, data, parid, fname, np)
-	hfsvol		**vol;
-	char		*path;
-	CatDataRec	*data;
-	long		*parid;
-	char		*fname;
-	node		*np;
+int v_resolve(hfsvol **vol, char *path, CatDataRec *data, long *parid, 
+              char *fname, node *np)
 {
   long dirid;
   char name[HFS_MAX_FLEN + 1], *nptr;
@@ -465,8 +438,7 @@ int v_resolve(vol, path, data, parid, fname, np)
  * NAME:	vol->destruct()
  * DESCRIPTION:	free memory consumed by a volume descriptor
  */
-void v_destruct(vol)
-	hfsvol	*vol;
+void v_destruct(hfsvol *vol)
 {
   FREE(vol->vbm);
 
@@ -480,8 +452,7 @@ void v_destruct(vol)
  * NAME:	vol->getvol()
  * DESCRIPTION:	validate a volume reference
  */
-int v_getvol(vol)
-	hfsvol	**vol;
+int v_getvol(hfsvol **vol)
 {
   if (*vol == 0)
     {
@@ -501,9 +472,7 @@ int v_getvol(vol)
  * NAME:	vol->flush()
  * DESCRIPTION:	flush all pending changes (B*-tree, MDB, VBM) to disk
  */
-int v_flush(vol, umounting)
-	hfsvol	*vol;
-	int	umounting;
+int v_flush(hfsvol *vol, int umounting)
 {
   if (! (vol->flags & HFS_READONLY))
     {
@@ -538,11 +507,7 @@ int v_flush(vol, umounting)
  * NAME:	vol->adjvalence()
  * DESCRIPTION:	update a volume's valence counts
  */
-int v_adjvalence(vol, parid, isdir, adj)
-	hfsvol	*vol;
-	long	parid;
-	int	isdir;
-	int	adj;
+int v_adjvalence(hfsvol *vol, long parid, int isdir, int adj)
 {
   node n;
   CatDataRec data;
@@ -583,10 +548,7 @@ int v_adjvalence(vol, parid, isdir, adj)
  * NAME:	vol->newfolder()
  * DESCRIPTION:	create a new HFS folder
  */
-int v_newfolder(vol, parid, name)
-	hfsvol	*vol;
-	long	parid;
-	char	*name;
+int v_newfolder(hfsvol *vol, long parid, char *name)
 {
   CatKeyRec key;
   CatDataRec data;
@@ -650,9 +612,7 @@ int v_newfolder(vol, parid, name)
  * DESCRIPTION:	set bits from an extent record in the volume bitmap
  */
 static
-void markexts(vbm, exts)
-	block		*vbm;
-	ExtDataRec	*exts;
+void markexts(block *vbm, ExtDataRec *exts)
 {
   int i;
   unsigned int start, len;
@@ -669,8 +629,7 @@ void markexts(vbm, exts)
  * NAME:	vol->scavenge()
  * DESCRIPTION:	safeguard blocks in the volume bitmap
  */
-int v_scavenge(vol)
-	hfsvol	*vol;
+int v_scavenge(hfsvol *vol)
 {
   block *vbm = vol->vbm;
   node n;

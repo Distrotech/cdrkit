@@ -62,7 +62,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-dos.c-1.11";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-dos.c-1.11";	/* The version for this transport*/
 
 #define	MAX_SCG	8
 #define	MAX_TGT	8
@@ -75,23 +75,21 @@ struct scg_local {
 
 #define	MAX_DMA_DOS	(63L*1024L)
 
-LOCAL	BYTE	busses		= 1;
-LOCAL	DWORD	SCSIMgrEntry	= 0;
-LOCAL	int	AspiLoaded	= 0;
+static	BYTE	busses		= 1;
+static	DWORD	SCSIMgrEntry	= 0;
+static	int	AspiLoaded	= 0;
 
-LOCAL	BOOL	_callback_flag;
-LOCAL	_go32_dpmi_seginfo _callback_info;
-LOCAL	_go32_dpmi_registers _callback_regs;
+static	BOOL	_callback_flag;
+static	_go32_dpmi_seginfo _callback_info;
+static	_go32_dpmi_registers _callback_regs;
 
-LOCAL	BOOL	SCSIMgrOpen	__PR((SCSI *));
-LOCAL	void	SCSIMgrClose	__PR((void));
-LOCAL	int 	SCSIMgrSendSRB	__PR((SRB *, time_t));
-LOCAL	void	SCSIMgrCallBack	__PR((_go32_dpmi_registers *regs));
+static	BOOL	SCSIMgrOpen(SCSI *);
+static	void	SCSIMgrClose(void);
+static	int 	SCSIMgrSendSRB(SRB *, time_t);
+static	void	SCSIMgrCallBack(_go32_dpmi_registers *regs);
 
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -107,20 +105,16 @@ scgo_version(scgp, what)
 	return ((char *)0);
 }
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "ASPI", "Generic transport independent SCSI",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
 	return (0);
 }
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	int	busno	= scg_scsibus(scgp);
 	int	tgt	= scg_target(scgp);
@@ -186,26 +180,21 @@ scgo_open(scgp, device)
 	return (1);
 }
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	SCSIMgrClose();
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	return (MAX_DMA_DOS);
 }
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -215,19 +204,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL __SBOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static __SBOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	if (busno < 0 || busno >= busses)
 		return (FALSE);
@@ -235,12 +221,8 @@ scgo_havebus(scgp, busno)
 	return (TRUE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= busses ||
 	    tgt < 0 || tgt >= MAX_TGT ||
@@ -253,32 +235,27 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return (1);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	return (-1);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	errno = EINVAL;
 	return (-1);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	SRB		Srb;
@@ -457,9 +434,8 @@ scgo_send(scgp)
 	return (0);
 }
 
-LOCAL BOOL
-SCSIMgrOpen(scgp)
-	SCSI	*scgp;
+static BOOL
+SCSIMgrOpen(SCSI *scgp)
 {
 	int		hSCSIMgr;
 	int		dos_memory_seg;
@@ -530,7 +506,7 @@ SCSIMgrOpen(scgp)
 	return (TRUE);
 }
 
-LOCAL void
+static void
 SCSIMgrClose()
 {
 	if (--AspiLoaded > 0)
@@ -541,10 +517,8 @@ SCSIMgrClose()
 	}
 }
 
-LOCAL int
-SCSIMgrSendSRB(Srb, timeout)
-	SRB	*Srb;
-	time_t	timeout;
+static int
+SCSIMgrSendSRB(SRB *Srb, time_t timeout)
 {
 	int		dos_memory_srb_seg;
 	int		dos_memory_srb_sel;
@@ -585,9 +559,8 @@ SCSIMgrSendSRB(Srb, timeout)
 	return (Srb->Status);
 }
 
-LOCAL void
-SCSIMgrCallBack(regs)
-	_go32_dpmi_registers	*regs;
+static void
+SCSIMgrCallBack(_go32_dpmi_registers *regs)
 {
 	_callback_flag = 1;
 }

@@ -17,5 +17,5 @@
  * CD image.
  */
 
-void exclude	__PR((char * fn));
-int is_excluded	__PR((char * fn));
+void exclude(char * fn);
+int is_excluded(char * fn);

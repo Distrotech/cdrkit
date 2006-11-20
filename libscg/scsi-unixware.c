@@ -57,7 +57,7 @@ static	char __sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-LOCAL	char	_scg_trans_version[] = "scsi-unixware.c-1.36";	/* The version for this transport*/
+static	char	_scg_trans_version[] = "scsi-unixware.c-1.36";	/* The version for this transport*/
 
 /* Max. number of scg scsibusses.  The real limit would be		*/
 /* MAX_HBA * MAX_BUS (which would be 32 * 8 on UnixWare 2.1/7.x),	*/
@@ -114,19 +114,19 @@ typedef struct scg2sdi {
 #endif
 } scg2sdi_t;
 
-LOCAL	scg2sdi_t	sdidevs [MAX_SCG][MAX_TGT][MAX_LUN];
-LOCAL	BOOL		sdiinit = FALSE;
+static	scg2sdi_t	sdidevs [MAX_SCG][MAX_TGT][MAX_LUN];
+static	BOOL		sdiinit = FALSE;
 
 struct scg_local {
 	short	scgfiles[MAX_SCG][MAX_TGT][MAX_LUN];
 };
 #define	scglocal(p)	((struct scg_local *)((p)->local))
 
-LOCAL	int	unixware_init	__PR((SCSI *scgp));
-LOCAL	int	do_scg_cmd	__PR((SCSI *scgp, struct scg_cmd *sp));
-LOCAL	int	do_scg_sense	__PR((SCSI *scgp, struct scg_cmd *sp));
-LOCAL	FILE	*xpopen		__PR((char *cmd, char *type));
-LOCAL	int	xpclose		__PR((FILE *f));
+static	int	unixware_init(SCSI *scgp);
+static	int	do_scg_cmd(SCSI *scgp, struct scg_cmd *sp);
+static	int	do_scg_sense(SCSI *scgp, struct scg_cmd *sp);
+static	FILE	*xpopen(char *cmd, char *type);
+static	int	xpclose(FILE *f);
 
 /*
  * -------------------------------------------------------------------------
@@ -150,10 +150,8 @@ LOCAL	int	xpclose		__PR((FILE *f));
  * in applications.
  *
  */
-LOCAL char *
-scgo_version(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static char *
+scgo_version(SCSI *scgp, int what)
 {
 	if (scgp != (SCSI *)0) {
 		switch (what) {
@@ -174,10 +172,8 @@ scgo_version(scgp, what)
 }
 
 
-LOCAL int
-scgo_help(scgp, f)
-	SCSI	*scgp;
-	FILE	*f;
+static int
+scgo_help(SCSI *scgp, FILE *f)
 {
 	__scg_help(f, "SDI_SEND", "Generic SCSI",
 		"", "bus,target,lun", "1,2,0", TRUE, FALSE);
@@ -193,9 +189,8 @@ scgo_help(scgp, f)
  *
  */
 
-LOCAL int
-unixware_init(scgp)
-	SCSI	*scgp;
+static int
+unixware_init(SCSI *scgp)
 {
 	FILE		*cmd;
 	int		hba = 0, bus = 0, scg = 0, tgt = 0, lun = 0;
@@ -471,10 +466,8 @@ extern	char		**environ;
 }
 
 
-LOCAL int
-scgo_open(scgp, device)
-	SCSI	*scgp;
-	char	*device;
+static int
+scgo_open(SCSI *scgp, char *device)
 {
 	int	busno	= scg_scsibus(scgp);
 	int	tgt	= scg_target(scgp);
@@ -537,9 +530,8 @@ scgo_open(scgp, device)
 }
 
 
-LOCAL int
-scgo_close(scgp)
-	SCSI	*scgp;
+static int
+scgo_close(SCSI *scgp)
 {
 	register int	f;
 	register int	b;
@@ -571,19 +563,15 @@ scgo_close(scgp)
 	return (0);
 }
 
-LOCAL long
-scgo_maxdma(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static long
+scgo_maxdma(SCSI *scgp, long amt)
 {
 	return (MAX_DMA);
 }
 
 
-LOCAL void *
-scgo_getbuf(scgp, amt)
-	SCSI	*scgp;
-	long	amt;
+static void *
+scgo_getbuf(SCSI *scgp, long amt)
 {
 	if (scgp->debug > 0) {
 		js_fprintf((FILE *)scgp->errfile,
@@ -594,19 +582,16 @@ scgo_getbuf(scgp, amt)
 	return (scgp->bufbase);
 }
 
-LOCAL void
-scgo_freebuf(scgp)
-	SCSI	*scgp;
+static void
+scgo_freebuf(SCSI *scgp)
 {
 	if (scgp->bufbase)
 		free(scgp->bufbase);
 	scgp->bufbase = NULL;
 }
 
-LOCAL BOOL
-scgo_havebus(scgp, busno)
-	SCSI	*scgp;
-	int	busno;
+static BOOL
+scgo_havebus(SCSI *scgp, int busno)
 {
 	register int	t;
 	register int	l;
@@ -625,12 +610,8 @@ scgo_havebus(scgp, busno)
 	return (FALSE);
 }
 
-LOCAL int
-scgo_fileno(scgp, busno, tgt, tlun)
-	SCSI	*scgp;
-	int	busno;
-	int	tgt;
-	int	tlun;
+static int
+scgo_fileno(SCSI *scgp, int busno, int tgt, int tlun)
 {
 	if (busno < 0 || busno >= MAX_SCG ||
 	    tgt   < 0 || tgt   >= MAX_TGT ||
@@ -643,9 +624,8 @@ scgo_fileno(scgp, busno, tgt, tlun)
 	return ((int)scglocal(scgp)->scgfiles[busno][tgt][tlun]);
 }
 
-LOCAL int
-scgo_initiator_id(scgp)
-	SCSI	*scgp;
+static int
+scgo_initiator_id(SCSI *scgp)
 {
 	register int	t;
 	register int	l;
@@ -670,19 +650,16 @@ scgo_initiator_id(scgp)
 	return (-1);
 }
 
-LOCAL int
-scgo_isatapi(scgp)
-	SCSI	*scgp;
+static int
+scgo_isatapi(SCSI *scgp)
 {
 	/* if the new address method is used we know if this is ATAPI */
 
 	return ((sdidevs[scg_scsibus(scgp)][scg_target(scgp)][scg_lun(scgp)].flags & SDI_ATAPI) != 0);
 }
 
-LOCAL int
-scgo_reset(scgp, what)
-	SCSI	*scgp;
-	int	what;
+static int
+scgo_reset(SCSI *scgp, int what)
 {
 	int	f = scgp->fd;
 
@@ -715,10 +692,8 @@ scgo_reset(scgp, what)
 	return (-1);
 }
 
-LOCAL int
-do_scg_cmd(scgp, sp)
-	SCSI		*scgp;
-	struct scg_cmd	*sp;
+static int
+do_scg_cmd(SCSI *scgp, struct scg_cmd *sp)
 {
 	int			ret;
 	int			i;
@@ -837,10 +812,8 @@ do_scg_cmd(scgp, sp)
 }
 
 
-LOCAL int
-do_scg_sense(scgp, sp)
-	SCSI		*scgp;
-	struct scg_cmd	*sp;
+static int
+do_scg_sense(SCSI *scgp, struct scg_cmd *sp)
 {
 	int		ret;
 	struct scg_cmd	s_cmd;
@@ -866,9 +839,8 @@ do_scg_sense(scgp, sp)
 	return (ret);
 }
 
-LOCAL int
-scgo_send(scgp)
-	SCSI		*scgp;
+static int
+scgo_send(SCSI *scgp)
 {
 	struct scg_cmd	*sp = scgp->scmd;
 	int	ret;
@@ -901,12 +873,10 @@ scgo_send(scgp)
  * This version of popen() is not usable more than once at a time.
  * Needed because /etc/scsi/pdiconfig will not work if euid != uid
  */
-LOCAL pid_t	po_pid;
+static pid_t	po_pid;
 
-LOCAL FILE *
-xpopen(cmd, type)
-	char	*cmd;
-	char	*type;
+static FILE *
+xpopen(char *cmd, char *type)
 {
 	FILE	*ret;
 	FILE	*pp[2];
@@ -938,9 +908,8 @@ xpopen(cmd, type)
 	return (pp[0]);
 }
 
-LOCAL int
-xpclose(f)
-	FILE	*f;
+static int
+xpclose(FILE *f)
 {
 	int	ret = 0;
 

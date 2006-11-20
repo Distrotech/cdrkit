@@ -57,9 +57,9 @@ typedef struct {
     int local;			/* unprocessed amount in data */
 } SHA_INFO;
 
-void sha_init __PR((SHA_INFO *));
-void sha_update __PR((SHA_INFO *, BYTE *, int));
-void sha_final __PR((unsigned char [20], SHA_INFO *));
+void sha_init(SHA_INFO *);
+void sha_update(SHA_INFO *, BYTE *, int);
+void sha_final(unsigned char [20], SHA_INFO *);
 
 #ifdef SHA_FOR_C
 
@@ -67,9 +67,9 @@ void sha_final __PR((unsigned char [20], SHA_INFO *));
 #include <stdxlib.h>
 #include <stdio.h>
 
-void sha_stream __PR((unsigned char [20], SHA_INFO *, FILE *));
-void sha_print __PR((unsigned char [20]));
-char *sha_version __PR((void));
+void sha_stream(unsigned char [20], SHA_INFO *, FILE *);
+void sha_print(unsigned char [20]);
+char *sha_version(void);
 #endif /* SHA_FOR_C */
 
 #define SHA_VERSION 1

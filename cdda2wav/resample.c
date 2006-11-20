@@ -69,27 +69,32 @@ int Halved;		/* interpolate due to non integral divider */
 static long lsum = 0, rsum = 0;	       /* accumulator for left/right channel */
 static long ls2 = 0, rs2 = 0, ls3 = 0, rs3 = 0, auxl = 0, auxr = 0;
 
-static const unsigned char *my_symmemmem	__PR((const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, const unsigned char *const NEEDLE, const size_t NEEDLE_LEN));
-static const unsigned char *my_memmem	__PR((const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, const unsigned char *const NEEDLE, const size_t NEEDLE_LEN));
-static const unsigned char *my_memrmem	__PR((const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, const unsigned char *const NEEDLE, const size_t NEEDLE_LEN));
-static const unsigned char *sync_buffers	__PR((const unsigned char *const newbuf));
-static long interpolate				__PR((long p1, long p2, long p3));
-static void emit_sample				__PR((long lsumval, long rsumval, long channels));
-static void change_endianness			__PR((UINT4 *pSam, unsigned int Samples));
-static void swap_channels			__PR((UINT4 *pSam, unsigned int Samples));
-static int guess_endianess			__PR((UINT4 *p, Int16_t *p2, unsigned int SamplesToDo));
+static const unsigned char *my_symmemmem(const unsigned char *HAYSTACK, 
+													  const size_t HAYSTACK_LEN, 
+													  const unsigned char *const NEEDLE, 
+													  const size_t NEEDLE_LEN);
+static const unsigned char *my_memmem(const unsigned char *HAYSTACK, 
+												  const size_t HAYSTACK_LEN, 
+												  const unsigned char *const NEEDLE, 
+												  const size_t NEEDLE_LEN);
+static const unsigned char *my_memrmem(const unsigned char *HAYSTACK, 
+													const size_t HAYSTACK_LEN, 
+													const unsigned char *const NEEDLE, 
+													const size_t NEEDLE_LEN);
+static const unsigned char *sync_buffers(const unsigned char *const newbuf);
+static long interpolate(long p1, long p2, long p3);
+static void emit_sample(long lsumval, long rsumval, long channels);
+static void change_endianness(UINT4 *pSam, unsigned int Samples);
+static void swap_channels(UINT4 *pSam, unsigned int Samples);
+static int guess_endianess(UINT4 *p, Int16_t *p2, unsigned int SamplesToDo);
 
 
 #ifdef CHECK_MEM
-static void
-check_mem __PR((const unsigned char *p, unsigned long amount, const unsigned char *q, unsigned line, char *file));
+static void check_mem(const unsigned char *p, unsigned long amount, 
+							 const unsigned char *q, unsigned line, char *file);
 
-static void check_mem(p, amount, q, line, file)
-	const unsigned char *p;
-	unsigned long amount;
-	const unsigned char *q;
-	unsigned line;
-	char *file;
+static void check_mem(const unsigned char *p, unsigned long amount, 
+                      const unsigned char *q, unsigned line, char *file)
 {
 	if (p < q || p+amount > q + ENTRY_SIZE) {
 		fprintf(stderr, "file %s, line %u: invalid buffer range (%p - %p), allowed is (%p - %p)\n",
@@ -108,11 +113,8 @@ int memcmp(const void * a, const void * b, size_t c)
 #endif
 
 static const unsigned char *
-my_symmemmem (HAYSTACK, HAYSTACK_LEN, NEEDLE, NEEDLE_LEN)
-	const unsigned char * HAYSTACK;
-	const size_t HAYSTACK_LEN;
-	const unsigned char * const NEEDLE;
-	const size_t NEEDLE_LEN;
+my_symmemmem(const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, 
+             const unsigned char * const NEEDLE, const size_t NEEDLE_LEN)
 {
   const unsigned char * const UPPER_LIMIT = HAYSTACK + HAYSTACK_LEN - NEEDLE_LEN - 1;
   const unsigned char * HAYSTACK2 = HAYSTACK-1;
@@ -139,11 +141,8 @@ my_symmemmem (HAYSTACK, HAYSTACK_LEN, NEEDLE, NEEDLE_LEN)
 }
 
 static const unsigned char *
-my_memmem (HAYSTACK, HAYSTACK_LEN, NEEDLE, NEEDLE_LEN)
-	const unsigned char * HAYSTACK;
-	const size_t HAYSTACK_LEN;
-	const unsigned char * const NEEDLE;
-	const size_t NEEDLE_LEN;
+my_memmem(const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, 
+          const unsigned char * const NEEDLE, const size_t NEEDLE_LEN)
 {
   const unsigned char * const UPPER_LIMIT = HAYSTACK + HAYSTACK_LEN - NEEDLE_LEN;
 
@@ -165,11 +164,8 @@ my_memmem (HAYSTACK, HAYSTACK_LEN, NEEDLE, NEEDLE_LEN)
 }
 
 static const unsigned char *
-my_memrmem (HAYSTACK, HAYSTACK_LEN, NEEDLE, NEEDLE_LEN)
-	const unsigned char * HAYSTACK;
-	const size_t HAYSTACK_LEN;
-	const unsigned char * const NEEDLE;
-	const size_t NEEDLE_LEN;
+my_memrmem(const unsigned char *HAYSTACK, const size_t HAYSTACK_LEN, 
+           const unsigned char * const NEEDLE, const size_t NEEDLE_LEN)
 {
   const unsigned char * const LOWER_LIMIT = HAYSTACK - (HAYSTACK_LEN - 1);
 
@@ -192,8 +188,7 @@ my_memrmem (HAYSTACK, HAYSTACK_LEN, NEEDLE, NEEDLE_LEN)
 
 /* find continuation in new buffer */
 static const unsigned char *
-sync_buffers(newbuf)
-	const unsigned char * const newbuf;
+sync_buffers(const unsigned char * const newbuf)
 {
     const unsigned char *retval = newbuf;
 
@@ -272,10 +267,7 @@ sync_buffers(newbuf)
 /* quadratic interpolation
  * p1, p3 span the interval 0 - 2. give interpolated value for 1/2 */
 static long int 
-interpolate( p1, p2, p3)
-	long int p1;
-	long int p2;
-	long int p3;
+interpolate(long int p1, long int p2, long int p3)
 {
   return (3L*p1 + 6L*p2 - p3)/8L;
 }
@@ -286,10 +278,7 @@ static unsigned char *pDst;	/* start of output buffer */
  * Write the filtered sample into the output buffer.
  */
 static void 
-emit_sample( lsumval, rsumval, channels )
-	long lsumval;
-	long rsumval;
-	long channels;
+emit_sample(long lsumval, long rsumval, long channels)
 {
     if (global.findminmax) {
        if (rsumval > global.maxamp[0]) global.maxamp[0] = rsumval;
@@ -369,9 +358,7 @@ emit_sample( lsumval, rsumval, channels )
     }
 }
 
-static void change_endianness(pSam, Samples)
-	UINT4 *pSam;
-	unsigned int Samples;
+static void change_endianness(UINT4 *pSam, unsigned int Samples)
 {
   UINT4 *pend = (pSam + Samples);
 
@@ -432,9 +419,7 @@ error type unsigned long is too small
 #endif
 }
 
-static void swap_channels(pSam, Samples)
-	UINT4 *pSam;
-	unsigned int Samples;
+static void swap_channels(UINT4 *pSam, unsigned int Samples)
 {
   UINT4 *pend = (pSam + Samples);
 
@@ -496,12 +481,10 @@ error type unsigned long is too small
 }
 
 #ifdef	ECHO_TO_SOUNDCARD
-static long ReSampleBuffer			__PR((unsigned char *p, unsigned char *newp, long samples, int samplesize));
-static long ReSampleBuffer( p, newp, samples, samplesize)
-	unsigned char *p;
-	unsigned char *newp;
-	long samples;
-	int samplesize;
+static long ReSampleBuffer(unsigned char *p, unsigned char *newp, 
+									long samples, int samplesize);
+static long ReSampleBuffer(unsigned char *p, unsigned char *newp, 
+                           long samples, int samplesize)
 {
 	double idx=0.0;
 	UINT4  di=0,si=0;
@@ -519,10 +502,7 @@ static long ReSampleBuffer( p, newp, samples, samplesize)
 }
 #endif
 
-static int guess_endianess(p, p2, SamplesToDo)
-	UINT4 *p;
-	Int16_t *p2;
-	unsigned SamplesToDo;
+static int guess_endianess(UINT4 *p, Int16_t *p2, unsigned SamplesToDo)
 {
     /* analyse samples */
     int vote_for_little = 0;
@@ -573,9 +553,7 @@ static int guess_endianess(p, p2, SamplesToDo)
 
 int jitterShift = 0; 
 
-void	handle_inputendianess(p, SamplesToDo)
-	UINT4 *p;
-	unsigned SamplesToDo;
+void handle_inputendianess(UINT4 *p, unsigned SamplesToDo)
 {
   /* if endianess is unknown, guess endianess based on 
      differences between succesive samples. If endianess
@@ -626,10 +604,8 @@ void	handle_inputendianess(p, SamplesToDo)
   }
 }
 
-unsigned char *synchronize(p, SamplesToDo, TotSamplesDone)
-	UINT4 *p;
-	unsigned SamplesToDo;
-	unsigned TotSamplesDone;
+unsigned char *
+synchronize(UINT4 *p, unsigned SamplesToDo, unsigned TotSamplesDone)
 {
   static int jitter = 0;
   char *pSrc;                   /* start of cdrom buffer */
@@ -664,10 +640,7 @@ unsigned char *synchronize(p, SamplesToDo, TotSamplesDone)
  * 
  */
 long 
-SaveBuffer (p, SamplesToDo, TotSamplesDone)
-	UINT4 *p;
-	unsigned long SamplesToDo;
-	unsigned long *TotSamplesDone;
+SaveBuffer(UINT4 *p, unsigned long SamplesToDo, unsigned long *TotSamplesDone)
 {
   UINT4 *pSrc;                   /* start of cdrom buffer */
   UINT4 *pSrcStop;               /* end of cdrom buffer */

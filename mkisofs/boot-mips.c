@@ -195,9 +195,9 @@ struct volume_header {
 #include <schily.h>
 #include "endianconv.h"
 
-int     add_boot_mips_filename    __PR((char *filename));
+int     add_boot_mips_filename(char *filename);
 
-static  int     boot_mips_write   __PR((FILE *outfile));
+static  int     boot_mips_write(FILE *outfile);
 
 #define MAX_NAMES 15
 static char *boot_mips_filename[MAX_NAMES] =
@@ -214,8 +214,7 @@ static int boot_mips_num_files = 0;
 #define SECTORS_PER_TRACK	32
 #define BYTES_PER_SECTOR	512
 
-int add_boot_mips_filename(filename)
-    char *filename;
+int add_boot_mips_filename(char *filename)
 {
     if (boot_mips_num_files < MAX_NAMES)
     {
@@ -264,8 +263,7 @@ static char *file_base_name(char *path)
     return endptr;
 }
 
-static int boot_mips_write(outfile)
-    FILE *outfile;
+static int boot_mips_write(FILE *outfile)
 {
 	struct directory_entry	*boot_file;	/* Boot file we need to search for */
     unsigned long length = 0;

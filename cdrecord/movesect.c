@@ -41,7 +41,7 @@ static	char sccsid[] =
 #include "cdrecord.h"
 #include "movesect.h"
 
-EXPORT	void	scatter_secs	__PR((track_t *trackp, char *bp, int nsecs));
+void	scatter_secs(track_t *trackp, char *bp, int nsecs);
 
 /*
  * Scatter input sector size records over buffer to make them
@@ -72,11 +72,8 @@ EXPORT	void	scatter_secs	__PR((track_t *trackp, char *bp, int nsecs));
  *
  *	Sector_0 must never be moved.
  */
-EXPORT void
-scatter_secs(trackp, bp, nsecs)
-	track_t	*trackp;
-	char	*bp;
-	int	nsecs;
+void
+scatter_secs(track_t *trackp, char *bp, int nsecs)
 {
 	char	*from;
 	char	*to;

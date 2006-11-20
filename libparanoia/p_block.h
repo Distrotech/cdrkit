@@ -41,8 +41,8 @@ typedef struct linked_list {
 	struct linked_element	*head;
 	struct linked_element	*tail;
 
-	void			*(*new_poly)	__PR((void));
-	void			(*free_poly)	__PR((void *poly));
+	void			*(*new_poly)(void);
+	void			(*free_poly)(void *poly);
 	long			current;
 	long			active;
 
@@ -57,14 +57,14 @@ typedef struct linked_element {
 	int			stamp;
 } linked_element;
 
-extern linked_list	*new_list	__PR((void *(*newp) (void),
-						void (*freep) (void *)));
-extern linked_element	*new_elem	__PR((linked_list * list));
-extern linked_element	*add_elem	__PR((linked_list * list, void *elem));
-extern void		free_list	__PR((linked_list * list, int free_ptr));	/* unlink or free */
-extern void		free_elem	__PR((linked_element * e, int free_ptr));	/* unlink or free */
-extern void		*get_elem	__PR((linked_element * e));
-extern linked_list	*copy_list	__PR((linked_list * list));	/* shallow; doesn't copy */
+extern linked_list	*new_list(void *(*newp) (void),
+										 void (*freep) (void *));
+extern linked_element	*new_elem(linked_list *list);
+extern linked_element	*add_elem(linked_list *list, void *elem);
+extern void		free_list(linked_list *list, int free_ptr);	/* unlink or free */
+extern void		free_elem(linked_element *e, int free_ptr);	/* unlink or free */
+extern void		*get_elem(linked_element *e);
+extern linked_list	*copy_list(linked_list *list);	/* shallow; doesn't copy */
 									/* contained structures */
 
 typedef struct c_block {
@@ -92,9 +92,9 @@ typedef struct c_block {
 	struct linked_element	*e;
 } c_block;
 
-extern void	free_c_block		__PR((c_block * c));
-extern void	i_cblock_destructor	__PR((c_block * c));
-extern c_block	*new_c_block		__PR((struct cdrom_paranoia * p));
+extern void	free_c_block(c_block *c);
+extern void	i_cblock_destructor(c_block *c);
+extern c_block	*new_c_block(struct cdrom_paranoia *p);
 
 typedef struct v_fragment {
 	c_block		*one;
@@ -112,22 +112,21 @@ typedef struct v_fragment {
 
 } v_fragment;
 
-extern void	free_v_fragment		__PR((v_fragment * c));
-extern v_fragment *new_v_fragment	__PR((struct cdrom_paranoia * p,
-						c_block * one,
-						long begin, long end,
-						int lastsector));
-extern Int16_t	*v_buffer		__PR((v_fragment * v));
+extern void	free_v_fragment(v_fragment *c);
+extern v_fragment *new_v_fragment(struct cdrom_paranoia *p, c_block *one,
+											 long begin, long end,
+											 int lastsector);
+extern Int16_t	*v_buffer(v_fragment *v);
 
-extern c_block	*c_first		__PR((struct cdrom_paranoia * p));
-extern c_block	*c_last			__PR((struct cdrom_paranoia * p));
-extern c_block	*c_next			__PR((c_block * c));
-extern c_block	*c_prev			__PR((c_block * c));
+extern c_block	*c_first(struct cdrom_paranoia *p);
+extern c_block	*c_last(struct cdrom_paranoia *p);
+extern c_block	*c_next(c_block *c);
+extern c_block	*c_prev(c_block *c);
 
-extern v_fragment *v_first		__PR((struct cdrom_paranoia * p));
-extern v_fragment *v_last		__PR((struct cdrom_paranoia * p));
-extern v_fragment *v_next		__PR((v_fragment * v));
-extern v_fragment *v_prev		__PR((v_fragment * v));
+extern v_fragment *v_first(struct cdrom_paranoia *p);
+extern v_fragment *v_last(struct cdrom_paranoia *p);
+extern v_fragment *v_next(v_fragment *v);
+extern v_fragment *v_prev(v_fragment *v);
 
 typedef struct root_block {
 	long		returnedlimit;
@@ -182,18 +181,13 @@ typedef struct cdrom_paranoia {
 
 } cdrom_paranoia;
 
-extern c_block	*c_alloc		__PR((Int16_t * vector,
-						long begin, long size));
-extern void	c_set			__PR((c_block * v, long begin));
-extern void	c_insert		__PR((c_block * v, long pos,
-						Int16_t * b, long size));
-extern void	c_remove		__PR((c_block * v, long cutpos,
-						long cutsize));
-extern void	c_overwrite		__PR((c_block * v, long pos,
-						Int16_t * b, long size));
-extern void	c_append		__PR((c_block * v, Int16_t * vector,
-						long size));
-extern void	c_removef		__PR((c_block * v, long cut));
+extern c_block	*c_alloc(Int16_t *vector, long begin, long size);
+extern void	c_set(c_block *v, long begin);
+extern void	c_insert(c_block *v, long pos, Int16_t *b, long size);
+extern void	c_remove(c_block *v, long cutpos, long cutsize);
+extern void	c_overwrite(c_block *v, long pos, Int16_t *b, long size);
+extern void	c_append(c_block *v, Int16_t *vector, long size);
+extern void	c_removef(c_block *v, long cut);
 
 #define	ce(v)	((v)->begin + (v)->size)
 #define	cb(v)	((v)->begin)
@@ -202,8 +196,8 @@ extern void	c_removef		__PR((c_block * v, long cut));
 /*
  * pos here is vector position from zero
  */
-extern void	recover_cache		__PR((cdrom_paranoia * p));
-extern void	i_paranoia_firstlast	__PR((cdrom_paranoia * p));
+extern void	recover_cache(cdrom_paranoia *p);
+extern void	i_paranoia_firstlast(cdrom_paranoia *p);
 
 #define	cv(c)	((c)->vector)
 

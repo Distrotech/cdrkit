@@ -60,17 +60,15 @@ static	char sccsid[] =
 #define MSGESEEK "Failed to seek VIDEO_TS.IFO\n"
 #define MSGEOPEN "Failed to open VIDEO_TS.IFO\n"
 
-LOCAL	ifo_handle_t *	ifoReadVTSI	__PR((int file, ifo_handle_t * ifofile));
-LOCAL	ifo_handle_t *	ifoReadVGMI	__PR((int file, ifo_handle_t * ifofile));
-EXPORT	ifo_handle_t *	ifoOpen		__PR((dvd_reader_t *dvd, int title));
-LOCAL	void		ifoFree_TT_SRPT	__PR((ifo_handle_t *ifofile));
-EXPORT	void		ifoClose	__PR((ifo_handle_t * ifofile));
+static	ifo_handle_t *ifoReadVTSI(int file, ifo_handle_t * ifofile);
+static	ifo_handle_t *ifoReadVGMI(int file, ifo_handle_t * ifofile);
+ifo_handle_t *ifoOpen(dvd_reader_t *dvd, int title);
+static	void		ifoFree_TT_SRPT(ifo_handle_t *ifofile);
+void		ifoClose(ifo_handle_t * ifofile);
 
 
-LOCAL ifo_handle_t *
-ifoReadVTSI(file, ifofile)
-	int file;
-	ifo_handle_t * ifofile;
+static ifo_handle_t *
+ifoReadVTSI(int file, ifo_handle_t *ifofile)
 {
 	off_t offset;
 	UInt32_t sector;
@@ -210,10 +208,8 @@ ifoReadVTSI(file, ifofile)
 }
 
 
-LOCAL ifo_handle_t *
-ifoReadVGMI(file, ifofile)
-	int file;
-	ifo_handle_t * ifofile;
+static ifo_handle_t *
+ifoReadVGMI(int file, ifo_handle_t *ifofile)
 {
 	off_t	offset;
 	Uint	counter;
@@ -457,10 +453,8 @@ ifoReadVGMI(file, ifofile)
 	return (ifofile);
 }
 
-EXPORT ifo_handle_t *
-ifoOpen(dvd, title)
-	dvd_reader_t *dvd;
-	int title;
+ifo_handle_t *
+ifoOpen(dvd_reader_t *dvd, int title)
 {
 	/* The main ifofile structure */
 	ifo_handle_t *ifofile;
@@ -531,9 +525,8 @@ ifoOpen(dvd, title)
 	}
 }
 
-LOCAL void
-ifoFree_TT_SRPT(ifofile)
-	ifo_handle_t *ifofile;
+static void
+ifoFree_TT_SRPT(ifo_handle_t *ifofile)
 {
 	if (!ifofile)
 		return;
@@ -547,9 +540,8 @@ ifoFree_TT_SRPT(ifofile)
 	}
 }
 
-EXPORT void
-ifoClose(ifofile)
-	ifo_handle_t * ifofile;
+void
+ifoClose(ifo_handle_t *ifofile)
 {
 
 	if (!ifofile)

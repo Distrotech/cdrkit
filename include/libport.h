@@ -92,27 +92,27 @@ extern "C" {
 #endif
 
 #ifndef	HAVE_GETHOSTID
-extern	long		gethostid	__PR((void));
+extern	long		gethostid(void);
 #endif
 #ifndef	HAVE_GETHOSTNAME
-extern	int		gethostname	__PR((char *name, int namelen));
+extern	int		gethostname(char *name, int namelen);
 #endif
 #ifndef	HAVE_GETDOMAINNAME
-extern	int		getdomainname	__PR((char *name, int namelen));
+extern	int		getdomainname(char *name, int namelen);
 #endif
 #ifndef	HAVE_GETPAGESIZE
-EXPORT	int		getpagesize	__PR((void));
+int		getpagesize(void);
 #endif
 #ifndef	HAVE_USLEEP
-extern	int		usleep		__PR((int usec));
+extern	int		usleep(int usec);
 #endif
 
 #if	!defined(HAVE_STRDUP) || defined(__SVR4)
-extern	char		*strdup		__PR((const char *s));
+extern	char		*strdup(const char *s);
 #endif
 
 #ifndef	HAVE_RENAME
-extern	int		rename		__PR((const char *old, const char *new));
+extern	int		rename(const char *old, const char *new);
 #endif
 
 #ifdef	__cplusplus

@@ -51,9 +51,9 @@ static	char sccsid[] =
 #include "cdrecord.h"
 #include "scgcheck.h"
 
-EXPORT	void	dmaresid	__PR((SCSI *scgp));
-LOCAL	int	xtinquiry	__PR((SCSI *scgp, int cnt, int dmacnt));
-LOCAL	int	tinquiry	__PR((SCSI *scgp, caddr_t bp, int cnt, int dmacnt));
+void	dmaresid(SCSI *scgp);
+static	int	xtinquiry(SCSI *scgp, int cnt, int dmacnt);
+static	int	tinquiry(SCSI *scgp, caddr_t bp, int cnt, int dmacnt);
 
 
 extern	char	*buf;			/* The transfer buffer */
@@ -62,9 +62,8 @@ extern	long	bufsize;		/* The size of the transfer buffer */
 extern	FILE	*logfile;
 extern	char	unavail[];
 
-EXPORT void
-dmaresid(scgp)
-	SCSI	*scgp;
+void
+dmaresid(SCSI *scgp)
 {
 	char	abuf[2];
 	int	cnt = sizeof (struct scsi_inquiry);
@@ -196,11 +195,8 @@ dmaresid(scgp)
 	}
 }
 
-LOCAL int
-xtinquiry(scgp, cnt, dmacnt)
-	SCSI	*scgp;
-	int	cnt;
-	int	dmacnt;
+static int
+xtinquiry(SCSI *scgp, int cnt, int dmacnt)
 {
 	Uchar	ibuf[1024];
 	struct scsi_inquiry	*ip;
@@ -240,12 +236,8 @@ xtinquiry(scgp, cnt, dmacnt)
 	return (maxcnt);
 }
 
-LOCAL int
-tinquiry(scgp, bp, cnt, dmacnt)
-	SCSI	*scgp;
-	caddr_t	bp;
-	int	cnt;
-	int	dmacnt;
+static int
+tinquiry(SCSI *scgp, caddr_t bp, int cnt, int dmacnt)
 {
 	register struct	scg_cmd	*scmd = scgp->scmd;
 

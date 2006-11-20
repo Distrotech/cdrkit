@@ -98,10 +98,7 @@ static char     sccsid[] =
  * Returns: destination as BASE64
  */
 
-unsigned char *rfc822_binary (src, srcl, len)
-	char *src;
-	unsigned long srcl;
-	unsigned long *len;
+unsigned char *rfc822_binary(char *src, unsigned long srcl, unsigned long *len)
 {
   unsigned char *ret,*d;
   unsigned char *s = (unsigned char *) src;

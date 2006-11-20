@@ -1,4 +1,29 @@
-cdrkit (1.0) RELEASED; urgency=low
+cdrkit (1.0pre5+cleanup) UNRELEASED; urgency=low
+
+  [ Eduard Bloch ]
+  * replacement of libdeflt and config parser rewrite; more user-friendly,
+    flexibel, tolerant now
+
+  [ Christian Fromme ]
+  * big cleanup, phase I, getting rid from Cstyle function definitions in
+    applications
+
+ -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cdrkit (1.0pre5) RELEASED; urgency=low
 
   [ Eduard Bloch ]
   * mapping of ATAPI: -> ATA: method on linux-2.6 and some code beautification
@@ -10,15 +35,7 @@ cdrkit (1.0) RELEASED; urgency=low
   [ Dennis Vshivkov ]
   * sorted display of files when needed
 
-  [ Joerg Jaspert]
-  * Remove all the printing of useless messages. This is based on GPLed
-    code, so we follow the letter of the GPL as it is interpreted by 99%
-    of the world, including its authors. Especially as Joerg was never able
-    to give us any clear explanation what other license he may think
-    cdrtools had, despite us asking multiple times. So we have no other
-    choice than to take whats written down, and thats GPL.
-
- -- Joerg Jaspert <joerg@debian.org>  Mon, 20 Nov 2006 19:25:10 +0100
+ -- Eduard Bloch <blade@debian.org>  Wed, 15 Nov 2006 12:30:01 +0100
 
 cdrkit (1.0pre5) RELEASED; urgency=low
 
@@ -42,9 +59,6 @@ cdrkit (1.0pre5) RELEASED; urgency=low
   * restored scsi-remote.c compilation, moved to libscg sources, used instead
     of rdummy.c
   * added optional omiting of DMA speed tests
-
-  [ Eugen Dedu ]
-  * corrections and constructive help on cdda2ogg
 
   [ Vladimir Nadvornik ]
   * enabled CLONE feature in wodim's config

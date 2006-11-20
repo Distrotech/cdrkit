@@ -99,32 +99,32 @@ unsigned interface;
 
 int trackindex_disp = 0;
 
-EXPORT	void	priv_init	__PR((void));
-EXPORT	void	priv_on		__PR((void));
-EXPORT	void	priv_off	__PR((void));
+void	priv_init(void);
+void	priv_on(void);
+void	priv_off(void);
 
-void     (*EnableCdda) __PR((SCSI *, int Switch, unsigned uSectorsize));
-unsigned (*doReadToc) __PR(( SCSI *scgp ));
-void	 (*ReadTocText) __PR(( SCSI *scgp ));
-unsigned (*ReadLastAudio) __PR(( SCSI *scgp ));
-int      (*ReadCdRom) __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal ));
-int      (*ReadCdRomData) __PR((SCSI *scgp, unsigned char *p, unsigned lSector, unsigned SectorBurstVal ));
-int      (*ReadCdRomSub) __PR((SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal ));
-subq_chnl *(*ReadSubChannels) __PR(( SCSI *scgp, unsigned lSector ));
-subq_chnl *(*ReadSubQ) __PR(( SCSI *scgp, unsigned char sq_format, unsigned char track ));
-void     (*SelectSpeed) __PR(( SCSI *scgp, unsigned speed ));
-int	(*Play_at) __PR(( SCSI *scgp, unsigned int from_sector, unsigned int sectors));
-int	(*StopPlay) __PR(( SCSI *scgp));
-void	(*trash_cache) __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
+void		(*EnableCdda)(SCSI *, int Switch, unsigned uSectorsize);
+unsigned (*doReadToc)(SCSI *scgp);
+void	 	(*ReadTocText)(SCSI *scgp);
+unsigned (*ReadLastAudio)(SCSI *scgp);
+int      (*ReadCdRom)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+							 unsigned SectorBurstVal);
+int      (*ReadCdRomData)(SCSI *scgp, unsigned char *p, unsigned lSector, 
+								  unsigned SectorBurstVal);
+int      (*ReadCdRomSub)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+								 unsigned SectorBurstVal);
+subq_chnl *(*ReadSubChannels)(SCSI *scgp, unsigned lSector);
+subq_chnl *(*ReadSubQ)(SCSI *scgp, unsigned char sq_format, 
+							  unsigned char track);
+void     (*SelectSpeed)(SCSI *scgp, unsigned speed);
+int		(*Play_at)(SCSI *scgp, unsigned int from_sector, unsigned int sectors);
+int		(*StopPlay)(SCSI *scgp);
+void		(*trash_cache)(UINT4 *p, unsigned lSector, unsigned SectorBurstVal);
 
 #if	defined	USE_PARANOIA
-long cdda_read __PR((void *d, void * buffer, long beginsector, long sectors));
+long cdda_read(void *d, void *buffer, long beginsector, long sectors);
 
-long cdda_read(d, buffer, beginsector, sectors)
-	void *d;
-	void * buffer;
-	long beginsector;
-	long sectors;
+long cdda_read(void *d, void *buffer, long beginsector, long sectors)
 {
 	long ret = ReadCdRom(d, buffer, beginsector, sectors);
 	return ret;
@@ -150,35 +150,35 @@ static mystring drv_has_mmc_cdda[] = {
 
 static int	Is_a_Toshiba3401;
 
-int Toshiba3401 __PR((void));
+int Toshiba3401(void);
 
-int Toshiba3401 ( ) {
+int Toshiba3401() 
+{
   return Is_a_Toshiba3401;
 }
 
 /* hook */
-static void Dummy __PR(( void ));
-static void Dummy ( )
+static void Dummy(void);
+static void Dummy()
 {
 }
 
 static SCSI    *scgp;
 
-SCSI * get_scsi_p __PR((void));
+SCSI *get_scsi_p(void);
 
-SCSI * get_scsi_p( )
+SCSI *get_scsi_p()
 {
     return scgp;
 }
 
 #if !defined(SIM_CD)
 
-static void trash_cache_SCSI __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
+static void trash_cache_SCSI(UINT4 *p, unsigned lSector, 
+									  unsigned SectorBurstVal);
 
-static void trash_cache_SCSI(p, lSector, SectorBurstVal)
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static void trash_cache_SCSI(UINT4 *p, unsigned lSector, 
+									  unsigned SectorBurstVal)
 {
       /* trash the cache */
       ReadCdRom(get_scsi_p(), p, find_an_off_sector(lSector, SectorBurstVal), min(global.nsectors,6));
@@ -186,12 +186,13 @@ static void trash_cache_SCSI(p, lSector, SectorBurstVal)
 
 
 
-static void Check_interface_for_device __PR((struct stat *statstruct, char *pdev_name));
-static int OpenCdRom __PR((char *pdev_name));
+static void Check_interface_for_device(struct stat *statstruct, 
+													char *pdev_name);
+static int OpenCdRom(char *pdev_name);
 
-static void SetupSCSI __PR((void));
+static void SetupSCSI(void);
 
-static void SetupSCSI( )
+static void SetupSCSI()
 {
     unsigned char *p;
 
@@ -233,10 +234,10 @@ static void SetupSCSI( )
     /* generic Sony type defaults */
     density = 0x0;
     accepts_fua_bit = -1;
-    EnableCdda = (void (*) __PR((SCSI *, int, unsigned)))Dummy;
+    EnableCdda = (void (*)(SCSI *, int, unsigned))Dummy;
     ReadCdRom = ReadCdda12;
     ReadCdRomSub = ReadCddaSubSony;
-    ReadCdRomData = (int (*) __PR((SCSI *, unsigned char *, unsigned, unsigned ))) ReadStandardData;
+    ReadCdRomData = (int (*)(SCSI *, unsigned char *, unsigned, unsigned))ReadStandardData;
     ReadLastAudio = ReadFirstSessionTOCSony;
     SelectSpeed = SpeedSelectSCSISony;
     Play_at = Play_atSCSI;
@@ -420,8 +421,7 @@ lost_toshibas:
  * device, issue an inquiry. If they both succeed, there's a good
  * chance that the device works... */
 #if defined(__linux__)
-static int check_linux_scsi_interface(pdev_name)
-    char *pdev_name;
+static int check_linux_scsi_interface(char *pdev_name)
 {
     SCSI *dev = NULL;
     unsigned char *p = NULL;
@@ -447,9 +447,7 @@ static int check_linux_scsi_interface(pdev_name)
    adjust nsectors, overlap, and interface for the first time here.
    Any unnecessary privileges (setuid, setgid) are also dropped here.
 */
-static void Check_interface_for_device( statstruct, pdev_name)
-	struct stat *statstruct;
-	char *pdev_name;
+static void Check_interface_for_device(struct stat *statstruct, char *pdev_name)
 {
 #if defined(__linux__)
     int is_scsi = 1;
@@ -570,8 +568,7 @@ Setting interface to cooked_ioctl.\n", pdev_name);
 }
 
 /* open the cdrom device */
-static int OpenCdRom ( pdev_name )
-	char *pdev_name;
+static int OpenCdRom(char *pdev_name)
 {
   int retval = 0;
   struct stat fstatstruct;
@@ -721,12 +718,10 @@ static unsigned long sim_pos=0;
 /* read 'SectorBurst' adjacent sectors of audio sectors 
  * to Buffer '*p' beginning at sector 'lSector'
  */
-static int ReadCdRom_sim __PR(( SCSI *x, UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
-static int ReadCdRom_sim (x, p, lSector, SectorBurstVal )
-	SCSI *x;
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static int ReadCdRom_sim(SCSI *x, UINT4 *p, unsigned lSector, 
+								 unsigned SectorBurstVal);
+static int ReadCdRom_sim(SCSI *x, UINT4 *p, unsigned lSector, 
+								 unsigned SectorBurstVal)
 {
   unsigned int loop=0;
   Int16_t *q = (Int16_t *) p;
@@ -761,11 +756,8 @@ static int ReadCdRom_sim (x, p, lSector, SectorBurstVal )
   return SectorBurstVal;
 }
 
-static int Play_at_sim __PR(( SCSI *x, unsigned int from_sector, unsigned int sectors));
-static int Play_at_sim( x, from_sector, sectors)
-	SCSI *x;
-	unsigned int from_sector;
-	unsigned int sectors;
+static int Play_at_sim(SCSI *x, unsigned int from_sector, unsigned int sectors);
+static int Play_at_sim(SCSI *x, unsigned int from_sector, unsigned int sectors)
 {
   sim_pos = from_sector*CD_FRAMESAMPLES; 
   return 0;
@@ -775,10 +767,8 @@ static unsigned sim_indices;
 
 
 /* read the table of contents (toc) via the ioctl interface */
-static unsigned ReadToc_sim __PR(( SCSI *x, TOC *toc));
-static unsigned ReadToc_sim ( x, toc )
-	SCSI *x;
-	TOC *toc;
+static unsigned ReadToc_sim(SCSI *x, TOC *toc);
+static unsigned ReadToc_sim(SCSI *x, TOC *toc)
 {
     unsigned int scenario;
     int scen[12][3] = { 
@@ -865,14 +855,13 @@ static unsigned ReadToc_sim ( x, toc )
 }
 
 
-static subq_chnl *ReadSubQ_sim __PR(( SCSI *scgp, unsigned char sq_format, unsigned char track ));
+static subq_chnl *ReadSubQ_sim(SCSI *scgp, unsigned char sq_format, 
+										 unsigned char track);
 /* request sub-q-channel information. This function may cause confusion
  * for a drive, when called in the sampling process.
  */
-static subq_chnl *ReadSubQ_sim ( scgp, sq_format, track )
-	SCSI *scgp;
-	unsigned char sq_format;
-	unsigned char track;
+static subq_chnl *ReadSubQ_sim(SCSI *scgp, unsigned char sq_format, 
+										 unsigned char track)
 {
     subq_chnl *SQp = (subq_chnl *) (SubQbuffer);
     subq_position *SQPp = (subq_position *) &SQp->data;
@@ -902,31 +891,28 @@ static subq_chnl *ReadSubQ_sim ( scgp, sq_format, track )
     return (subq_chnl *)(SubQbuffer);
 }
 
-static void SelectSpeed_sim __PR(( SCSI *x, unsigned sp));
+static void SelectSpeed_sim(SCSI *x, unsigned sp);
 /* ARGSUSED */
-static void SelectSpeed_sim(x, sp)
-	SCSI *x;
-	unsigned sp;
+static void SelectSpeed_sim(SCSI *x, unsigned sp)
 {
 }
 
-static void trash_cache_sim __PR((UINT4 *p, unsigned lSector, unsigned SectorBurstVal));
+static void trash_cache_sim(UINT4 *p, unsigned lSector, 
+									 unsigned SectorBurstVal);
 
 /* ARGSUSED */
-static void trash_cache_sim(p, lSector, SectorBurstVal)
-	UINT4 *p;
-	unsigned lSector;
-	unsigned SectorBurstVal;
+static void trash_cache_sim(UINT4 *p, unsigned lSector, 
+									 unsigned SectorBurstVal)
 {
 }
 
-static void SetupSimCd __PR((void));
+static void SetupSimCd(void);
 
 static void SetupSimCd()
 {
-    EnableCdda = (void (*) __PR((SCSI *, int, unsigned)))Dummy;
+    EnableCdda = (void (*)(SCSI *, int, unsigned))Dummy;
     ReadCdRom = ReadCdRom_sim;
-    ReadCdRomData = (int (*) __PR((SCSI *, unsigned char *, unsigned, unsigned ))) ReadCdRom_sim;
+    ReadCdRomData = (int (*)(SCSI *, unsigned char *, unsigned, unsigned))ReadCdRom_sim;
     doReadToc = ReadToc_sim;
     ReadTocText = NULL;
     ReadSubQ = ReadSubQ_sim;
@@ -934,7 +920,7 @@ static void SetupSimCd()
     ReadLastAudio = NULL;
     SelectSpeed = SelectSpeed_sim;
     Play_at = Play_at_sim;
-    StopPlay = (int (*) __PR((SCSI *)))Dummy;
+    StopPlay = (int (*)(SCSI *))Dummy;
     trash_cache = trash_cache_sim;
  
 }
@@ -942,7 +928,7 @@ static void SetupSimCd()
 #endif /* def SIM_CD */
 
 /* perform initialization depending on the interface used. */
-void SetupInterface( )
+void SetupInterface()
 {
 #if	defined SIM_CD
     fprintf( stderr, "SIMULATION MODE !!!!!!!!!!!\n");
@@ -1020,7 +1006,7 @@ void SetupInterface( )
 #include <priv.h>
 #endif
 
-EXPORT void
+void
 priv_init()
 {
 #ifdef	HAVE_PRIV_SET
@@ -1038,7 +1024,7 @@ priv_init()
 #endif
 }
 
-EXPORT void
+void
 priv_on()
 {
 #ifdef	HAVE_PRIV_SET
@@ -1053,7 +1039,7 @@ priv_on()
 #endif
 }
 
-EXPORT void
+void
 priv_off()
 {
 #ifdef	HAVE_PRIV_SET

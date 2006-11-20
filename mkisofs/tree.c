@@ -70,52 +70,47 @@ static	char sccsid[] =
 #define	memmove(d, s, n)	bcopy((s), (d), (n))
 #endif
 
-LOCAL	Uchar	symlink_buff[PATH_MAX+1];
+static	Uchar	symlink_buff[PATH_MAX+1];
 
-LOCAL	char	*filetype		__PR((int t));
-LOCAL	char	*rstr			__PR((char *s1, char *s2));
-LOCAL	void	stat_fix		__PR((struct stat * st));
-EXPORT	int	stat_filter		__PR((char *path, struct stat *st));
-EXPORT	int	lstat_filter		__PR((char *path, struct stat *st));
-LOCAL	int	sort_n_finish		__PR((struct directory *this_dir));
-LOCAL	void	generate_reloc_directory __PR((void));
-LOCAL	void	attach_dot_entries	__PR((struct directory * dirnode,
-						struct stat * parent_stat));
-LOCAL	void	update_nlink		__PR((struct directory_entry *s_entry,
-						int value));
-LOCAL	void	increment_nlink		__PR((struct directory_entry *s_entry));
-EXPORT	char	*find_rr_attribute	__PR((unsigned char *pnt, int len,
-						char *attr_type));
-EXPORT	void	finish_cl_pl_entries	__PR((void));
-EXPORT	int	scan_directory_tree	__PR((struct directory *this_dir,
-						char *path,
-						struct directory_entry *de));
+static	char	*filetype(int t);
+static	char	*rstr(char *s1, char *s2);
+static	void	stat_fix(struct stat * st);
+int	stat_filter(char *path, struct stat *st);
+int	lstat_filter(char *path, struct stat *st);
+static	int	sort_n_finish(struct directory *this_dir);
+static	void	generate_reloc_directory(void);
+static	void	attach_dot_entries(struct directory *dirnode,
+											 struct stat *parent_stat);
+static	void	update_nlink(struct directory_entry *s_entry, int value);
+static	void	increment_nlink(struct directory_entry *s_entry);
+char	*find_rr_attribute(unsigned char *pnt, int len, char *attr_type);
+void	finish_cl_pl_entries(void);
+int	scan_directory_tree(struct directory *this_dir, char *path,
+								  struct directory_entry *de);
 #ifdef APPLE_HYB
-EXPORT	int	insert_file_entry	__PR((struct directory *this_dir,
-						char *whole_path,
-						char *short_name,
-						int have_rsrc));
+int	insert_file_entry(struct directory *this_dir,
+								char *whole_path,
+								char *short_name,
+								int have_rsrc);
 #else
-EXPORT	int	insert_file_entry	__PR((struct directory *this_dir,
-						char *whole_path,
-						char *short_name));
+int	insert_file_entry(struct directory *this_dir,
+								char *whole_path,
+								char *short_name);
 #endif
-EXPORT	void	generate_iso9660_directories __PR((struct directory *node,
-						FILE *outfile));
-EXPORT	struct directory *
-		find_or_create_directory __PR((struct directory *parent,
-						const char *path,
-						struct directory_entry *de,
-						int flag));
-LOCAL	void	delete_directory	__PR((struct directory * parent,
-						struct directory * child));
-EXPORT	int	sort_tree		__PR((struct directory *node));
-EXPORT	void	dump_tree		__PR((struct directory *node));
-EXPORT	void	update_nlink_field	__PR((struct directory *node));
-EXPORT	struct directory_entry *
-		search_tree_file	__PR((struct directory *node,
-						char *filename));
-EXPORT	void	init_fstatbuf		__PR((void));
+void	generate_iso9660_directories(struct directory *node,
+											  FILE *outfile);
+struct directory *find_or_create_directory(struct directory *parent,
+														 const char *path,
+														 struct directory_entry *de,
+														 int flag);
+static	void	delete_directory(struct directory *parent,
+										  struct directory *child);
+int	sort_tree(struct directory *node);
+void	dump_tree(struct directory *node);
+void	update_nlink_field(struct directory *node);
+struct directory_entry *search_tree_file(struct directory *node,
+													  char *filename);
+void	init_fstatbuf(void);
 
 extern int	verbose;
 struct stat	fstatbuf;		/* We use this for the artificial */
@@ -123,9 +118,8 @@ struct stat	fstatbuf;		/* We use this for the artificial */
 struct stat	root_statbuf;		/* Stat buffer for root directory */
 struct directory *reloc_dir;
 
-LOCAL char *
-filetype(t)
-	int	t;
+static char *
+filetype(int t)
 {
 	static	char	unkn[32];
 
@@ -174,10 +168,8 @@ filetype(t)
 /*
  * Check if s1 ends in strings s2
  */
-LOCAL char *
-rstr(s1, s2)
-	char	*s1;
-	char	*s2;
+static char *
+rstr(char *s1, char *s2)
 {
 	int	l1;
 	int	l2;
@@ -192,9 +184,8 @@ rstr(s1, s2)
 	return ((char *) NULL);
 }
 
-LOCAL void
-stat_fix(st)
-	struct stat	*st;
+static void
+stat_fix(struct stat *st)
 {
 	int adjust_modes = 0;
 
@@ -241,10 +232,8 @@ stat_fix(st)
 	}
 }
 
-EXPORT int
-stat_filter(path, st)
-	char		*path;
-	struct stat	*st;
+int
+stat_filter(char *path, struct stat *st)
 {
 	int	result = stat(path, st);
 
@@ -253,10 +242,8 @@ stat_filter(path, st)
 	return (result);
 }
 
-EXPORT int
-lstat_filter(path, st)
-	char		*path;
-	struct stat	*st;
+int
+lstat_filter(char *path, struct stat *st)
 {
 	int	result = lstat(path, st);
 
@@ -265,9 +252,8 @@ lstat_filter(path, st)
 	return (result);
 }
 
-LOCAL int
-sort_n_finish(this_dir)
-	struct directory	*this_dir;
+static int
+sort_n_finish(struct directory *this_dir)
 {
 	struct directory_entry *s_entry;
 	struct directory_entry *s_entry1;
@@ -794,7 +780,7 @@ got_valid_name:
 	return (status);
 }
 
-LOCAL void
+static void
 generate_reloc_directory()
 {
 	time_t		current_time;
@@ -871,10 +857,9 @@ generate_reloc_directory()
  * Notes:		Only used for artificial directories that
  *			we are creating.
  */
-LOCAL void
-attach_dot_entries(dirnode, parent_stat)
-	struct directory	*dirnode;
-	struct stat		*parent_stat;
+static void
+attach_dot_entries(struct directory *dirnode, 
+						 struct stat *parent_stat)
 {
 	struct directory_entry *s_entry;
 	struct directory_entry *orig_contents;
@@ -967,10 +952,8 @@ attach_dot_entries(dirnode, parent_stat)
 	}
 }
 
-LOCAL void
-update_nlink(s_entry, value)
-	struct directory_entry	*s_entry;
-	int			value;
+static void
+update_nlink(struct directory_entry *s_entry, int value)
 {
 	unsigned char	*pnt;
 	int		len;
@@ -999,9 +982,8 @@ update_nlink(s_entry, value)
 	}
 }
 
-LOCAL void
-increment_nlink(s_entry)
-	struct directory_entry	*s_entry;
+static void
+increment_nlink(struct directory_entry *s_entry)
 {
 	unsigned char	*pnt;
 	int		len,
@@ -1032,11 +1014,8 @@ increment_nlink(s_entry)
 	}
 }
 
-EXPORT char *
-find_rr_attribute(pnt, len, attr_type)
-	unsigned char	*pnt;
-	int		len;
-	char		*attr_type;
+char *
+find_rr_attribute(unsigned char *pnt, int len, char *attr_type)
 {
 	pnt = parse_xa(pnt, &len, 0);
 	while (len >= 4) {
@@ -1061,7 +1040,7 @@ find_rr_attribute(pnt, len, attr_type)
 	return (NULL);
 }
 
-EXPORT void
+void
 finish_cl_pl_entries()
 {
 	struct directory_entry	*s_entry;
@@ -1158,11 +1137,9 @@ finish_cl_pl_entries()
  *
  * Notes:
  */
-EXPORT int
-scan_directory_tree(this_dir, path, de)
-	struct directory	*this_dir;
-	char			*path;
-	struct directory_entry	*de;
+int
+scan_directory_tree(struct directory *this_dir, char *path, 
+						  struct directory_entry *de)
 {
 	DIR		*current_dir;
 	char		whole_path[PATH_MAX];
@@ -1404,18 +1381,13 @@ scan_directory_tree(this_dir, path, de)
  * trees before we return.
  */
 #ifdef APPLE_HYB
-EXPORT int
-insert_file_entry(this_dir, whole_path, short_name, have_rsrc)
-	struct directory	*this_dir;
-	char			*whole_path;
-	char			*short_name;
-	int			have_rsrc;
+int
+insert_file_entry(struct directory *this_dir, char *whole_path, 
+						char *short_name, int have_rsrc)
 #else
-EXPORT int
-insert_file_entry(this_dir, whole_path, short_name)
-	struct directory	*this_dir;
-	char			*whole_path;
-	char			*short_name;
+int
+insert_file_entry(struct directory *this_dir, char *whole_path, 
+						char *short_name)
 #endif	/* APPLE_HYB */
 {
 	struct stat	statbuf,
@@ -2232,10 +2204,8 @@ insert_file_entry(this_dir, whole_path, short_name)
 }
 
 
-EXPORT void
-generate_iso9660_directories(node, outfile)
-	struct directory	*node;
-	FILE			*outfile;
+void
+generate_iso9660_directories(struct directory *node, FILE *outfile)
 {
 	struct directory *dpnt;
 
@@ -2258,12 +2228,9 @@ generate_iso9660_directories(node, outfile)
  *
  * Arguments:	parent & de are never NULL at the same time.
  */
-EXPORT struct directory *
-find_or_create_directory(parent, path, de, flag)
-	struct directory	*parent;
-	const char		*path;
-	struct directory_entry	*de;
-	int			flag;
+struct directory *
+find_or_create_directory(struct directory *parent, const char *path, 
+								 struct directory_entry *de, int flag)
 {
 	struct directory *dpnt;
 	struct directory_entry *orig_de;
@@ -2473,7 +2440,7 @@ find_or_create_directory(parent, path, de, flag)
  *
  * Arguments:
  */
-LOCAL void
+static void
 delete_directory(parent, child)
 	struct directory	*parent;
 	struct directory	*child;
@@ -2523,9 +2490,8 @@ delete_directory(parent, child)
 	free(child);
 }
 
-EXPORT int
-sort_tree(node)
-	struct directory	*node;
+int
+sort_tree(struct directory *node)
 {
 	struct directory *dpnt;
 	int		ret = 0;
@@ -2544,9 +2510,8 @@ sort_tree(node)
 	return (ret);
 }
 
-EXPORT void
-dump_tree(node)
-	struct directory *node;
+void
+dump_tree(struct directory *node)
 {
 	struct directory *dpnt;
 
@@ -2561,9 +2526,8 @@ dump_tree(node)
 	}
 }
 
-EXPORT void
-update_nlink_field(node)
-	struct directory *node;
+void
+update_nlink_field(struct directory *node)
 {
 	struct directory *dpnt;
 	struct directory *xpnt;
@@ -2619,10 +2583,8 @@ update_nlink_field(node)
  * recursively walks down path in filename until it finds the
  * directory entry for the desired file
  */
-EXPORT struct directory_entry *
-search_tree_file(node, filename)
-	struct directory *node;
-	char		*filename;
+struct directory_entry *
+search_tree_file(struct directory *node, char *filename)
 {
 	struct directory_entry *depnt;
 	struct directory *dpnt;
@@ -2698,7 +2660,7 @@ search_tree_file(node, filename)
 #endif
 }
 
-EXPORT void
+void
 init_fstatbuf()
 {
 	time_t	current_time;

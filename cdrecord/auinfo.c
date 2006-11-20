@@ -50,21 +50,20 @@ static	char sccsid[] =
 extern	int	debug;
 extern	int	xdebug;
 
-EXPORT	BOOL	auinfosize	__PR((char *name, track_t *trackp));
-EXPORT	void	auinfo		__PR((char *name, int track, track_t *trackp));
-EXPORT	textptr_t *gettextptr	__PR((int track, track_t *trackp));
-LOCAL	char 	*savestr	__PR((char *name));
-LOCAL	char 	*readtag	__PR((char *name));
-LOCAL	char 	*readtstr	__PR((char *name));
-EXPORT	void	setmcn		__PR((char *mcn, track_t *trackp));
-LOCAL	void	isrc_illchar	__PR((char *isrc, int c));
-EXPORT	void	setisrc		__PR((char *isrc, track_t *trackp));
-EXPORT	void	setindex	__PR((char *tindex, track_t *trackp));
+BOOL			auinfosize(char *name, track_t *trackp);
+void			auinfo(char *name, int track, track_t *trackp);
+textptr_t 	*gettextptr(int track, track_t *trackp);
+static char *savestr(char *name);
+static char *readtag(char *name);
+static char *readtstr(char *name);
+void			setmcn(char *mcn, track_t *trackp);
+static void	isrc_illchar(char *isrc, int c);
+void			setisrc(char *isrc, track_t *trackp);
+void			setindex(char *tindex, track_t *trackp);
 
 #ifdef	XXX
-main(ac, av)
-	int	ac;
-	char	*av[];
+int 
+main(int argc, char *argv[])
 {
 /*	auinfo("/etc/default/cdrecord");*/
 /*	auinfo("/mnt2/CD3/audio_01.inf");*/
@@ -72,10 +71,8 @@ main(ac, av)
 }
 #endif
 
-EXPORT BOOL
-auinfosize(name, trackp)
-	char	*name;
-	track_t	*trackp;
+BOOL 
+auinfosize(char *name, track_t *trackp)
 {
 	const	char	*p;
 	const	char	*tlp;
@@ -111,15 +108,15 @@ auinfosize(name, trackp)
 	if (sb.st_size > 10000)		/* Too large for a *.inf file	*/
 		return (FALSE);
 
-	if (defltopen(name) < 0)	/* Cannot open *.inf file	*/
+	if (cfg_open(name) < 0)	/* Cannot open *.inf file	*/
 		return (FALSE);
 
-	tlp = p = readtag("Tracklength=");
+	tlp = p = readtag("Tracklength");
 	if (p == NULL) {		/* Tracklength= Tag not found	*/
 		errmsgno(EX_BAD,
 			"WARNING: %s does not contain a 'Tracklength=' tag.\n",
 			name);
-		defltclose();
+		cfg_close();
 		return (FALSE);
 	}
 
@@ -128,7 +125,7 @@ auinfosize(name, trackp)
 		errmsgno(EX_BAD,
 			"WARNING: %s: 'Tracklength=' contains illegal parameter '%s'.\n",
 			name, tlp);
-		defltclose();
+		cfg_close();
 		return (FALSE);
 	}
 	if (*p == ',')
@@ -138,7 +135,7 @@ auinfosize(name, trackp)
 		errmsgno(EX_BAD,
 			"WARNING: %s: 'Tracklength=' contains illegal parameter '%s'.\n",
 			name, tlp);
-		defltclose();
+		cfg_close();
 		return (FALSE);
 	}
 	tracksize = (secs * 2352) + (nsamples * 4);
@@ -147,15 +144,12 @@ auinfosize(name, trackp)
 			name, tracksize, secs, nsamples);
 	}
 	trackp->itracksize = tracksize;
-	defltclose();
+	cfg_close();
 	return (TRUE);
 }
 
-EXPORT void
-auinfo(name, track, trackp)
-	char	*name;
-	int	track;
-	track_t	*trackp;
+void 
+auinfo(char *name, int track, track_t *trackp)
 {
 	char	infname[1024];
 	char	*p;
@@ -172,81 +166,81 @@ auinfo(name, track, trackp)
 		strcpy(&p[1], "inf");
 	}
 
-	if (defltopen(infname) == 0) {
+	if (cfg_open(infname) == 0) {
 
-		p = readtstr("CDINDEX_DISCID=");
-		p = readtag("CDDB_DISKID=");
+		p = readtstr("CDINDEX_DISCID");
+		p = readtag("CDDB_DISKID");
 
-		p = readtag("MCN=");
+		p = readtag("MCN");
 		if (p && *p) {
 			setmcn(p, &trackp[0]);
 			txp = gettextptr(0, trackp); /* MCN is isrc for trk 0*/
 			txp->tc_isrc = savestr(p);
 		}
 
-		p = readtag("ISRC=");
+		p = readtag("ISRC");
 		if (p && *p) {
 			setisrc(p, &trackp[track]);
 			txp = gettextptr(track, trackp);
 			txp->tc_isrc = savestr(p);
 		}
 
-		p = readtstr("Albumperformer=");
+		p = readtstr("Albumperformer");
 		if (p && *p) {
 			txp = gettextptr(0, trackp); /* Album perf. in trk 0*/
 			txp->tc_performer = savestr(p);
 		}
-		p = readtstr("Performer=");
+		p = readtstr("Performer");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_performer = savestr(p);
 		}
-		p = readtstr("Albumtitle=");
+		p = readtstr("Albumtitle");
 		if (p && *p) {
 			txp = gettextptr(0, trackp); /* Album title in trk 0*/
 			txp->tc_title = savestr(p);
 		}
-		p = readtstr("Tracktitle=");
+		p = readtstr("Tracktitle");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_title = savestr(p);
 		}
-		p = readtstr("Songwriter=");
+		p = readtstr("Songwriter");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_songwriter = savestr(p);
 		}
-		p = readtstr("Composer=");
+		p = readtstr("Composer");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_composer = savestr(p);
 		}
-		p = readtstr("Arranger=");
+		p = readtstr("Arranger");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_arranger = savestr(p);
 		}
-		p = readtstr("Message=");
+		p = readtstr("Message");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_message = savestr(p);
 		}
-		p = readtstr("Diskid=");
+		p = readtstr("Diskid");
 		if (p && *p) {
 			txp = gettextptr(0, trackp); /* Disk id is in trk 0*/
 			txp->tc_title = savestr(p);
 		}
-		p = readtstr("Closed_info=");
+		p = readtstr("Closed_info");
 		if (p && *p) {
 			txp = gettextptr(track, trackp);
 			txp->tc_closed_info = savestr(p);
 		}
 
-		p = readtag("Tracknumber=");
+		p = readtag("Tracknumber");
 		if (p && isdao)
 			astol(p, &tno);
 
-		p = readtag("Trackstart=");
+		p = readtag("Trackstart");
 		if (p && isdao) {
 			l = -1L;
 			astol(p, &l);
@@ -256,9 +250,9 @@ auinfo(name, track, trackp)
 			}
 		}
 
-		p = readtag("Tracklength=");
+		p = readtag("Tracklength");
 
-		p = readtag("Pre-emphasis=");
+		p = readtag("Pre-emphasis");
 		if (p && *p) {
 			if (strncmp(p, "yes", 3) == 0) {
 				tp->flags |= TI_PREEMP;
@@ -272,8 +266,8 @@ auinfo(name, track, trackp)
 			}
 		}
 
-		p = readtag("Channels=");
-		p = readtag("Copy_permitted=");
+		p = readtag("Channels");
+		p = readtag("Copy_permitted");
 		if (p && *p) {
 			/*
 			 * -useinfo always wins
@@ -287,12 +281,12 @@ auinfo(name, track, trackp)
 			else if (strncmp(p, "once", 2) == 0)
 				tp->flags &= ~(TI_COPY|TI_SCMS);
 		}
-		p = readtag("Endianess=");
-		p = readtag("Index=");
+		p = readtag("Endianess");
+		p = readtag("Index");
 		if (p && *p && isdao)
 			setindex(p, &trackp[track]);
 
-		p = readtag("Index0=");
+		p = readtag("Index0");
 		if (p && isdao) {
 			Llong ts;
 			Llong ps;
@@ -312,10 +306,8 @@ auinfo(name, track, trackp)
 
 }
 
-EXPORT textptr_t *
-gettextptr(track, trackp)
-	int	track;
-	track_t	*trackp;
+textptr_t *
+gettextptr(int track, track_t *trackp)
 {
 	register textptr_t *txp;
 
@@ -330,9 +322,8 @@ gettextptr(track, trackp)
 	return (txp);
 }
 
-LOCAL char *
-savestr(str)
-	char	*str;
+static char *
+savestr(char *str)
 {
 	char	*ret;
 
@@ -344,25 +335,19 @@ savestr(str)
 	return (ret);
 }
 
-LOCAL char *
-readtag(name)
-	char	*name;
+static char *
+readtag(char *name)
 {
 	register char	*p;
 
-	p = defltread(name);
-	if (p) {
-		while (*p == ' ' || *p == '\t')
-			p++;
-		if (debug)
-			printf("%s	'%s'\n", name, p);
-	}
-	return (p);
+  p = cfg_get(name);
+  if (debug)
+     printf("%s	'%s'\n", name, p);
+  return (p);
 }
 
-LOCAL char *
-readtstr(name)
-	char	*name;
+static char *
+readtstr(char *name)
 {
 	register char	*p;
 	register char	*p2;
@@ -384,10 +369,8 @@ readtstr(name)
 /*
  * Media catalog number is a 13 digit number.
  */
-EXPORT void
-setmcn(mcn, trackp)
-	char	*mcn;
-	track_t	*trackp;
+void 
+setmcn(char *mcn, track_t *trackp)
 {
 	register char	*p;
 
@@ -406,12 +389,10 @@ setmcn(mcn, trackp)
 		printf("Track %d MCN: '%s'\n", (int)trackp->trackno, trackp->isrc);
 }
 
-LOCAL	char	upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+static	char	upper[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-LOCAL void
-isrc_illchar(isrc, c)
-	char	*isrc;
-	int	c;
+static void 
+isrc_illchar(char *isrc, int c)
 {
 	errmsgno(EX_BAD, "ISRC '%s' contains illegal character '%c'.\n", isrc, c);
 }
@@ -426,10 +407,8 @@ isrc_illchar(isrc, c)
  *
  *	CC-OOO-YY-SSSSS
  */
-EXPORT void
-setisrc(isrc, trackp)
-	char	*isrc;
-	track_t	*trackp;
+void 
+setisrc(char *isrc, track_t *trackp)
 {
 	char	ibuf[13];
 	char	*ip;
@@ -506,10 +485,8 @@ illchar:
 	exit(EX_BAD);
 }
 
-EXPORT void
-setindex(tindex, trackp)
-	char	*tindex;
-	track_t	*trackp;
+void 
+setindex(char *tindex, track_t *trackp)
 {
 	char	*p;
 	int	i;

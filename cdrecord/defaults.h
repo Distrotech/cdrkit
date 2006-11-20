@@ -36,6 +36,6 @@
 /*
  * defaults.c
  */
-extern	void	cdr_defaults	__PR((char **devp, int *speedp, long *fsp, char **drvoptp));
+//extern	void	cdr_defaults	__PR((char **devp, int *speedp, long *fsp, char **drvoptp));
 
 #endif	/* _DEFAULTS_H */

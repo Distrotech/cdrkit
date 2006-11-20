@@ -33,9 +33,9 @@
 #define	_SCSI_H
 
 #ifdef	USE_SCG
-extern int	readsecs	__PR((int startsecno, void *buffer, int sectorcount));
-extern int	scsidev_open	__PR((char *path));
-extern int	scsidev_close	__PR((void));
+extern int	readsecs(int startsecno, void *buffer, int sectorcount);
+extern int	scsidev_open(char *path);
+extern int	scsidev_close(void);
 #endif
 
 #endif	/* _SCSI_H */

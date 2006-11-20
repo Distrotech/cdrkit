@@ -86,7 +86,7 @@ static	char sccsid[] =
 struct directory *root = NULL;
 int		path_ind;
 
-char	version_string[] = "mkisofs 2.01.01a05+ck1, cdrkit edition";
+char	version_string[] = "mkisofs 2.01.01a05-unofficial-iconv";
 
 char		*outfile;
 FILE		*discimage;
@@ -486,9 +486,9 @@ struct ld_option {
 
 #endif	/* APPLE_HYB */
 
-LOCAL int	save_pname = 0;
+static int	save_pname = 0;
 
-LOCAL const struct ld_option ld_options[] =
+static const struct ld_option ld_options[] =
 {
 	{{"nobak", no_argument, NULL, OPTION_NOBAK},
 	'\0', NULL, "Do not include backup files", ONE_DASH},
@@ -856,21 +856,19 @@ LOCAL const struct ld_option ld_options[] =
 
 #define	OPTION_COUNT (sizeof ld_options / sizeof (ld_options[0]))
 
-LOCAL	void	read_rcfile	__PR((char *appname));
-LOCAL	void	susage		__PR((int excode));
-LOCAL	void	usage		__PR((int excode));
-EXPORT	int	iso9660_date	__PR((char *result, time_t crtime));
-LOCAL	void	hide_reloc_dir	__PR((void));
-LOCAL	char *	get_pnames	__PR((int argc, char **argv, int opt,
-					char *pname, int pnsize, FILE * fp));
-EXPORT	int	main		__PR((int argc, char **argv));
-EXPORT	char *	findgequal	__PR((char *s));
-LOCAL	char *	escstrcpy	__PR((char *to, char *from));
-EXPORT	void *	e_malloc	__PR((size_t size));
+static	void	read_rcfile(char *appname);
+static	void	susage(int excode);
+static	void	usage(int excode);
+int	iso9660_date(char *result, time_t crtime);
+static	void	hide_reloc_dir(void);
+static	char *get_pnames(int argc, char **argv, int opt, char *pname, 
+								  int pnsize, FILE *fp);
+char *findgequal(char *s);
+static	char *escstrcpy(char *to, char *from);
+void *e_malloc(size_t size);
 
-LOCAL void
-read_rcfile(appname)
-	char		*appname;
+static void
+read_rcfile(char *appname)
 {
 	FILE		*rcfile = (FILE *) NULL;
 	struct rcopts	*rco;
@@ -1043,9 +1041,8 @@ int	goof = 0;
 #define	FALSE 0
 #endif
 
-LOCAL void
-susage(excode)
-	int		excode;
+static void
+susage(int excode)
 {
 	const char	*program_name = "mkisofs";
 
@@ -1061,9 +1058,8 @@ susage(excode)
 	exit(excode);
 }
 
-LOCAL void
-usage(excode)
-	int		excode;
+static void
+usage(int excode)
 {
 	const char	*program_name = "mkisofs";
 
@@ -1170,10 +1166,8 @@ usage(excode)
  * with DST,  I guess).  The Linux iso9660 filesystem has had the sign
  * of this wrong for ages (mkisofs had it wrong too for the longest time).
  */
-EXPORT int
-iso9660_date(result, crtime)
-	char	*result;
-	time_t	crtime;
+int
+iso9660_date(char *result, time_t crtime)
 {
 	struct tm	*local;
 
@@ -1209,7 +1203,7 @@ iso9660_date(result, crtime)
 }
 
 /* hide "./rr_moved" if all its contents are hidden */
-LOCAL void
+static void
 hide_reloc_dir()
 {
 	struct directory_entry *s_entry;
@@ -1231,14 +1225,8 @@ hide_reloc_dir()
 /*
  * get pathnames from the command line, and then from given file
  */
-LOCAL char *
-get_pnames(argc, argv, opt, pname, pnsize, fp)
-	int	argc;
-	char	**argv;
-	int	opt;
-	char	*pname;
-	int	pnsize;
-	FILE	*fp;
+static char *
+get_pnames(int argc, char **argv, int opt, char *pname, int pnsize, FILE *fp)
 {
 	int	len;
 
@@ -1267,10 +1255,8 @@ get_pnames(argc, argv, opt, pname, pnsize, fp)
 
 extern char	*cdrecord_data;
 
-EXPORT int
-main(argc, argv)
-	int		argc;
-	char		**argv;
+int
+main(int argc, char *argv[])
 {
 	struct directory_entry de;
 
@@ -3713,9 +3699,8 @@ if (check_session == 0)
 /*
  * Find unescaped equal sign in graft pointer string.
  */
-EXPORT char *
-findgequal(s)
-	char	*s;
+char *
+findgequal(char *s)
 {
 	char	*p = s;
 
@@ -3730,10 +3715,8 @@ findgequal(s)
 /*
  * Find unescaped equal sign in string.
  */
-LOCAL char *
-escstrcpy(to, from)
-	char	*to;
-	char	*from;
+static char *
+escstrcpy(char *to, char *from)
 {
 	char	*p = to;
 
@@ -3756,9 +3739,8 @@ escstrcpy(to, from)
 	return (to);
 }
 
-EXPORT void *
-e_malloc(size)
-	size_t		size;
+void *
+e_malloc(size_t size)
 {
 	void		*pt = 0;
 

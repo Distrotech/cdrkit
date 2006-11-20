@@ -43,10 +43,10 @@ static	char sccsid[] =
 
 #include "cdrecord.h"
 
-EXPORT	void	pr_manufacturer		__PR((msf_t *mp, BOOL rw, BOOL audio));
-LOCAL	struct disk_man * man_ptr	__PR((msf_t *mp));
-EXPORT	int	manufacturer_id		__PR((msf_t *mp));
-EXPORT	long	disk_rcap		__PR((msf_t *mp, long maxblock, BOOL rw, BOOL audio));
+void	pr_manufacturer(msf_t *mp, BOOL rw, BOOL audio);
+static	struct disk_man *man_ptr(msf_t *mp);
+int	manufacturer_id(msf_t *mp);
+long	disk_rcap(msf_t *mp, long maxblock, BOOL rw, BOOL audio);
 
 struct disk_man {
 	msf_t	mi_msf;
@@ -57,102 +57,102 @@ struct disk_man {
 /*
  * Illegal (old) Manufacturer.
  */
-LOCAL	char	m_ill[]   = "Unknown old Manufacturer code";
-LOCAL	char	m_illrw[] = "Illegal Manufacturer code";
+static	char	m_ill[]   = "Unknown old Manufacturer code";
+static	char	m_illrw[] = "Illegal Manufacturer code";
 
 /*
  * Permanent codes.
  */
-LOCAL	char	m_kingpro[]	= "King Pro Mediatek Inc.";
-LOCAL	char	m_custpo[]	= "Customer Pressing Oosterhout";
-LOCAL	char	m_taeil[]	= "Taeil Media Co.,Ltd.";
-LOCAL	char	m_doremi[]	= "Doremi Media Co., Ltd.";
-LOCAL	char	m_xcitec[]	= "Xcitec Inc.";
-LOCAL	char	m_leaddata[]	= "Lead Data Inc.";
-LOCAL	char	m_fuji[]	= "FUJI Photo Film Co., Ltd.";
-LOCAL	char	m_hitachi[]	= "Hitachi Maxell, Ltd.";
-LOCAL	char	m_kodakjp[]	= "Kodak Japan Limited";
-LOCAL	char	m_mitsui[]	= "Mitsui Chemicals, Inc.";
-LOCAL	char	m_pioneer[]	= "Pioneer Video Corporation";
-LOCAL	char	m_plasmon[]	= "Plasmon Data systems Ltd.";
-LOCAL	char	m_princo[]	= "Princo Corporation";
-LOCAL	char	m_ricoh[]	= "Ricoh Company Limited";
-LOCAL	char	m_skc[]		= "SKC Co., Ltd.";
-LOCAL	char	m_tyuden[]	= "Taiyo Yuden Company Limited";
-LOCAL	char	m_tdk[]		= "TDK Corporation";
-LOCAL	char	m_mitsubishi[]	= "Mitsubishi Chemical Corporation";
-LOCAL	char	m_auvistar[]	= "Auvistar Industry Co.,Ltd.";
-LOCAL	char	m_gigastore[]	= "GIGASTORAGE CORPORATION";
-LOCAL	char	m_fornet[]	= "FORNET INTERNATIONAL PTE LTD.";
-LOCAL	char	m_cmc[]		= "CMC Magnetics Corporation";
-LOCAL	char	m_odm[]		= "Optical Disc Manufacturing Equipment";
-LOCAL	char	m_ritek[]	= "Ritek Co.";
+static	char	m_kingpro[]	= "King Pro Mediatek Inc.";
+static	char	m_custpo[]	= "Customer Pressing Oosterhout";
+static	char	m_taeil[]	= "Taeil Media Co.,Ltd.";
+static	char	m_doremi[]	= "Doremi Media Co., Ltd.";
+static	char	m_xcitec[]	= "Xcitec Inc.";
+static	char	m_leaddata[]	= "Lead Data Inc.";
+static	char	m_fuji[]	= "FUJI Photo Film Co., Ltd.";
+static	char	m_hitachi[]	= "Hitachi Maxell, Ltd.";
+static	char	m_kodakjp[]	= "Kodak Japan Limited";
+static	char	m_mitsui[]	= "Mitsui Chemicals, Inc.";
+static	char	m_pioneer[]	= "Pioneer Video Corporation";
+static	char	m_plasmon[]	= "Plasmon Data systems Ltd.";
+static	char	m_princo[]	= "Princo Corporation";
+static	char	m_ricoh[]	= "Ricoh Company Limited";
+static	char	m_skc[]		= "SKC Co., Ltd.";
+static	char	m_tyuden[]	= "Taiyo Yuden Company Limited";
+static	char	m_tdk[]		= "TDK Corporation";
+static	char	m_mitsubishi[]	= "Mitsubishi Chemical Corporation";
+static	char	m_auvistar[]	= "Auvistar Industry Co.,Ltd.";
+static	char	m_gigastore[]	= "GIGASTORAGE CORPORATION";
+static	char	m_fornet[]	= "FORNET INTERNATIONAL PTE LTD.";
+static	char	m_cmc[]		= "CMC Magnetics Corporation";
+static	char	m_odm[]		= "Optical Disc Manufacturing Equipment";
+static	char	m_ritek[]	= "Ritek Co.";
 
 /*
  * Tentative codes.
  */
-LOCAL	char	m_bestdisk[]	= "Bestdisc Technology Corporation";
-LOCAL	char	m_wealth_fair[]	= "WEALTH FAIR INVESTMENT LIMITED";
-LOCAL	char	m_general_mag[]	= "General Magnetics Ld";
-LOCAL	char	m_mpo[]		= "MPO";
-LOCAL	char	m_jvc[]		= "VICTOR COMPANY OF JAPAN, LIMITED";
-LOCAL	char	m_vivistar[]	= "VIVASTAR AG";
-LOCAL	char	m_taroko[]	= "TAROKO INTERNATIONAL CO.,LTD.";
-LOCAL	char	m_unidisc[]	= "UNIDISC TECHNOLOGY CO.,LTD";
-LOCAL	char	m_hokodig[]	= "Hong Kong Digital Technology Co., Ltd.";
-LOCAL	char	m_viva[]	= "VIVA MAGNETICS LIMITED";
-LOCAL	char	m_hile[]	= "Hile Optical Disc Technology Corp.";
-LOCAL	char	m_friendly[]	= "Friendly CD-Tek Co.";
-LOCAL	char	m_soundsound[]	= "Sound Sound Multi-Media Development Limited";
-LOCAL	char	m_kdg[]		= "kdg mediatech AG";
-LOCAL	char	m_seantram[]	= "Seantram Technology Inc.";
-LOCAL	char	m_eximpo[]	= "EXIMPO";
-LOCAL	char	m_delphi[]	= "DELPHI TECHNOLOGY INC.";
-LOCAL	char	m_harmonic[]	= "Harmonic Hall Optical Disc Ltd.";
-LOCAL	char	m_guannyinn[]	= "Guann Yinn Co.,Ltd.";
-LOCAL	char	m_optime[]	= "Opti.Me.S. S.p.A.";
-LOCAL	char	m_nacar[]	= "Nacar Media srl";
-LOCAL	char	m_optrom[]	= "OPTROM.INC.";
-LOCAL	char	m_audiodis[]	= "AUDIO DISTRIBUTORS CO., LTD.";
-LOCAL	char	m_acer[]	= "Acer Media Technology, Inc.";
-LOCAL	char	m_woongjin[]	= "Woongjin Media corp";
-LOCAL	char	m_infodisk[]	= "INFODISC Technology Co., Ltd.";
-LOCAL	char	m_unitech[]	= "UNITECH JAPAN INC.";
-LOCAL	char	m_ams[]		= "AMS Technology Inc.";
-LOCAL	char	m_vanguard[]	= "Vanguard Disc Inc.";
-LOCAL	char	m_grandadv[]	= "Grand Advance Technology Ltd.";
-LOCAL	char	m_digitalstor[]	= "DIGITAL STORAGE TECHNOLOGY CO.,LTD";
-LOCAL	char	m_matsushita[]	= "Matsushita Electric Industrial Co.,Ltd.";
-LOCAL	char	m_albrechts[]	= "CDA Datenträger Albrechts GmbH.";
-LOCAL	char	m_xalbrechts[]	= "??? CDA Datenträger Albrechts GmbH.";
+static	char	m_bestdisk[]	= "Bestdisc Technology Corporation";
+static	char	m_wealth_fair[]	= "WEALTH FAIR INVESTMENT LIMITED";
+static	char	m_general_mag[]	= "General Magnetics Ld";
+static	char	m_mpo[]		= "MPO";
+static	char	m_jvc[]		= "VICTOR COMPANY OF JAPAN, LIMITED";
+static	char	m_vivistar[]	= "VIVASTAR AG";
+static	char	m_taroko[]	= "TAROKO INTERNATIONAL CO.,LTD.";
+static	char	m_unidisc[]	= "UNIDISC TECHNOLOGY CO.,LTD";
+static	char	m_hokodig[]	= "Hong Kong Digital Technology Co., Ltd.";
+static	char	m_viva[]	= "VIVA MAGNETICS LIMITED";
+static	char	m_hile[]	= "Hile Optical Disc Technology Corp.";
+static	char	m_friendly[]	= "Friendly CD-Tek Co.";
+static	char	m_soundsound[]	= "Sound Sound Multi-Media Development Limited";
+static	char	m_kdg[]		= "kdg mediatech AG";
+static	char	m_seantram[]	= "Seantram Technology Inc.";
+static	char	m_eximpo[]	= "EXIMPO";
+static	char	m_delphi[]	= "DELPHI TECHNOLOGY INC.";
+static	char	m_harmonic[]	= "Harmonic Hall Optical Disc Ltd.";
+static	char	m_guannyinn[]	= "Guann Yinn Co.,Ltd.";
+static	char	m_optime[]	= "Opti.Me.S. S.p.A.";
+static	char	m_nacar[]	= "Nacar Media srl";
+static	char	m_optrom[]	= "OPTROM.INC.";
+static	char	m_audiodis[]	= "AUDIO DISTRIBUTORS CO., LTD.";
+static	char	m_acer[]	= "Acer Media Technology, Inc.";
+static	char	m_woongjin[]	= "Woongjin Media corp";
+static	char	m_infodisk[]	= "INFODISC Technology Co., Ltd.";
+static	char	m_unitech[]	= "UNITECH JAPAN INC.";
+static	char	m_ams[]		= "AMS Technology Inc.";
+static	char	m_vanguard[]	= "Vanguard Disc Inc.";
+static	char	m_grandadv[]	= "Grand Advance Technology Ltd.";
+static	char	m_digitalstor[]	= "DIGITAL STORAGE TECHNOLOGY CO.,LTD";
+static	char	m_matsushita[]	= "Matsushita Electric Industrial Co.,Ltd.";
+static	char	m_albrechts[]	= "CDA Datenträger Albrechts GmbH.";
+static	char	m_xalbrechts[]	= "??? CDA Datenträger Albrechts GmbH.";
 
-LOCAL	char	m_prodisc[]	= "Prodisc Technology Inc.";
-LOCAL	char	m_postech[]	= "POSTECH Corporation";
+static	char	m_prodisc[]	= "Prodisc Technology Inc.";
+static	char	m_postech[]	= "POSTECH Corporation";
 #ifdef	used
-LOCAL	char	m_ncolumbia[]	= "NIPPON COLUMBIA CO.,LTD.";
+static	char	m_ncolumbia[]	= "NIPPON COLUMBIA CO.,LTD.";
 #endif
-LOCAL	char	m_odc[]		= "OPTICAL DISC CORPRATION";
-LOCAL	char	m_sony[]	= "SONY Corporation";
-LOCAL	char	m_cis[]		= "CIS Technology Inc.";
-LOCAL	char	m_csitaly[]	= "Computer Support Italy s.r.l.";
-LOCAL	char	m_mmmm[]	= "Multi Media Masters & Machinary SA";
+static	char	m_odc[]		= "OPTICAL DISC CORPRATION";
+static	char	m_sony[]	= "SONY Corporation";
+static	char	m_cis[]		= "CIS Technology Inc.";
+static	char	m_csitaly[]	= "Computer Support Italy s.r.l.";
+static	char	m_mmmm[]	= "Multi Media Masters & Machinary SA";
 
 /*
  * Guessed codes.
  */
-/*LOCAL	char	m_seantram[]	= "Seantram Technology Inc.";*/
-LOCAL	char	m_advanced[]	= "Advanced Digital Media";
-LOCAL	char	m_moser[]	= "Moser Baer India Limited";
-LOCAL	char	m_nanya[]	= "NAN-YA Plastics Corporation";
-LOCAL	char	m_shenzen[]	= "SHENZEN SG&GAST DIGITAL OPTICAL DISCS";
+/*static	char	m_seantram[]	= "Seantram Technology Inc.";*/
+static	char	m_advanced[]	= "Advanced Digital Media";
+static	char	m_moser[]	= "Moser Baer India Limited";
+static	char	m_nanya[]	= "NAN-YA Plastics Corporation";
+static	char	m_shenzen[]	= "SHENZEN SG&GAST DIGITAL OPTICAL DISCS";
 
-LOCAL	struct disk_man notable =
+static	struct disk_man notable =
 	{{00, 00, 00},  -1, "unknown (not in table)" };
 
 /*
  * Old (illegal) code table. It lists single specific codes (97:xx:yy).
  */
-LOCAL	struct disk_man odman[] = {
+static	struct disk_man odman[] = {
 	/*
 	 * Illegal (old) codes.
 	 */
@@ -187,7 +187,7 @@ LOCAL	struct disk_man odman[] = {
  * Note that dp->mi_msf.msf_frame needs to be always rounded down
  * to 0 even for media that has e.g. 97:27/01 in the official table.
  */
-LOCAL	struct disk_man dman[] = {
+static	struct disk_man dman[] = {
 	/*
 	 * Permanent codes.
 	 */
@@ -331,9 +331,8 @@ LOCAL	struct disk_man dman[] = {
 
 #define	ndman	(sizeof (dman)/sizeof (dman[0]))
 
-LOCAL struct disk_man *
-man_ptr(mp)
-	msf_t	*mp;
+static struct disk_man *
+man_ptr(msf_t *mp)
 {
 	struct disk_man * dp;
 	int	frame;
@@ -368,11 +367,7 @@ man_ptr(mp)
 	return (NULL);
 }
 
-EXPORT void
-pr_manufacturer(mp, rw, audio)
-	msf_t	*mp;
-	BOOL	rw;
-	BOOL	audio;
+void pr_manufacturer(msf_t *mp, BOOL rw, BOOL audio)
 {
 	struct disk_man * dp;
 	struct disk_man xdman;
@@ -426,9 +421,7 @@ pr_manufacturer(mp, rw, audio)
 	}
 }
 
-EXPORT int
-manufacturer_id(mp)
-	msf_t	*mp;
+int manufacturer_id(msf_t *mp)
 {
 	struct disk_man * dp;
 
@@ -444,7 +437,7 @@ struct disk_rcap {
 	long	ci_rcap;			/* Abs max lead out start   */
 };
 
-LOCAL	struct disk_rcap rcap[] = {
+static	struct disk_rcap rcap[] = {
 
 #ifdef	__redbook_only__
 	{{97, 35, 44}, 359849, 404700 },	/*! Unknown 99 min (89:58/00)*/
@@ -515,12 +508,8 @@ LOCAL	struct disk_rcap rcap[] = {
 	{{00, 00, 00}, 0L, 0L },
 };
 
-EXPORT long
-disk_rcap(mp, maxblock, rw, audio)
-	msf_t	*mp;
-	long	maxblock;
-	BOOL	rw;
-	BOOL	audio;
+long 
+disk_rcap(msf_t *mp, long maxblock, BOOL rw, BOOL audio)
 {
 	struct disk_rcap * dp;
 

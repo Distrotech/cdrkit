@@ -55,16 +55,16 @@ extern	char	*BC;		/* Backspace if not "\b" from "bc" capability*/
 extern	char	*UP;		/* Cursor up string from "up" capability */
 extern	short	ospeed;		/* output speed coded as in ioctl */
 
-extern	int	tgetent		__PR((char *bp, char *name));
-extern	int	tcsetflags	__PR((int flags));
-extern	char	*tcgetbuf	__PR((void));
-extern	int	tgetnum		__PR((char *ent));
-extern	BOOL	tgetflag	__PR((char *ent));
-extern	char	*tgetstr		__PR((char *ent, char **array));
-extern	char	*tdecode		__PR((char *ep, char **array));
+extern	int	tgetent(char *bp, char *name);
+extern	int	tcsetflags(int flags);
+extern	char	*tcgetbuf(void);
+extern	int	tgetnum(char *ent);
+extern	BOOL	tgetflag(char *ent);
+extern	char	*tgetstr(char *ent, char **array);
+extern	char	*tdecode(char *ep, char **array);
 
-extern	int	tputs		__PR((char *cp, int affcnt, int (*outc)(int c)));
-extern	char	*tgoto		__PR((char *cm, int destcol, int destline));
+extern	int	tputs(char *cp, int affcnt, int (*outc)(int c));
+extern	char	*tgoto(char *cm, int destcol, int destline);
 
 #ifdef	__cplusplus
 }

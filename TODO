@@ -8,6 +8,8 @@
    symptoms. Why?
  - see http://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=cdrkit and try to solve upstream related problems
  - find and eliminate remaining ".mk" ".mk*" files (where? cleanup branch)
+ - make some deflt.h functions inline, use a define wrapper INLINE which is set
+   if the compiler does not support it
  - review the sort/uniq code in dvd_file.c, see comments there
  - Can we rename the 'cdrecord' directory into 'wodim'?
  That may be hard on the build system, this could be the best time to change

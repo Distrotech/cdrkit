@@ -47,10 +47,7 @@ static	char sccsid[] =
  * NAME:	record->packcatkey()
  * DESCRIPTION:	pack a catalog record key
  */
-void r_packcatkey(key, pkey, len)
-	CatKeyRec	*key;
-	unsigned char	*pkey;
-	int		*len;
+void r_packcatkey(CatKeyRec *key, unsigned char *pkey, int *len)
 {
   unsigned char *start = pkey;
 
@@ -67,9 +64,7 @@ void r_packcatkey(key, pkey, len)
  * NAME:	record->unpackcatkey()
  * DESCRIPTION:	unpack a catalog record key
  */
-void r_unpackcatkey(pkey, key)
-	unsigned char	*pkey;
-	CatKeyRec	*key;
+void r_unpackcatkey(unsigned char *pkey, CatKeyRec *key)
 {
   d_fetchb(&pkey, (char *) &key->ckrKeyLen);
   d_fetchb(&pkey, (char *) &key->ckrResrv1);
@@ -81,10 +76,7 @@ void r_unpackcatkey(pkey, key)
  * NAME:	record->packextkey()
  * DESCRIPTION:	pack an extents record key
  */
-void r_packextkey(key, pkey, len)
-	ExtKeyRec	*key;
-	unsigned char	*pkey;
-	int		*len;
+void r_packextkey(ExtKeyRec *key, unsigned char *pkey, int *len)
 {
   unsigned char *start = pkey;
 
@@ -101,9 +93,7 @@ void r_packextkey(key, pkey, len)
  * NAME:	record->unpackextkey()
  * DESCRIPTION:	unpack an extents record key
  */
-void r_unpackextkey(pkey, key)
-	unsigned char	*pkey;
-	ExtKeyRec	*key;
+void r_unpackextkey(unsigned char *pkey, ExtKeyRec *key)
 {
   d_fetchb(&pkey, (char *) &key->xkrKeyLen);
   d_fetchb(&pkey, (char *) &key->xkrFkType);
@@ -115,9 +105,7 @@ void r_unpackextkey(pkey, key)
  * NAME:	record->comparecatkeys()
  * DESCRIPTION:	compare two (packed) catalog record keys
  */
-int r_comparecatkeys(pkey1, pkey2)
-	unsigned char	*pkey1;
-	unsigned char	*pkey2;
+int r_comparecatkeys(unsigned char *pkey1, unsigned char *pkey2)
 {
   CatKeyRec key1;
   CatKeyRec key2;
@@ -137,9 +125,7 @@ int r_comparecatkeys(pkey1, pkey2)
  * NAME:	record->compareextkeys()
  * DESCRIPTION:	compare two (packed) extents record keys
  */
-int r_compareextkeys(pkey1, pkey2)
-	unsigned char	*pkey1;
-	unsigned char	*pkey2;
+int r_compareextkeys(unsigned char *pkey1, unsigned char *pkey2)
 {
   ExtKeyRec key1;
   ExtKeyRec key2;
@@ -164,10 +150,7 @@ int r_compareextkeys(pkey1, pkey2)
  * NAME:	record->packcatdata()
  * DESCRIPTION:	pack catalog record data
  */
-void r_packcatdata(data, pdata, len)
-	CatDataRec	*data;
-	unsigned char	*pdata;
-	int		*len;
+void r_packcatdata(CatDataRec *data, unsigned char *pdata, int *len)
 {
   unsigned char *start = pdata;
   int i;
@@ -282,9 +265,7 @@ void r_packcatdata(data, pdata, len)
  * NAME:	record->unpackcatdata()
  * DESCRIPTION:	unpack catalog record data
  */
-void r_unpackcatdata(pdata, data)
-	unsigned char	*pdata;
-	CatDataRec	*data;
+void r_unpackcatdata(unsigned char *pdata, CatDataRec *data)
 {
   int i;
 
@@ -395,10 +376,7 @@ void r_unpackcatdata(pdata, data)
  * NAME:	record->packextdata()
  * DESCRIPTION:	pack extent record data
  */
-void r_packextdata(data, pdata, len)
-	ExtDataRec	*data;
-	unsigned char	*pdata;
-	int		*len;
+void r_packextdata(ExtDataRec *data, unsigned char *pdata, int *len)
 {
   unsigned char *start = pdata;
   int i;
@@ -417,9 +395,7 @@ void r_packextdata(data, pdata, len)
  * NAME:	record->unpackextdata()
  * DESCRIPTION:	unpack extent record data
  */
-void r_unpackextdata(pdata, data)
-	unsigned char	*pdata;
-	ExtDataRec	*data;
+void r_unpackextdata(unsigned char *pdata, ExtDataRec *data)
 {
   int i;
 
@@ -434,10 +410,7 @@ void r_unpackextdata(pdata, data)
  * NAME:	record->makecatkey()
  * DESCRIPTION:	construct a catalog record key
  */
-void r_makecatkey(key, parid, name)
-	CatKeyRec	*key;
-	long		parid;
-	char		*name;
+void r_makecatkey(CatKeyRec *key, long parid, char *name)
 {
   int len;
 
@@ -454,11 +427,7 @@ void r_makecatkey(key, parid, name)
  * NAME:	record->makeextkey()
  * DESCRIPTION:	construct an extents record key
  */
-void r_makeextkey(key, ffork, fnum, fabn)
-	ExtKeyRec	*key;
-	int		ffork;
-	long		fnum;
-	unsigned int	fabn;
+void r_makeextkey(ExtKeyRec *key, int ffork, long fnum, unsigned int fabn)
 {
   key->xkrKeyLen = 0x07;
   key->xkrFkType = ffork;
@@ -472,11 +441,7 @@ void r_makeextkey(key, ffork, fnum, fabn)
  *
  * Taken fron v3.2.6
  */
-void r_unpackdirent(parid, name, data, ent)
-	long		parid;
-	char		*name;
-	CatDataRec	*data;
-	hfsdirent	*ent;
+void r_unpackdirent(long parid, char *name, CatDataRec *data, hfsdirent *ent)
 {
   strcpy(ent->name, name);
   ent->parid = parid;
@@ -541,9 +506,7 @@ void r_unpackdirent(parid, name, data, ent)
  *
  * Taken fron v3.2.6
  */
-void r_packdirent(data, ent)
-	CatDataRec	*data;
-	hfsdirent	*ent;
+void r_packdirent(CatDataRec *data, hfsdirent *ent)
 {
   switch (data->cdrType)
     {

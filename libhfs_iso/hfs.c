@@ -62,15 +62,9 @@ static	char sccsid[] =
  * DESCRIPTION:	open an HFS volume; return volume descriptor or 0 (error)
  */
 #ifdef APPLE_HYB
-hfsvol *hfs_mount(hce, pnum, flags)
-	hce_mem	*hce;
-	int	pnum;
-	int	flags;
+hfsvol *hfs_mount(hce_mem *hce, int pnum, int flags)
 #else
-hfsvol *hfs_mount(path, pnum, flags)
-	char	*path;
-	int	pnum;
-	int	flags;
+hfsvol *hfs_mount(char *path, int pnum, int flags)
 #endif /* APPLE_HYB */
 {
 #ifndef APPLE_HYB
@@ -273,8 +267,7 @@ hfsvol *hfs_mount(path, pnum, flags)
  * NAME:	hfs->flush()
  * DESCRIPTION:	flush all pending changes to an HFS volume
  */
-int hfs_flush(vol)
-	hfsvol	*vol;
+int hfs_flush(hfsvol *vol)
 {
   hfsfile *file;
 
@@ -311,13 +304,9 @@ void hfs_flushall()
  */
 #ifdef APPLE_HYB
 /* extra argument used to alter the position of the extents/catalog files */
-int hfs_umount(vol, end, locked)
-	hfsvol	*vol;
-	long	end;
-	long	locked;
+int hfs_umount(hfsvol *vol, long end, long locked)
 #else
-int hfs_umount(vol)
-	hfsvol	*vol;
+int hfs_umount(hfsvol *vol)
 #endif /* APPLE_HYB */
 {
   int result = 0;
@@ -427,8 +416,7 @@ void hfs_umountall()
  * NAME:	hfs->getvol()
  * DESCRIPTION:	return a pointer to a mounted volume
  */
-hfsvol *hfs_getvol(name)
-	char	*name;
+hfsvol *hfs_getvol(char *name)
 {
   hfsvol *vol;
 
@@ -448,8 +436,7 @@ hfsvol *hfs_getvol(name)
  * NAME:	hfs->setvol()
  * DESCRIPTION:	change the current volume
  */
-void hfs_setvol(vol)
-	hfsvol	*vol;
+void hfs_setvol(hfsvol *vol)
 {
   hfs_curvol = vol;
 }
@@ -458,9 +445,7 @@ void hfs_setvol(vol)
  * NAME:	hfs->vstat()
  * DESCRIPTION:	return volume statistics
  */
-int hfs_vstat(vol, ent)
-	hfsvol	*vol;
-	hfsvolent *ent;
+int hfs_vstat(hfsvol *vol, hfsvolent *ent)
 {
   if (v_getvol(&vol) < 0)
     return -1;
@@ -481,15 +466,9 @@ int hfs_vstat(vol, ent)
  * DESCRIPTION:	write a new filesystem
  */
 #ifdef APPLE_HYB
-int hfs_format(hce, pnum, vname)
-	hce_mem	*hce;
-	int	pnum;
-	char	*vname;
+int hfs_format(hce_mem *hce, int pnum, char *vname)
 #else
-int hfs_format(path, pnum, vname)
-	char	*path;
-	int	pnum;
-	char	*vname;
+int hfs_format(char *path, int pnum, char *vname)
 #endif /* APPLE_HYB */
 {
   hfsvol vol;
@@ -953,9 +932,7 @@ int hfs_format(path, pnum, vname)
  * NAME:	hfs->chdir()
  * DESCRIPTION:	change current HFS directory
  */
-int hfs_chdir(vol, path)
-	hfsvol	*vol;
-	char	*path;
+int hfs_chdir(hfsvol *vol, char *path)
 {
   CatDataRec data;
 
@@ -978,8 +955,7 @@ int hfs_chdir(vol, path)
  * NAME:	hfs->getcwd()
  * DESCRIPTION:	return the current working directory ID
  */
-long hfs_getcwd(vol)
-	hfsvol	*vol;
+long hfs_getcwd(hfsvol *vol)
 {
   if (v_getvol(&vol) < 0)
     return 0;
@@ -991,9 +967,7 @@ long hfs_getcwd(vol)
  * NAME:	hfs->setcwd()
  * DESCRIPTION:	set the current working directory ID
  */
-int hfs_setcwd(vol, id)
-	hfsvol	*vol;
-	long	id;
+int hfs_setcwd(hfsvol *vol, long id)
 {
   if (v_getvol(&vol) < 0)
     return -1;
@@ -1015,10 +989,7 @@ int hfs_setcwd(vol, id)
  * NAME:	hfs->dirinfo()
  * DESCRIPTION:	given a directory ID, return its (name and) parent ID
  */
-int hfs_dirinfo(vol, id, name)
-	hfsvol	*vol;
-	long	*id;
-	char	*name;
+int hfs_dirinfo(hfsvol *vol, long *id, char *name)
 {
   CatDataRec thread;
 
@@ -1038,9 +1009,7 @@ int hfs_dirinfo(vol, id, name)
  * NAME:	hfs->opendir()
  * DESCRIPTION:	prepare to read the contents of a directory
  */
-hfsdir *hfs_opendir(vol, path)
-	hfsvol	*vol;
-	char	*path;
+hfsdir *hfs_opendir(hfsvol *vol, char *path)
 {
   hfsdir *dir;
   CatKeyRec key;
@@ -1109,9 +1078,7 @@ hfsdir *hfs_opendir(vol, path)
  * NAME:	hfs->readdir()
  * DESCRIPTION:	return the next entry in the directory
  */
-int hfs_readdir(dir, ent)
-	hfsdir	*dir;
-	hfsdirent *ent;
+int hfs_readdir(hfsdir *dir, hfsdirent *ent)
 {
   CatKeyRec key;
   CatDataRec data;
@@ -1212,8 +1179,7 @@ int hfs_readdir(dir, ent)
  * NAME:	hfs->closedir()
  * DESCRIPTION:	stop reading a directory
  */
-int hfs_closedir(dir)
-	hfsdir	*dir;
+int hfs_closedir(hfsdir *dir)
 {
   hfsvol *vol = dir->vol;
 
@@ -1235,9 +1201,7 @@ int hfs_closedir(dir)
  * NAME:	hfs->open()
  * DESCRIPTION:	prepare a file for I/O
  */
-hfsfile *hfs_open(vol, path)
-	hfsvol	*vol;
-	char	*path;
+hfsfile *hfs_open(hfsvol *vol, char *path)
 {
   hfsfile *file;
 
@@ -1285,9 +1249,7 @@ hfsfile *hfs_open(vol, path)
  * NAME:	hfs->setfork()
  * DESCRIPTION:	select file fork for I/O operations
  */
-int hfs_setfork(file, ffork)
-	hfsfile	*file;
-	int	ffork;
+int hfs_setfork(hfsfile *file, int ffork)
 {
   int result = 0;
 
@@ -1304,8 +1266,7 @@ int hfs_setfork(file, ffork)
  * NAME:	hfs->getfork()
  * DESCRIPTION:	return the current fork for I/O operations
  */
-int hfs_getfork(file)
-	hfsfile	*file;
+int hfs_getfork(hfsfile *file)
 {
   return file->fork != fkData;
 }
@@ -1314,10 +1275,7 @@ int hfs_getfork(file)
  * NAME:	hfs->read()
  * DESCRIPTION:	read from an open file
  */
-long hfs_read(file, buf, len)
-	hfsfile		*file;
-	void		*buf;
-	unsigned long	len;
+long hfs_read(hfsfile *file, void *buf, unsigned long len)
 {
   unsigned long *lglen, count;
   unsigned char *ptr = buf;
@@ -1357,10 +1315,7 @@ long hfs_read(file, buf, len)
  * NAME:	hfs->write()
  * DESCRIPTION:	write to an open file
  */
-long hfs_write(file, buf, len)
-	hfsfile		*file;
-	void		*buf;
-	unsigned long	len;
+long hfs_write(hfsfile *file, void *buf, unsigned long len)
 {
   unsigned long *lglen, *pylen, count;
   unsigned char *ptr = buf;
@@ -1431,9 +1386,7 @@ long hfs_write(file, buf, len)
  * NAME:	hfs->truncate()
  * DESCRIPTION:	truncate an open file
  */
-int hfs_truncate(file, len)
-	hfsfile		*file;
-	unsigned long	len;
+int hfs_truncate(hfsfile *file, unsigned long len)
 {
   unsigned long *lglen;
 
@@ -1463,10 +1416,7 @@ int hfs_truncate(file, len)
  * NAME:	hfs->lseek()
  * DESCRIPTION:	change file seek pointer
  */
-long hfs_lseek(file, offset, from)
-	hfsfile	*file;
-	long	offset;
-	int	from;
+long hfs_lseek(hfsfile *file, long offset, int from)
 {
   unsigned long *lglen;
   long newpos;
@@ -1508,10 +1458,7 @@ long hfs_lseek(file, offset, from)
  */
 #ifdef APPLE_HYB
 /* extra args are used to set the start of the forks in the ISO volume */
-int hfs_close(file, dext, rext)
-	hfsfile	*file;
-	long	dext;
-	long	rext;
+int hfs_close(hfsfile *file, long dext, long rext)
 {
   int offset;
 #else
@@ -1560,10 +1507,7 @@ int hfs_close(hfsfile *file)
  * NAME:	hfs->stat()
  * DESCRIPTION:	return catalog information for an arbitrary path
  */
-int hfs_stat(vol, path, ent)
-	hfsvol		*vol;
-	char		*path;
-	hfsdirent	*ent;
+int hfs_stat(hfsvol *vol, char *path, hfsdirent *ent)
 {
   CatDataRec data;
   long parid;
@@ -1582,9 +1526,7 @@ int hfs_stat(vol, path, ent)
  * NAME:	hfs->fstat()
  * DESCRIPTION:	return catalog information for an open file
  */
-int hfs_fstat(file, ent)
-	hfsfile		*file;
-	hfsdirent	*ent;
+int hfs_fstat(hfsfile *file, hfsdirent *ent)
 {
   r_unpackdirent(file->parid, file->name, &file->cat, ent);
 
@@ -1595,10 +1537,7 @@ int hfs_fstat(file, ent)
  * NAME:	hfs->setattr()
  * DESCRIPTION:	change a file's attributes
  */
-int hfs_setattr(vol, path, ent)
-	hfsvol		*vol;
-	char		*path;
-	hfsdirent	*ent;
+int hfs_setattr(hfsvol *vol, char *path, hfsdirent *ent)
 {
   CatDataRec data;
   node n;
@@ -1625,9 +1564,7 @@ int hfs_setattr(vol, path, ent)
  * NAME:	hfs->fsetattr()
  * DESCRIPTION:	change an open file's attributes
  */
-int hfs_fsetattr(file, ent)
-	hfsfile		*file;
-	hfsdirent	*ent;
+int hfs_fsetattr(hfsfile *file, hfsdirent *ent)
 {
   if (file->vol->flags & HFS_READONLY)
     {
@@ -1646,9 +1583,7 @@ int hfs_fsetattr(file, ent)
  * NAME:	hfs->mkdir()
  * DESCRIPTION:	create a new directory
  */
-int hfs_mkdir(vol, path)
-	hfsvol		*vol;
-	char		*path;
+int hfs_mkdir(hfsvol *vol, char *path)
 {
   CatDataRec data;
   long parid;
@@ -1689,9 +1624,7 @@ int hfs_mkdir(vol, path)
  * NAME:	hfs->rmdir()
  * DESCRIPTION:	delete an empty directory
  */
-int hfs_rmdir(vol, path)
-	hfsvol	*vol;
-	char	*path;
+int hfs_rmdir(hfsvol *vol, char *path)
 {
   CatKeyRec key;
   CatDataRec data;
@@ -1751,11 +1684,7 @@ int hfs_rmdir(vol, path)
  * NAME:	hfs->create()
  * DESCRIPTION:	create a new file
  */
-int hfs_create(vol, path, type, creator)
-	hfsvol	*vol;
-	char	*path;
-	char	*type;
-	char	*creator;
+int hfs_create(hfsvol *vol, char *path, char *type, char *creator)
 {
   CatKeyRec key;
   CatDataRec data;
@@ -1850,9 +1779,7 @@ int hfs_create(vol, path, type, creator)
  * NAME:	hfs->delete()
  * DESCRIPTION:	remove both forks of a file
  */
-int hfs_delete(vol, path)
-	hfsvol	*vol;
-	char	*path;
+int hfs_delete(hfsvol *vol, char *path)
 {
   hfsfile file;
   CatKeyRec key;
@@ -1928,10 +1855,7 @@ int hfs_delete(vol, path)
  * NAME:	hfs->rename()
  * DESCRIPTION:	change the name of and/or move a file or directory
  */
-int hfs_rename(vol, srcpath, dstpath)
-	hfsvol	*vol;
-	char	*srcpath;
-	char	*dstpath;
+int hfs_rename(hfsvol *vol, char *srcpath, char *dstpath)
 {
   hfsvol *srcvol;
   CatDataRec src, dst;
@@ -2120,8 +2044,7 @@ int hfs_rename(vol, srcpath, dstpath)
  * DESCRIPTION: get the current start of next allocation search 
  */
 unsigned short
-hfs_get_drAllocPtr(file)
-	hfsfile	*file;
+hfs_get_drAllocPtr(hfsfile *file)
 {
   return(file->vol->mdb.drAllocPtr);
 }
@@ -2135,10 +2058,7 @@ int
 hfs_set_drAllocPtr(hfsfile *file, unsigned short drAllocPtr, int size)
 #else
 int
-hfs_set_drAllocPtr(file, drAllocPtr, size)
-	hfsfile		*file;
-	unsigned short	drAllocPtr;
-	int		size;
+hfs_set_drAllocPtr(hfsfile *file, unsigned short drAllocPtr, int size)
 #endif
 {
   hfsvol *vol = file->vol;
@@ -2171,9 +2091,7 @@ void
 hfs_vsetbless(hfsvol *vol, unsigned long cnid)
 #else
 void
-hfs_vsetbless(vol, cnid)
-	hfsvol		*vol;
-	unsigned long	cnid;
+hfs_vsetbless(hfsvol *vol, unsigned long cnid)
 #endif
 {
   vol->mdb.drFndrInfo[0] = cnid;
