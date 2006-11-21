@@ -47,7 +47,7 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>
 
 #include "wodim.h"
-#include "../cdrecord/defaults.h"
+#include "../wodim/defaults.h"
 
 /*
  * NOTICE:	You should not make BUF_SIZE more than

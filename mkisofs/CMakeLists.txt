@@ -3,7 +3,7 @@ PROJECT (MKISOFS)
 INCLUDE(../include/AddScgBits.cmake)
 INCLUDE(../include/AddSchilyBits.cmake)
 
-INCLUDE_DIRECTORIES(../include ../libhfs_iso ../cdrecord ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../libhfs_iso ../wodim ${CMAKE_BINARY_DIR})
 
 FIND_FILE (USE_MAGIC magic.h)
 IF(USE_MAGIC)

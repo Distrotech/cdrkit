@@ -50,7 +50,7 @@ static	char sccsid[] =
 #include <schily.h>
 
 #include "../scsi.h"
-#include "../../cdrecord/defaults.h"
+#include "../../wodim/defaults.h"
 
 /*
  * Note: always use these macros to avoid problems.

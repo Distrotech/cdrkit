@@ -1,1 +1,1 @@
-../cdrecord/scsimmc.h
+../wodim/scsimmc.h

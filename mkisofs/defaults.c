@@ -1,1 +1,1 @@
-../cdrecord/defaults.c
+../wodim/defaults.c

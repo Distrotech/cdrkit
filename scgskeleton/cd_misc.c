@@ -1,1 +1,1 @@
-../cdrecord/cd_misc.c
+../wodim/cd_misc.c

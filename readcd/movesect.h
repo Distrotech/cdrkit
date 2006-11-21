@@ -1,1 +1,1 @@
-../cdrecord/movesect.h
+../wodim/movesect.h

@@ -1,1 +1,1 @@
-../cdrecord/scsi_scan.c
+../wodim/scsi_scan.c

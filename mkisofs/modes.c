@@ -1,1 +1,1 @@
-../cdrecord/modes.c
+../wodim/modes.c

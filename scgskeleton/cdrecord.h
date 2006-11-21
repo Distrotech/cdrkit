@@ -1,1 +1,1 @@
-../cdrecord/cdrecord.h
+../wodim/cdrecord.h

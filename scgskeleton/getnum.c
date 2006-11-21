@@ -1,1 +1,1 @@
-../cdrecord/getnum.c
+../wodim/getnum.c

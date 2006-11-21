@@ -1,1 +1,1 @@
-../cdrecord/scsi_mmc.c
+../wodim/scsi_mmc.c

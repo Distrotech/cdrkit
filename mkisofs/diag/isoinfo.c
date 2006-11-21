@@ -66,7 +66,7 @@ static	char sccsid[] =
 
 #include "../iso9660.h"
 #include "../scsi.h"
-#include "../../cdrecord/defaults.h"
+#include "../../wodim/defaults.h"
 
 #include <unls.h>
 

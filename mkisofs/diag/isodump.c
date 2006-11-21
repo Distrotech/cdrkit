@@ -51,7 +51,7 @@ static	char sccsid[] =
 #include <schily.h>
 
 #include "../scsi.h"
-#include "../../cdrecord/defaults.h"
+#include "../../wodim/defaults.h"
 
 /*
  * XXX JS: Some structures have odd lengths!
