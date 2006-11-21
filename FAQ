@@ -13,20 +13,3 @@ A: Yes. Libcap is required on Linux plattform. Libmagic is needed to support
    unicode (optional, on plattform where iconv is not already included in the libc
    system library).
 
-Q: Why those annoying messages? Can you not remove them?
-A: Joerg Schilling wants you to see those messages. He has embedded them into
-   the source and "protected" them from removal by additional license
-   restrictions. Any attempts to get a clarification on the issues failed. We
-   got some "answers" but most have been unrelated and/or just drawing the
-   attention away from the relevant questions. We cannot make decissions
-   without new and relevant information, no matter how often Joerg Schilling
-   claims that there are no problems with his licensing.
-   Therefore we have to assume that the license is not GPL but something called
-   Shily-GPL, beeing based GPL but enriched with additional terms
-   (restrictions) spread in the source files without attracting attention.
-
-Q: Why not just remove or disable them?
-A: Relevant license restrictions say "you are not allowed" to "modify" or "remove"
-   the "... printing". Disabling the printing by technical means is not much
-   different to removing the stuff, so dealing with that problem on technical
-   level is not the right thing.
