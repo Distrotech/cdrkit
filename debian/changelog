@@ -1,3 +1,9 @@
+cdrkit (5:1.1.1-1) unstable; urgency=low
+
+  * Development snapshot
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 20 Nov 2006 23:40:19 +0100
+
 cdrkit (5:1.0-1) unstable; urgency=high
 
   [ Eduard Bloch ]

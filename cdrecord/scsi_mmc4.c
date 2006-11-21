@@ -59,7 +59,7 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>
 
 #include "scsimmc.h"
-#include "cdrecord.h"
+#include "wodim.h"
 
  int	get_supported_cdrw_media_types(SCSI *scgp);
 

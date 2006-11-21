@@ -44,7 +44,7 @@ static	char sccsid[] =
 
 #include <scg/scsitransp.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 #include "crc16.h"
 
 int	do_leadin(track_t *trackp);

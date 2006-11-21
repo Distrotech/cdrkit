@@ -48,7 +48,7 @@ static	char sccsid[] =
 #include <scg/scsireg.h>
 #include <scg/scsitransp.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 #include "scgcheck.h"
 
 extern	char	*buf;			/* The transfer buffer */

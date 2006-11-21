@@ -60,7 +60,7 @@ static	char sccsid[] =
 #include "scsi_scan.h"
 #include "scsimmc.h"
 #define	qpto96	__nothing__
-#include "cdrecord.h"
+#include "wodim.h"
 #include "defaults.h"
 #undef	qpto96
 #include "movesect.h"

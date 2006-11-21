@@ -73,7 +73,7 @@ static	char sccsid[] =
 #include "scsi_scan.h"
 
 #include "auheader.h"
-#include "cdrecord.h"
+#include "wodim.h"
 #include "defaults.h"
 #include "movesect.h"
 

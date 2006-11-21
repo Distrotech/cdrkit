@@ -48,7 +48,7 @@ static	char sccsid[] =
 #include <scg/scgcmd.h>
 #include <scg/scsitransp.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 #include "crc16.h"
 
 #include <scg/scsireg.h>

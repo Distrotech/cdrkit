@@ -71,7 +71,7 @@ static	char sccsid[] =
 
 #include <libport.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 
 extern	int	silent;
 extern	int	debug;

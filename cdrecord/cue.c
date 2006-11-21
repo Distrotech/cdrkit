@@ -51,7 +51,7 @@ static	char sccsid[] =
 
 #include "xio.h"
 #include "cdtext.h"
-#include "cdrecord.h"
+#include "wodim.h"
 #include "auheader.h"
 #include "libport.h"
 

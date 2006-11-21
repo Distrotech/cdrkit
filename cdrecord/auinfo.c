@@ -45,7 +45,7 @@ static	char sccsid[] =
 #include <schily.h>
 
 #include "cdtext.h"
-#include "cdrecord.h"
+#include "wodim.h"
 
 extern	int	debug;
 extern	int	xdebug;

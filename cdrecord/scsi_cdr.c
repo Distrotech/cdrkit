@@ -70,7 +70,7 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>
 
 #include "scsimmc.h"
-#include "cdrecord.h"
+#include "wodim.h"
 
 #define	strbeg(s1, s2)	(strstr((s2), (s1)) == (s2))
 

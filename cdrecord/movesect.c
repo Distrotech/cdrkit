@@ -38,7 +38,7 @@ static	char sccsid[] =
 #include <utypes.h>
 #include <schily.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 #include "movesect.h"
 
 void	scatter_secs(track_t *trackp, char *bp, int nsecs);

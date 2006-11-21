@@ -43,7 +43,7 @@ static	char sccsid[] =
 #include <standard.h>
 #include <utypes.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 
 extern	int	debug;
 extern	int	verbose;

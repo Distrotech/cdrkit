@@ -62,7 +62,7 @@ static	char sccsid[] =
 
 #include "scsimmc.h"
 #include "mmcvendor.h"
-#include "cdrecord.h"
+#include "wodim.h"
 
 extern	char	*driveropts;
 

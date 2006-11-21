@@ -58,7 +58,7 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>
 
 #include "scsi_scan.h"
-#include "cdrecord.h"
+#include "wodim.h"
 #include "defaults.h"
 
 char	skel_version[] = "1.1";

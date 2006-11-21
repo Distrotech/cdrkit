@@ -41,7 +41,7 @@ static	char sccsid[] =
 #include <stdio.h>
 #include <schily.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 
 int	from_bcd(int b);
 int	to_bcd(int i);

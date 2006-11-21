@@ -41,7 +41,7 @@ static	char sccsid[] =
 #include <standard.h>
 #include <utypes.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 
 void	pr_manufacturer(msf_t *mp, BOOL rw, BOOL audio);
 static	struct disk_man *man_ptr(msf_t *mp);

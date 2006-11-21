@@ -41,7 +41,7 @@ static	char sccsid[] =
 #include <intcvt.h>
 
 #include "iso9660.h"
-#include "cdrecord.h"	/* to verify isosize() prototype */
+#include "wodim.h"	/* to verify isosize() prototype */
 
 Llong	isosize(int f);
 

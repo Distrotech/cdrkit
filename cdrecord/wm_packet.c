@@ -46,7 +46,7 @@ static	char sccsid[] =
 #include <schily.h>
 
 #include <scg/scsitransp.h>
-#include "cdrecord.h"
+#include "wodim.h"
 #include "xio.h"
 
 extern	int	debug;

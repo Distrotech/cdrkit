@@ -47,7 +47,7 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>	/* For write_leadin() */
 
 #include "cdtext.h"
-#include "cdrecord.h"
+#include "wodim.h"
 #include "crc16.h"
 
 #define	PTI_TITLE	0x80	/* Album name and Track titles */

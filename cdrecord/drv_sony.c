@@ -59,7 +59,7 @@ static	char sccsid[] =
 #include <scg/scsireg.h>
 #include <scg/scsitransp.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 
 #ifdef	SONY_DEBUG
 #	define		inc_verbose()	scgp->verbose++

@@ -42,7 +42,7 @@ static	char sccsid[] =
 #include <timedefs.h>
 #include <schily.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 #include "movesect.h"
 
 #ifdef	HAVE_LIB_EDC_ECC

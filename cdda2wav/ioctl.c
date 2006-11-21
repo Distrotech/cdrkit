@@ -68,7 +68,7 @@ static char     sccsid[] =
 #include "exitcodes.h"
 
 #include <utypes.h>
-#include <cdrecord.h>
+#include <wodim.h>
 
 #if defined (HAVE_IOCTL_INTERFACE)
 #if  !defined(sun) && !defined(__sun) && !(defined(__FreeBSD__) && (__FreeBSD_version >= 501112))

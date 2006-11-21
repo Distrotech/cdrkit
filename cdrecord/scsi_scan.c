@@ -51,7 +51,7 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>
 
 #include "scsi_scan.h"
-#include "cdrecord.h"
+#include "wodim.h"
 
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
 int	select_target(SCSI *scgp, FILE *f);

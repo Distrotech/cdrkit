@@ -48,7 +48,7 @@ static char     sccsid[] =
 #include "interface.h"
 #include "byteorder.h"
 #include "global.h"
-#include "cdrecord.h"
+#include "wodim.h"
 #include "toc.h"
 #include "scsi_cmds.h"
 #include "exitcodes.h"

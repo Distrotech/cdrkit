@@ -49,7 +49,7 @@ static	char sccsid[] =
 #include <scg/scgcmd.h>
 #include <scg/scsidefs.h>	/* XXX Only for DEV_RICOH_RO_1060C */
 
-#include "cdrecord.h"
+#include "wodim.h"
 
 extern	int	debug;
 extern	int	lverbose;

@@ -49,7 +49,7 @@ static	char sccsid[] =
 #include <scg/scsitransp.h>
 #include "scsi_scan.h"
 
-#include "cdrecord.h"
+#include "wodim.h"
 #include "scgcheck.h"
 
 static	void	usage(int ret);

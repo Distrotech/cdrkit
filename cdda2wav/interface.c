@@ -92,7 +92,7 @@ static char     sccsid[] =
 #include "scsi_cmds.h"
 
 #include <utypes.h>
-#include <cdrecord.h>
+#include <wodim.h>
 #include "scsi_scan.h"
 
 unsigned interface;

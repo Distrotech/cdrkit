@@ -103,7 +103,7 @@ static	char sccsid[] =
 #include <libport.h>
 #include <schily.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 #include "xio.h"
 
 #ifdef DEBUG
@@ -831,7 +831,7 @@ fifo_percent(BOOL addone)
 #include <utypes.h>	/* includes sys/types.h */
 #include <schily.h>
 
-#include "cdrecord.h"
+#include "wodim.h"
 
 void	init_fifo(long);
 BOOL	init_faio(track_t *track, int);
