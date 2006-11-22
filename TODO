@@ -1,3 +1,9 @@
+1.0.x
+  - find a good name for cdda2wav, follow the wodim procedure
+  - fix lorinder's bug
+  - check documentation, debian/* documentation, FAQ, etc.pp.
+
+1.1.x
 
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
  - proper getnameinfo/inet_ntoa checks, see include/CMakeLists.txt

@@ -68,10 +68,3 @@ ENDIF (WIN32) # workaround for cygwin
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 
-# FIXME! Does not work as expected. Not important for out-of-source builds but
-# is not nice either.
-#
-###SET_SOURCE_FILES_PROPERTIES(xconfig.h PROPERTIES GENERATED 1)
-#LIST(APPEND tmps  xconfig.h  align.h)
-#SET_DIRECTORY_PROPERTIES(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES tmps)
-
