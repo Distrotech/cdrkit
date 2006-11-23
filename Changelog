@@ -12,6 +12,9 @@ cdrkit (1.1.x) UNRELEASED; urgency=low
   * big cleanup, phase I, getting rid from Cstyle function definitions in
     applications
 
+  [ Lorenz Minder ]
+  * user output junk filter in icedax/toc.c
+
  -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
 
 cdrkit (1.0) RELEASED; urgency=low

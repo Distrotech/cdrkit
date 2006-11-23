@@ -813,10 +813,10 @@ static void emit_cddb_form(char *fname_baseval)
 #if	defined	USE_REMOTE
 #include <pwd.h>
 
-int readn(register int fd, register char *ptr, register int nbytes);
-int writen(register int fd, register char *ptr, register int nbytes);
+static int readn(register int fd, register char *ptr, register int nbytes);
+static int writen(register int fd, register char *ptr, register int nbytes);
 
-int readn(register int fd, register char *ptr, register int nbytes)
+static int readn(register int fd, register char *ptr, register int nbytes)
 {
 	int	nread;
 
@@ -828,14 +828,20 @@ int readn(register int fd, register char *ptr, register int nbytes)
 	}
 #endif
 	if (nread < 0) {
-		perror("socket read error: ");
-		fprintf(stderr, "fd=%d, ptr=%p, nbytes=%d\n", fd, ptr, nbytes);
+	   perror("socket read error: ");
+	   fprintf(stderr, "fd=%d, ptr=%p, nbytes=%d\n", fd, ptr, nbytes);
+	   nread = 0; /* This is a distasteful hack, and we
+			 should replace that w/ something sane ASAP. It
+			 is here because none of the callers of readn()
+			 actually check for error condition, but in
+			 several places, the return value is assumed to
+			 be nonnegative. */
 	}
 
 	return nread;
 }
 
-int writen(register int fd, register char *ptr, register int nbytes)
+static int writen(register int fd, register char *ptr, register int nbytes)
 {
 	int	nleft, nwritten;
 
@@ -857,6 +863,17 @@ int writen(register int fd, register char *ptr, register int nbytes)
 }
 
 #define	SOCKBUFF	2048
+  
+static void filter_nonprintable(char *c, size_t l)
+{
+	size_t i;
+	for(i = 0; i < l; ++i) {
+		if(!isprint(c[i]) && !isspace(c[i])) {
+			c[i] = '_';
+		}
+	}
+}
+
 
 int process_cddb_titles(int sock_fd, char *inbuff, int readbytes);
 int process_cddb_titles(int sock_fd, char *inbuff, int readbytes)
@@ -1003,6 +1020,7 @@ int process_cddb_titles(int sock_fd, char *inbuff, int readbytes)
 			int	newbytes;
 			memmove(inbuff, inbuff+ind, readbytes);
 			newbytes = readn(sock_fd, inbuff+readbytes, SOCKBUFF-readbytes);
+			filter_nonprintable(inbuff+readbytes, newbytes);
 			if (newbytes <= 0)
 				break;
 			readbytes += newbytes;
@@ -1183,6 +1201,10 @@ request_titles()
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 
 	if (strncmp(inbuff, "200 ", 4) && strncmp(inbuff, "201 ", 4)) {
+		if(readbytes == sizeof(inbuff))
+			--readbytes;
+		inbuff[readbytes] = '\0';
+		filter_nonprintable(inbuff, readbytes);
 		fprintf(stderr, "bad status from freedb server during sign-on banner: %s\n", inbuff);
 		retval = -1;
 		goto errout;
@@ -1262,7 +1284,10 @@ request_titles()
 
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 	if (strncmp(inbuff, "200 ", 4)) {
+		if(readbytes == sizeof(inbuff))
+			--readbytes;
 		inbuff[readbytes] = '\0';
+		filter_nonprintable(inbuff, readbytes);
 		fprintf(stderr, "bad status from freedb server during hello: %s\n", inbuff);
 		retval = -1;
 		goto signoff;
@@ -1273,7 +1298,10 @@ request_titles()
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 	/* check for errors and maximum supported protocol level */
 	if (strncmp(inbuff, "201 ", 4) > 0) {
+		if(readbytes == sizeof(inbuff))
+			--readbytes;
 		inbuff[readbytes] = '\0';
+		filter_nonprintable(inbuff, readbytes);
 		fprintf(stderr, "bad status from freedb server during proto command: %s\n", inbuff);
 		retval = -1;
 		goto signoff;
@@ -1295,7 +1323,11 @@ request_titles()
 				readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 				/* check for errors and maximum supported protocol level */
 				if (strncmp(inbuff, "201 ", 4) > 0) {
+					if(readbytes == sizeof(inbuff))
+						--readbytes;
 					inbuff[readbytes] = '\0';
+					filter_nonprintable(inbuff,
+					  readbytes);
 					fprintf(stderr, "bad status from freedb server during proto x: %s\n", inbuff);
 					retval = -1;
 					goto signoff;
@@ -1340,8 +1372,9 @@ request_titles()
 /*	strcpy(outbuff, "cddb query 03015501 1 296 344\n"); */
 	writen(sock_fd, outbuff, strlen(outbuff));
 
-	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
+	readbytes = readn(sock_fd, inbuff, sizeof(inbuff) - 1);
 	inbuff[readbytes] = '\0';
+	filter_nonprintable(inbuff, readbytes);
 	cat_offset = 4;
 	if (!strncmp(inbuff, "210 ", 4)
 	   || !strncmp(inbuff, "211 ", 4)) {
@@ -1397,7 +1430,10 @@ request_titles()
 
 	/* read status and first buffer size. */
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
+	filter_nonprintable(inbuff, readbytes);
 	if (strncmp(inbuff, "210 ", 4)) {
+		if(readbytes == sizeof(inbuff))
+			--readbytes;
 		inbuff[readbytes] = '\0';
 		fprintf(stderr, "bad status from freedb server during read: %s\n", inbuff);
 		retval = -1;
@@ -1413,7 +1449,10 @@ signoff:
 	writen(sock_fd, "quit\n", 5);
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 	if (strncmp(inbuff, "230 ", 4)) {
+		if(readbytes == sizeof(inbuff))
+			--readbytes;
 		inbuff[readbytes] = '\0';
+		filter_nonprintable(inbuff, readbytes);
 		fprintf(stderr, "bad status from freedb server during quit: %s\n", inbuff);
 		goto errout;
 	}

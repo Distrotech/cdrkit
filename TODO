@@ -1,12 +1,11 @@
-1.0.x
-  - find a good name for cdda2wav, follow the wodim procedure
-  - fix lorinder's bug
+SOON:
   - check documentation, debian/* documentation, FAQ, etc.pp.
   - fix DVD-RW support (DVD+RW works, though, DVD-RW blanking works too)
   - fix dirsplit -S, looses files
 
-1.1.x
+LATER:
 
+ - fix nread() callers, see toc.c:835
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
  - proper getnameinfo/inet_ntoa checks, see include/CMakeLists.txt
  - find out why spawn.c breaks in WAIT_H while the WAIT_UNION check works quite well on sys/wait.h. See include/CMakeLists.txt comments.
