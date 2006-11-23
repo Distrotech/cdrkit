@@ -293,7 +293,7 @@ and wodim patches that have been made to support this device that have
 yet to be officially incorporated into cdwrite and the kernel. In order to
 get your drive supported under Linux, you will have to do the following:
 
-1. Get the proper version of wodim.
+1. Get the proper version of cdrecord.
 
 As of this writing, I am just getting ready to test Joerg's new cdrecord.
 I am currently operational on cdrecord-1.5, so I know that works, and I

@@ -1,28 +1,33 @@
 The Remote-SCSI protocol gives you SCSI-Anywhere features.
 
+The protocol used by netscsid is based on rscsi from the cdrtools, developed by
+Joerg Schilling. However, no guarantee for the compatibility or reliability can
+be made. This documentation is based on rscsi documentation from Joerg
+Schilling, but is not identical to the original.
+
 There are three possible ways to control access to the remote users:
 
 	-	Let the remote scsi lib log in as a standard user.
-		In this case rscsi will be called via sh -c /opt/schily/sbin/rscsi
-		NOTE: In this case, rscsi must be installed suid root. 
+		In this case netscsid will be called via sh -c netscsid /usr/sbin/netscsid
+		NOTE: In this case, netscsid must be installed suid root. 
 		--- This would need to allow any valid local user to access SCSI ----
 		It could be a security problem.
 
-	-	Log in as root and call rscsi via sh -c /opt/schily/sbin/rscsi
+	-	Log in as root and call netscsid via sh -c netscsid
 		NOTE that this will fore you to allow remote logins as root
 		which is considered to be a security hole.
 
-	-	Create one or more special user(s) that have /opt/schily/sbin/rscsi
+	-	Create one or more special user(s) that have netscsid
 		as login shell with their own home directory.
 		You then may create special .rhosts files for each user.
-		NOTE: In this case, rscsi must be installed suid root. 
+		NOTE: In this case, netscsid must be installed suid root. 
 		**** This is the preferred method ****
 
 To enable remote SCSI via the login shell method you should do the following:
 
 	-	Add an entry to /etc/passwd in the form:
 
-		rscsi:x:1999:1000:Tape:/export/home/rscsi:/opt/schily/sbin/rscsi
+		netscsid:x:1999:1000:Tape:/export/home/netscsid:/usr/sbin/netscsid
 
 		(modify this according to your OS). And don't forget to
 		modify /etc/shadow the way it needs to be on your OS.
@@ -30,34 +35,34 @@ To enable remote SCSI via the login shell method you should do the following:
 	-	Create a  home directory for this user and add a .rhosts file
 		to allow access to all users you like.
 
-	-	Install rscsi suid root into /opt/schily/sbin
+	-	Install netscsid suid root into /usr/sbin
 
-	-	Install a file /etc/rscsi.conf and define access rights.
-		Without this file, rscsi will not work at all.
+	-	Install a file /etc/netscsid.conf and define access rights.
+		Without this file, netscsid will not work at all.
 
-		The template for this file is: rscsi/rscsi.dfl
+		The template for this file is: netscsid/netscsid.dfl
 
-RSCSI Security:
+NETSCSID Security:
 
--	When rscsi starts, it checks if /etc/rscsi.conf exists.
+-	When netscsid starts, it checks if /etc/netscsid.conf exists.
 	If not, it dies.
 
--	If rscsi is not called by a user listed in /etc/rscsi.conf
+-	If netscsid is not called by a user listed in /etc/netscsid.conf
 	it dies.
 
 -	To access a SCSI target there must be an entry that lists the user
 	rcsi hast been started from, the hostname and the SCSI target.
 
-	rscsi compares the hostname field in /etc/rscsi.conf 
+	netscsid compares the hostname field in /etc/netscsid.conf 
 	to the peername retrived from STDIN:
 
 	- legal host name		IP connection
 	- "ILLEGAL_SOCKET"		Not an IP socket
 	- "NOT_IP"			Not a socket
 
-RSCSI Security hints:
+NETSCSID Security hints:
 
--	Do not generally allow other users to see your boot disk via RSCSI.
+-	Do not generally allow other users to see your boot disk via NETSCSID.
 	All people who see this disk may edit your passwd file.
 
 -	If you are in doubt, only export CD-ROM drives, scanners and similar
@@ -65,7 +70,7 @@ RSCSI Security hints:
 
 If anybody sees a security hole in my security precautions, please send me a mail!
 
-RSCSI usage:
+NETSCSID usage:
 
 -	To use remote SCSI devices you need to know how to access a specific remote
 	SCSI target.
@@ -78,7 +83,7 @@ RSCSI usage:
 
 		If you use the setup described above, you should use:
 
-			dev=REMOTE:rscsi@babbel:
+			dev=REMOTE:netscsid@babbel:
 
 		to do SCSI Bus scanning on host babbel
 
@@ -87,9 +92,9 @@ RSCSI usage:
 		<target spec> is the SCSI target specification as it is needed
 		on the remote host
 
-			dev=REMOTE:rscsi@babbel:1,3,0
+			dev=REMOTE:netscsid@babbel:1,3,0
 
-		Will let you log in as rscsi on host babbel and open Target 3 lun 0
+		Will let you log in as netscsid on host babbel and open Target 3 lun 0
 		on SCSI bus #1
 
 	-	If you use wodim -vv ...., wodim will on startup print some 
@@ -100,7 +105,7 @@ RSCSI usage:
 	Call 'id' to get the right user id.
 	Note that remote SCSI has not yet been tested on Win32.
 
-RSCSI speed:
+NETSCSID speed:
 
 -	On a Ultra-10 running Solaris 8, the command overhead time is 400 usec.
 	You may achieve up to 9900 kB/s via a 100MB/s ethernet connection
@@ -114,7 +119,7 @@ RSCSI speed:
 	causes the buffer cache on that machine to be trashed. The main user
 	is disturbed.
 
--	Doing cdrecording via Remote SCSI causes only the rscsi command with less
+-	Doing cdrecording via Remote SCSI causes only the netscsid command with less
 	than 200kB to be needed on the remote machine hosting the CD recorder.
 	The main user on that machine is not disturbed.
 	The buffer cache of the machine running wodim is trashed.

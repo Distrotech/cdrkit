@@ -2,14 +2,14 @@ Ho to copy CD's and CD-R/CD-RW's
 
 Copying audio CD's:
 
-If you want to copy audio CD's, look for 'cdda2wav'. Be sure tu use use
+If you want to copy audio CD's, look for 'icedax'. Be sure tu use use
 at least a cdda2wav-0.95beta or later. Older releases will not read correctly
 from SCSI-3/mmc compliant drives.
 
 Copying data CD's:
 
 The best way to copy a data disk is to copy the raw data on the master CD.
-This may be done by reading the data from the raw device by using 'readcd'.
+This may be done by reading the data from the raw device by using 'readom'.
 
 
 NOTE:	All CD-R's written in Track At Once mode end in two unreadable 
@@ -24,21 +24,21 @@ add padding (see wodim / mkisofs man pages).
 
 If you want to copy such a CD directly with wodim, you may call:
 
-	wodim -v dev=... -isosize /dev/rdsk/c0t6d0s0
+	wodim -v dev=... -isosize /dev/cdrw
 
 But this may fail if the master gives read errors. To copy such a CD to a file
-you may use the program 'readcd' from this package
+you may use the program 'readom' from this package
 
-Call 'readcd [target] [lun] [scsibusno]' and select function 11.
-Or call readcd -help to get alternate usage.
-To prevent readcd from reading the run-out sectors, reduce the 
+Call 'readom [target] [lun] [scsibusno]' and select function 11.
+Or call readom -help to get alternate usage.
+To prevent readom from reading the run-out sectors, reduce the 
 number of sectors to copy by 2.
 
-Recent readcd versions may be called: readcd dev=b,t,l f=outfile
+Recent readom versions may be called: readom dev=b,t,l f=outfile
 To reduce the numbers of sectors to copy you may use the sectors= option.
 
 If the master disk is made of several partitions (like a Solaris boot CD),
-the best way to copy a CD is to use the program 'readcd'. It ignores
+the best way to copy a CD is to use the program 'readom'. It ignores
 the partition info and does raw SCSI reads.
 
 If you like to copy audio CD's in a way that preserves as much accuracy as
@@ -50,6 +50,6 @@ wodim -v dev=... -dao -useinfo *.wav
 This will preserve pre-gap sizes, indices ...
 
 
-Source: README.copy from cdrtools package
-Edited for cdrkit by Christian Fromme <kaner@strace.org>
+Source: README.copy from cdrtools package, version 2.01.01a08
+Edited for cdrkit by Christian Fromme <kaner@strace.org> and Eduard Bloch <blade@debian.org>
 
