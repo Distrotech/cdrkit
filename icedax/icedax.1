@@ -1,5 +1,5 @@
 '\" t
-.\" @(#)cdda2wav.1	1.14 02/12/09 Copyright 1998,1999,2000 Heiko Eissfeldt
+.\" @(#)icedax.1	1.14 02/12/09 Copyright 1998,1999,2000 Heiko Eissfeldt
 .if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
 .if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
 .if t .ds u \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'u
@@ -16,10 +16,10 @@
 .if n .ds m micro
 .TH CDDA2WAV 1
 .SH NAME
-cdda2wav \- a sampling utility that dumps CD audio data into wav sound
+icedax \- a sampling utility that dumps CD audio data into wav sound
 files
 .SH SYNOPSIS
-.B cdda2wav
+.B icedax
 .RB [ -c
 .IR chans ]
 .RB [ -s ]
@@ -89,7 +89,7 @@ files
 or
 .IR directories ]
 .SH DESCRIPTION
-.B cdda2wav
+.B icedax
 can retrieve audio tracks from CDROM drives (see README for a list of drives) that are
 capable of reading audio data digitally to the host
 .RB ( CDDA ).
@@ -114,7 +114,7 @@ has to correspond with the interface setting (see below).
 Using the
 .B cooked_ioctl
 is not recommended as this makes
-.B cdda2wav
+.B icedax
 mainly depend on the audio extraction quality of the operating system
 which is usually extremely bad.
 .sp
@@ -336,10 +336,10 @@ The numbers printed out as labels are computed by:
 .B "bus * 100 + target
 .TP
 .B \-paranoia
-use the paranoia library instead of cdda2wav's routines for reading.
+use the paranoia library instead of icedax's routines for reading.
 .TP
 .B \-h " --help"
-display version of cdda2wav on standard output.
+display version of icedax on standard output.
 .TP
 Defaults depend on the
 .B Makefile
@@ -371,11 +371,11 @@ Use e.g.
 to create a secure shell connection.
 .sp
 Note that this forces 
-.B cdda2wav
+.B icedax
 to create a pipe to the 
 .B rsh(1)
 program and disallows
-.B cdda2wav
+.B icedax
 to directly access the network socket to the remote server.
 This makes it impossible to set up performance parameters and slows down
 the connection compared to a 
@@ -395,7 +395,7 @@ Note that the remote SCSI server program name will be ignored if you log in
 using an account that has been created with a remote SCSI server program as
 login shell.
 .SH "RETURN VALUES"
-.B cdda2wav
+.B icedax
 uses the following exit codes to indicate various degrees of success:
 .TS H
 center box;
@@ -403,7 +403,7 @@ r | l.
 Exitcode	Description
 _
 0	no errors encountered, successful operation.
-1	usage or syntax error. cdda2wav got inconsistent arguments.
+1	usage or syntax error. icedax got inconsistent arguments.
 2	permission (un)set errors. permission changes failed.
 3	read errors on the cdrom/burner device encountered.
 4	write errors while writing one of the output files encountered.
@@ -423,7 +423,7 @@ _
 18	could not create pipes for process communication (in forked mode).
 .TE
 .SH "DISCUSSION"
-.B cdda2wav
+.B icedax
 is able to read parts of an
 .B audio
 CD or
@@ -431,7 +431,7 @@ CD or
 CDROM (containing audio parts) directly digitally. These parts can be
 written to a file, a pipe, or to a sound device.
 .PP
-.B cdda2wav
+.B icedax
 stands for
 .B CDDA
 to
@@ -454,7 +454,7 @@ and are higher than those of 'normal' processes. Thus delays are minimized.
 If your CDROM is on device
 .B DEV
 and it is loaded with an audio CD, you may simply invoke
-.B cdda2wav dev=DEV
+.B icedax dev=DEV
 and it will create the sound file
 .B audio.wav
 recording the whole track beginning with track 1 in stereo at 16 bit at 44100
@@ -505,9 +505,9 @@ simultaneously. The soundcard gets the same data that is recorded. This
 is time critical, so it works best with the
 .B \-q
 option.  To use
-.B cdda2wav
+.B icedax
 as a pseudo CD player without recording in a file you could use
-.B "cdda2wav \-q \-e \-t2 \-d0 \-N"
+.B "icedax \-q \-e \-t2 \-d0 \-N"
 to play the whole second track. This feature reduces the recording speed
 to at most onefold speed. You cannot make better recordings than your sound card
 can play (since the same data is used).
@@ -565,7 +565,7 @@ Option
 lists all available rates.
 .IP
 To make the sound smoother at lower sampling rates,
-.B cdda2wav
+.B icedax
 sums over
 .I n
 samples (where
@@ -646,7 +646,7 @@ option see below.)
 .B \-w
 Turning on this option will suppress all silent output at startup,
 reducing possibly file size.
-.B cdda2wav
+.B icedax
 will watch for any signal in the output signal and switches on writing
 to file.
 .IP "Find extreme samples"
@@ -729,12 +729,12 @@ is used.)
 .B \-P " sectors"
 sets the given number of sectors for initial overlap sampling for jitter
 correction. Two cases are to be distinguished. For nonzero values,
-some sectors are read twice to enable cdda2wav's jitter correction.
+some sectors are read twice to enable icedax's jitter correction.
 If an argument of zero is given, no overlap sampling will be used.
-For nonzero overlap sectors cdda2wav dynamically adjusts the setting during
+For nonzero overlap sectors icedax dynamically adjusts the setting during
 sampling (like cdparanoia does).
-If no match can be found, cdda2wav retries the read with an increased overlap.
-If the amount of jitter is lower than the current overlapped samples, cdda2wav
+If no match can be found, icedax retries the read with an increased overlap.
+If the amount of jitter is lower than the current overlapped samples, icedax
 reduces the overlap setting, resulting in a higher reading speed.
 The argument given has to be lower than the total number of sectors per request
 (see option
@@ -868,11 +868,11 @@ them with standard WAV players for sound blaster (maybe they are not
 legal in
 .B WAV
 format). Most CD-Writers insist on audio samples in a bigendian format.
-Now cdda2wav supports the 
+Now icedax supports the 
 .B \-E " endianess"
 option to control the endianess of the written samples.
 .PP
-If your hardware is fast enough to run cdda2wav
+If your hardware is fast enough to run icedax
 uninterrupted and your CD drive is one of the 'perfect' ones, you will
 gain speed when switching all overlap sampling off with the
 .B \-P " 0"
@@ -884,7 +884,7 @@ Cdda2wav supports
 .B pipes
 now. Use a filename of
 .B \-
-to let cdda2wav output its samples to standard output.
+to let icedax output its samples to standard output.
 .PP
 Conversion to other sound formats can be done using the
 .B sox
@@ -916,7 +916,7 @@ with '_dd' where dd represents the current track number.
 .sp
 Cddb and Cdindex files:
 .sp
-If cdda2wav detects cd-extra or cd-text (album/track) title information,
+If icedax detects cd-extra or cd-text (album/track) title information,
 then .cddb and .cdindex files are generated unless suppressed by the
 option -H. They contain suitable formatted entries for submission to
 audio cd track title databases in the internet. The CDINDEX and CDDB(tm)
@@ -928,7 +928,7 @@ Inf files:
 The inf files are describing the sample files and the part from the audio cd,
 it was taken from. They are a means to transfer information to a cd burning
 program like wodim. For example, if the original audio cd had pre-emphasis
-enabled, and cdda2wav -T did remove the pre-emphasis, then the inf file has
+enabled, and icedax -T did remove the pre-emphasis, then the inf file has
 pre-emphasis not set (since the audio file does not have it anymore), while
 the .cddb and the .cdindex have pre-emphasis set as the original does.
 .SH WARNING
@@ -963,15 +963,15 @@ Heiko Eissfeldt heiko@colossus.escape.de
 .PP
 This manpage describes the program implementation of
 .B
-cdda2wav
+icedax
 as shipped by the cdrkit distribution. See
 .B
 http://alioth.debian.org/projects/debburn/
-for details. It is a spinoff from the original program distributed in the
-cdrtools package [1] . However, the cdrtools
-developers are not involved in the development of this spinoff and therefore
-shall not be made responsible for any problem caused by it. Do not try to get
-support for this program by contacting the original authors.
+for details. It is a spinoff from the original program cdda2wav as distributed
+in the cdrtools package [1]. However, the cdrtools developers are not involved
+in the development of this spinoff and therefore shall not be made responsible
+for any problem caused by it. Do not try to get support for this program by
+contacting the original authors.
 .PP
 If you have support questions, send them to
 .PP
