@@ -14,7 +14,7 @@
 .if n .ds s sz
 .if t .ds m \\(*m
 .if n .ds m micro
-.TH CDDA2WAV 1
+.TH ICEDAX 1
 .SH NAME
 icedax \- a sampling utility that dumps CD audio data into wav sound
 files
@@ -740,7 +740,7 @@ The argument given has to be lower than the total number of sectors per request
 (see option
 .I -n
 below).
-Cdda2wav will check this setting and issues a error message otherwise.
+Icedax will check this setting and issues a error message otherwise.
 The case of zero sectors is nice on low load situations or errorfree (perfect)
 cdrom drives and perfect (not scratched) audio cds.
 .IP "Set the transfer size"
@@ -844,7 +844,7 @@ option). This is just for information purposes.
 .SH "CDDBP support"
 .IP "Lookup album and track titles option"
 .B \-L " cddbp mode"
-Cdda2wav tries to retrieve performer, album-, and track titles from a cddbp
+Icedax tries to retrieve performer, album-, and track titles from a cddbp
 server. The default server right now is 'freedb.freedb.org'.
 It is planned to have more control over the server handling later.
 The parameter defines how multiple entries are handled:
@@ -880,7 +880,7 @@ option. Further fine tuning can be done with the
 .B \-n " sectors"
 option. You can specify how much sectors should be requested in one go.
 .PP
-Cdda2wav supports
+Icedax supports
 .B pipes
 now. Use a filename of
 .B \-
@@ -900,7 +900,7 @@ different files in one run, this is currently possible with the
 option. When recording time exceeds the track limit a new file will
 be opened for the next track.
 .SH FILES
-Cdda2wav can generate a lot of files for various purposes.
+Icedax can generate a lot of files for various purposes.
 .sp
 Audio files:
 .sp
@@ -946,9 +946,9 @@ The index scanner may give timeouts.
 The resampling (rate conversion code) uses polynomial interpolation, which
 is not optimal.
 .sp
-Cdda2wav should use threads.
+Icedax should use threads.
 .sp
-Cdda2wav currently cannot sample hidden audio tracks (track 1 index 0).
+Icedax currently cannot sample hidden audio tracks (track 1 index 0).
 .SH ACKNOWLEDGEMENTS
 Thanks goto Project MODE (http://www.mode.net/) and Fraunhofer Institut f\*ur
 integrierte Schaltungen (FhG-IIS) (http://www.iis.fhg.de/) for financial
