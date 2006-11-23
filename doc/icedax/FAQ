@@ -4,7 +4,7 @@ Status
 ======
 
 
-Q: What is the copyright status of cdda2wav?
+Q: What is the copyright status of icedax?
 
 A: Cdda2wav is software copyrighted by Heiko Eissfeldt and released under the
    General Public License from the Free Software Foundation (see file GPL).
@@ -13,15 +13,15 @@ Compilation
 ===========
 
 
-Q: What are the requirements to run cdda2wav?
+Q: What are the requirements to run icedax?
 
 A: All operating systems that are supported by cdrecord should also be able to
-   run cdda2wav. Currently DOS and Windows are not covered.
-   Requirements of previous versions of cdda2wav have been cut down for the
+   run icedax. Currently DOS and Windows are not covered.
+   Requirements of previous versions of icedax have been cut down for the
    sake of portability. Features like fork(), realtime scheduling, or shared
    memory are all optional now. You need a shell, which runs autoconf, a c
-   compiler (even a K&R compiler should work) and a c library to build cdda2wav
-   on a supported operating system. To run cdda2wav, a SCSI transport
+   compiler (even a K&R compiler should work) and a c library to build icedax
+   on a supported operating system. To run icedax, a SCSI transport
    implementation for the os, a cdrom or cd burner device to read from, and
    at least say 65K of memory for buffers are needed.
 
@@ -36,7 +36,7 @@ A: There have been changes in the generic driver by Douglas Gilbert, that are
 
 Q: Why does it not compile using standard make?
 
-A: Like cdrecord, cdda2wav needs a sophisticated make program like Joerg
+A: Like cdrecord, icedax needs a sophisticated make program like Joerg
    Schilling's smake or GNU gmake. Pure posix make functionality is not enough.
 
 Setting Up (for now Linux only)
@@ -45,13 +45,13 @@ Setting Up (for now Linux only)
 
 Q: Should I use scsi emulation or the eide driver for my ATAPI cdrom drive?
 
-A: Scsi emulation is preferred, since it enables cdda2wav to use more commands
+A: Scsi emulation is preferred, since it enables icedax to use more commands
    and is often the only way to get special information like track titles with
    cd-text. The emulation module is called ide-scsi, the eide module is called
    ide-cd.
 
 
-Q: How can I use my parallel-port-connected cdrom with cdda2wav?
+Q: How can I use my parallel-port-connected cdrom with icedax?
 
 A: Under Linux there is a driver, that makes this device under SCSI
    emulation available. For more information see the cdrecord documentation.
@@ -65,7 +65,7 @@ A: run 'cat /proc/devices | grep "21 sg"' and see, if a line with 'sg' appears.
    question, otherwise you need to recompile the kernel and enable generic SCSI.
    You might try to use the 'cooked_ioctl' interface as a last resort, but then
    you need to supply a cdrom device with -D (like -D/dev/cdrom). In this case
-   cdda2wav completely relies on the cdda reading methods from the kernel
+   icedax completely relies on the cdda reading methods from the kernel
    driver, so it might not work (due to unsupported). 
 
 
@@ -113,31 +113,31 @@ A: Use the supplied script 'readmult'. For usage see the comments at the
    beginning of the script.
 
 
-Q: How can I get the highest speed out of cdda2wav?
+Q: How can I get the highest speed out of icedax?
 
 A: See the file README. There is a section about performance and what is
    influencing it.
 
 
-Q: How can I burn audio cds with cdda2wav and cdrecord on-the-fly?
+Q: How can I burn audio cds with icedax and cdrecord on-the-fly?
 
 A: This has not been tested very well, so caveat emptor. It is possible to
-   use cdda2wav and cdrecord with pipes, _but_ there are several issues.
+   use icedax and cdrecord with pipes, _but_ there are several issues.
    1.: The cd drive may become too slow to keep cdrecords buffer happy, when
        a scratch on the audio cd is encountered, and several retries take place.
    2.: Currently there is no way to carry individual track information from
-       cdda2wav to cdrecord. Several information bits are available very late
+       icedax to cdrecord. Several information bits are available very late
        but are needed in advance from cdrecord.
    3.: Some operating systems have limitations in multiple SCSI accesses and
-       other ressources (shared memory). cdda2wav and cdrecord may block each
+       other ressources (shared memory). icedax and cdrecord may block each
        other, or might fight over limited ressources.
-   For these reasons it is not recommended to burn on-the-fly with cdda2wav.
+   For these reasons it is not recommended to burn on-the-fly with icedax.
 
 Frontends
 =========
 
 
-Q: Which frontends for cdda2wav are available?
+Q: Which frontends for icedax are available?
 
 A: See the file 'Frontends'. There are command line and graphical frontends.
 
@@ -145,27 +145,27 @@ Album and track titles
 ======================
 
 
-Q: Does cdda2wav support titles from cd extra (aka cd plus aka enhanced cd)?
+Q: Does icedax support titles from cd extra (aka cd plus aka enhanced cd)?
 
-A: In general, yes. In order to get this information, cdda2wav needs to read
+A: In general, yes. In order to get this information, icedax needs to read
    a data sector from the second session of the cd. This requires multisession
    support and the capability to read XA sectors. The titles are printed on the
    screen and written into the inf files, then.
 
 
-Q: Does cdda2wav support titles from cd-text?
+Q: Does icedax support titles from cd-text?
 
 A: Newer versions support the most important features of cd-text like titles
    and creators. Non-supported are currently 16-bit characters, so asian
    titles etc. are currently not available.
 
 
-Q: Does cdda2wav support CDDB ids?
+Q: Does icedax support CDDB ids?
 
 A: Yes, while it does not make CDDB lookups itself, it supplies an cddb file
    with the table of contents and the cddb id. For cddb lookups see the
    perl script tracknames.pl and tracknames.txt. If the titles are known to
-   cdda2wav, it fills the titles itself in the cddb file.
+   icedax, it fills the titles itself in the cddb file.
 
 
 Q: What is the MCN?
@@ -184,7 +184,7 @@ MP3 coding
 ==========
 
 
-Q: Does cdda2wav support on-the-fly mp3-coding?
+Q: Does icedax support on-the-fly mp3-coding?
 
 A: Yes. As of version 1.9alpha I integrated the LAME encoding engine as a new
    output format.
@@ -221,17 +221,17 @@ Specials
 ========
 
 
-Q: Does cdda2wav support the pre-emphasis bit?
+Q: Does icedax support the pre-emphasis bit?
 
 A: If the table of contents marks a track as pre-emphasized, the corresponding
    inf file will have this information, too. That enables a cd burning program
    to retain the state of the track.
 
 
-Q: Can cdda2wav undo the pre-emphasis effect in the samples?
+Q: Can icedax undo the pre-emphasis effect in the samples?
 
 A: Yes, if the -T option is given (and cd quality is selected),
-   cdda2wav filters the samples with the reverse emphasis on-the-fly. This has
+   icedax filters the samples with the reverse emphasis on-the-fly. This has
    been checked with a sine sweep from a pre-emphasized test cd.
 
 
@@ -240,14 +240,14 @@ Q: My cdrom delivers the stereo channels swapped. How can I undo this?
 A: Use the -cs option.
 
 
-Q: Does cdda2wav support indices?
+Q: Does icedax support indices?
 
 A: Yes, but since there are positioning problems with a lot of drives,
    information might be inaccurate. A start index can be specified with the
    -i option. To get all indices, use the -v7 option.
 
 
-Q: Can cdda2wav avoid including the pre-gap region at the end of the track?
+Q: Can icedax avoid including the pre-gap region at the end of the track?
 
 A: Currently not. This might be added later, but is not easily done.
 
@@ -258,13 +258,13 @@ A: Use the -J option, which switches analysis to the max, and aborts after
    the report.
 
 
-Q: Can cdda2wav display/save the graphics on my CD+graphics disc?
+Q: Can icedax display/save the graphics on my CD+graphics disc?
 
 A: No, this is not planned. A seperate X11 program could do that probably
    better.
 
 
-Q: Can cdda2wav read the audio portion from my CD-I/Video-CD/DVD mpeg streams?
+Q: Can icedax read the audio portion from my CD-I/Video-CD/DVD mpeg streams?
 
 A: No, these are special formats, which require much more effort.
 
@@ -278,7 +278,7 @@ A: Look into the file NEEDED. Also constructive criticism and feedback is
    appreciated.
 
 
-Q: I want to port cdrtools (cdrecord/mkisofs/cdda2wav) to a new platform (like
+Q: I want to port cdrtools (cdrecord/mkisofs/icedax) to a new platform (like
    DJGPP,cygwin,os/2). How should I proceed?
 
 A: It would be convenient to have a unix like environment (like cygwin provides)   A shell, and a make program would be needed to first create smake (in order

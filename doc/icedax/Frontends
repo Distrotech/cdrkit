@@ -1,11 +1,11 @@
-This file lists additional free frontend software to be combined with cdda2wav:
+This file lists additional free frontend software to be combined with icedax:
 
 graphical frontends
 ===================
 
 BurnIT	(http://sunsite.auc.dk/BurnIT/)
 	by Jesper Petersen
-	a Java based frontend for cdrecord and cdda2wav/cdparanoia
+	a Java based frontend for cdrecord and icedax/cdparanoia
 
 Grip	(http://www.ling.ed.ac.uk/~oliphant/grip)
 	by Mike Oliphant

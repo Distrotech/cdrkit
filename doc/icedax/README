@@ -1,9 +1,9 @@
 Hi dear cdrom drive users,
 
 This README describes hardware related matters as well as the installation of 
-cdda2wav, the sampling utility. 
+icedax, the sampling utility. 
 
-This cdda2wav utility comes with the Cdrkit project. Cdrkit is a spinoff from 
+This icedax utility comes with the Cdrkit project. Cdrkit is a spinoff from 
 cdrtools. However, the cdrtools developers are not involved in the 
 development of this spinoff and therefore shall not be made responsible for 
 any problem caused by it. Please do not try to get support for this program by 
@@ -24,7 +24,7 @@ For ATAPI cdroms under Linux
     with the MAKEDEV script from /dev).
 
 For parallel port cdroms under Linux
-    With newer kernels cdda2wav uses the same parallel port access
+    With newer kernels icedax uses the same parallel port access
     as does cdrecord. Please refer additionally to the cdrecord documentation.
     There are generally two drivers to access the cdrom through the parallel
     port: the ATAPI cd emulation (called pcd), and the SCSI device emulation
@@ -63,7 +63,7 @@ ftp://ftp.fokus.gmd.de/pub/unix/cdrecord/alpha/sg*
    switched it on with the scsiinfo program from tsx-11.mit.edu), but
    enable this only if it is correctly working ;-)
 
-This has boosted the throughput of cdda2wav considerably.
+This has boosted the throughput of icedax considerably.
 
 
 Supported interfaces
@@ -72,7 +72,7 @@ Supported interfaces
 Non SCSI drives (Linux only):
 	ATAPI:
 	The greatest group nowadays are ATAPI (EIDE) cdrom drives.
-	Support is only limited by the drive. Kernel and cdda2wav
+	Support is only limited by the drive. Kernel and icedax
 	are ready for them (unless the drive uses a very uncommon method).
 
         Newer kernels can do an scsi emulation for ATAPI devices.
@@ -104,7 +104,7 @@ Configuration
 =============
 
 There are some adjustable parameters in the beginning of the Makefile
-(which is called local.cnf.in) . They describe default settings of cdda2wav:
+(which is called local.cnf.in) . They describe default settings of icedax:
 
 INTERFACE: 	How the cdrom is accessed. Choose one method for INTERFACE.
 DEVICE:		The default cdrom device is set in DEF_DEVICE.
@@ -141,7 +141,7 @@ SOUND DEVICE: set SOUND_DEVICE to the device name of your sound card.
 All of those values can be overridden by command line parameters.
 
 
-Compiling cdda2wav
+Compiling icedax
 ==================
 
 Adjust the Makefile (named local.cnf.in) for your cdrom interface and
@@ -152,7 +152,7 @@ Then type
 and as root
 	make install
 
-This will compile cdda2wav and copy the binary to /usr/local/bin and the
+This will compile icedax and copy the binary to /usr/local/bin and the
 man page to /usr/local/man/man1 (defaults).
 
 
@@ -160,26 +160,26 @@ Privileges
 ==========
 
 You can setgid the binary, if you want to allow access to a CDROM's
-scsi_generic interface for cdda2wav but not for arbitrary programs.
+scsi_generic interface for icedax but not for arbitrary programs.
 Giving away permissions to send SCSI commands directly to a device is
 not something you want to do lightly on a multi-user server system.
 The setgid privileges will only be used to access the scsi generic
 interface; for cooked_ioctl, the setgid privileges are not necessary
 and they are simply dropped.
 
-Previous versions of cdda2wav had to be setuid to root.  Such privileges
+Previous versions of icedax had to be setuid to root.  Such privileges
 are no longer necessary and will be dropped if present.
 
 Select device
 =============
 
-By default cdda2wav uses the generic SCSI interface and a device tripel for
+By default icedax uses the generic SCSI interface and a device tripel for
 SCSI bus, id, and lun.
 This setting can be overridden by specifying '-Iinterface' and
 '-D cdromdevice'.
 The following command line example uses the generic_scsi interface and the 
 SCSI device with bus 1, id 2 and lun 3:
-cdda2wav -Igeneric_scsi -D1,2,3
+icedax -Igeneric_scsi -D1,2,3
 
 The shell script 'scan_scsi.linux' will report the generic devices for
 all SCSI cdrom drives.
@@ -188,7 +188,7 @@ If you need to use another interface, check the device setting also as they
 need to fit together.
 Here is an example for an ATAPI cdrom using the cooked_ioctl interface and
 the cdrom device /dev/hdb:
-cdda2wav -Icooked_ioctl -D/dev/hdb
+icedax -Icooked_ioctl -D/dev/hdb
 
 
 Features
@@ -203,7 +203,7 @@ When recording in mono, both channels are summed with halved amplitude.
 
 Undersampling is done by summing several samples with reduced amplitude to
 prevent overflows. This damps higher freqencies as well. Compared to
-exact resampling cdda2wav does not use a very sophisticated (expensive)
+exact resampling icedax does not use a very sophisticated (expensive)
 filter algorithm. It currently uses quadratic interpolation for
 noninteger subsampling factors.
 
@@ -221,9 +221,9 @@ their original form or analysed, that is the output format uses the same
 parameters as the drive: 16-bit samples, stereo at 44100 Hz sample rate
 AND with the same endianess (-Cbig and -Ebig, or -Clittle and -Elittle).
 To be sure all parameters can be given explicitly on the command line.
-This avoids an analysis of cdda2wav.
+This avoids an analysis of icedax.
 
-cdda2wav -P0 -q -S<maximum speed> 
+icedax -P0 -q -S<maximum speed> 
 run as root will read with maximum speed and copy its output into the
 wav file, taking advantage of realtime scheduling as well.
 
@@ -261,7 +261,7 @@ When are one or two endianess (byte order) conversions required?
 ================================================================
 There are three stages where the endianess matters:
 1.) on the input side the cd drive can deliver in two flavors (called F1).
-    When the flavor is unknown, cdda2wav needs to find out the endianess.
+    When the flavor is unknown, icedax needs to find out the endianess.
     A simple voting method is used. Successive samples are compared in both
     flavors and the flavor with the statistically smaller changes is taken. 
     The flavor can be defined with the -C option, avoiding the analysis. 
@@ -304,7 +304,7 @@ Audible errors caused by hesitations:
 
 When recording the same audio track twice, recordings can slightly differ.
 Furthermore depending on the firmware in the cdrom drive, positioning
-errors can be so severe that they cannot be easily corrected by cdda2wav.
+errors can be so severe that they cannot be easily corrected by icedax.
 This will unfortunately lead to audible errors.
 
 In this case some overlap or even underlap between successive portions
@@ -546,4 +546,4 @@ Additions to the tables above are welcome.
 
 and now catch your sounds,
 Heiko 		heiko@colossus.escape.de (Original author)
-Changes for the Cdrkit project by Christian Fromme <kaner@strace.org>
+Changes for the Cdrkit project by Christian Fromme <kaner@strace.org>, Eduard Bloch

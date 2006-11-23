@@ -16,7 +16,7 @@ Copy complete audio CDs
 
 1. Copy an audio CD into wav files one per track.
 
-	cdda2wav -B
+	icedax -B
 
    will produce the sample wav files (one per track)
 	audio_01.wav
@@ -30,19 +30,19 @@ Copy complete audio CDs
 
 2. Same as above but include MD-5 type signatures
 
-	cdda2wav -B -M<length>
+	icedax -B -M<length>
 
 
 3. Same as above but use other file name ('party_cd.wav')
 
-	cdda2wav -B -M<length> party_cd.wav
+	icedax -B -M<length> party_cd.wav
 
 
 Copy single tracks
 
 1. Copy one track (eg track 6) into a wav file.
 
-	cdda2wav -t6
+	icedax -t6
 
    will produce a wav file including track 6
 
@@ -57,14 +57,14 @@ Copy parts of tracks
 
 1. Copy from given start time to end of track
 
-	cdda2wav -t6 -o<delay in 1/75 seconds>
+	icedax -t6 -o<delay in 1/75 seconds>
 
    will record track 6 starting at track time <delay>/75 seconds
    from track beginning upto the end of track.
 
 2. Copy from given start time and record for a given time
 
-	cdda2wav -t6 -o<delay in 1/75 seconds> -d<time to record in seconds>
+	icedax -t6 -o<delay in 1/75 seconds> -d<time to record in seconds>
 
    will record track 6 starting at track time <delay>/75 seconds
    from track beginning for <time to record in seconds> seconds.
@@ -73,7 +73,7 @@ Copy parts of tracks
 
 Copy tracks into a pipe
 
-	cdda2wav -t6 -Oraw - | audio_compressor
+	icedax -t6 -Oraw - | audio_compressor
 
    will feed the audio samples (in big endian format) of track 6
    into a secondary program audio_compressor.
@@ -83,9 +83,9 @@ an audio cd with a MPEG-Layer3 encoder (not included here).)
 
 Miscellaneous
 
-1. Use cdda2wav as a cd player
+1. Use icedax as a cd player
 
-	cdda2wav -eN -t6
+	icedax -eN -t6
 
    will copy the audio samples into a sound card (if sound card support
    is compiled in) and will not write any file.
@@ -94,7 +94,7 @@ Miscellaneous
 
 2. Get complete information on the cd
 
-	cdda2wav -v63 -Nd0.01
+	icedax -v63 -Nd0.01
 
    will try to find out a media catalog number and track related
    information (ISRCs) in addition to indices. For CD-Extra discs

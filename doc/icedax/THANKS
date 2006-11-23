@@ -25,9 +25,9 @@ Aaron Newsome (which created an account on his machine for me to do testing)
 Christopher Montgomery (aka Monty, for his work on jitter correction)
 Zygo Blaxell (a lot of code improvements)
 Thomas Niederreiter (extensions for cd-writers)
-Piercarlo Grandi (rewrote of cdda2wav's man page)
+Piercarlo Grandi (rewrote of icedax's man page)
 Stewart Addison (suggestions and a fine web page on cdda)
-Leland Olds (the cdda2wav debian maintainer)
+Leland Olds (the icedax debian maintainer)
 Francesco Chemolli (getopt_long patches)
 
 Thanks to all testers and finally Jim McLaughlin for supplying

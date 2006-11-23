@@ -1,10 +1,10 @@
 Date: Fri, 2 Oct 1998 16:58:15 -0400
 From: Bill O'Donnell <billo@billo.com>
 To: heiko@colossus.escape.de
-Subject: CDDB/cdda2wav quick lookup utility
+Subject: CDDB/icedax quick lookup utility
 
 
-Hello, I just started using cdda2wav to capture CD audio on Linux.
+Hello, I just started using icedax to capture CD audio on Linux.
 It's working great on my 2.0.22 kernel with NEC CD-ROM DRIVE:273 (ATAPI).
 
 Anyway, I noticed that you're dumping out cddb query info, but not
@@ -12,7 +12,7 @@ doing the query yet, so I hacked a quick perl program to do it.
 
 If you run with a default extraction like this:
 
-   cdda2wav -B -D /dev/hda
+   icedax -B -D /dev/hda
 
 then run the program included something like this:
 
