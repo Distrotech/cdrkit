@@ -48,11 +48,12 @@ Description: Creates ISO-9660 CD-ROM filesystem images
  Please install cdrkit-doc if you want most of the documentation and
  Readme-files.
 
-Package: cdda2wav
+Package: icedax
 Architecture: any
 Suggests: vorbis-tools, cdrkit-doc
 Depends: ${shlibs:Depends}
 Section: sound
+Provides: cdda2wav
 Description: Creates WAV files from audio CDs
  cdda2wav lets you digitally copy audio tracks from a CD-ROM, avoiding
  the distortion that is introduced when recording via a sound card. Data 
