@@ -79,7 +79,7 @@
 #define HAVE_SYS_IPC_H 1		/* to use definitions for shmget() ... from sys/ipc.h */
 /* #undef MAJOR_IN_MKDEV */		/* if we should include sys/mkdev.h to get major()/minor()/makedev() */
 #define MAJOR_IN_SYSMACROS 1	/* if we should include sys/sysmacros.h to get major()/minor()/makedev() */
-/* #undef HAVE_SYS_DKIO_H */		/* if we may include sys/dkio.h for disk ioctls */
+#cmakedefine HAVE_SYS_DKIO_H
 /* #undef HAVE_SYS_DKLABEL_H */	/* if we may include sys/dklabel.h for disk label */
 /* #undef HAVE_SUN_DKIO_H */		/* if we may include sun/dkio.h for disk ioctls */
 /* #undef HAVE_SUN_DKLABEL_H */	/* if we may include sun/dklabel.h for disk label */
@@ -237,7 +237,9 @@
 /* #undef HAVE_ECONVERT */		/* econvert() is present in libc */
 /* #undef HAVE_FCONVERT */		/* fconvert() is present in libc */
 /* #undef HAVE_GCONVERT */		/* gconvert() is present in libc */
-#define HAVE_ISINF 1		/* isinf() is present in libc */
+
+/* isinf() is present in libc */
+#cmakedefine HAVE_ISINF
 #define HAVE_ISNAN 1		/* isnan() is present in libc or libm */
 #define HAVE_RAND 1		/* rand() is present in libc */
 #define HAVE_DRAND48 1		/* drand48() is present in libc */

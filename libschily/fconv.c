@@ -76,6 +76,11 @@
 #define	FOUND_ISXX
 #endif
 
+#ifdef HAVE_NAN_H
+#include <nan.h>
+#define isinf(x) IsINF(x)
+#endif
+   
 #if	defined(HAVE_IEEEFP_H) && !defined(FOUND_ISXX)
 /*
  * SVR4

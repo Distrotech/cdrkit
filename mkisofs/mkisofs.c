@@ -2527,7 +2527,14 @@ parse_input_files:
   	if (icharset == NULL && iconv_possible) {
 		char *charset = nl_langinfo(CODESET);
 		/* set to detected value but only if it is not pure US-ASCII */
-		if(strcmp(charset, "ANSI_X3.4-1968") != 0)
+  	if(charset) { /* workaround for SunOS, iconv is case-sensitive */
+ 			char *t;
+ 			charset = strdup(charset);
+ 			for(t=charset;*t!='\0';t++)
+ 				*t=tolower(*t);
+ 		}
+
+		if(strcmp(charset, "ansi_x3.4-1968") != 0)
 			icharset = charset;
 
 		if(icharset && verbose > 0)

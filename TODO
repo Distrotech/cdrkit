@@ -2,6 +2,8 @@
   - find a good name for cdda2wav, follow the wodim procedure
   - fix lorinder's bug
   - check documentation, debian/* documentation, FAQ, etc.pp.
+  - fix DVD-RW support (DVD+RW works, though, DVD-RW blanking works too)
+  - fix dirsplit -S, looses files
 
 1.1.x
 

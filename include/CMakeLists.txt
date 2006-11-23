@@ -52,6 +52,24 @@ SET(HAVE_GETNAMEINFO false)
 SET(HAVE_INET_NTOA false)
 ENDIF (WIN32) # workaround for cygwin 
 
+FIND_FILE(HAVE_SYS_DKIO_H "sys/dkio.h")
+FIND_FILE(HAVE_SUN_DKIO_H "sun/dkio.h")
+FIND_FILE(HAVE_NAN_H "nan.h")
+
+FIND_FILE(HAVE_SYS_DKIO_H "sys/dkio.h")
+FIND_FILE(HAVE_SUN_DKIO_H "sun/dkio.h")
+FIND_FILE(HAVE_NAN_H "nan.h")
+
+INCLUDE(CheckCSourceCompiles)
+
+   SET(TESTSRC " 
+#include <math.h>
+         int main() { return isinf(1); }
+         ")
+SET(CMAKE_REQUIRED_LIBRARIES )
+   CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_ISINF)
+
+
 ##INCLUDE(CheckCSourceCompiles)
 ##SET(TESTSRC "
 ###include <sys/types.h>

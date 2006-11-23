@@ -55,7 +55,10 @@
  * and other tables is user defined when the device is formatted.
  */
 
-#include <stdint.h>
+#include <inttypes.h>
+#ifndef MIN
+#define MIN(a,b) ( (a<b) ? a : b )
+#endif
 
 /*
  * device parameters are in the volume header to determine mapping

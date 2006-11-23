@@ -1,7 +1,9 @@
 IF(NOT CHECKED_SCHILY)
-   INCLUDE(CheckCSourceCompiles)
    SET(CHECKED_SCHILY 1)
+
+   INCLUDE(CheckCSourceCompiles)
    LIST(APPEND EXTRA_LIBS "schily")
+
 
    SET(TESTSRC " 
    #include <math.h>
@@ -10,6 +12,10 @@ IF(NOT CHECKED_SCHILY)
 
    SET(CMAKE_REQUIRED_LIBRARIES )
    CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_LIBC_ISNAN)
+
+   #//#define HAVE_ISNAN 1    /* isnan() is present in libc or libm */
+   # assuming that, see xconfig.h.in, until we meet an OS where is no
+   # native isnan(...) function available
 
    IF(NOT HAVE_LIBC_ISNAN)
       SET(CMAKE_REQUIRED_LIBRARIES m)
