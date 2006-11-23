@@ -41,7 +41,7 @@ static	char sccsid[] =
 /* ADD_FILES changes made by Ross Biro biro@yggdrasil.com 2/23/95 */
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <errno.h>
 #include <schily.h>
 #include <ctype.h>

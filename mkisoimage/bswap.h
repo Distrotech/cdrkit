@@ -19,7 +19,7 @@
  *	These macros should better be avoided as in place conversion in
  *	general only works on processors like Motorola 68000 and Intel x86.
  *	Modern processors usually have alignement restrictions that may
- *	cause problems. The stripped down libdvdread for mkisofs is known
+ *	cause problems. The stripped down libdvdread for mkisoimage is known
  *	not to have these alignement problems, so we may use the macros
  *	as they have been introduced by the authors of libdvdread.
  *

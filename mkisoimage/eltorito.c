@@ -41,7 +41,7 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <fctldefs.h>
 #include <utypes.h>
 #include <intcvt.h>
@@ -121,7 +121,7 @@ init_boot_catalog(const char *path)
 }/* init_boot_catalog(... */
 
 /*
- * Create a boot catalog file in memory - mkisofs already uses this type of
+ * Create a boot catalog file in memory - mkisoimage already uses this type of
  * file for the TRANS.TBL files. Therefore the boot catalog is set up in
  * similar way
  */
@@ -595,7 +595,7 @@ fill_boot_desc(struct eltorito_defaultboot_entry *boot_desc_entry,
 		unsigned int	total_len;
 		static char	csum_buffer[SECTOR_SIZE];
 		int		len;
-		struct mkisofs_boot_info bi_table;
+		struct mkisoimage_boot_info bi_table;
 
 		bootimage = open(de->whole_name, O_RDWR | O_BINARY);
 		if (bootimage == -1) {

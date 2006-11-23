@@ -71,6 +71,6 @@ to enable this to see what is in the tables.  Ultimately I may fix
 it so that this checks the integrity of the tables as well.
 
 	The isovfy program gives warnings about things like files that
-have a size of 0 but have an extent number assigned.  The mkisofs program
+have a size of 0 but have an extent number assigned.  The mkisoimage program
 should never do this, but the YM software does leave these around.
 I think it is probably harmless in the YM case.~

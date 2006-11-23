@@ -13,7 +13,7 @@
 #undef BZ2_SUPPORT
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <timedefs.h>
 #include <fctldefs.h>
 #include <zlib.h>

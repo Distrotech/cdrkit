@@ -10,9 +10,9 @@
  *
  */
 
-/* @(#)mkisofs.h	1.95 05/05/01 joerg */
+/* @(#)mkisoimage.h	1.95 05/05/01 joerg */
 /*
- * Header file mkisofs.h - assorted structure definitions and typecasts.
+ * Header file mkisoimage.h - assorted structure definitions and typecasts.
  *
  * Written by Eric Youngdale (1993).
  *
@@ -160,7 +160,7 @@ struct file_hash {
  * we establish extent numbers for everything, and the second is when we actually
  * generate the contents and write it to the output image.
  *
- * This makes it trivial to extend mkisofs to write special things in the image.
+ * This makes it trivial to extend mkisoimage to write special things in the image.
  * All you need to do is hook an additional structure in the list, and the rest
  * works like magic.
  *
@@ -396,7 +396,7 @@ extern int	apple_hyb;	/* create HFS hybrid */
 extern int	apple_ext;	/* use Apple extensions */
 extern int	apple_both;	/* common flag (for above) */
 extern int	hfs_extra;	/* extra ISO extents (hfs_ce_size) */
-extern hce_mem	*hce;		/* libhfs/mkisofs extras */
+extern hce_mem	*hce;		/* libhfs/mkisoimage extras */
 extern int	use_mac_name;	/* use Mac name for ISO9660/Joliet/RR */
 extern int	create_dt;	/* create the Desktp files */
 extern char	*hfs_boot_file;	/* name of HFS boot file */

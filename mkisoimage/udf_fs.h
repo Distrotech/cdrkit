@@ -12,7 +12,7 @@
 
 /* @(#)udf_fs.h	1.2 04/03/01 Copyright 2001-2004 J. Schilling */
 /*
- * udf_fs.h - UDF structure definitions for mkisofs
+ * udf_fs.h - UDF structure definitions for mkisoimage
  *
  * Written by Ben Rudiak-Gould (2001).
  *

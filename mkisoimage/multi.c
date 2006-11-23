@@ -38,7 +38,7 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <timedefs.h>
 #include <errno.h>
 #include <utypes.h>
@@ -146,7 +146,7 @@ FILE	*in_image = NULL;
 
 #ifndef	USE_SCG
 /*
- * Don't define readsecs if mkisofs is linked with
+ * Don't define readsecs if mkisoimage is linked with
  * the SCSI library.
  * readsecs() will be implemented as SCSI command in this case.
  *
@@ -1850,7 +1850,7 @@ finish_cl_pl_for_prev_session()
 		if (re->de != NULL) {
 			/*
 			 * here we have hypothetical case when previous session
-			 * was not created by mkisofs and contains relocations
+			 * was not created by mkisoimage and contains relocations
 			 */
 			struct directory_entry *s_entry = re->de;
 			struct directory_entry *s_entry1;

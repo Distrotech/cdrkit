@@ -104,7 +104,7 @@ is a utility to verify the integrity of an iso9660 image. Most of the tests
 in
 .B isovfy
 were added after bugs were discovered in early versions of
-.B mkisofs.
+.B mkisoimage.
 It isn't all that clear how useful this is anymore, but it doesn't hurt to
 have this around.
 
@@ -211,7 +211,7 @@ Extract information from Joliet extensions (if present) for file names.
 .TP
 .B \-j charset
 Convert Joliet file names (if present) to the supplied charset. See
-.BR mkisofs (8)
+.BR mkisoimage (8)
 for details.
 .TP
 .B \-T sector
@@ -260,7 +260,7 @@ writing at least a short description into the Subject and "Package: cdrkit" into
 The user interface really sucks.
 .SH FUTURE IMPROVEMENTS
 These utilities are really quick hacks, which are very useful for debugging
-problems in mkisofs or in an iso9660 filesystem. In the long run, it would
+problems in mkisoimage or in an iso9660 filesystem. In the long run, it would
 be nice to have a daemon that would NFS export a iso9660 image.
 .PP
 The isoinfo program is probably the program that is of the most use to
@@ -351,7 +351,7 @@ A second drive may be found at scsibus 1, target 6, lun 0 and uses the
 default speed and the default FIFO size.
 .RE
 .SH SEE ALSO
-.BR mkisofs (8),
+.BR mkisoimage (8),
 .BR wodim (1),
 .BR readcd (1),
 .BR usal (7),

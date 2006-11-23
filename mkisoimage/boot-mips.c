@@ -188,7 +188,7 @@ struct volume_header {
 };
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <fctldefs.h>
 #include <utypes.h>
 #include <intcvt.h>

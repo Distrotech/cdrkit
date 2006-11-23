@@ -43,7 +43,7 @@ static	char sccsid[] =
 /* APPLE_HYB James Pearson j.pearson@ge.ucl.ac.uk 23/2/2000 */
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include "match.h"
 #include "exclude.h"
 #include <timedefs.h>
@@ -1496,7 +1496,7 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 					lstatbuf = statbuf;
 					/*
 					 * XXX when this line was active,
-					 * XXX mkisofs did not include all
+					 * XXX mkisoimage did not include all
 					 * XXX files if it was called with '-f'
 					 * XXX (follow symlinks).
 					 * XXX Now scan_directory_tree()
@@ -2361,7 +2361,7 @@ find_or_create_directory(struct directory *parent, const char *path,
 		 * Now add a . and .. entry in the directory itself. This is a
 		 * little tricky - if the real directory exists, we need to
 		 * stat it first. Otherwise, we use the fictitious fstatbuf
-		 * which points to the time at which mkisofs was started.
+		 * which points to the time at which mkisoimage was started.
 		 */
 		if (parent == NULL || parent->whole_name[0] == '\0')
 			sts = -1;

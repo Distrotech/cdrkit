@@ -26,7 +26,7 @@ static	char sccsid[] =
 #include <mconfig.h>
 #ifdef VMS
 #define	opendir	fake_opendir
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #undef opendir
 #include <rms.h>
 #include <descrip.h>

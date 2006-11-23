@@ -37,12 +37,12 @@
  */
 
 /*
- * NOTE: This is a cut down version of libdvdread for mkisofs, due
+ * NOTE: This is a cut down version of libdvdread for mkisoimage, due
  * to portability issues with the current libdvdread according to
- * the maintainer of mkisofs.
+ * the maintainer of mkisoimage.
  * This cut down version only reads from a harddisk file structure
  * and it only implements the functions necessary inorder to make
- * mkisofs produce valid DVD-Video images.
+ * mkisoimage produce valid DVD-Video images.
  * DON'T USE THIS LIBRARY IN ANY OTHER PROGRAM GET THE REAL
  * LIBDVDREAD INSTEAD
  */

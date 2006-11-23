@@ -17,13 +17,13 @@
  *
  * Eduard Bloch <blade@debian.org>
 */
-/* @(#)mkisofs.c	1.167 06/01/30 joerg */
+/* @(#)mkisoimage.c	1.167 06/01/30 joerg */
 #ifndef lint
 static	char sccsid[] =
-	"@(#)mkisofs.c	1.167 06/01/30 joerg";
+	"@(#)mkisoimage.c	1.167 06/01/30 joerg";
 #endif
 /*
- * Program mkisofs.c - generate iso9660 filesystem  based upon directory
+ * Program mkisoimage.c - generate iso9660 filesystem  based upon directory
  * tree on hard disk.
  *
  * Written by Eric Youngdale (1993).
@@ -49,7 +49,7 @@ static	char sccsid[] =
 /* APPLE_HYB James Pearson j.pearson@ge.ucl.ac.uk 22/2/2000 */
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <errno.h>
 #include <timedefs.h>
 #include <fctldefs.h>
@@ -86,7 +86,7 @@ static	char sccsid[] =
 struct directory *root = NULL;
 int		path_ind;
 
-char	version_string[] = "mkisofs 2.01.01a05-unofficial-iconv";
+char	version_string[] = "mkisoimage 2.01.01a05-unofficial-iconv";
 
 char		*outfile;
 FILE		*discimage;
@@ -211,7 +211,7 @@ int	apple_ext = 0;		/* create HFS extensions flag */
 int	apple_both = 0;		/* common flag (for above) */
 int	hfs_extra = 0;		/* extra HFS blocks added to end of ISO vol */
 int	use_mac_name = 0;	/* use Mac name for ISO/Joliet/RR flag */
-hce_mem	*hce;			/* libhfs/mkisofs extras */
+hce_mem	*hce;			/* libhfs/mkisoimage extras */
 char	*hfs_boot_file = 0;	/* name of HFS boot file */
 int	gen_pt = 0;		/* generate HFS partition table */
 char	*autoname = 0;		/* AutoStart filename */
@@ -875,7 +875,7 @@ read_rcfile(char *appname)
 	char		*pnt,
 			*pnt1;
 	char		linebuffer[256];
-	static char	rcfn[] = ".mkisofsrc";
+	static char	rcfn[] = ".mkisoimagerc";
 	char		filename[1000];
 	int		linum;
 
@@ -1044,13 +1044,13 @@ int	goof = 0;
 static void
 susage(int excode)
 {
-	const char	*program_name = "mkisofs";
+	const char	*program_name = "mkisoimage";
 
 	fprintf(stderr, "Usage: %s [options] -o file directory ...\n", program_name);
 	fprintf(stderr, "\nUse %s -help\n", program_name);
 	fprintf(stderr, "to get a list of valid options.\n");
 	fprintf(stderr, 
-        "\nNOTE: This version of mkisofs differs from the one published by Eric Youngdale\n"
+        "\nNOTE: This version of mkisoimage differs from the one published by Eric Youngdale\n"
         "and from the one included in cdrtools (by Joerg Schilling).\n"
         "It provides a different set of features and has different problems.\n"
         "Report errors to debburn-devel@lists.alioth.debian.org.\n");
@@ -1061,12 +1061,12 @@ susage(int excode)
 static void
 usage(int excode)
 {
-	const char	*program_name = "mkisofs";
+	const char	*program_name = "mkisoimage";
 
 #if 0
 	fprintf(stderr, "Usage:\n");
 	fprintf(stderr,
-		"mkisofs [-o outfile] [-R] [-V volid] [-v] [-a] \
+		"mkisoimage [-o outfile] [-R] [-V volid] [-v] [-a] \
 [-T]\n [-l] [-d] [-V] [-D] [-L] [-p preparer]"
 		"[-P publisher] [ -A app_id ] [-z] \n \
 [-b boot_image_name] [-c boot_catalog-name] \
@@ -1149,7 +1149,7 @@ usage(int excode)
 		}
 	}
 	fprintf(stderr, 
-        "\nNOTE: This version of mkisofs differs from the one published by Eric Youngdale\n"
+        "\nNOTE: This version of mkisoimage differs from the one published by Eric Youngdale\n"
         "and from the one included in cdrtools (by Joerg Schilling).\n"
         "It provides a different set of features and has different problems.\n"
         "Report errors to debburn-devel@lists.alioth.debian.org.\n");
@@ -1164,7 +1164,7 @@ usage(int excode)
  * minutes, and is what you add to GMT to get the localtime.  The U.S.
  * is always at a negative offset, from -5h to -8h (can vary a little
  * with DST,  I guess).  The Linux iso9660 filesystem has had the sign
- * of this wrong for ages (mkisofs had it wrong too for the longest time).
+ * of this wrong for ages (mkisoimage had it wrong too for the longest time).
  */
 int
 iso9660_date(char *result, time_t crtime)
@@ -1306,7 +1306,7 @@ main(int argc, char *argv[])
 #endif
 		susage(1);
 	}
-	/* Get the defaults from the .mkisofsrc file */
+	/* Get the defaults from the .mkisoimagerc file */
 	read_rcfile(argv[0]);
 
 	outfile = NULL;
@@ -1673,7 +1673,7 @@ main(int argc, char *argv[])
 			/*
 			 * cdrecord_data is handled specially in multi.c
 			 * as we cannot write to all strings.
-			 * If mkisofs is called with -C xx,yy
+			 * If mkisoimage is called with -C xx,yy
 			 * our default is overwritten.
 			 */
 /*			cdrecord_data = "0,0";*/
@@ -1724,7 +1724,7 @@ main(int argc, char *argv[])
 			errmsgno(EX_BAD, "The option '-L' is reserved by POSIX.1-2001.\n");
 			errmsgno(EX_BAD, "The option '-L' means 'follow all symbolic links'.\n");
 			errmsgno(EX_BAD, "Mkisofs-2.02 will introduce POSIX semantics for '-L'.\n");
-			errmsgno(EX_BAD, "Use -allow-leading-dots in future to get old mkisofs behavior.\n");
+			errmsgno(EX_BAD, "Use -allow-leading-dots in future to get old mkisoimage behavior.\n");
 			/* FALLTHRU */
 		case OPTION_ALLOW_LEADING_DOTS:
 			/*
@@ -1786,7 +1786,7 @@ main(int argc, char *argv[])
 			errmsgno(EX_BAD, "The option '-P' is reserved by POSIX.1-2001.\n");
 			errmsgno(EX_BAD, "The option '-P' means 'do not follow symbolic links'.\n");
 			errmsgno(EX_BAD, "Mkisofs-2.02 will introduce POSIX semantics for '-P'.\n");
-			errmsgno(EX_BAD, "Use -publisher in future to get old mkisofs behavior.\n");
+			errmsgno(EX_BAD, "Use -publisher in future to get old mkisoimage behavior.\n");
 			/* FALLTHRU */
 		case OPTION_PUBLISHER:
 			/*
@@ -2163,10 +2163,10 @@ main(int argc, char *argv[])
 		case OPTION_PVERSION:
 			printf("%s (%s)\n", version_string, HOST_SYSTEM);
 #ifdef	OPTION_SILO_BOOT
-			printf("Warning: this is unofficial (modified) version of mkisofs that incorporates\n");
+			printf("Warning: this is unofficial (modified) version of mkisoimage that incorporates\n");
 			printf("	support for a non Sparc compliant boot method called SILO.\n");
 			printf("	The official method to create Sparc boot CDs is to use -sparc-boot\n");
-			printf("	In case of problems first test with an official version of mkisofs.\n");
+			printf("	In case of problems first test with an official version of mkisoimage.\n");
 #endif
 			exit(0);
 			break;
@@ -2275,7 +2275,7 @@ main(int argc, char *argv[])
 			errmsgno(EX_BAD, "The option '-H' is reserved by POSIX.1-2001.\n");
 			errmsgno(EX_BAD, "The option '-H' means 'follow symbolic links on command line'.\n");
 			errmsgno(EX_BAD, "Mkisofs-2.02 will introduce POSIX semantics for '-H'.\n");
-			errmsgno(EX_BAD, "Use -map in future to get old mkisofs behavior.\n");
+			errmsgno(EX_BAD, "Use -map in future to get old mkisoimage behavior.\n");
 			/* FALLTHRU */
 		case OPTION_MAP_FILE:
 			/*

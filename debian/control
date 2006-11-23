@@ -53,8 +53,8 @@ Architecture: any
 Suggests: vorbis-tools, cdrkit-doc
 Depends: ${shlibs:Depends}
 Section: sound
-Provides: cdda2wav
 Replaces: cdda2wav
+Conflicts: cdda2wav (<< 9:1.0)
 Description: Creates WAV files from audio CDs
  cdda2wav lets you digitally copy audio tracks from a CD-ROM, avoiding
  the distortion that is introduced when recording via a sound card. Data 

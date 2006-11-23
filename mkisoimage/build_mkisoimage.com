@@ -5,7 +5,7 @@ $ define/nolog scg [-.LIBSCG.scg]
 $ copy [-.cdrecord]scsi_cdr.c *.*
 $ copy [-.cdrecord]cd_misc.c *.*
 $ copy [-.cdrecord]modes.c *.*
-$ cc 'defs' 'incs'  'opts' mkisofs.c
+$ cc 'defs' 'incs'  'opts' mkisoimage.c
 $ cc 'defs' 'incs'  'opts' tree.c
 $ cc 'defs' 'incs'  'opts' write.c
 $ cc 'defs' 'incs'  'opts' hash.c
@@ -33,10 +33,10 @@ $ cc 'defs' 'incs'  'opts' ifo_read.c
 $ cc 'defs' 'incs'  'opts' dvd_file.c
 $ cc 'defs' 'incs'  'opts' dvd_reader.c
 $ cc 'defs' 'incs'  'opts' vms.c
-$ libr/crea mkisofs.olb
-$ libr/ins mkisofs.olb *.obj
-$ link/nosysshr/exe=[-.bins]mkisofs.exe sys$input/option
-cluster=myclu,,,mkisofs.obj,mkisofs.olb/libr, -
+$ libr/crea mkisoimage.olb
+$ libr/ins mkisoimage.olb *.obj
+$ link/nosysshr/exe=[-.bins]mkisoimage.exe sys$input/option
+cluster=myclu,,,mkisoimage.obj,mkisoimage.olb/libr, -
 [-.libs]LIBHFS_Iso.olb/lib, -
 LIBUNLS.olb/lib, -
 libfile.olb/lib, -

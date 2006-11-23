@@ -52,7 +52,7 @@ static	char sccsid[] =
 #ifdef APPLE_HYB
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <errno.h>
 #include <fctldefs.h>
 #include <utypes.h>
@@ -66,7 +66,7 @@ static	char sccsid[] =
 magic_t magic_state = NULL;
 #endif /* USE_MAGIC */
 
-/* tidy up mkisofs definition ... */
+/* tidy up mkisoimage definition ... */
 typedef struct directory_entry dir_ent;
 
 /* routines for getting HFS names and info */

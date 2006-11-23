@@ -95,7 +95,7 @@ static	char sccsid[] =
  *	(00)(5c) '\'
  */
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <timedefs.h>
 #include <utypes.h>
 #include <intcvt.h>

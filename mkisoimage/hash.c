@@ -55,11 +55,11 @@ static	char sccsid[] =
  *		64 bits and available only through an open file handle.
  *
  * The solution is the new options -no-cache-inodes/-cache-inodes that
- * allow to disable the mkisofs inode cache.
+ * allow to disable the mkisoimage inode cache.
  */
 
 #include <mconfig.h>
-#include "mkisofs.h"
+#include "mkisoimage.h"
 #include <schily.h>
 
 #define	NR_HASH	1024
