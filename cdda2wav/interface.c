@@ -478,14 +478,14 @@ static void Check_interface_for_device(struct stat *statstruct, char *pdev_name)
     }
 #else
     
-#if defined (HAVE_ST_RDEV) && (HAVE_ST_RDEV == 1)
+#if defined (HAVE_ST_RDEV)
     switch (major(statstruct->st_rdev)) {
 #if defined (__linux__)
     case SCSI_GENERIC_MAJOR:	/* generic */
 #else
     default:			/* ??? what is the proper value here */
 #endif
-#if !defined (STAT_MACROS_BROKEN) || (STAT_MACROS_BROKEN != 1)
+#ifndef STAT_MACROS_BROKEN
 #if defined (__linux__)
        if (!S_ISCHR(statstruct->st_mode)) {
 	 fprintf(stderr, "%s is not a char device\n",pdev_name);
