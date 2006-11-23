@@ -55,11 +55,6 @@ ENDIF (WIN32) # workaround for cygwin
 FIND_FILE(HAVE_SYS_DKIO_H "sys/dkio.h")
 FIND_FILE(HAVE_SUN_DKIO_H "sun/dkio.h")
 FIND_FILE(HAVE_NAN_H "nan.h")
-
-FIND_FILE(HAVE_SYS_DKIO_H "sys/dkio.h")
-FIND_FILE(HAVE_SUN_DKIO_H "sun/dkio.h")
-FIND_FILE(HAVE_NAN_H "nan.h")
-
 FIND_FILE(HAVE_STDARG_H "stdarg.h")
 FIND_FILE(HAVE_STDLIB_H "stdlib.h")
 FIND_FILE(HAVE_STRING_H "string.h")
@@ -85,7 +80,6 @@ FIND_FILE(HAVE_SYS_RESOURCE_H "sys/resource.h")
 FIND_FILE(HAVE_SYS_UTSNAME_H "sys/utsname.h")
 FIND_FILE(HAVE_SYS_MTIO_H "sys/mtio.h")
 FIND_FILE(HAVE_SYS_MMAN_H "sys/mman.h")
-FIND_FILE(HAVE_SYS_DKIO_H "sys/dkio.h")
 FIND_FILE(HAVE_POLL_H "poll.h")
 FIND_FILE(HAVE_SYS_POLL_H "sys/poll.h")
 FIND_FILE(HAVE_NETDB_H "netdb.h")
@@ -96,10 +90,6 @@ FIND_FILE(HAVE_ELF_H "elf.h")
 FIND_FILE(HAVE_AOUTHDR_H "aouthdr.h")
 FIND_FILE(HAVE_A_OUT_H "a.out.h")
 FIND_FILE(HAVE_SYS_IPC_H "sys/ipc.h")
-FIND_FILE(HAVE_SYS_IPC_H "sys/ipc.h")
-
-
-
 
 INCLUDE(CheckCSourceCompiles)
 
@@ -109,21 +99,6 @@ INCLUDE(CheckCSourceCompiles)
          ")
 SET(CMAKE_REQUIRED_LIBRARIES )
    CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_ISINF)
-
-
-##INCLUDE(CheckCSourceCompiles)
-##SET(TESTSRC "
-###include <sys/types.h>
-##int main() { return sizeof(blksize_t); }
-##")
-##CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_NATIVE_BLKSIZE_T)
-##IF(HAVE_NATIVE_BLKSIZE_T)
-##   SET(HAVE_NATIVE_BLKSIZE_T "/* <sys/types.h> provides blksize_t*/")
-##ELSE(HAVE_NATIVE_BLKSIZE_T)
-##   SET(HAVE_NATIVE_BLKSIZE_T "
-###define blksize_t long
-##")
-##ENDIF(HAVE_NATIVE_BLKSIZE_T)
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 

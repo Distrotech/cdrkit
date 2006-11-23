@@ -1,4 +1,8 @@
 
+IF(NOT GUARD_SCGCONFIG)
+   SET(GUARD_SCGCONFIG 1)
+
+
 LIST(APPEND EXTRA_LIBS "scg")
 
 INCLUDE(CheckIncludeFiles)
@@ -21,35 +25,41 @@ IF(HAVE_LIBVOLMGT)
    LIST(APPEND SCG_SELF_LIBS "volmgt")
 ENDIF(HAVE_LIBVOLMGT)
 
-IF(CMAKE_SYSTEM_NAME MATCHES "SunOS")
-   LIST(APPEND EXTRA_LIBS -lrt -lsocket)
-      # reason below, FIXME: add proper checks
-      ##   CMakeFiles/cdda2wav.dir/cdda2wav.o(.text+0x19cc): In function
-      ##   `switch_to_realtime_priority':
-      ##   : undefined reference to `sched_get_priority_min'
-      ##   CMakeFiles/cdda2wav.dir/cdda2wav.o(.text+0x19e0): In function
-      ##   `switch_to_realtime_priority':
-      ##   : undefined reference to `sched_get_priority_max'
-      ##   CMakeFiles/cdda2wav.dir/cdda2wav.o(.text+0x1a2c): In function
-      ##   `switch_to_realtime_priority':
-      ##   : undefined reference to `sched_setscheduler'
-      ##   CMakeFiles/cdda2wav.dir/toc.o(.text+0x3fd8): In function
-      ##   `request_titles':
-      ##   : undefined reference to `socket'
-      ##   CMakeFiles/cdda2wav.dir/toc.o(.text+0x403c): In function
-      ##   `request_titles':
-      ##   : undefined reference to `gethostbyname'
-      ##   CMakeFiles/cdda2wav.dir/toc.o(.text+0x405c): In function
-      ##   `request_titles':
-      ##   : undefined reference to `gethostbyname'
-      ##   CMakeFiles/cdda2wav.dir/toc.o(.text+0x418c): In function
-      ##   `request_titles':
-      ##   : undefined reference to `getservbyname'
-      ##   CMakeFiles/cdda2wav.dir/toc.o(.text+0x41d4): In function
-      ##   `request_titles':
-      ##   : undefined reference to `getservbyname'
-      ##   CMakeFiles/cdda2wav.dir/toc.o(.text+0x427c): In function
-      ##   `request_titles':
-      ##   : undefined reference to `connect'
-      ENDIF(CMAKE_SYSTEM_NAME MATCHES "SunOS")
+   INCLUDE(CheckCSourceCompiles)
 
+   SET(TESTSRC "
+#include <sys/types.h>
+#include <sys/socket.h>
+
+int main(int argc, char **argv) {
+   return socket(AF_INET, SOCK_STREAM, 0);
+}
+")
+
+SET(CMAKE_REQUIRED_LIBRARIES )
+   CHECK_C_SOURCE_COMPILES("${TESTSRC}" LIBC_SOCKET)
+
+IF(NOT LIBC_SOCKET)
+   LIST(APPEND EXTRA_LIBS -lsocket)
+   #MESSAGE("Using libsocket for socket functions")
+ENDIF(NOT LIBC_SOCKET)
+
+
+   SET(TESTSRC "
+#include <sched.h>
+struct sched_param scp;
+         int main(int argc, char **argv) {
+         return sched_setscheduler(0, SCHED_RR, &scp);
+         }
+")
+
+
+SET(CMAKE_REQUIRED_LIBRARIES )
+   CHECK_C_SOURCE_COMPILES("${TESTSRC}" LIBC_SCHED)
+
+IF(NOT LIBC_SCHED)
+   LIST(APPEND EXTRA_LIBS -lrt)
+   #MESSAGE("Using librt for realtime functions")
+ENDIF(NOT LIBC_SCHED)
+
+ENDIF(NOT GUARD_SCGCONFIG)
