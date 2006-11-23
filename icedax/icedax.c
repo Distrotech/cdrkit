@@ -126,7 +126,7 @@ static char     sccsid[] =
 #include "mp3.h"	/* mp3 file handling */
 #endif
 #include "interface.h"  /* low level cdrom interfacing */
-#include "cdda2wav.h"
+#include "icedax.h"
 #include "resample.h"
 #include "toc.h"
 #include "setuid.h"

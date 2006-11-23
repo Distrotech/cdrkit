@@ -47,7 +47,7 @@ static char     sccsid[] =
 #include <usal/scsitransp.h>
 
 #include "mytype.h"
-#include "cdda2wav.h"
+#include "icedax.h"
 #include "interface.h"
 #include "byteorder.h"
 #include "ringbuff.h"

@@ -10,7 +10,7 @@
  *
  */
 
-/* @(#)cdda2wav.h	1.4 00/02/13 Copyright 1998,1999,2000 Heiko Eissfeldt */
+/* @(#)icedax.h	1.4 00/02/13 Copyright 1998,1999,2000 Heiko Eissfeldt */
 /***
  * CopyPolicy: GNU Public License 2 applies
  * Copyright (C) by Heiko Eissfeldt

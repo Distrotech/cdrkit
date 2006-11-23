@@ -62,7 +62,7 @@ static char     sccsid[] =
 #include "byteorder.h"
 #include "interface.h"
 #include "toc.h"
-#include "cdda2wav.h"
+#include "icedax.h"
 #include "ioctl.h"
 #include "global.h"
 #include "exitcodes.h"
