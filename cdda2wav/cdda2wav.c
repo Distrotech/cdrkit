@@ -92,16 +92,16 @@ static char     sccsid[] =
 #include <math.h>
 #include <fctldefs.h>
 #include <timedefs.h>
-#if defined (HAVE_LIMITS_H) && (HAVE_LIMITS_H == 1)
+#if defined (HAVE_LIMITS_H)
 #include <limits.h>
 #endif
-#if defined (HAVE_SYS_IOCTL_H) && (HAVE_SYS_IOCTL_H == 1)
+#if defined (HAVE_SYS_IOCTL_H)
 #include <sys/ioctl.h>
 #endif
 #include <errno.h>
 #include <statdefs.h>
 #include <waitdefs.h>
-#if defined (HAVE_SETPRIORITY) && (HAVE_SETPRIORITY == 1)
+#if defined (HAVE_SETPRIORITY)
 #include <sys/resource.h>
 #endif
 #include <vadefs.h>

@@ -1,122 +1,112 @@
-/* xconfig.h  Generated automatically by cmake */
-
-/* Modified by Eduard Bloch, 2006 */
-
-/*
- *	Dynamic autoconf C-include code.
+/* xconfig.h.in Prototype for xconfig.h, generated automatically by cmake in
+ * cdrkit's build system.
  *
- *	Copyright (c) 1998-2003 J. Schilling
+ * Most features are expected to be available on every modern unixoide system,
+ * especially using the GCC compiler, others are probed.
+ *
+ * */
+
+/* 
+ * Copyright Eduard Bloch, 2006
+ *
+ * Using constants names and comments from xconfig.h.in by J. Schilling,
+ * Copyright (c) 1998-2003
+ *
  */
 
 /*
  * Header Files
  */
 #define PROTOTYPES 1	/* if Compiler supports ANSI C prototypes */
-#define HAVE_STDARG_H 1	/* to use stdarg.h, else use varargs.h NOTE: SaberC on a Sun has prototypes but no stdarg.h */
+#cmakedefine HAVE_STDARG_H
+	/* to use stdarg.h, else use varargs.h NOTE: SaberC on a Sun has prototypes but no stdarg.h */
 
-#define HAVE_STDLIB_H 1	/* to use general utility defines (malloc(), size_t ...) and general C library prototypes */
+#cmakedefine HAVE_STDLIB_H
+	/* to use general utility defines (malloc(), size_t ...) and general C library prototypes */
 
-#define HAVE_STRING_H 1	/* to get NULL and ANSI C string function prototypes */
-#define HAVE_STRINGS_H 1	/* to get BSD string function prototypes */
+#cmakedefine HAVE_STRING_H
+	/* to get NULL and ANSI C string function prototypes */
+#cmakedefine HAVE_STRINGS_H
+	/* to get BSD string function prototypes */
 #define STDC_HEADERS 1	/* if ANSI compliant stdlib.h, stdarg.h, string.h, float.h are present */
-#define HAVE_UNISTD_H 1	/* to get POSIX syscall prototypes XXX sys/file.h fcntl.h (unixstd/fctl)XXX*/
-#define HAVE_GETOPT_H 1	/* to get getopt() prototype from getopt.h instead of unistd.h */
-#define HAVE_LIMITS_H 1	/* to get POSIX numeric limits constants */
+#cmakedefine HAVE_UNISTD_H
+	/* to get POSIX syscall prototypes XXX sys/file.h fcntl.h (unixstd/fctl)XXX*/
+#cmakedefine HAVE_GETOPT_H
+	/* to get getopt() prototype from getopt.h instead of unistd.h */
+#cmakedefine HAVE_LIMITS_H
+	/* to get POSIX numeric limits constants */
 
+#cmakedefine HAVE_FCNTL_H
+	/* to access, O_XXX constants for open(), otherwise use sys/file.h */
+#cmakedefine HAVE_SYS_FILE_H
+	/* to use O_XXX constants for open() and flock() defs */
+#cmakedefine HAVE_INTTYPES_H
+	/* to use UNIX-98 inttypes.h */
+#cmakedefine HAVE_DIRENT_H
+	/* to use POSIX dirent.h */
 
+#cmakedefine HAVE_ALLOCA_H
+	/* if alloca.h exists */
 
-#define HAVE_FCNTL_H 1	/* to access, O_XXX constants for open(), otherwise use sys/file.h */
-#define HAVE_SYS_FILE_H 1	/* to use O_XXX constants for open() and flock() defs */
-#define HAVE_INTTYPES_H 1	/* to use UNIX-98 inttypes.h */
-#define HAVE_DIRENT_H 1	/* to use POSIX dirent.h */
+#cmakedefine HAVE_TERMIOS_H
+	/* to use POSIX termios.h */
+#cmakedefine HAVE_TERMIO_H
+	/* to use SVR4 termio.h */
+#cmakedefine HAVE_PWD_H
+	/* if pwd.h exists */
 
-
-
-#define HAVE_ALLOCA_H 1	/* if alloca.h exists */
-
-#define HAVE_TERMIOS_H 1	/* to use POSIX termios.h */
-#define HAVE_TERMIO_H 1	/* to use SVR4 termio.h */
-#define HAVE_PWD_H 1	/* if pwd.h exists */
-
-
-
-
-
-
-#define HAVE_SYS_TIME_H 1	/* may include sys/time.h for struct timeval */
-#define TIME_WITH_SYS_TIME 1	/* may include both time.h and sys/time.h */
-
+#cmakedefine HAVE_SYS_TIME_H
+	/* may include sys/time.h for struct timeval */
+#define TIME_WITH_SYS_TIME 1   /* may include both time.h and sys/time.h */
 
 #define HAVE_UTIME 1		/* to use AT&T utime() and utimbuf */
 #define HAVE_UTIMES 1		/* to use BSD utimes() and sys/time.h */
 
+#cmakedefine HAVE_UTIME_H
+		/* to use utime.h for the utimbuf structure declaration, else declare struct utimbuf yourself */
 
-#define HAVE_UTIME_H 1		/* to use utime.h for the utimbuf structure declaration, else declare struct utimbuf yourself */
+#cmakedefine HAVE_SYS_IOCTL_H
+		/* if sys/ioctl.h is present */
 
-#define HAVE_SYS_IOCTL_H 1		/* if sys/ioctl.h is present */
-
-#define HAVE_SYS_PARAM_H 1		/* if sys/param.h is present */
-
-
-
+#cmakedefine HAVE_SYS_PARAM_H
+		/* if sys/param.h is present */
 
 /* to use wait.h for prototypes and union wait */
 #cmakedefine HAVE_WAIT_H
 /* else use sys/wait.h */
 #cmakedefine define HAVE_SYS_WAIT_H
-#define HAVE_SYS_RESOURCE_H 1	/* to use sys/resource.h for rlimit() and wait3() */
+#cmakedefine HAVE_SYS_RESOURCE_H
+	/* to use sys/resource.h for rlimit() and wait3() */
 
+#cmakedefine HAVE_SYS_UTSNAME_H
+	/* to use uname() */
 
+#cmakedefine HAVE_SYS_MTIO_H
+		/* to use mtio definitions from sys/mtio.h */
 
-#define HAVE_SYS_UTSNAME_H 1	/* to use uname() */
-
-
-
-#define HAVE_SYS_MTIO_H 1		/* to use mtio definitions from sys/mtio.h */
-
-#define HAVE_SYS_MMAN_H 1		/* to use definitions for mmap()/madvise()... from sys/mman.h */
-
-
-
+#cmakedefine HAVE_SYS_MMAN_H
+		/* to use definitions for mmap()/madvise()... from sys/mman.h */
 #define MAJOR_IN_SYSMACROS 1	/* if we should include sys/sysmacros.h to get major()/minor()/makedev() */
 #cmakedefine HAVE_SYS_DKIO_H
+#cmakedefine HAVE_SUN_DKIO_H
+#cmakedefine HAVE_POLL_H
+		/* if we may include poll.h to use poll() */
+#cmakedefine HAVE_SYS_POLL_H
+		/* if we may include sys/poll.h to use poll() */
 
 
+#cmakedefine HAVE_NETDB_H
+		/* if we have netdb.h for get*by*() and rcmd() */
+#cmakedefine HAVE_SYS_SOCKET_H
+	/* if we have sys/socket.h for socket() */
 
-
-
-
-
-#define HAVE_POLL_H 1		/* if we may include poll.h to use poll() */
-#define HAVE_SYS_POLL_H 1		/* if we may include sys/poll.h to use poll() */
-
-
-#define HAVE_NETDB_H 1		/* if we have netdb.h for get*by*() and rcmd() */
-#define HAVE_SYS_SOCKET_H 1	/* if we have sys/socket.h for socket() */
-
-#define HAVE_LINUX_PG_H 1		/* if we may include linux/pg.h for PP ATAPI sypport */
-
-
-
-
-
-
-
-
+#cmakedefine HAVE_LINUX_PG_H
+		/* if we may include linux/pg.h for PP ATAPI sypport */
 #define HAVE_ERRNO_DEF 1		/* if we have errno definition in <errno.h> */
 
-#define HAVE_ARPA_INET_H 1		/* if we have arpa/inet.h (missing on BeOS) */
+#cmakedefine HAVE_ARPA_INET_H
+		/* if we have arpa/inet.h (missing on BeOS) */
 				/* BeOS has inet_ntoa() in <netdb.h> */
-
-
-
-
-
-
-
-
-
-
 
 /*
  * Convert to SCHILY name
@@ -143,77 +133,30 @@
  * Library Functions
  */
 #define HAVE_ACCESS 1		/* access() is present in libc */
-
-
-
-
 #define HAVE_STRERROR 1		/* strerror() is present in libc */
 #define HAVE_MEMMOVE 1		/* memmove() is present in libc */
 
 #define HAVE_MLOCK 1		/* mlock() is present in libc */
 #cmakedefine HAVE_MLOCKALL
 	/* working mlockall() is present in libc */
-
-
 #define HAVE_FLOCK 1		/* *BSD flock() is present in libc */
-
-
-
-
-
-
-
 #define HAVE_SETREUID 1		/* setreuid() is present in libc */
-
 #define HAVE_SETEUID 1		/* seteuid() is present in libc */
 #define HAVE_SETUID 1		/* setuid() is present in libc */
 #define HAVE_SETREGID 1		/* setregid() is present in libc */
-
 #define HAVE_SETEGID 1		/* setegid() is present in libc */
 #define HAVE_SETGID 1		/* setgid() is present in libc */
-
-
-
-
-
-
-
-
-
-
 #define HAVE_TCGETATTR 1		/* tcgetattr() is present in libc */
 #define HAVE_TCSETATTR 1		/* tcsetattr() is present in libc */
-
-
-
-
 #define HAVE_GETHOSTID 1		/* gethostid() is present in libc */
 #define HAVE_GETHOSTNAME 1		/* gethostname() is present in libc */
 #define HAVE_GETDOMAINNAME 1	/* getdomainname() is present in libc */
 #define HAVE_GETPAGESIZE 1		/* getpagesize() is present in libc */
-
-
-
-
-
-
-
-
-
 #define HAVE_POLL 1		/* poll() is present in libc */
 #define HAVE_SELECT 1		/* select() is present in libc */
-
-
-
-
-
 #define HAVE_LCHOWN 1		/* lchown() is present in libc */
-
 #define HAVE_SBRK 1		/* sbrk() is present in libc */
 #define HAVE_VA_COPY 1		/* va_copy() is present in varargs.h/stdarg.h */
-
-
-
 #define HAVE_DUP2 1		/* dup2() is present in libc */
 #define HAVE_GETCWD 1		/* POSIX getcwd() is present in libc */
 #define HAVE_SMMAP 1		/* may map anonymous memory to get shared mem */
@@ -221,22 +164,10 @@
 #define HAVE_SEMGET 1		/* semget() is present in libc */
 #define HAVE_LSTAT 1		/* lstat() is present in libc */
 #define HAVE_READLINK 1		/* readlink() is present in libc */
-
-
-
-
 #define HAVE_RENAME 1		/* rename() is present in libc */
-
-
 #define HAVE_ECVT 1		/* ecvt() is present in libc */
 #define HAVE_FCVT 1		/* fcvt() is present in libc */
 #define HAVE_GCVT 1		/* gcvt() is present in libc */
-
-
-
-
-
-
 
 /* isinf() is present in libc */
 #cmakedefine HAVE_ISINF
@@ -245,60 +176,17 @@
 #define HAVE_DRAND48 1		/* drand48() is present in libc */
 #define HAVE_SETPRIORITY 1		/* setpriority() is present in libc */
 #define HAVE_NICE 1		/* nice() is present in libc */
-
-
-
-
-
 #define HAVE_UNAME 1		/* uname() is present in libc */
 #define HAVE_SNPRINTF 1		/* snprintf() is present in libc */
 #define HAVE_STRCASECMP 1		/* strcasecmp() is present in libc */
 #define HAVE_STRDUP 1		/* strdup() is present in libc */
-
-
-
-
-
 #define HAVE_SIGPROCMASK 1		/* sigprocmask() is present in libc (POSIX) */
-
 #define HAVE_SIGSET 1		/* sigset() is present in libc (POSIX) */
-
 #define HAVE_NANOSLEEP 1		/* nanosleep() is present in libc */
 #define HAVE_USLEEP 1		/* usleep() is present in libc */
 #define HAVE_FORK 1		/* fork() is present in libc */
-
-
-
-
-
-
 #define HAVE_ALLOCA 1		/* alloca() is present (else use malloc())*/
 #define HAVE_VALLOC 1		/* valloc() is present in libc (else use malloc())*/
-
-
-
-
-
-
-
-
-
-/*
- * OS madness
- */
-
-
-
-
-
-
-
-/*
- * Linux Extended File Attributes
- */
-
-
-
 
 /*
  * Important:	This must be a result from a check _before_ the Large File test
@@ -310,8 +198,6 @@
  *	Instead use the tests AC_SMALL_FSEEKO/AC_SMALL/STELLO and make sure
  *	they are placed before the large file tests.
  */
-
-
 
 #define HAVE_RCMD 1		/* rcmd() is present in libc/libsocket */
 #define HAVE_SOCKET 1		/* socket() is present in libc/libsocket */
@@ -353,16 +239,10 @@
 
 #define HAVE_MTGET_DSREG 1		/* if struct mtget contains mt_dsreg (drive status) */
 
-
-
 #define HAVE_MTGET_ERREG 1		/* if struct mtget contains mt_erreg (error register) */
 #define HAVE_MTGET_RESID 1		/* if struct mtget contains mt_resid (residual count) */
 #define HAVE_MTGET_FILENO 1	/* if struct mtget contains mt_fileno (file #) */
 #define HAVE_MTGET_BLKNO 1		/* if struct mtget contains mt_blkno (block #) */
-
-
-
-
 
 /* have union wait in wait.h */
 #cmakedefine HAVE_UNION_WAIT
@@ -375,21 +255,10 @@
 
 
 #define HAVE_ST_NSEC 1		/* if struct stat contains st_atim.tv_nsec (nanosecs) */
-
-
-
-
-
-
 #define HAVE_ST_RDEV 1		/* if struct stat contains st_rdev */
-
-
-
 #define DEV_MINOR_BITS 32		/* # if bits needed to hold minor device number */
 #define DEV_MINOR_NONCONTIG 1	/* if bits in minor device number are noncontiguous */
-
 #define HAVE_SOCKADDR_STORAGE 1	/* if socket.h defines struct sockaddr_storage */
-
 
 /*
  * Byteorder/Bitorder
@@ -397,9 +266,10 @@
 #define	HAVE_C_BIGENDIAN	/* Flag that WORDS_BIGENDIAN test was done */
 /* If using network byte order             */
 #cmakedefine WORDS_BIGENDIAN
-#define	HAVE_C_BITFIELDS	/* Flag that BITFIELDS_HTOL test was done  */
 /* If high bits come first in structures   */
 #cmakedefine BITFIELDS_HTOL
+/* Flag that BITFIELDS_HTOL test was done  */
+#define	HAVE_C_BITFIELDS	
 
 /*
  * Types/Keywords
@@ -420,41 +290,6 @@
 #define HAVE_LONGLONG 1		/* Compiler defines long long type */
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* @HAVE_NATIVE_BLKSIZE_T@ */
-
-/*
- * Important:	Next Step needs time.h for clock_t (because of a bug)
- */
-
-
-
-/*
- * These types are present on all UNIX systems but should be avoided
- * for portability.
- * On Apollo/Domain OS we don't have them....
- *
- * Better include <utypes.h> and use Uchar, Uint & Ulong
- */
-
-
-
-
-
-
-
 /* 
  * Critical on some of Debian architectures (EB) */
 /* #define VA_LIST_IS_ARRAY 1		*/
@@ -469,89 +304,10 @@
  */
 #define RETSIGTYPE void
 
-/*
- * Defines needed to get large file support.
-#ifdef	USE_LARGEFILES
-
-We always use LFS, basta (EB)
-
- */
-
 #define	HAVE_LARGEFILES 1
 #define _FILE_OFFSET_BITS 64
 #define _LARGEFILE_SOURCE 1	/* To make ftello() visible (HP-UX 10.20). */
 #define _LARGE_FILES 1 	/* Large file defined on AIX-style hosts.  */
-
-				/* XXX We don't use this because glibc2.1.3*/
-				/* XXX is bad anyway. If we define	   */
-				/* XXX _XOPEN_SOURCE we will loose caddr_t */
-
-/*#endif	* USE_LARGEFILES */
-
-#ifdef USE_ACL			/* Enable/disable ACL support */
-/*
- * POSIX ACL support
- */
-
-
-
-
-
-
-
-
-#if defined(HAVE_ACL_GET_FILE) && defined(HAVE_ACL_SET_FILE) && \
-    defined(HAVE_ACL_FROM_TEXT) && defined(HAVE_ACL_TO_TEXT) && \
-    defined(HAVE_ACL_FREE)
-#	define	HAVE_POSIX_ACL	1 /* POSIX ACL's present */
-#endif
-
-/*
- * Sun ACL support.
- * Note: unfortunately, HP-UX has an (undocumented) acl() function in libc.
- */
-
-
-
-
-
-#if defined(HAVE_ACL) && defined(HAVE_FACL) && \
-    defined(HAVE_ACLFROMTEXT) && defined(HAVE_ACLTOTEXT)
-#	define	HAVE_SUN_ACL	1 /* Sun ACL's present */
-#endif
-
-/*
- * HP-UX ACL support.
- * Note: unfortunately, HP-UX has an (undocumented) acl() function in libc.
- */
-
-
-
-
-
-
-
-
-
-
-
-
-#if defined(HAVE_GETACL) && defined(HAVE_FGETACL) && \
-    defined(HAVE_SETACL) && defined(HAVE_FSETACL) && \
-    defined(HAVE_STRTOACL) && defined(HAVE_ACLTOTEXT)
-#	define	HAVE_HP_ACL	1 /* HP-UX ACL's present */
-#endif
-
-/*
- * Global definition whether ACL support is present.
- * As HP-UX differs too much from other implementations, HAVE_HP_ACL is not
- * included in HAVE_ANY_ACL.
- */
-#if defined(HAVE_POSIX_ACL) || defined(HAVE_SUN_ACL)
-#	define	HAVE_ANY_ACL	1 /* Any ACL implementation present */
-#endif
-
-#endif	/* USE_ACL */
 
 /*
  * Misc CC / LD related stuff
