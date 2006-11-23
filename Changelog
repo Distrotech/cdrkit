@@ -6,6 +6,7 @@ cdrkit (1.1.x) UNRELEASED; urgency=low
   * config overhaul, much more dynamic checks, including fixes for SunOS
     environment. Also fixed confusing double-checks for some of the variables
     in cdda2wav.c
+  * mass renaming of applications and libraries
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in
