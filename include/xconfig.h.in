@@ -225,14 +225,6 @@
 /*
  * Structures
  */
-#define HAVE_MTGET_TYPE 1		/* if struct mtget contains mt_type (drive type) */
-
-#define HAVE_MTGET_DSREG 1		/* if struct mtget contains mt_dsreg (drive status) */
-
-#define HAVE_MTGET_ERREG 1		/* if struct mtget contains mt_erreg (error register) */
-#define HAVE_MTGET_RESID 1		/* if struct mtget contains mt_resid (residual count) */
-#define HAVE_MTGET_FILENO 1	/* if struct mtget contains mt_fileno (file #) */
-#define HAVE_MTGET_BLKNO 1		/* if struct mtget contains mt_blkno (block #) */
 
 /* have union wait in wait.h */
 #cmakedefine HAVE_UNION_WAIT
