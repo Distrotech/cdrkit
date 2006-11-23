@@ -32,8 +32,8 @@
 /*
  *	mac_label.h: defines Macintosh partition maps and label
  *
- *	Taken from "mkisoimage 1.05 PLUS" by Andy Polyakov <appro@fy.chalmers.se>
- *	(see http://fy.chalmers.se/~appro/mkisoimage_plus.html for details)
+ *	Taken from "genisoimage 1.05 PLUS" by Andy Polyakov <appro@fy.chalmers.se>
+ *	(see http://fy.chalmers.se/~appro/genisoimage_plus.html for details)
  *
  *	Much of this is already defined in the libhfs code, but to keep
  *	things simple we stick with these.

@@ -30,10 +30,10 @@ SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c d
 #SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES )
 LINK_DIRECTORIES(../libhfs_iso ../libschily ../libusal ../libunls ../libdeflt)
 
-ADD_EXECUTABLE (mkisoimage mkisoimage.c ${MKISOFS_MOST_SRCS})
-TARGET_LINK_LIBRARIES(mkisoimage hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
+ADD_EXECUTABLE (genisoimage genisoimage.c ${MKISOFS_MOST_SRCS})
+TARGET_LINK_LIBRARIES(genisoimage hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
 
-# common lib set and mkisoimage source parts for the rest
+# common lib set and genisoimage source parts for the rest
 LINK_LIBRARIES(${EXTRA_LIBS} deflt unls ${EXTRA_LIBICONV} )
 SET(MI_COMMON scsi.c scsi_cdr.c cd_misc.c modes.c defaults.c getnum.c)
 ADD_EXECUTABLE(devdump diag/dump.c  ${MI_COMMON})
@@ -43,11 +43,11 @@ ADD_EXECUTABLE(isoinfo diag/isoinfo.c	 ${MI_COMMON})
 ADD_EXECUTABLE(isovfy	diag/isovfy.c	 ${MI_COMMON})
 
 
-SET_TARGET_PROPERTIES(mkisoimage devdump isodebug isodump isoinfo isovfy PROPERTIES  SKIP_BUILD_RPATH TRUE)
+SET_TARGET_PROPERTIES(genisoimage devdump isodebug isodump isoinfo isovfy PROPERTIES  SKIP_BUILD_RPATH TRUE)
 
-INSTALL(TARGETS mkisoimage devdump isodebug isodump isoinfo isovfy DESTINATION bin)
+INSTALL(TARGETS genisoimage devdump isodebug isodump isoinfo isovfy DESTINATION bin)
 INSTALL(FILES 
-mkisoimage.8
+genisoimage.8
 diag/devdump.8
 diag/isodebug.8
 diag/isodump.8

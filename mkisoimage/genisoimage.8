@@ -1,7 +1,7 @@
 '\" t
 .\" To print, first run through tbl
 .\" -*- nroff -*-
-.\" @(#)mkisoimage.8	1.109 05/05/01 joerg
+.\" @(#)genisoimage.8	1.109 05/05/01 joerg
 .\"
 .if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
 .if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
@@ -17,9 +17,9 @@
 .if n .ds s sz
 .TH MKISOFS 8 "24 Aug 2006" "Version 2.01"
 .SH NAME
-mkisoimage \- create an hybrid ISO9660/JOLIET/HFS filesystem with optional Rock Ridge attributes.
+genisoimage \- create an hybrid ISO9660/JOLIET/HFS filesystem with optional Rock Ridge attributes.
 .SH SYNOPSIS
-.B mkisoimage
+.B genisoimage
 [
 .I options
 ]
@@ -29,11 +29,11 @@ mkisoimage \- create an hybrid ISO9660/JOLIET/HFS filesystem with optional Rock 
 ]
 .I pathspec [pathspec ...]
 .SH DESCRIPTION
-.B mkisoimage
+.B genisoimage
 is a pre-mastering program to generate ISO9660/JOLIET/HFS hybrid
 filesystems.
 .PP
-.B mkisoimage
+.B genisoimage
 is capable of generating the 
 .B "System Use Sharing Protocol records (SUSP)
 specified
@@ -45,13 +45,13 @@ as long filenames, UID/GID, POSIX permissions, symbolic links,
 block and character devices.
 .PP
 If Joliet or HFS hybrid command line options are specified, 
-.B mkisoimage
+.B genisoimage
 will create the additional filesystem metadata needed for Joliet or HFS.
 If no Joliet or HFS hybrid command line options are given,
-.B mkisoimage
+.B genisoimage
 will generate a pure ISO9660 filesystem.
 .PP
-.B mkisoimage
+.B genisoimage
 can generate a 
 .I true
 (or
@@ -63,7 +63,7 @@ machines. HFS stands for
 and is the native file system used on Macintosh computers.
 .PP
 As an alternative,
-.B mkisoimage
+.B genisoimage
 can generate the
 .I Apple Extensions to ISO9660
 for each file. These extensions provide each file with CREATOR, TYPE and
@@ -71,7 +71,7 @@ certain Finder Flags when accessed from a Macintosh. See the
 .B HFS MACINTOSH FILE FORMATS
 section below.
 .PP
-.B mkisoimage
+.B genisoimage
 takes a snapshot of a given directory tree, and generates a
 binary image which will correspond to an ISO9660 or HFS filesystem when
 written to a block device.
@@ -81,12 +81,12 @@ format (8 characters, period, 3 characters, all upper case), even if Rock Ridge
 is in use.  This filename is used on systems that are not able to make use of
 the Rock Ridge extensions (such as MS-DOS), and each filename in each directory
 must be different from the other filenames in the same directory.
-.B mkisoimage
+.B genisoimage
 generally tries to form correct names by forcing the Unix filename to upper
 case and truncating as required, but often times this yields unsatisfactory
 results when there are cases where the
 truncated names are not all unique.
-.B mkisoimage
+.B genisoimage
 assigns weightings to each filename, and if two names that are otherwise the
 same are found the name with the lower priority is renamed to have a 3 digit
 number as an extension (where the number is guaranteed to be unique).  An
@@ -95,17 +95,17 @@ foo.bar.~1~ - the file foo.bar.~1~ would be written as FOO000.BAR;1 and the file
 foo.bar would be written as FOO.BAR;1
 .PP
 When used with various HFS options,
-.B mkisoimage
+.B genisoimage
 will attempt to recognise files stored in a number of Apple/Unix file formats
 and will copy the data and resource forks as well as any
 relevant finder information. See the
 .B HFS MACINTOSH FILE FORMATS
 section below for more about formats
-.B mkisoimage
+.B genisoimage
 supports.
 .PP
 Note that
-.B mkisoimage
+.B genisoimage
 is not designed to communicate with the writer directly.  Most writers
 have proprietary command sets which vary from one manufacturer to
 another, and you need a specialized tool to actually burn the disk.
@@ -128,7 +128,7 @@ for the entire time that the disc is being written.
 is the path of the directory tree to be copied into the ISO9660 filesystem.
 Multiple paths can be specified, and
 .B
-mkisoimage
+genisoimage
 will merge the files found in all of the specified path components to form the cdrom
 image.
 .PP
@@ -150,16 +150,16 @@ will include the file old.lis in the cdrom image at /foo/bar/old.lis, while
 
 will include the file old.lis in the cdrom image at /foo/bar/xxx.  The
 same sort of syntax can be used with directories as well.
-.B mkisoimage
+.B genisoimage
 will create any directories required such that the graft
 points exist on the cdrom image - the directories do not need to
 appear in one of the paths.  By default, any directories that are created on 
 the fly like this will have permissions 0555 and appear to be owned by the
-person running mkisoimage.  If you wish other permissions or owners of
+person running genisoimage.  If you wish other permissions or owners of
 the intermediate directories, see \-uid, \-gid, \-dir\-mode, \-file\-mode and
 \-new\-dir\-mode.
 .PP
-.B mkisoimage
+.B genisoimage
 will also run on Win9X/NT4 machines when compiled with Cygnus' cygwin
 (available from http://sourceware.cygnus.com/cygwin/). Therefore most
 references in this man page to
@@ -222,7 +222,7 @@ If specified in both places, the command line version is used.
 .B \-cache\-inodes
 Cache inode and device numbers to find hard links to files.
 If
-.B mkisoimage
+.B genisoimage
 finds a hard link (a file with multiple names), then the file will only
 appear once on the CD. This helps to save space on the CD.
 The option
@@ -242,14 +242,14 @@ is not POSIX compliant, it does not have unique inode numbers.
 Cygwin creates fake inode numbers from a hash algorithm that
 is not 100% correct.
 If
-.B mkisoimage
+.B genisoimage
 would cache inodes on Cygwin, it would believe that some files are
 identical although they are not. The result in this case are files
 that contain the wrong content if a significant amount of different
 files (> ~5000) is in inside the tree that is to be archived.
 This does not happen when the
 .B \-no\-cache\-inodes is used, but the disadvantage is that
-.B mkisoimage
+.B genisoimage
 cannot detect hardlinks anymore and the resulting CD image may be larger
 than expected.
 .TP
@@ -257,13 +257,13 @@ than expected.
 Specifies the path and filename of the boot image to be used when
 making an Alpha/SRM bootable CD. The pathname must be relative to the
 source path specified to
-.B mkisoimage.
+.B genisoimage.
 .TP
 .BI \-hppa\-bootloader " hppa_bootloader_image
 Specifies the path and filename of the boot image to be used when
 making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B mkisoimage.
+.B genisoimage.
 Other options are required, at the very least a kernel file name and
 the boot command line. See the
 .B HPPA NOTES
@@ -273,7 +273,7 @@ section below for more information.
 Specifies the command line to be passed to the hppa boot loader when
 making a bootable CD. Separate the parameters with spaces or
 commas. More options must be passed to
-.B mkisoimage,
+.B genisoimage,
 at the very least a kernel file name and the boot loader file
 name. See the
 .B HPPA NOTES
@@ -283,7 +283,7 @@ section below for more information.
 Specifies the path and filename of the 32-bit kernel image to be used
 when making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B mkisoimage.
+.B genisoimage.
 Other options are required, at the very least the boot loader file
 name and the boot command line. See the
 .B HPPA NOTES
@@ -293,7 +293,7 @@ section below for more information.
 Specifies the path and filename of the 64-bit kernel image to be used
 when making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B mkisoimage.
+.B genisoimage.
 Other options are required, at the very least the boot loader file
 name and the boot command line. See the
 .B HPPA NOTES
@@ -303,7 +303,7 @@ section below for more information.
 Specifies the path and filename of the ramdisk image to be used when
 making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B mkisoimage.
+.B genisoimage.
 This parameter is
 .B optional.
 Other options are required, at the very
@@ -315,7 +315,7 @@ section below for more information.
 Specifies the path and filename of the boot image to be used when
 making an SGI/big-endian MIPS bootable CD. The pathname must be
 relative to the source path specified to
-.B mkisoimage.
+.B genisoimage.
 This option may be specified several times to allow the addition of
 multiple boot images, up to a maximum of 15.
 .TP
@@ -323,7 +323,7 @@ multiple boot images, up to a maximum of 15.
 Specifies the path and filename of the boot image to be used when
 making an DEC/little-endian MIPS bootable CD. The pathname must be
 relative to the source path specified to
-.B mkisoimage.
+.B genisoimage.
 .TP
 .BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
 Specifies a comma separated list of boot images that are needed to make
@@ -360,7 +360,7 @@ If the special filename
 .B "..."
 is used, the actual and all following boot partitions are mapped to the
 previous partition. If
-.B mkisoimage
+.B genisoimage
 is called with
 .BI "\-G " image " \-B " ...
 all boot partitions are mapped to the partition that contains the ISO9660
@@ -371,11 +371,11 @@ filesystem image and the generic boot image that is located in the first
 Specifies the path and filename of the boot image to be used when making
 an "El Torito" bootable CD. The pathname must be relative to the source
 path specified to
-.B mkisoimage.
+.B genisoimage.
 This option is required to make an "El Torito" bootable CD.
 The boot image must be exactly the size of either a 1200, 1440, or a 2880
 kB floppy, and
-.B mkisoimage
+.B genisoimage
 will use this size when creating the output ISO9660
 filesystem. It is assumed that the first 512 byte sector should be read
 from the boot image (it is essentially emulating a normal floppy drive).
@@ -435,7 +435,7 @@ If the special filename
 .B "..."
 is used, the actual and all following boot partitions are mapped to the
 previous partition. If
-.B mkisoimage
+.B genisoimage
 is called with
 .BI "\-G " image " \-B " ...
 all boot partitions are mapped to the partition that contains the ISO9660
@@ -489,7 +489,7 @@ section for a description of this table.
 .TP
 .BI \-C " last_sess_start,next_sess_start
 This option is needed when
-.B mkisoimage
+.B genisoimage
 is used to create a CD Extra or the image of a second session or a 
 higher level session for a multi session disk.
 The option
@@ -505,7 +505,7 @@ If the
 option is used in conjunction with the
 .B \-M
 option,
-.B mkisoimage
+.B genisoimage
 will create a filesystem image that is intended to be a continuation
 of the previous session.
 If the
@@ -513,7 +513,7 @@ If the
 option is used without the
 .B \-M
 option,
-.B mkisoimage
+.B genisoimage
 will create a filesystem image that is intended to be used for a second
 session on a CD Extra. This is a multi session CD that holds audio data
 in the first session and a ISO9660 filesystem in the second session.
@@ -522,7 +522,7 @@ in the first session and a ISO9660 filesystem in the second session.
 Specifies the path and filename of the boot catalog to be used when making
 an "El Torito" bootable CD. The pathname must be relative to the source
 path specified to
-.B mkisoimage.
+.B genisoimage.
 This option is required to make a bootable CD.
 This file will be inserted into the output tree and not created
 in the source filesystem, so be
@@ -539,7 +539,7 @@ If you don't like this, you need to specify a sort weight of 0 for the boot cata
 .B \-check\-oldnames
 Check all filenames imported from old session for compliance with
 actual 
-.B mkisoimage 
+.B genisoimage 
 ISO9660 file naming rules.
 It his option is not present, only names with a length > 31 are checked
 as these files are a hard violation of the ISO9660 standard.
@@ -547,7 +547,7 @@ as these files are a hard violation of the ISO9660 standard.
 .BI \-check\-session " FILE
 Check all old sessions for compliance with
 actual 
-.B mkisoimage 
+.B genisoimage 
 ISO9660 file naming rules.
 This is a high level option that is a combination of the options:
 .BI \-M " FILE " "\-C 0,0 \-check\-oldnames
@@ -726,7 +726,7 @@ directory.
 .BI \-input\-charset " charset
 Input charset that defines the characters used in local file names.
 To get a list of valid charset names, call
-.B "mkisoimage \-input\-charset help.
+.B "genisoimage \-input\-charset help.
 To get a 1:1 mapping, you may use
 .B default
 as charset name. The default initial values are
@@ -760,7 +760,7 @@ length is restricted to 31 characters, the directory nesting level
 is restricted to 8 and the maximum path length is limited to 255 characters.
 .sp
 Level 4 officially does not exists but 
-.B mkisoimage
+.B genisoimage
 maps it to ISO-9660:1999 which is ISO9660 version 2.
 .sp
 With level 4, an enhanced volume descriptor with version number
@@ -776,7 +776,7 @@ the maximum length for files and directory is raised to 207.
 If Rock Ridge is used, the maximum ISO9660 name length is reduced to 197.
 .sp
 When creating Version 2 images,
-.B mkisoimage
+.B genisoimage
 emits an enhanced volume descriptor which looks similar to a primary volume
 descriptor but is slightly different. Be careful not to use broken software
 to make ISO9660 images bootable by assuming a second PVD copy and patching 
@@ -822,7 +822,7 @@ Use with caution.
 Outdated option reserved by POSIX.1-2001, use
 .B \-allow\-leading\-dots
 instead.
-This option will get POSIX.1-2001 semantics with mkisoimage-2.02.
+This option will get POSIX.1-2001 semantics with genisoimage-2.02.
 .TP
 .BI \-jigdo\-jigdo " jigdo_file
 Produce a jigdo .jigdo file as well as the .iso. See the
@@ -885,7 +885,7 @@ part of the directory entry.
 Multiple globs may be excluded.
 Example:
 
-mkisoimage \-o rom \-m '*.o' \-m core \-m foobar
+genisoimage \-o rom \-m '*.o' \-m core \-m foobar
 
 would exclude all files ending in ".o", called "core" or "foobar" to be
 copied to CD-ROM. Note that if you had a directory called "foobar" it too (and
@@ -929,7 +929,7 @@ takes a SCSI device specifier that uses the same syntax as the
 parameter of
 .B wodim.
 The output of 
-.B mkisoimage
+.B genisoimage
 will be a new session which should get written to the end of the
 image specified in \-M.  Typically this requires multi-session capability
 for the recorder and cdrom drive that you are attempting to write this
@@ -966,7 +966,7 @@ This helps to show rotten ISO9660 extension records as e.g. created by NERO burn
 .B \-no\-rr
 Do not use the Rock Ridge attributes from previous sessions.
 This may help to avoid getting into trouble when
-.B mkisoimage
+.B genisoimage
 finds illegal Rock Ridge signatures on an old session.
 .TP
 .B \-no\-split\-symlink\-components
@@ -978,11 +978,11 @@ instead of link_size += component_size).
 Note that this option has been introduced by Eric Youngdale in 1997.
 It is questionable whether it makes sense at all.
 When it has been introduced,
-.B mkisoimage 
+.B genisoimage 
 did have a serious bug that did create defective CE signatures if
 a symlink contained `/../'.
 This CE signature bug in
-.B mkisoimage
+.B genisoimage
 has been fixed in May 2003.
 .TP
 .B \-no\-split\-symlink\-fields
@@ -994,11 +994,11 @@ Solaris 2.5.1 cdrom driver have a bug in reading split SL fields
 Note that this option has been introduced by Eric Youngdale in 1997.
 It is questionable whether it makes sense at all.
 When it has been introduced,
-.B mkisoimage 
+.B genisoimage 
 did have a serious bug that did create defective CE signatures if
 a symlink contained `/../'.
 This CE signature bug in
-.B mkisoimage
+.B genisoimage
 has been fixed in May 2003.
 .TP
 .BI \-o " filename
@@ -1047,7 +1047,7 @@ then the list is read from the standard input.
 Outdated option reserved by POSIX.1-2001, use
 .B \-publisher
 instead.
-This option will get POSIX.1-2001 semantics with mkisoimage-2.02.
+This option will get POSIX.1-2001 semantics with genisoimage-2.02.
 .TP
 .BI \-publisher " publisher_id
 Specifies a text string that will be written into the volume header.
@@ -1077,7 +1077,7 @@ actual CD creation is done.
 The option \-print\-size allows to get this size from a "dry-run" before
 the CD is actually written.
 Old versions of
-.B mkisoimage
+.B genisoimage
 did write this information (among other information) to 
 .IR stderr .
 As this turns out to be hard to parse, the number without any other information
@@ -1090,13 +1090,13 @@ and catch the number from
 .BR stdout .
 This may be done with:
 .sp
-.B "cdblocks=` mkisoimage \-print\-size \-quiet .\|.\|. `
+.B "cdblocks=` genisoimage \-print\-size \-quiet .\|.\|. `
 .sp
-.B "mkisoimage .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s -"
+.B "genisoimage .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s -"
 .TP
 .B \-quiet
 This makes
-.B mkisoimage
+.B genisoimage
 even less verbose.  No progress output will be provided.
 .TP
 .B \-R
@@ -1153,11 +1153,11 @@ image and the previous (or even older) session was written with
 .BI -root " dir.
 Using a directory name not found in the previous session
 causes
-.B mkisoimage
+.B genisoimage
 to abort with an error.
 
 Without this option,
-.B mkisoimage
+.B genisoimage
 would not be able to find unmodified files and would
 be forced to write their data into the image once more.
 
@@ -1166,9 +1166,9 @@ and
 .B \-old-root
 are meant to be used together to do incremental backups.
 The initial session would e.g. use:
-.BI "mkisoimage \-root backup_1 " dirs\f0.
+.BI "genisoimage \-root backup_1 " dirs\f0.
 The next incremental backup with
-.BI "mkisoimage \-root backup_2 \-old-root backup_1 " dirs\f0.
+.BI "genisoimage \-root backup_2 \-old-root backup_1 " dirs\f0.
 would take another snapshot of these directories. The first
 snapshot would be found in
 .BR backup_1 ,
@@ -1228,11 +1228,11 @@ option must be specified. The resulting outout images will be named:
 .TP
 .BI \-stream\-media\-size " #
 Select streaming operation and set the media size to # sectors.
-This allows you to pipe the output of the tar program into mkisoimage
+This allows you to pipe the output of the tar program into genisoimage
 and to create a ISO9660 filesystem without the need of an intermediate
 tar archive file. 
 If this option has been specified,
-.B mkisoimage
+.B genisoimage
 reads from 
 .B stdin 
 and creates a file with the name
@@ -1241,7 +1241,7 @@ The maximum size of the file (with padding) is 200 sectors less than the
 specified media size. If 
 .B \-no\-pad
 has been specified, the file size is 50 sectors less than the specified media size.
-If the file is smaller, then mkisoimage will write padding. This may take a while.
+If the file is smaller, then genisoimage will write padding. This may take a while.
 .sp
 The option 
 .B \-stream\-media\-size
@@ -1344,9 +1344,9 @@ Specifying this option automatically enables Rock Ridge extensions.
 .B \-use\-fileversion
 The option 
 .B \-use\-fileversion
-allows mkisoimage to use file version numbers from the filesystem.
+allows genisoimage to use file version numbers from the filesystem.
 If the option is not specified, 
-.B mkisoimage
+.B genisoimage
 creates a version number of 1 for all files.
 File versions are strings in the range 
 .I ";1"
@@ -1406,7 +1406,7 @@ and files that are recorded on the volumes where the sequence numbers
 are less than, or equal to, the assigned Volume Set Size of the current
 volume.
 .sp
-.B mkisoimage
+.B genisoimage
 currently does not support a
 .B \-volset\-size
 that is larger than 1.
@@ -1441,7 +1441,7 @@ given as command line argument and the path relative to this directory.
 Multiple paths may be excluded.
 Example: 
 
-mkisoimage \-o cd \-x /local/dir1 \-x /local/dir2 /local
+genisoimage \-o cd \-x /local/dir1 \-x /local/dir2 /local
 .sp
 NOTE: The
 .B \-m
@@ -1461,7 +1461,7 @@ or
 options to enable Rock Ridge, and generate compressed files using the
 .B mkzftree
 utility before running
-.BR mkisoimage .
+.BR genisoimage .
 Note that transparent compression is a nonstandard Rock Ridge extension.
 The resulting disks are only transparently readable if used on Linux.
 On other operating systems you will need to call
@@ -1485,11 +1485,11 @@ Create an ISO9660 CD with Apple's extensions. Similar to the
 option, except that the Apple Extensions to ISO9660 are added instead of
 creating an HFS hybrid volume.
 Former 
-.B mkisoimage
+.B genisoimage
 versions did include Rock Ridge attributes by default if 
 .B \-apple
 was specified. This versions of
-.B mkisoimage
+.B genisoimage
 does not do this anymore. If you like to have Rock Ridge attributes,
 you need to specify this separately.
 .TP
@@ -1588,7 +1588,7 @@ is a shell wild-card-style pattern that must match any part of the filename
 Multiple globs may be excluded.
 Example:
 
-mkisoimage \-o rom \-hfs \-hide\-hfs '*.o' \-hide\-hfs foobar
+genisoimage \-o rom \-hfs \-hide\-hfs '*.o' \-hide\-hfs foobar
 
 would exclude all files ending in ".o" or called "foobar" 
 from the HFS volume. Note that if you had a directory called
@@ -1598,7 +1598,7 @@ The
 can also be a path name relative to the source directories given on the
 command line. Example:
 
-mkisoimage \-o rom \-hfs \-hide\-hfs src/html src
+genisoimage \-o rom \-hfs \-hide\-hfs src/html src
 
 would exclude just the file or directory called "html" from the "src"
 directory. Any other file or directory called "html" in the tree will
@@ -1662,7 +1662,7 @@ section below for more details.
 .TP
 .B \-hfs\-unlock
 By default,
-.B mkisoimage
+.B genisoimage
 will create an HFS volume that is
 .IR locked .
 This option leaves the volume unlocked so that other applications (e.g.
@@ -1675,7 +1675,7 @@ section below for warnings about using this option.
 .B System Folder
 and is used in creating HFS bootable CDs. The name of the directory must
 be the whole path name as
-.B mkisoimage
+.B genisoimage
 sees it. e.g. if the given pathspec is ./cddata and the required folder is
 called System Folder, then the whole path name is "./cddata/System Folder"
 (remember to use quotes if the name contains spaces).
@@ -1732,7 +1732,7 @@ Look for MacOS X AppleDouble Macintosh files
 Look for MacOS X HFS Macintosh files
 
 .SH "CHARACTER SETS
-.B mkisoimage
+.B genisoimage
 processes file names in a POSIX compliant way as strings of 8-bit characters.
 To represent all codings for all languages, 8-bit characters are not
 sufficient. Unicode or
@@ -1770,7 +1770,7 @@ one 8-bit character.
 If all operating systems would use 
 .B UTF-8
 coding,
-.B mkisoimage
+.B genisoimage
 would not need to recode characters in file names.
 Unfortunately, Apple uses completely nonstandard codings and Microsoft
 uses a Unicode coding that is not compatible with the POSIX filename
@@ -1837,9 +1837,9 @@ options.
 Defines the character set that will be used with for the Rock Ridge names
 on the CD. Defaults to the input character set. Only likely to be useful
 if used on a non-Unix platform. e.g. using
-.B mkisoimage
+.B genisoimage
 on a Microsoft Win32 machine to create Rock Ridge CDs. If you are using
-.B mkisoimage
+.B genisoimage
 on a Unix machine, it is likely that the output character set
 will be the same as the input character set.
 .IP \-input\-hfs\-charset
@@ -1859,11 +1859,11 @@ given with the
 option. Defaults to the input HFS character set.
 .PP
 There are a number of character sets built in to
-.IR mkisoimage .
+.IR genisoimage .
 To get a listing, use
-.B "mkisoimage \-input\-charset help.
+.B "genisoimage \-input\-charset help.
 This list doesn't include the charset derived from the current locale,
-if mkisoimage is built with iconv support.
+if genisoimage is built with iconv support.
 .PP
 Additional character sets can be read from file for any of the character
 set options by giving a filename as the argument to the options. The given
@@ -1893,14 +1893,14 @@ A 1:1 character set mapping can be defined by using the keyword
 .I default
 as the argument to any of the character set options. This is the behaviour
 of older (v1.12) versions of
-.BR mkisoimage .
+.BR genisoimage .
 .PP
 The ISO9660 file names generated from the input filenames are not converted
 from the input character set. The ISO9660 character set is a very limited
 subset of the ASCII characters, so any conversion would be pointless.
 .PP
 Any character that
-.B mkisoimage
+.B genisoimage
 can not convert will be replaced with a '_' character.
 .PP
 .SH "HFS CREATOR/TYPE
@@ -1990,11 +1990,11 @@ The
 .I Xlate
 column defines the type of text translation between the Unix and
 Macintosh file it is ignored by
-.BR mkisoimage ,
+.BR genisoimage ,
 but is kept to be compatible with
 .BR aufs (1).
 Although 
-.B mkisoimage
+.B genisoimage
 does not alter the contents of a file, if a binary file has it's TYPE
 set as 'TEXT', it
 .I may
@@ -2008,7 +2008,7 @@ and
 keywords must be 4 characters long and enclosed in single quotes.
 .IP
 The comment field is enclosed in double quotes - it is ignored by
-.BR mkisoimage ,
+.BR genisoimage ,
 but is kept to be compatible with 
 .BR aufs .
 .PP
@@ -2119,7 +2119,7 @@ Unfortunately, it seems that every software package that stores Macintosh
 files on Unix has chosen a completely different storage method.
 .PP
 The Apple/Unix formats that
-.I mkisoimage
+.I genisoimage
 (partially) supports are:
 .IP "CAP AUFS format"
 Data fork stored in a file. Resource fork in subdirectory .resource
@@ -2150,7 +2150,7 @@ in file finder.dat (or FINDER.DAT). Separate finder.dat for
 each data fork directory.
 .IP
 Note: 
-.I mkisoimage
+.I genisoimage
 needs to know the native FAT cluster size of the disk that the PC Exchange
 files are on (or have been copied from). This size is given by the
 .B \-cluster\-size
@@ -2182,7 +2182,7 @@ called "filename:AFP_Resource". The finder info is stored as a NTFS
 called "filename:Afp_AfpInfo". These streams are normally invisible to the
 user.
 .IP
-Warning: mkisoimage only partially supports the SFM format. If an HFS file
+Warning: genisoimage only partially supports the SFM format. If an HFS file
 or folder stored on the NT server contains an
 .I illegal
 NT character in its name, then NT converts these characters to
@@ -2192,7 +2192,7 @@ period if it is the last character of the file name, character codes 0x01
 to 0x1f (control characters) and Apple' apple logo.
 .IP
 Unfortunately, these private Unicode characters are not
-readable by the mkisoimage NT executable. Therefore any file or directory
+readable by the genisoimage NT executable. Therefore any file or directory
 name containing these characters will be ignored - including the contents of
 any such directory.
 .IP "MacOS X AppleDouble"
@@ -2215,7 +2215,7 @@ length resource fork and empty finderinfo, it is assumed not to have
 any Apple/Unix encoding - therefore a TYPE and CREATOR can be set using
 other methods.
 .LP
-.I mkisoimage
+.I genisoimage
 will attempt to set the CREATOR, TYPE, date and possibly other flags from
 the finder info. Additionally, if it exists, the Macintosh filename is set
 from the finder info, otherwise the Macintosh name is based on the Unix
@@ -2265,7 +2265,7 @@ AUFS escapes these characters by using ":" followed by the character code
 as two hex digits. Netatalk and EtherShare have a similar scheme, but uses
 "%" instead of a ":".
 .PP
-If mkisoimage can not find an HFS filename, it uses the Unix name, with
+If genisoimage can not find an HFS filename, it uses the Unix name, with
 any %xx or :xx characters (xx == two hex digits) converted to a single
 character code. If "xx" are not hex digits ([0-9a-fA-F]), then they are
 left alone - although any remaining ":" is converted to "%" as colon
@@ -2289,11 +2289,11 @@ Although HFS filenames appear to support upper and lower case letters,
 the filesystem is case insensitive. i.e. the filenames "aBc" and "AbC"
 are the same. If a file is found in a directory with the same HFS name,
 then
-.I mkisoimage
+.I genisoimage
 will attempt, where possible, to make a unique name by adding '_' characters
 to one of the filenames. 
 .PP
-If an HFS filename exists for a file, then mkisoimage can use this name as
+If an HFS filename exists for a file, then genisoimage can use this name as
 the starting point for the ISO9660, Joliet and Rock Ridge filenames using
 the
 .B \-mac\-name
@@ -2310,7 +2310,7 @@ file is stored as
 on the Unix filesystem, but contains a HFS file called
 .IR someimage.gif ,
 then this is the name that would appear on the HFS part of the CD. However, as
-mkisoimage uses the Unix name as the starting point for the other names, then
+genisoimage uses the Unix name as the starting point for the other names, then
 the ISO9660 name generated will probably be 
 .I SOMEIMAG.BIN
 and the Joliet/Rock Ridge would be
@@ -2343,8 +2343,8 @@ Apple/Unix formats will not be converted as they are assumed to be in the
 correct Apple character set. Only the Joliet/Rock Ridge names derived from
 the HFS file names will be converted.
 .PP
-The existing mkisoimage code will filter out any illegal characters for the
-ISO9660 and Joliet filenames, but as mkisoimage expects to be dealing
+The existing genisoimage code will filter out any illegal characters for the
+ISO9660 and Joliet filenames, but as genisoimage expects to be dealing
 directly with Unix names, it leaves the Rock Ridge names as is.
 But as '/' is a legal HFS filename character, the
 .B \-mac\-name
@@ -2383,17 +2383,17 @@ the 'carriage return' character) in the root folder.
 A custom folder icon is very similar - an invisible file called 'Icon\\r'
 exits in the folder itself.
 .P
-Probably the easiest way to create a custom icon that mkisoimage can use, is to
+Probably the easiest way to create a custom icon that genisoimage can use, is to
 format a blank HFS floppy disk on a Mac, paste an icon to its "Get Info"
 box. If using Linux with the HFS module installed, mount the floppy using
 something like:
 
 	mount \-t hfs /dev/fd0 /mnt/floppy
 
-The floppy will be mounted as a CAP file system by default. Then run mkisoimage
+The floppy will be mounted as a CAP file system by default. Then run genisoimage
 using something like:
 
-	mkisoimage \-\-cap \-o output source_dir /mnt/floppy
+	genisoimage \-\-cap \-o output source_dir /mnt/floppy
 
 If you are not using Linux, then you can use the hfsutils to copy the icon
 file from the floppy. However, care has to be taken, as the icon file
@@ -2406,14 +2406,14 @@ contains a control character. e.g.
 	hcopy \-m Icon^V^M icon_dir/icon
 
 Where '^V^M' is control\-V followed by control\-M. Then run 
-.B mkisoimage
+.B genisoimage
 by using something like:
 
-	mkisoimage \-\-macbin \-o output source_dir icon_dir
+	genisoimage \-\-macbin \-o output source_dir icon_dir
 .PP
 The procedure for creating/using custom folder icons is very similar - paste
 an icon to folder's "Get Info" box and transfer the resulting 'Icon\\r'
-file to the relevant directory in the mkisoimage source tree.
+file to the relevant directory in the genisoimage source tree.
 .PP
 You may want to hide the icon files from the ISO9660 and Joliet trees.
 .PP
@@ -2451,7 +2451,7 @@ Therefore, the utility
 also extracts the boot block from the
 first HFS partition it finds on the given CD-ROM and this is used for the
 HFS partition created by
-.BR mkisoimage .
+.BR genisoimage .
 .IP "PLEASE NOTE"
 By using a driver from an Apple CD and copying Apple software to your CD,
 you become liable to obey Apple Computer, Inc. Software License Agreements.
@@ -2459,7 +2459,7 @@ you become liable to obey Apple Computer, Inc. Software License Agreements.
 When the
 .B \-boot\-info\-table
 option is given,
-.B mkisoimage
+.B genisoimage
 will modify the boot file specified by the
 .B \-b
 option by inserting a 56-byte "boot information table" at offset 8 in
@@ -2504,7 +2504,7 @@ images are published on the web in jigdo format to allow end users to download
 them more efficiently.
 .PP
 To create jigdo and template files alongside the ISO image from
-mkisoimage, you must first generate a list of the files that will be
+genisoimage, you must first generate a list of the files that will be
 used, in the following format:
 .sp
 .RS +.2i
@@ -2518,7 +2518,7 @@ MD5sum   File size  Path
 The MD5sum should be written in jigdo's pseudo-base64 format. The file
 size should be in decimal, and the path to the file must be absolute.
 .PP
-Once you have this file, call mkisoimage with all of your normal command
+Once you have this file, call genisoimage with all of your normal command
 line parameters. Specify the output filenames for the jigdo and
 template files using \-jigdo\-jigdo and \-jigdo\-template, and pass in
 the location of your MD5 list with the \-md5\-list option.
@@ -2527,7 +2527,7 @@ If there are files that you do NOT want to be added into the jigdo
 file (e.g. if they are likely to change often), specify them using
 \-jigdo\-ignore. If you want to verify some of the files as they are
 written into the image, specify them using \-jigdo\-force\-md5. If any
-files don't match, mkisoimage will then abort. Both of these options take
+files don't match, genisoimage will then abort. Both of these options take
 regular expressions as input. It is possible to restrict the set of
 files that will be used further based on size - use the
 \-jigdo\-min\-file\-size option.
@@ -2538,14 +2538,14 @@ onto a mirror-style configuration. Specify how to map paths using the
 paths starting with "/mirror/debian" to be mapped to "Debian:<file>"
 in the output jigdo file.
 .SH CONFIGURATION
-.B mkisoimage
+.B genisoimage
 looks for the
 .B \&.m\&kisofsrc
 file,
 first in the current working directory,
 then in the user's home directory,
 and then in the directory in which the
-.B mkisoimage
+.B genisoimage
 binary is stored.  This file is assumed to contain a series of lines
 of the form
 .BI TAG= value
@@ -2638,7 +2638,7 @@ May be overridden using the
 .B \-hfs\-creator
 command line option.
 .PP
-.B mkisoimage
+.B genisoimage
 can also be configured at compile time with defaults for many of these fields.
 See the file defaults.h.
 
@@ -2650,13 +2650,13 @@ where the directory
 .I cd_dir
 will become the root directory if the CD, call:
 .PP
-% mkisoimage \-o cd.iso cd_dir
+% genisoimage \-o cd.iso cd_dir
 .PP
 To create a CD with Rock Ridge extensions of
 the source directory
 .IR cd_dir :
 .PP
-% mkisoimage \-o cd.iso \-R cd_dir
+% genisoimage \-o cd.iso \-R cd_dir
 .PP
 To create a CD with Rock Ridge extensions of
 the source directory
@@ -2666,12 +2666,12 @@ are owned by
 .IR root ,
 call:
 .PP
-% mkisoimage \-o cd.iso \-r cd_dir
+% genisoimage \-o cd.iso \-r cd_dir
 .PP
 To write a tar archive directly to a CD that will later contain a simple
 ISO9660 filesystem with the tar archive call:
 .PP
-% star \-c . | mkisoimage \-stream\-media\-size 333000 | \\
+% star \-c . | genisoimage \-stream\-media\-size 333000 | \\
 .br
 wodim dev=b,t,l \-dao tsize=333000s \-
 .PP
@@ -2679,14 +2679,14 @@ To create a HFS hybrid CD with the Joliet and Rock Ridge extensions of
 the source directory
 .IR cd_dir :
 .PP
-% mkisoimage \-o cd.iso \-R \-J \-hfs cd_dir
+% genisoimage \-o cd.iso \-R \-J \-hfs cd_dir
 .PP
 To create a HFS hybrid CD from the source directory 
 .I cd_dir
 that contains
 Netatalk Apple/Unix files:
 .PP
-% mkisoimage \-o cd.iso \-\-netatalk cd_dir
+% genisoimage \-o cd.iso \-\-netatalk cd_dir
 .PP
 To create a HFS hybrid CD from the source directory
 .IR cd_dir ,
@@ -2694,7 +2694,7 @@ giving all files
 CREATOR and TYPES based on just their filename extensions listed in the file 
 "mapping".:
 .PP
-% mkisoimage \-o cd.iso \-map mapping cd_dir
+% genisoimage \-o cd.iso \-map mapping cd_dir
 .PP
 To create a CD with the 'Apple Extensions to ISO9660', from the source
 directories
@@ -2705,7 +2705,7 @@ Files in all the known Apple/Unix format
 are decoded and any other files are given CREATOR and TYPE based on their
 magic number given in the file "magic":
 .PP
-% mkisoimage \-o cd.iso \-apple \-magic magic \-probe \\
+% genisoimage \-o cd.iso \-apple \-magic magic \-probe \\
 .br
         cd_dir another_dir
 .PP
@@ -2725,7 +2725,7 @@ on the
 CD along with the three README files - but only one will be seen from
 each of the three filesystems:
 .PP
-% mkisoimage \-o cd.iso \-hfs \-J \-r \-graft\-points \\
+% genisoimage \-o cd.iso \-hfs \-J \-r \-graft\-points \\
 .br
         \-hide README.hfs \-hide README.joliet \\
 .br
@@ -2757,9 +2757,9 @@ see the MAINTAINER section below for recent information.
 .PP
 J\*org Schilling 
 wrote the SCSI transport library and its adaptation layer to
-.B mkisoimage
+.B genisoimage
 and newer parts (starting from 1999) of the utility, this makes
-.B mkisoimage
+.B genisoimage
 .br
 Copyright (C) 1999, 2000, 2001 J\*org Schilling.
 .PP
@@ -2774,25 +2774,25 @@ iconv code, Copyright (C) 2003 Jungshik Shin, (C) 2003 Jaakko Heinonen
 See MAINTAINER section for contact information.
 .SH NOTES
 .PP
-.B mkisoimage
+.B genisoimage
 is not based on the standard mk*fs tools for Unix, because we must generate
 a complete copy of an existing filesystem on a disk in the ISO9660
-filesystem.  The name mkisoimage is probably a bit of a misnomer, since it
+filesystem.  The name genisoimage is probably a bit of a misnomer, since it
 not only creates the filesystem, but it also populates it.
 However, the appropriate tool name for a Unix tool that creates populated
 filesystems - mkproto - is not well known.
 .PP
-.B mkisoimage
+.B genisoimage
 may safely be installed suid root. This may be needed to allow
-.B mkisoimage
+.B genisoimage
 to read the previous session when creating a multi session image.
 .PP
 If 
-.B mkisoimage 
+.B genisoimage 
 is creating a filesystem image with Rock Ridge attributes and the
 directory nesting level of the source directory tree is too much
 for ISO9660, 
-.B mkisoimage 
+.B genisoimage 
 will do deep directory relocation.
 This results in a directory called
 .B RR_MOVED
@@ -2806,7 +2806,7 @@ systems use a boot loader called
 .B SILO
 that unfortunately is not Sparc CD boot compliant.
 It is annoyingly to see that the Authors of SILO don't fix SILO but instead
-provide a completely unneeded "patch" to mkisoimage that incorporates far
+provide a completely unneeded "patch" to genisoimage that incorporates far
 more source than the fix for SILO would need.
 .SH BUGS
 .TP
@@ -2846,7 +2846,7 @@ There may be some other ones.  Please, report them to the author.
 I have had to make several assumptions on how I expect the modified
 libhfs routines to work, however there may be situations that either
 I haven't thought of, or come across when these assumptions fail.
-Therefore I can't guarantee that mkisoimage will work as expected
+Therefore I can't guarantee that genisoimage will work as expected
 (although I haven't had a major problem yet). Most of the HFS features work
 fine, however, some are not fully tested. These are marked as
 .I Alpha
@@ -2855,7 +2855,7 @@ above.
 Although HFS filenames appear to support upper and lower case letters,
 the filesystem is case insensitive. i.e. the filenames "aBc" and "AbC"
 are the same. If a file is found in a directory with the same HFS name, then
-.I mkisoimage
+.I genisoimage
 will attempt, where possible, to make a unique name by adding '_' characters
 to one of the filenames.
 .PP
@@ -2869,9 +2869,9 @@ new name for an Apple/Unix encoded file/directory. e.g. If a Apple/Unix
 encoded file called "oldname" is to added to the CD, then you can not use
 the command line:
 .IP
-mkisoimage \-o output.raw \-hfs \-graft\-points newname=oldname cd_dir
+genisoimage \-o output.raw \-hfs \-graft\-points newname=oldname cd_dir
 .LP
-mkisoimage will be unable to decode "oldname". However, you can graft
+genisoimage will be unable to decode "oldname". However, you can graft
 Apple/Unix encoded files or directories as long as you do not attempt to
 give them new names as above.
 .PP
@@ -2879,7 +2879,7 @@ When creating an HFS volume with the multisession options,
 .B \-M
 and
 .BR \-C ,
-only files in the last session will be in the HFS volume. i.e. mkisoimage can
+only files in the last session will be in the HFS volume. i.e. genisoimage can
 not
 .I add
 existing files from previous sessions to the HFS volume.
@@ -2925,7 +2925,7 @@ option - the Unix
 name will be used in the TRANS.TBL file, not the Macintosh name.
 .PP
 Although 
-.B mkisoimage
+.B genisoimage
 does not alter the contents of a file, if a binary file has it's TYPE
 set as 'TEXT', it
 .I may
@@ -2957,7 +2957,7 @@ or
 .B \-prep\-boot
 options.
 .PP
-.B mkisoimage
+.B genisoimage
 should be able to create HFS hybrid images over 4Gb, although this has not
 been fully tested.
 
@@ -2973,7 +2973,7 @@ Some sort of gui interface.
 .B m\&kisofs
 is available as part of the cdrkit package from
 http://alioth.debian.org/projects/debburn/. For other implementations/spinoffs
-of mkisoimage, look at the homepage of the particular developers.
+of genisoimage, look at the homepage of the particular developers.
 .B hfsutils
 from ftp://ftp.mars.org/pub/hfs
 .SH "MAILING LISTS
@@ -3003,7 +3003,7 @@ Steve McIntyre
 Ben Hutchings
 and other contributors
 .PP
-Cdrkit implementation of mkisoimage is derived from mkisofs in the Cdrtools
+Cdrkit implementation of genisoimage is derived from mkisofs in the Cdrtools
 package [1] (however now developed independently), having previous maintainers:
 .PP
 .nf

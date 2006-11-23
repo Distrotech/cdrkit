@@ -16,7 +16,7 @@ static	char sccsid[] =
 	"@(#)stream.c	1.3 04/03/04 Copyright 2002-2003 J. Schilling";
 #endif
 /*
- *	ISO-9660 stream (pipe) file module for mkisoimage
+ *	ISO-9660 stream (pipe) file module for genisoimage
  *
  *	Copyright (c) 2002-2003 J. Schilling
  *	Implemented after an idea from M.H. Voase
@@ -37,7 +37,7 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include "iso9660.h"
 
 static int	size_str_file(int starting_extent);

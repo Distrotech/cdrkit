@@ -10,7 +10,7 @@
  *
  */
 
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include "utypes.h"
 #include <ctype.h>
 #include <mconfig.h>

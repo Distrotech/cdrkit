@@ -49,7 +49,7 @@ static	char sccsid[] =
 #ifdef APPLE_HYB
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <errno.h>
 
 #define	HFS_MIN_SIZE	1600	/* 800k == 1600 HFS blocks */

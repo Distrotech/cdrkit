@@ -39,7 +39,7 @@ static	char sccsid[] =
 #ifdef DVD_VIDEO
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <schily.h>
 #include "dvd_reader.h"
 #include "dvd_file.h"

@@ -43,7 +43,7 @@
  */
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <fctldefs.h>
 #include <utypes.h>
 #include <intcvt.h>

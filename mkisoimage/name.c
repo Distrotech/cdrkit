@@ -43,7 +43,7 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <standard.h>
 #include <schily.h>
 #include <ctype.h>

@@ -44,8 +44,8 @@
 #define	DKL_MAGIC_0	0xDA		/* magic number high byte */
 #define	DKL_MAGIC_1	0xBE		/* magic number low byte  */
 
-#define	CD_DEFLABEL	"CD-ROM Disc with Sun sparc boot created by mkisoimage"
-#define	CD_X86LABEL	"CD-ROM Disc with Sun x86 boot created by mkisoimage"
+#define	CD_DEFLABEL	"CD-ROM Disc with Sun sparc boot created by genisoimage"
+#define	CD_X86LABEL	"CD-ROM Disc with Sun x86 boot created by genisoimage"
 
 /*
  * Define a virtual geometry for the CD disk label.

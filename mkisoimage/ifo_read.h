@@ -38,12 +38,12 @@
  */
 
 /*
- * NOTE: This is a cut down version of libdvdread for mkisoimage, due
+ * NOTE: This is a cut down version of libdvdread for genisoimage, due
  * to portability issues with the current libdvdread according to
- * the maintainer of mkisoimage.
+ * the maintainer of genisoimage.
  * This cut down version only reads from a harddisk file structure
  * and it only implements the functions necessary inorder to make
- * mkisoimage produce valid DVD-Video images.
+ * genisoimage produce valid DVD-Video images.
  * DON'T USE THIS LIBRARY IN ANY OTHER PROGRAM GET THE REAL
  * LIBDVDREAD INSTEAD
  */

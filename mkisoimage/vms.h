@@ -12,7 +12,7 @@
 
 /* @(#)vms.h	1.3 04/03/01 eric */
 /*
- * Header file mkisoimage.h - assorted structure definitions and typecasts.
+ * Header file genisoimage.h - assorted structure definitions and typecasts.
  *
  *   Written by Eric Youngdale (1993).
  */

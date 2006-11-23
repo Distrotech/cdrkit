@@ -18,9 +18,9 @@ static	char sccsid[] =
 /*
  *	apple_driver.c: extract Mac partition label, maps and boot driver
  *
- *	Based on Apple_Driver.pl, part of "mkisoimage 1.05 PLUS" by Andy Polyakov
+ *	Based on Apple_Driver.pl, part of "genisoimage 1.05 PLUS" by Andy Polyakov
  *	<appro@fy.chalmers.se> (I don't know Perl, so I rewrote it C ...)
- *	(see http://fy.chalmers.se/~appro/mkisoimage_plus.html for details)
+ *	(see http://fy.chalmers.se/~appro/genisoimage_plus.html for details)
  *
  *	usage: apple_driver CDROM_device > HFS_driver_file
  *
@@ -40,7 +40,7 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <mac_label.h>
 #include <schily.h>
 

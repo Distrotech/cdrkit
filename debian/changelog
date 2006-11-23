@@ -1,6 +1,8 @@
-cdrkit (5:1.1.1-1) unstable; urgency=low
+cdrkit (9:1.1.1-1) unstable; urgency=low
 
   * Development snapshot
+  * epoch increased to work around buggy packages installed by harddisk
+    installtion from old Knoppix versions
 
  -- Eduard Bloch <blade@debian.org>  Mon, 20 Nov 2006 23:40:19 +0100
 

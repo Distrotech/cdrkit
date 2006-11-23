@@ -12,7 +12,7 @@
 
 /* @(#)udf.h	1.2 04/03/01 Copyright 2001-2004 J. Schilling */
 /*
- *	UDF external definitions for mkisoimage
+ *	UDF external definitions for genisoimage
  *
  *	Copyright (c) 2001-2004 J. Schilling
  */

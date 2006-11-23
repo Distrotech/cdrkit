@@ -58,7 +58,7 @@ static	char sccsid[] =
 #ifdef APPLE_HYB
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 
 #define	DB	"Desktop DB"
 #define	DBFC	"DMGR"
@@ -76,7 +76,7 @@ extern	void d_putl(unsigned char *, long);
 int	make_desktop(hfsvol *vol, int end);
 
 
-extern	hce_mem *hce;	/* libhfs/mkisoimage extras */
+extern	hce_mem *hce;	/* libhfs/genisoimage extras */
 
 int
 make_desktop(hfsvol *vol, int end)

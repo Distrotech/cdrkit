@@ -64,6 +64,15 @@ Description: Creates WAV files from audio CDs
  Please install cdrkit-doc if you want most of the documentation and
  Readme-files.
 
+Package: cdda2wav
+Architecture: all
+Depends: icedax
+Section: sound
+Description: Dummy transition package
+ This is a dummy package to ease the transition to icedax, the fork
+ of cdda2wav. Please use icedax instead of cdda2wav.
+ It provides a cdda2wav symlink to icedax for compatibility purposes.
+
 Package: cdrkit-doc
 Architecture: all
 Section: doc

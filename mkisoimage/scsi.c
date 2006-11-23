@@ -42,7 +42,7 @@ static	char sccsid[] =
 #include <unixstd.h>
 #include <schily.h>
 
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <usal/scsireg.h>
 #include <usal/scsitransp.h>
 

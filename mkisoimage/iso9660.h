@@ -187,7 +187,7 @@ struct eltorito_defaultboot_entry {
  * For this reason, we cannot use sizeof (struct iso_path_table) or
  * sizeof (struct iso_directory_record) to compute on disk sizes.
  * Instead, we use offsetof(..., name) and add the name size.
- * See mkisoimage.h
+ * See genisoimage.h
  */
 
 /* We use this to help us look up the parent inode numbers. */

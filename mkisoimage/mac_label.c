@@ -36,8 +36,8 @@ static	char sccsid[] =
 /*
  *	mac_label.c: generate Mactintosh partition maps and label
  *
- *	Taken from "mkisoimage 1.05 PLUS" by Andy Polyakov <appro@fy.chalmers.se>
- *	(see http://fy.chalmers.se/~appro/mkisoimage_plus.html for details)
+ *	Taken from "genisoimage 1.05 PLUS" by Andy Polyakov <appro@fy.chalmers.se>
+ *	(see http://fy.chalmers.se/~appro/genisoimage_plus.html for details)
  *
  *	The format of the HFS driver file:
  *
@@ -57,7 +57,7 @@ static	char sccsid[] =
 /* PREP_BOOT Troy Benjegerdes 2/4/99 */
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include "mac_label.h"
 #include "apple.h"
 

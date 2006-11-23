@@ -66,12 +66,9 @@ build/install-debstamp:
 	install -m 755 icedax/pitchplay $(i)/bin/
 	touch build/install-debstamp
 
-binary-indep: build install cdrkit-doc cdrecord
+binary-indep: build install cdrkit-doc cdrecord cdda2wav mkisofs
 
-binary-arch: build install \
-	wodim \
-	mkisofs \
-	icedax
+binary-arch: build install wodim icedax genisoimage
 
 #
 # wodim
@@ -104,6 +101,23 @@ wodim: install
 #
 
 cdrecord: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_link              -p$@ -P$(b)/$@ 
+	dh_install			 -p$@ -P$(b)/$@
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+#
+# cdda2wav dummy one
+#
+
+cdda2wav: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
 	dh_link              -p$@ -P$(b)/$@ 

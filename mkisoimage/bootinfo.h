@@ -12,7 +12,7 @@
 
 /* @(#)bootinfo.h	1.3 04/03/02 Copyright 1999, 2004 J. Schilling */
 /*
- *	Header file bootinfo.h - mkisoimage-defined boot information table
+ *	Header file bootinfo.h - genisoimage-defined boot information table
  *	useful for an El Torito-loaded disk image.
  *
  *	Copyright (c) 1999, 2004 J. Schilling
@@ -35,7 +35,7 @@
 #ifndef	_BOOTINFO_H
 #define	_BOOTINFO_H
 
-struct mkisoimage_boot_info {
+struct genisoimage_boot_info {
 	char bi_pvd	 [ISODCL(1,   4)]; /* LBA of PVD */
 	char bi_file	 [ISODCL(5,   8)]; /* LBA of boot image */
 	char bi_length	 [ISODCL(9,  12)]; /* Length of boot image */

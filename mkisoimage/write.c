@@ -41,7 +41,7 @@ static	char sccsid[] =
 /* APPLE_HYB James Pearson j.pearson@ge.ucl.ac.uk 23/2/2000 */
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <timedefs.h>
 #include <fctldefs.h>
 #ifdef SORTING
@@ -477,7 +477,7 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 		amt = fread(buffer, 1, use, infile);
 		if (amt < use && amt != remain) {
 			/*
-			 * Note that mkisoimage is not star and no 100% archiver.
+			 * Note that genisoimage is not star and no 100% archiver.
 			 * We only detect file growth if the new size does not
 			 * match 'use' at the last read.
 			 */
@@ -1217,7 +1217,7 @@ assign_file_addresses(struct directory *dpnt)
 						"Implementation botch. Video pad for file %s is %d\n",
 						s_entry->name, pad),
 						comerrno(EX_BAD,
-						"Either the *.IFO file is bad or you found a mkisoimage bug.\n");
+						"Either the *.IFO file is bad or you found a genisoimage bug.\n");
 					}
 					dwpnt->pad = pad;
 					if (verbose > 0 && pad != 0) {
@@ -2457,7 +2457,7 @@ hfs_file_gen(int start_extent)
 	int	last_extent_save = last_extent;
 	char	*p;
 
-	/* allocate memory for the libhfs/mkisoimage extra info */
+	/* allocate memory for the libhfs/genisoimage extra info */
 	hce = (hce_mem *) e_malloc(sizeof (hce_mem));
 
 	hce->error = (char *) e_malloc(1024);

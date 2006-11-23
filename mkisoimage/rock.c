@@ -39,7 +39,7 @@ static	char sccsid[] =
  */
 
 #include <mconfig.h>
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <device.h>
 #include <schily.h>
 
@@ -729,7 +729,7 @@ generate_xa_rr_attributes(char *whole_name, char *name,
 	 * be an issue since if you're using -z odds are most of your
 	 * files are already compressed.
 	 *
-	 * In the future it would be nice if mkisoimage actually did the
+	 * In the future it would be nice if genisoimage actually did the
 	 * compression.
 	 */
 	if (transparent_compression && S_ISREG(lstatbuf->st_mode)) {

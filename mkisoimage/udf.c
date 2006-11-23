@@ -16,7 +16,7 @@ static	char sccsid[] =
 	"@(#)udf.c	1.14 04/04/15 Copyright 2001 J. Schilling";
 #endif
 /*
- * udf.c - UDF support for mkisoimage
+ * udf.c - UDF support for genisoimage
  *
  * Written by Ben Rudiak-Gould (2001).
  *
@@ -90,7 +90,7 @@ static	char sccsid[] =
 #ifdef UDF
 
 #include "config.h"
-#include "mkisoimage.h"
+#include "genisoimage.h"
 #include <timedefs.h>
 #include <schily.h>
 
@@ -402,7 +402,7 @@ set_charspec(udf_charspec *dst)
 static void
 set_impl_ident(udf_EntityID *ent)
 {
-	strcpy((char *)ent->ident, "*mkisoimage");
+	strcpy((char *)ent->ident, "*genisoimage");
 }
 
 static void
