@@ -1,9 +1,11 @@
 /* xconfig.h.in Prototype for xconfig.h, generated automatically by cmake in
  * cdrkit's build system.
  *
- * Most features are expected to be available on every modern unixoide system,
- * especially using the GCC compiler, others are probed.
+ * Most features are expected to be available on every modern unixoide systems,
+ * others are probed.
  *
+ * NOTE: Be carefull, there are some double checks for the 1 value hidden in
+ * the source, just defining it may be not enough.
  * */
 
 /* 
@@ -117,18 +119,6 @@
 #	endif
 #endif
 
-#ifdef	HAVE_ELF_H
-#define	HAVE_ELF			/* This system uses ELF */
-#else
-#	ifdef	HAVE_AOUTHDR_H
-#	define	HAVE_COFF		/* This system uses COFF */
-#	else
-#		ifdef HAVE_A_OUT_H
-#		define HAVE_AOUT	/* This system uses AOUT */
-#		endif
-#	endif
-#endif
-
 /*
  * Library Functions
  */
@@ -171,7 +161,7 @@
 
 /* isinf() is present in libc */
 #cmakedefine HAVE_ISINF
-#define HAVE_ISNAN 1		/* isnan() is present in libc or libm */
+#define HAVE_ISNAN 1		/* isnan() is present in libc OR LIBM , linker test elsewhere */
 #define HAVE_RAND 1		/* rand() is present in libc */
 #define HAVE_DRAND48 1		/* drand48() is present in libc */
 #define HAVE_SETPRIORITY 1		/* setpriority() is present in libc */
@@ -246,18 +236,9 @@
 
 /* have union wait in wait.h */
 #cmakedefine HAVE_UNION_WAIT
-/*
- * SCO UnixWare has st_atim.st__tim.tv_nsec but the st_atim.tv_nsec tests also
- * succeeds. If you use st_atim.tv_nsec on UnixWare, you get a warning about
- * illegal structure usage. For this reason, your code needs to have
- * #ifdef HAVE_ST__TIM before #ifdef HAVE_ST_NSEC.
- */
-
 
 #define HAVE_ST_NSEC 1		/* if struct stat contains st_atim.tv_nsec (nanosecs) */
 #define HAVE_ST_RDEV 1		/* if struct stat contains st_rdev */
-#define DEV_MINOR_BITS 32		/* # if bits needed to hold minor device number */
-#define DEV_MINOR_NONCONTIG 1	/* if bits in minor device number are noncontiguous */
 #define HAVE_SOCKADDR_STORAGE 1	/* if socket.h defines struct sockaddr_storage */
 
 /*
@@ -305,7 +286,7 @@
 #define RETSIGTYPE void
 
 #define	HAVE_LARGEFILES 1
-#define _FILE_OFFSET_BITS 64
+#define _FILE_OFFSET_BITS 64 /* glibc style */
 #define _LARGEFILE_SOURCE 1	/* To make ftello() visible (HP-UX 10.20). */
 #define _LARGE_FILES 1 	/* Large file defined on AIX-style hosts.  */
 
