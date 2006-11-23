@@ -91,4 +91,4 @@ Conflicts: cdrtools-doc
 Suggests: wodim, mkisofs, cdda2wav
 Description: Documentation for the cdrkit package-suite
  This is the documentation for the cdrkit package-suite, namely
- wodim, mkisofs and cdda2wav.
+ wodim, genisoimage and icedax.
