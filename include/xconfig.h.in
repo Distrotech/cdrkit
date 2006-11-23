@@ -199,10 +199,6 @@
 /* getnameinfo() is present in libc/libsocket */
 #cmakedefine define HAVE_GETNAMEINFO
 
-#if	defined(HAVE_QUOTACTL) || defined(HAVE_QUOTAIOCTL)
-#	define HAVE_QUOTA	/* The system inludes quota */
-#endif
-
 /*
  * We need to test for the include files too because Apollo Domain/OS has a
  * libc that includes the functions but the includes files are not visible
