@@ -1,10 +1,10 @@
-debian/tmp/usr/bin/mkisofs
+debian/tmp/usr/bin/genisoimage
 debian/tmp/usr/bin/devdump
 debian/tmp/usr/bin/isoinfo
 debian/tmp/usr/bin/isodump
 debian/tmp/usr/bin/isovfy
 debian/tmp/usr/bin/dirsplit
-debian/tmp/usr/share/man/man8/mkisofs.8
+debian/tmp/usr/share/man/man8/genisoimage.8
 debian/tmp/usr/share/man/man8/isoinfo.8
 debian/tmp/usr/share/man/man1/dirsplit.1
 

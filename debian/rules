@@ -15,7 +15,7 @@ endif
 
 i=$(shell pwd)/debian/tmp/usr
 b=$(shell pwd)/debian/build
-iso=mkisofs
+iso=genisoimage
 cdd=icedax
 cdr=wodim
 ziso_VERSION = $(shell cat 3rd-party/zisofs_tools/version)
@@ -130,11 +130,29 @@ cdda2wav: install
 	dh_md5sums           -p$@ -P$(b)/$@
 	dh_builddeb          -p$@ -P$(b)/$@
 
+
 #
-# mkisofs
+# mkisofs dummy one
 #
 
 mkisofs: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_link              -p$@ -P$(b)/$@ 
+	dh_install			 -p$@ -P$(b)/$@
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+#
+# genisoimage
+#
+
+genisoimage: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@
