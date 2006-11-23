@@ -1,7 +1,7 @@
 $ defs = "/define=("USE_LARGEFILES","ABORT_DEEP_ISO_ONLY","APPLE_HYB","UDF","DVD_VIDEO","SORTING","USE_LIBSCHILY","USE_SCG","HAVE_DIRENT_H","HAVE_STRCASECMP")
 $ incs = "/include=([-.include],[-.libhfs_iso],[-.cdrecord],[])"
 $ opts = "/float=ieee/prefix=all"
-$ define/nolog scg [-.LIBSCG.scg]
+$ define/nolog usal [-.LIBSCG.usal]
 $ cc 'defs' 'incs'  'opts' BLOCK.C
 $ cc 'defs' 'incs'  'opts' BTREE.C
 $ cc 'defs' 'incs'  'opts' DATA.C

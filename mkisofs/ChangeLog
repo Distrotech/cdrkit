@@ -117,11 +117,11 @@ Tue Jun  1 13:50:50 2004 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* isovfy.c 1.22
 	* isodebug.mk 1.2
 	* isodebug.c 1.7
-	  Umstellung auf libscg
+	  Umstellung auf libusal
 
 Sat May 29 17:46:26 2004 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* isoinfo.c 1.45
-	  cdr_defaults() nur mit libscg rufen
+	  cdr_defaults() nur mit libusal rufen
 
 Sat May 29 16:55:08 2004 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* isodebug.c 1.6
@@ -139,7 +139,7 @@ Fri May 28 13:39:35 2004 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 Fri May 28 13:37:39 2004 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* isoinfo.c 1.42
 	  Version -> 2.01a31
-	  Umbau auf libscg
+	  Umbau auf libusal
 
 Fri May 28 13:36:25 2004 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* isodump.c 1.21
@@ -1515,7 +1515,7 @@ Mon Dec  4 12:53:11 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 
 Fri Dec  1 14:14:23 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* multi.c 1.42
-	  Now working without scg_prbytes() from libscg
+	  Now working without usal_prbytes() from libusal
 
 Fri Nov 24 10:49:58 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* mkisofs.c 1.75
@@ -1551,7 +1551,7 @@ Sat Oct 14 15:33:50 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 
 Fri Sep  8 02:49:31 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* scsi.c 1.16
-	  Call to scg_remote()
+	  Call to usal_remote()
 
 Fri Sep  8 02:49:00 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* mkisofs.c 1.73
@@ -1569,7 +1569,7 @@ Mon Aug 14 01:36:38 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 Sun Jul 30 14:08:38 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* multi.c 1.41
 	* scsi.c 1.15
-	  Modified for new libscg with scg_*()
+	  Modified for new libusal with usal_*()
 
 Thu Jul 20 19:29:19 2000 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* mkisofs.c 1.70
@@ -2629,7 +2629,7 @@ Tue Mar  2 04:41:25 1999 Eric Youngdale <eric@andante.org>
 
 Sun Nov 29 19:13:43 1998 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* scsi.c 1.8
-	  scgio.h -> scgcmd.h/scgio.h, scgio.h scgcmd.h scsidefs.h scsireg.h scsitransp.h -> include/scg
+	  usalio.h -> usalcmd.h/usalio.h, usalio.h usalcmd.h scsidefs.h scsireg.h scsitransp.h -> include/usal
 
 Sun Nov 29 18:30:41 1998 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* Makefile 1.1
@@ -2641,7 +2641,7 @@ Sat Nov 14 04:20:05 1998 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 
 Fri Oct 30 02:06:35 1998 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* scsi.c 1.7
-	  open_scsi() returniert nun SCSI *scgp, wird auch fuer read_scsi() verwendet
+	  open_scsi() returniert nun SCSI *usalp, wird auch fuer read_scsi() verwendet
 
 Sat Oct 24 01:29:24 1998 Joerg Schilling <joerg@schily.isdn.cs.tu-berlin.de>
 	* scsi.c 1.6

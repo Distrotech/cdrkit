@@ -158,7 +158,7 @@ Fri Jun  2 08:26:46 2000 Heiko Eissfeldt <heiko@colossus.escape.de>
 	  interface change: ReadCdrom and ReadCdromData return number of read sectors
 	  schily include file added
 	  default buffer size set to 8 sectors for ide on Linux
-	  suppress errors when scgp->silent > 0
+	  suppress errors when usalp->silent > 0
 
 Fri Jun  2 07:39:55 2000 Heiko Eissfeldt <heiko@colossus.escape.de>
 	* ringbuff.c 1.4

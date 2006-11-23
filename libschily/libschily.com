@@ -1,4 +1,4 @@
-$ define/nolog scg [-.libscg.scg]
+$ define/nolog usal [-.libusal.usal]
 $ set default [-.inc]
 $ cc/float=ieee/pref=all/obj/incl=([],[-.include])/define=("VMS") ALIGN_TEST.C
 $ link ALIGN_TEST

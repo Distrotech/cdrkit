@@ -3,14 +3,14 @@ IF(NOT GUARD_SCGCONFIG)
    SET(GUARD_SCGCONFIG 1)
 
 
-LIST(APPEND EXTRA_LIBS "scg")
+LIST(APPEND EXTRA_LIBS "usal")
 
 INCLUDE(CheckIncludeFiles)
 CHECK_INCLUDE_FILES("stdio.h;camlib.h" HAVE_CAMLIB_H)
 
 IF(HAVE_CAMLIB_H)
 
-   # quick an dirty, should better become a variable used by libscg only,
+   # quick an dirty, should better become a variable used by libusal only,
    # analogous to SCG_SELF_LIBS
    ADD_DEFINITIONS(-DHAVE_CAMLIB_H)
 

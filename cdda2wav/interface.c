@@ -76,7 +76,7 @@ static char     sccsid[] =
 # endif
 #endif
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #include "mytype.h"
 #include "byteorder.h"
@@ -104,21 +104,21 @@ void	priv_on(void);
 void	priv_off(void);
 
 void		(*EnableCdda)(SCSI *, int Switch, unsigned uSectorsize);
-unsigned (*doReadToc)(SCSI *scgp);
-void	 	(*ReadTocText)(SCSI *scgp);
-unsigned (*ReadLastAudio)(SCSI *scgp);
-int      (*ReadCdRom)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+unsigned (*doReadToc)(SCSI *usalp);
+void	 	(*ReadTocText)(SCSI *usalp);
+unsigned (*ReadLastAudio)(SCSI *usalp);
+int      (*ReadCdRom)(SCSI *usalp, UINT4 *p, unsigned lSector, 
 							 unsigned SectorBurstVal);
-int      (*ReadCdRomData)(SCSI *scgp, unsigned char *p, unsigned lSector, 
+int      (*ReadCdRomData)(SCSI *usalp, unsigned char *p, unsigned lSector, 
 								  unsigned SectorBurstVal);
-int      (*ReadCdRomSub)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int      (*ReadCdRomSub)(SCSI *usalp, UINT4 *p, unsigned lSector, 
 								 unsigned SectorBurstVal);
-subq_chnl *(*ReadSubChannels)(SCSI *scgp, unsigned lSector);
-subq_chnl *(*ReadSubQ)(SCSI *scgp, unsigned char sq_format, 
+subq_chnl *(*ReadSubChannels)(SCSI *usalp, unsigned lSector);
+subq_chnl *(*ReadSubQ)(SCSI *usalp, unsigned char sq_format, 
 							  unsigned char track);
-void     (*SelectSpeed)(SCSI *scgp, unsigned speed);
-int		(*Play_at)(SCSI *scgp, unsigned int from_sector, unsigned int sectors);
-int		(*StopPlay)(SCSI *scgp);
+void     (*SelectSpeed)(SCSI *usalp, unsigned speed);
+int		(*Play_at)(SCSI *usalp, unsigned int from_sector, unsigned int sectors);
+int		(*StopPlay)(SCSI *usalp);
 void		(*trash_cache)(UINT4 *p, unsigned lSector, unsigned SectorBurstVal);
 
 #if	defined	USE_PARANOIA
@@ -163,13 +163,13 @@ static void Dummy()
 {
 }
 
-static SCSI    *scgp;
+static SCSI    *usalp;
 
 SCSI *get_scsi_p(void);
 
 SCSI *get_scsi_p()
 {
-    return scgp;
+    return usalp;
 }
 
 #if !defined(SIM_CD)
@@ -204,10 +204,10 @@ static void SetupSCSI()
     }
 
     /* do a test unit ready to 'init' the device. */
-    TestForMedium(scgp);
+    TestForMedium(usalp);
 
     /* check for the correct type of unit. */
-    p = Inquiry(scgp);
+    p = Inquiry(usalp);
 
 #undef TYPE_ROM
 #define TYPE_ROM 5
@@ -266,14 +266,14 @@ static void SetupSCSI()
     {
       int mmc_code;
 
-      scgp->silent ++;
-      allow_atapi(scgp, 1);
+      usalp->silent ++;
+      allow_atapi(usalp, 1);
       if (*p == TYPE_ROM) {
-        mmc_code = heiko_mmc(scgp);
+        mmc_code = heiko_mmc(usalp);
       } else {
         mmc_code = 0;
       }
-      scgp->silent --;
+      usalp->silent --;
 
       /* Exceptions for drives that report incorrect MMC capability */
       if (mmc_code != 0) {
@@ -407,12 +407,12 @@ lost_toshibas:
 
     /* look if caddy is loaded */
     if (interface == GENERIC_SCSI) {
-	scgp->silent++;
-	while (!wait_unit_ready(scgp, 60)) {
+	usalp->silent++;
+	while (!wait_unit_ready(usalp, 60)) {
 		fprintf(stderr,"load cdrom please and press enter");
 		getchar();
 	}
-	scgp->silent--;
+	usalp->silent--;
     }
 }
 
@@ -427,16 +427,16 @@ static int check_linux_scsi_interface(char *pdev_name)
     unsigned char *p = NULL;
 	char	errstr[80];
     
-	dev = scg_open(pdev_name, errstr, sizeof(errstr), 0, 0);
+	dev = usal_open(pdev_name, errstr, sizeof(errstr), 0, 0);
     if (NULL == dev)
         return EINVAL;
     p = Inquiry(dev);
     if (p)
     {
-        scg_close(dev);
+        usal_close(dev);
         return 0;
     }
-    scg_close(dev);
+    usal_close(dev);
     return EINVAL;
 }
 #endif
@@ -605,22 +605,22 @@ static int OpenCdRom(char *pdev_name)
 	needroot(0);
 	needgroup(0);
 	/*
-	 * Call scg_remote() to force loading the remote SCSI transport library
-	 * code that is located in librscg instead of the dummy remote routines
-	 * that are located inside libscg.
+	 * Call usal_remote() to force loading the remote SCSI transport library
+	 * code that is located in librusal instead of the dummy remote routines
+	 * that are located inside libusal.
 	 */
-	scg_remote();
+	usal_remote();
 	if (pdev_name != NULL &&
 	    ((strncmp(pdev_name, "HELP", 4) == 0) ||
 	     (strncmp(pdev_name, "help", 4) == 0))) {
-		scg_help(stderr);
+		usal_help(stderr);
 		exit(NO_ERROR);
 	}
 
 	/* device name, debug, verboseopen */
-	scgp = scg_open(pdev_name, errstr, sizeof(errstr), 0, 0);
+	usalp = usal_open(pdev_name, errstr, sizeof(errstr), 0, 0);
 
-	if (scgp == NULL) {
+	if (usalp == NULL) {
 		int	err = geterrno();
 
 		errmsgno(err, "%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
@@ -630,7 +630,7 @@ static int OpenCdRom(char *pdev_name)
         	dontneedgroup();
         	dontneedroot();
 #if defined(sun) || defined(__sun)
-		fprintf(stderr, "On SunOS/Solaris make sure you have Joerg Schillings scg SCSI driver installed.\n");
+		fprintf(stderr, "On SunOS/Solaris make sure you have Joerg Schillings usal SCSI driver installed.\n");
 #endif
 #if defined (__linux__)
 	        fprintf(stderr, "Use the script scan_scsi.linux to find out more.\n");
@@ -641,13 +641,13 @@ static int OpenCdRom(char *pdev_name)
 		fprintf(stderr, "For possible transport specifiers try 'cdda2wav dev=help'.\n");
 	        exit(SYNTAX_ERROR);
 	}
-	scg_settimeout(scgp, 300);
-	scg_settimeout(scgp, 60);
-	scgp->silent = global.scsi_silent;
-	scgp->verbose = global.scsi_verbose;
+	usal_settimeout(usalp, 300);
+	usal_settimeout(usalp, 60);
+	usalp->silent = global.scsi_silent;
+	usalp->verbose = global.scsi_verbose;
 
-	if (global.nsectors > (unsigned) scg_bufsize(scgp, 3*1024*1024)/CD_FRAMESIZE_RAW)
-		global.nsectors = scg_bufsize(scgp, 3*1024*1024)/CD_FRAMESIZE_RAW;
+	if (global.nsectors > (unsigned) usal_bufsize(usalp, 3*1024*1024)/CD_FRAMESIZE_RAW)
+		global.nsectors = usal_bufsize(usalp, 3*1024*1024)/CD_FRAMESIZE_RAW;
 	if (global.overlap >= global.nsectors)
 		global.overlap = global.nsectors-1;
 
@@ -656,13 +656,13 @@ static int OpenCdRom(char *pdev_name)
 	 * and require root privileges or limit RLIMIT_MEMLOCK infinity
 	 * in order to get a SCSI buffer in case we did call mlockall(MCL_FUTURE).
 	 */
-	init_scsibuf(scgp, global.nsectors*CD_FRAMESIZE_RAW);
+	init_scsibuf(usalp, global.nsectors*CD_FRAMESIZE_RAW);
 	priv_off();
 	dontneedgroup();
 	dontneedroot();
 
 	if (global.scanbus) {
-		select_target(scgp, stdout);
+		select_target(usalp, stdout);
 		exit(0);
 	}
   } else {
@@ -702,8 +702,8 @@ static int OpenCdRom(char *pdev_name)
 	 * We do this more than once as it is impossible to understand where
 	 * the right place would be to do this....
 	 */
-	if (scgp != NULL) {
-		scgp->verbose = global.scsi_verbose;
+	if (usalp != NULL) {
+		usalp->verbose = global.scsi_verbose;
 	}
   }
   return retval;
@@ -855,12 +855,12 @@ static unsigned ReadToc_sim(SCSI *x, TOC *toc)
 }
 
 
-static subq_chnl *ReadSubQ_sim(SCSI *scgp, unsigned char sq_format, 
+static subq_chnl *ReadSubQ_sim(SCSI *usalp, unsigned char sq_format, 
 										 unsigned char track);
 /* request sub-q-channel information. This function may cause confusion
  * for a drive, when called in the sampling process.
  */
-static subq_chnl *ReadSubQ_sim(SCSI *scgp, unsigned char sq_format, 
+static subq_chnl *ReadSubQ_sim(SCSI *usalp, unsigned char sq_format, 
 										 unsigned char track)
 {
     subq_chnl *SQp = (subq_chnl *) (SubQbuffer);
@@ -954,11 +954,11 @@ void SetupInterface()
     }
 
 #if	defined SIM_CD
-    scgp = malloc(sizeof(* scgp));
-    if (scgp == NULL) {
+    usalp = malloc(sizeof(* usalp));
+    if (usalp == NULL) {
 	FatalError("No memory for SCSI structure.\n");
     }
-    scgp->silent = 0;
+    usalp->silent = 0;
     SetupSimCd();
 #else
     /* if drive is of type scsi, get vendor name */
@@ -966,9 +966,9 @@ void SetupInterface()
         unsigned sector_size;
 
 	SetupSCSI();
-        sector_size = get_orig_sectorsize(scgp, &orgmode4, &orgmode10, &orgmode11);
-	if (!SCSI_emulated_ATAPI_on(scgp)) {
-          if ( sector_size != 2048 && set_sectorsize(scgp, 2048) ) {
+        sector_size = get_orig_sectorsize(usalp, &orgmode4, &orgmode10, &orgmode11);
+	if (!SCSI_emulated_ATAPI_on(usalp)) {
+          if ( sector_size != 2048 && set_sectorsize(usalp, 2048) ) {
 	    fprintf( stderr, "Could not change sector size from %d to 2048\n", sector_size );
           }
         } else {
@@ -981,11 +981,11 @@ void SetupInterface()
 
     } else {
 #if defined (HAVE_IOCTL_INTERFACE)
-	scgp = malloc(sizeof(* scgp));
-	if (scgp == NULL) {
+	usalp = malloc(sizeof(* usalp));
+	if (usalp == NULL) {
 		FatalError("No memory for SCSI structure.\n");
 	}
-	scgp->silent = 0;
+	usalp->silent = 0;
 	SetupCookedIoctl( global.dev_name );
 #else
 	FatalError("Sorry, there is no known method to access the device.\n");
@@ -997,8 +997,8 @@ void SetupInterface()
 	 * We do this more than once as it is impossible to understand where
 	 * the right place would be to do this....
 	 */
-	if (scgp != NULL) {
-		scgp->verbose = global.scsi_verbose;
+	if (usalp != NULL) {
+		usalp->verbose = global.scsi_verbose;
 	}
 }
 

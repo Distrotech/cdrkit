@@ -43,8 +43,8 @@ static	char sccsid[] =
 #include <schily.h>
 
 #include "mkisofs.h"
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "wodim.h"
 #include "../wodim/defaults.h"
@@ -60,7 +60,7 @@ static	char sccsid[] =
  */
 #define	BUF_SIZE	(62*1024)	/* Must be a multiple of 2048	   */
 
-static	SCSI	*scgp;
+static	SCSI	*usalp;
 static	long	bufsize;		/* The size of the transfer buffer */
 
 int	readsecs(int startsecno, void *buffer, int sectorcount);
@@ -86,7 +86,7 @@ readsecs(int startsecno, void *buffer, int sectorcount)
 		 * XXX We assume that secsize is no more than SECTOR_SIZE
 		 * XXX and that SECTOR_SIZE / secsize is not a fraction.
 		 */
-		secsize = scgp->cap->c_bsize;
+		secsize = usalp->cap->c_bsize;
 		amount = sectorcount * SECTOR_SIZE;
 		secno = startsecno * (SECTOR_SIZE / secsize);
 		bp = buffer;
@@ -97,8 +97,8 @@ readsecs(int startsecno, void *buffer, int sectorcount)
 				amt = bufsize;
 			secnum = amt / secsize;
 
-			if (read_scsi(scgp, bp, secno, secnum) < 0 ||
-						scg_getresid(scgp) != 0) {
+			if (read_scsi(usalp, bp, secno, secnum) < 0 ||
+						usal_getresid(usalp) != 0) {
 #ifdef	OLD
 				return (-1);
 #else
@@ -149,39 +149,39 @@ scsidev_open(char *path)
 			/* has been allocated by scsi_getbuf()		   */
 
 	/*
-	 * Call scg_remote() to force loading the remote SCSI transport library
-	 * code that is located in librscg instead of the dummy remote routines
-	 * that are located inside libscg.
+	 * Call usal_remote() to force loading the remote SCSI transport library
+	 * code that is located in librusal instead of the dummy remote routines
+	 * that are located inside libusal.
 	 */
-	scg_remote();
+	usal_remote();
 
 	cdr_defaults(&path, NULL, NULL, NULL);
 			/* path, debug, verboseopen */
-	scgp = scg_open(path, errstr, sizeof (errstr), 0, 0);
-	if (scgp == 0) {
+	usalp = usal_open(path, errstr, sizeof (errstr), 0, 0);
+	if (usalp == 0) {
 		errmsg("%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
 		return (-1);
 	}
 
-	bufsize = scg_bufsize(scgp, BUF_SIZE);
-	if ((buf = scg_getbuf(scgp, bufsize)) == NULL) {
+	bufsize = usal_bufsize(usalp, BUF_SIZE);
+	if ((buf = usal_getbuf(usalp, bufsize)) == NULL) {
 		errmsg("Cannot get SCSI I/O buffer.\n");
-		scg_close(scgp);
+		usal_close(usalp);
 		return (-1);
 	}
 
 	bufsize = (bufsize / SECTOR_SIZE) * SECTOR_SIZE;
 
-	allow_atapi(scgp, TRUE);
+	allow_atapi(usalp, TRUE);
 
-	if (!wait_unit_ready(scgp, 60)) { /* Eat Unit att / Wait for drive */
-		scgp->silent--;
+	if (!wait_unit_ready(usalp, 60)) { /* Eat Unit att / Wait for drive */
+		usalp->silent--;
 		return (-1);
 	}
 
-	scgp->silent++;
-	read_capacity(scgp);	/* Set Capacity/Sectorsize for I/O */
-	scgp->silent--;
+	usalp->silent++;
+	read_capacity(usalp);	/* Set Capacity/Sectorsize for I/O */
+	usalp->silent--;
 
 	return (1);
 }
@@ -190,7 +190,7 @@ int
 scsidev_close()
 {
 	if (in_image == NULL) {
-		return (scg_close(scgp));
+		return (usal_close(usalp));
 	} else {
 		return (fclose(in_image));
 	}

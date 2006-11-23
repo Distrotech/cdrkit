@@ -3,8 +3,6 @@ supported drives. wodim comes with a hacked mkisofs
 that allows you to that on even on systems that don't support
 a sectorsize 2048 Bytes (e.g. SGI IRIX and old versions of Solaris)
 or systems that don't support raw device access (e.g. OS/2 W95/W98/WNT).
-This is possible because this hacked version of mkisofs
-uses my scg driver to read the old session from the CD-Recorder.
 
 According to www.cd-info.com, a CD+ is a CD with two sessions.
 The first session is an audio session, the second session a data

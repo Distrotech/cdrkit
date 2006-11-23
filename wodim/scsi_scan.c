@@ -45,17 +45,17 @@ static	char sccsid[] =
 #include <errno.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "scsi_scan.h"
 #include "wodim.h"
 
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
-int	select_target(SCSI *scgp, FILE *f);
-static	int	select_unit(SCSI *scgp, FILE *f);
+int	select_target(SCSI *usalp, FILE *f);
+static	int	select_unit(SCSI *usalp, FILE *f);
 
 static void
 print_product(FILE *f, struct  scsi_inquiry *ip)
@@ -66,17 +66,17 @@ print_product(FILE *f, struct  scsi_inquiry *ip)
 	if (ip->add_len < 31) {
 		fprintf(f, "NON CCS ");
 	}
-	scg_fprintdev(f, ip);
+	usal_fprintdev(f, ip);
 }
 
 int
-select_target(SCSI *scgp, FILE *f)
+select_target(SCSI *usalp, FILE *f)
 {
 	int	initiator;
 #ifdef	FMT
-	int	cscsibus = scg_scsibus(scgp);
-	int	ctarget  = scg_target(scgp);
-	int	clun	 = scg_lun(scgp);
+	int	cscsibus = usal_scsibus(usalp);
+	int	ctarget  = usal_target(usalp);
+	int	clun	 = usal_lun(usalp);
 #endif
 	int	n;
 	int	low	= -1;
@@ -87,25 +87,25 @@ select_target(SCSI *scgp, FILE *f)
 	int	lun = 0;
 	BOOL	have_tgt;
 
-	scgp->silent++;
+	usalp->silent++;
 
 	for (bus = 0; bus < 256; bus++) {
-		scg_settarget(scgp, bus, 0, 0);
+		usal_settarget(usalp, bus, 0, 0);
 
-		if (!scg_havebus(scgp, bus))
+		if (!usal_havebus(usalp, bus))
 			continue;
 
-		initiator = scg_initiator_id(scgp);
+		initiator = usal_initiator_id(usalp);
 		fprintf(f, "scsibus%d:\n", bus);
 
 		for (tgt = 0; tgt < 16; tgt++) {
 			n = bus*100 + tgt;
 
-			scg_settarget(scgp, bus, tgt, lun);
-			have_tgt = unit_ready(scgp) || scgp->scmd->error != SCG_FATAL;
+			usal_settarget(usalp, bus, tgt, lun);
+			have_tgt = unit_ready(usalp) || usalp->scmd->error != SCG_FATAL;
 
 			if (!have_tgt && tgt > 7) {
-				if (scgp->scmd->ux_errno == EINVAL)
+				if (usalp->scmd->ux_errno == EINVAL)
 					break;
 				continue;
 			}
@@ -131,7 +131,7 @@ select_target(SCSI *scgp, FILE *f)
 				/*
 				 * Hack: fd -> -2 means no access
 				 */
-				fprintf(f, "%c\n", scgp->fd == -2 ? '?':'*');
+				fprintf(f, "%c\n", usalp->fd == -2 ? '?':'*');
 				continue;
 			}
 			amt++;
@@ -139,11 +139,11 @@ select_target(SCSI *scgp, FILE *f)
 				low = n;
 			high = n;
 
-			getdev(scgp, FALSE);
-			print_product(f, scgp->inq);
+			getdev(usalp, FALSE);
+			print_product(f, usalp->inq);
 		}
 	}
-	scgp->silent--;
+	usalp->silent--;
 
 	if (low < 0) {
 		errmsgno(EX_BAD, "No target found.\n");
@@ -154,55 +154,55 @@ select_target(SCSI *scgp, FILE *f)
 	getint("Select target", &n, low, high);
 	bus = n/100;
 	tgt = n%100;
-	scg_settarget(scgp, bus, tgt, lun);
-	return (select_unit(scgp));
+	usal_settarget(usalp, bus, tgt, lun);
+	return (select_unit(usalp));
 
-	scg_settarget(scgp, cscsibus, ctarget, clun);
+	usal_settarget(usalp, cscsibus, ctarget, clun);
 #endif
 	return (amt);
 }
 
 static int
-select_unit(SCSI *scgp, FILE *f)
+select_unit(SCSI *usalp, FILE *f)
 {
 	int	initiator;
-	int	clun	= scg_lun(scgp);
+	int	clun	= usal_lun(usalp);
 	int	low	= -1;
 	int	high	= -1;
 	int	lun;
 
-	scgp->silent++;
+	usalp->silent++;
 
-	fprintf(f, "scsibus%d target %d:\n", scg_scsibus(scgp), scg_target(scgp));
+	fprintf(f, "scsibus%d target %d:\n", usal_scsibus(usalp), usal_target(usalp));
 
-	initiator = scg_initiator_id(scgp);
+	initiator = usal_initiator_id(usalp);
 	for (lun = 0; lun < 8; lun++) {
 
 #ifdef	FMT
-		if (print_disknames(scg_scsibus(scgp), scg_target(scgp), lun) < 8)
+		if (print_disknames(usal_scsibus(usalp), usal_target(usalp), lun) < 8)
 			fprintf(f, "\t");
 		else
 			fprintf(f, " ");
 #else
 		fprintf(f, "\t");
 #endif
-		if (fprintf(f, "%d,%d,%d", scg_scsibus(scgp), scg_target(scgp), lun) < 8)
+		if (fprintf(f, "%d,%d,%d", usal_scsibus(usalp), usal_target(usalp), lun) < 8)
 			fprintf(f, "\t");
 		else
 			fprintf(f, " ");
 		fprintf(f, "%3d) ", lun);
-		if (scg_target(scgp) == initiator) {
+		if (usal_target(usalp) == initiator) {
 			fprintf(f, "HOST ADAPTOR\n");
 			continue;
 		}
-		scg_settarget(scgp, scg_scsibus(scgp), scg_target(scgp), lun);
-		if (!unit_ready(scgp) && scgp->scmd->error == SCG_FATAL) {
+		usal_settarget(usalp, usal_scsibus(usalp), usal_target(usalp), lun);
+		if (!unit_ready(usalp) && usalp->scmd->error == SCG_FATAL) {
 			fprintf(f, "*\n");
 			continue;
 		}
-		if (unit_ready(scgp)) {
+		if (unit_ready(usalp)) {
 			/* non extended sense illegal lun */
-			if (scgp->scmd->sense.code == 0x25) {
+			if (usalp->scmd->sense.code == 0x25) {
 				fprintf(f, "BAD UNIT\n");
 				continue;
 			}
@@ -211,10 +211,10 @@ select_unit(SCSI *scgp, FILE *f)
 			low = lun;
 		high = lun;
 
-		getdev(scgp, FALSE);
-		print_product(f, scgp->inq);
+		getdev(usalp, FALSE);
+		print_product(f, usalp->inq);
 	}
-	scgp->silent--;
+	usalp->silent--;
 
 	if (low < 0) {
 		errmsgno(EX_BAD, "No lun found.\n");
@@ -223,11 +223,11 @@ select_unit(SCSI *scgp, FILE *f)
 	lun = -1;
 #ifdef	FMT
 	getint("Select lun", &lun, low, high);
-	scg_settarget(scgp, scg_scsibus(scgp), scg_target(scgp), lun);
-	format_one(scgp);
+	usal_settarget(usalp, usal_scsibus(usalp), usal_target(usalp), lun);
+	format_one(usalp);
 	return (1);
 #endif
 
-	scg_settarget(scgp, scg_scsibus(scgp), scg_target(scgp), clun);
+	usal_settarget(usalp, usal_scsibus(usalp), usal_target(usalp), clun);
 	return (1);
 }

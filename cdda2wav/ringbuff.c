@@ -28,7 +28,7 @@ static char     sccsid[] =
 #include <sys/sem.h>
 #endif
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #include "mytype.h"
 #include "global.h"

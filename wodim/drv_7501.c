@@ -64,10 +64,10 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include <libport.h>
 
@@ -225,31 +225,31 @@ struct cw7501_cue {
 };
 
 
-static	int	cw7501_attach(SCSI *scgp, cdr_t *dp);
-static	int	cw7501_init(SCSI *scgp, cdr_t *dp);
-static	int	cw7501_getdisktype(SCSI *scgp, cdr_t *dp);
-static	int	cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	cw7501_next_wr_addr(SCSI *scgp, track_t *trackp, long *ap);
-static	int	cw7501_write(SCSI *scgp, caddr_t bp, long sectaddr, long size, 
+static	int	cw7501_attach(SCSI *usalp, cdr_t *dp);
+static	int	cw7501_init(SCSI *usalp, cdr_t *dp);
+static	int	cw7501_getdisktype(SCSI *usalp, cdr_t *dp);
+static	int	cw7501_speed_select(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	cw7501_next_wr_addr(SCSI *usalp, track_t *trackp, long *ap);
+static	int	cw7501_write(SCSI *usalp, caddr_t bp, long sectaddr, long size, 
 									 int blocks, BOOL islast);
-static	int	cw7501_write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	cw7501_close_track(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_write_leadin(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_open_track(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_close_track(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_open_session(SCSI *usalp, cdr_t *dp, track_t *trackp);
 static	int	cw7501_gen_cue(track_t *trackp, void *vcuep, BOOL needgap);
 static	void	fillcue(struct cw7501_cue *cp, int ca, int tno, int idx, 
 							  int dataform, int scms, msf_t *mp);
-static	int	cw7501_send_cue(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	cw7501_fixate(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	cw7501_rezero(SCSI *scgp, int reset, int dwreset);
-static	int	cw7501_read_trackinfo(SCSI *scgp, Uchar *bp, int count, 
+static	int	cw7501_send_cue(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_fixate(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	cw7501_rezero(SCSI *usalp, int reset, int dwreset);
+static	int	cw7501_read_trackinfo(SCSI *usalp, Uchar *bp, int count, 
 												 int track, int mode);
-static	int	cw7501_write_dao(SCSI *scgp, Uchar *bp, int len, int disktype);
-static	int	cw7501_reserve_track(SCSI *scgp, unsigned long);
-static	int	cw7501_set_mode(SCSI *scgp, int phys_form, int control,
+static	int	cw7501_write_dao(SCSI *usalp, Uchar *bp, int len, int disktype);
+static	int	cw7501_reserve_track(SCSI *usalp, unsigned long);
+static	int	cw7501_set_mode(SCSI *usalp, int phys_form, int control,
 						int subc, int alt, int trackno, int tindex,
 						int packet_size, int write_mode);
-static	int	cw7501_finalize(SCSI *scgp, int pad, int fixed);
+static	int	cw7501_finalize(SCSI *usalp, int pad, int fixed);
 
 
 cdr_t	cdr_cw7501 = {
@@ -332,20 +332,20 @@ static const char *sd_cw7501_error_str[] = {
 };
 
 static int 
-cw7501_attach(SCSI *scgp, cdr_t *dp)
+cw7501_attach(SCSI *usalp, cdr_t *dp)
 {
-	scg_setnonstderrs(scgp, sd_cw7501_error_str);
+	usal_setnonstderrs(usalp, sd_cw7501_error_str);
 	return (0);
 }
 
 static int 
-cw7501_init(SCSI *scgp, cdr_t *dp)
+cw7501_init(SCSI *usalp, cdr_t *dp)
 {
-	return (cw7501_speed_select(scgp, dp, NULL));
+	return (cw7501_speed_select(usalp, dp, NULL));
 }
 
 static int 
-cw7501_getdisktype(SCSI *scgp, cdr_t *dp)
+cw7501_getdisktype(SCSI *usalp, cdr_t *dp)
 {
 	Ulong	maxb = 0;
 	Uchar	buf[256];
@@ -353,33 +353,33 @@ cw7501_getdisktype(SCSI *scgp, cdr_t *dp)
 	dstat_t	*dsp = dp->cdr_dstat;
 
 	if (xdebug > 0) {
-		scgp->silent++;
+		usalp->silent++;
 		fillbytes((caddr_t)buf, sizeof (buf), '\0');
-		ret = cw7501_read_trackinfo(scgp, buf, 32, 0, 0);
+		ret = cw7501_read_trackinfo(usalp, buf, 32, 0, 0);
 		if (ret >= 0)
-		scg_prbytes("TI EXIST-R   (0): ", buf, 32 -scg_getresid(scgp));
+		usal_prbytes("TI EXIST-R   (0): ", buf, 32 -usal_getresid(usalp));
 
 		fillbytes((caddr_t)buf, sizeof (buf), '\0');
-		ret = cw7501_read_trackinfo(scgp, buf, 32, 0, 1);
+		ret = cw7501_read_trackinfo(usalp, buf, 32, 0, 1);
 		if (ret >= 0)
-		scg_prbytes("TI NWA       (1): ", buf, 32 -scg_getresid(scgp));
+		usal_prbytes("TI NWA       (1): ", buf, 32 -usal_getresid(usalp));
 
 		fillbytes((caddr_t)buf, sizeof (buf), '\0');
-		ret = cw7501_read_trackinfo(scgp, buf, 32, 0, 2);
+		ret = cw7501_read_trackinfo(usalp, buf, 32, 0, 2);
 		if (ret >= 0)
-		scg_prbytes("TI PMA       (2): ", buf, 32 -scg_getresid(scgp));
+		usal_prbytes("TI PMA       (2): ", buf, 32 -usal_getresid(usalp));
 
 		fillbytes((caddr_t)buf, sizeof (buf), '\0');
-		ret = cw7501_read_trackinfo(scgp, buf, 32, 0, 3);
+		ret = cw7501_read_trackinfo(usalp, buf, 32, 0, 3);
 		if (ret >= 0)
-		scg_prbytes("TI EXIST-ROM (3): ", buf, 32 -scg_getresid(scgp));
-		scgp->silent--;
+		usal_prbytes("TI EXIST-ROM (3): ", buf, 32 -usal_getresid(usalp));
+		usalp->silent--;
 	}
 
 	fillbytes((caddr_t)buf, sizeof (buf), '\0');
 
-	scgp->silent++;
-	ret = cw7501_read_trackinfo(scgp, buf, 12, 0, TI_NWA);
+	usalp->silent++;
+	ret = cw7501_read_trackinfo(usalp, buf, 12, 0, TI_NWA);
 	if (ret < 0 &&
 			(dsp->ds_cdrflags & (RF_WRITE|RF_BLANK)) == RF_WRITE) {
 
@@ -390,11 +390,11 @@ cw7501_getdisktype(SCSI *scgp, cdr_t *dp)
 		 */
 		if (lverbose)
 			printf("Trying to clear drive status.\n");
-		cw7501_rezero(scgp, 0, 1);
-		wait_unit_ready(scgp, 60);
-		ret = cw7501_read_trackinfo(scgp, buf, 12, 0, TI_NWA);
+		cw7501_rezero(usalp, 0, 1);
+		wait_unit_ready(usalp, 60);
+		ret = cw7501_read_trackinfo(usalp, buf, 12, 0, TI_NWA);
 	}
-	scgp->silent--;
+	usalp->silent--;
 
 	if (ret >= 0) {
 		maxb = a_to_u_4_byte(&buf[8]);
@@ -403,12 +403,12 @@ cw7501_getdisktype(SCSI *scgp, cdr_t *dp)
 	}
 	dsp->ds_maxblocks = maxb;
 
-	return (drive_getdisktype(scgp, dp));
+	return (drive_getdisktype(usalp, dp));
 }
 
 
 static int 
-cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp)
+cw7501_speed_select(SCSI *usalp, cdr_t *dp, int *speedp)
 {
 	struct	scsi_mode_page_header	*mp;
 	char				mode[256];
@@ -425,7 +425,7 @@ cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp)
 	} else {
 		fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
-		if (!get_mode_params(scgp, page, "Speed information",
+		if (!get_mode_params(usalp, page, "Speed information",
 			(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 			return (-1);
 		}
@@ -449,7 +449,7 @@ cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp)
 	md.pagex.page20.p_len =  0x02;
 	md.pagex.page20.speed = speed;
 
-	if (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2) < 0)
+	if (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2) < 0)
 		return (-1);
 
 	fillbytes((caddr_t)&md, sizeof (md), '\0');
@@ -461,11 +461,11 @@ cw7501_speed_select(SCSI *scgp, cdr_t *dp, int *speedp)
 	md.pagex.page23.p_len =  0x02;
 	md.pagex.page23.dummy = dummy?1:0;
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 static int 
-cw7501_next_wr_addr(SCSI *scgp, track_t *trackp, long *ap)
+cw7501_next_wr_addr(SCSI *usalp, track_t *trackp, long *ap)
 {
 	struct cw7501_nwa	*nwa;
 	Uchar	buf[256];
@@ -483,21 +483,21 @@ cw7501_next_wr_addr(SCSI *scgp, track_t *trackp, long *ap)
 	if (trackp != 0 && trackp->track > 0 && is_packet(trackp)) {
 		fillbytes((caddr_t)buf, sizeof (buf), '\0');
 
-		scgp->silent++;
-		result = cw7501_read_trackinfo(scgp, buf, sizeof (*nwa),
+		usalp->silent++;
+		result = cw7501_read_trackinfo(usalp, buf, sizeof (*nwa),
 							trackp->trackno,
 							TI_NWA);
-		scgp->silent--;
+		usalp->silent--;
 	}
 
 	if (result < 0) {
-		if (cw7501_read_trackinfo(scgp, buf, sizeof (*nwa),
+		if (cw7501_read_trackinfo(usalp, buf, sizeof (*nwa),
 							0, TI_NWA) < 0)
 			return (-1);
 	}
-	if (scgp->verbose)
-		scg_prbytes("track info:", buf,
-				12-scg_getresid(scgp));
+	if (usalp->verbose)
+		usal_prbytes("track info:", buf,
+				12-usal_getresid(usalp));
 	next_addr = a_to_4_byte(&nwa->nwa_nwa);
 	/*
 	 * XXX Für TAO definitiv notwendig.
@@ -510,7 +510,7 @@ cw7501_next_wr_addr(SCSI *scgp, track_t *trackp, long *ap)
 }
 
 static int 
-cw7501_write(SCSI *scgp, 
+cw7501_write(SCSI *usalp, 
              caddr_t bp     /* address of buffer */, 
              long sectaddr  /* disk address (sector) to put */, 
              long size      /* number of bytes to transfer */, 
@@ -520,11 +520,11 @@ cw7501_write(SCSI *scgp,
 	if (lverbose > 1 && islast)
 		printf("\nWriting last record for this track.\n");
 
-	return (write_xg0(scgp, bp, 0, size, blocks));
+	return (write_xg0(usalp, bp, 0, size, blocks));
 }
 
 static int 
-cw7501_write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp)
+cw7501_write_leadin(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	Uint	i;
 	long	startsec = 0L;
@@ -534,7 +534,7 @@ cw7501_write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp)
 			printf("Sending CUE sheet...\n");
 			flush();
 		}
-		if ((*dp->cdr_send_cue)(scgp, dp, trackp) < 0) {
+		if ((*dp->cdr_send_cue)(usalp, dp, trackp) < 0) {
 			errmsgno(EX_BAD, "Cannot send CUE sheet.\n");
 			return (-1);
 		}
@@ -576,7 +576,7 @@ static Uchar	db2phys[] = {
 };
 
 static int 
-cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
+cw7501_open_track(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	struct	scsi_mode_page_header	*mp;
 	Uchar				mode[256];
@@ -594,7 +594,7 @@ cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 			/*
 			 * XXX Do we need to check isecsize too?
 			 */
-			pad_track(scgp, dp, trackp,
+			pad_track(usalp, dp, trackp,
 				trackp->trackstart-trackp->pregapsize,
 				(Llong)trackp->pregapsize*trackp->secsize,
 					FALSE, 0);
@@ -602,10 +602,10 @@ cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 		return (0);
 	}
 
-	if (select_secsize(scgp, trackp->secsize) < 0)
+	if (select_secsize(usalp, trackp->secsize) < 0)
 		return (-1);
 
-	if (!get_mode_params(scgp, page, "Dummy/autopg information",
+	if (!get_mode_params(usalp, page, "Dummy/autopg information",
 			(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 		return (-1);
 	}
@@ -618,13 +618,13 @@ cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 	xp23  = (struct cw7501_mode_page_23 *)mp;
 	xp23->autopg = 1;
-	if (!set_mode_params(scgp, "Dummy/autopg page", mode, len, 0, trackp->secsize))
+	if (!set_mode_params(usalp, "Dummy/autopg page", mode, len, 0, trackp->secsize))
 		return (-1);
 
 	/*
 	 * Set write modes for next track.
 	 */
-	if (cw7501_set_mode(scgp, db2phys[trackp->dbtype & 0x0F],
+	if (cw7501_set_mode(usalp, db2phys[trackp->dbtype & 0x0F],
 			st2mode[trackp->sectype&ST_MASK] | (is_copy(trackp) ? TM_ALLOW_COPY : 0),
 			0, is_scms(trackp) ? 1 : 0,
 			trackp->trackno, 1, 0,
@@ -636,21 +636,21 @@ cw7501_open_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 
 static int 
-cw7501_close_track(SCSI *scgp, cdr_t *dp, track_t *trackp)
+cw7501_close_track(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	if (!is_tao(trackp) && !is_packet(trackp)) {
 		return (0);
 	}
-	return (scsi_flush_cache(scgp, FALSE));
+	return (scsi_flush_cache(usalp, FALSE));
 }
 
 static int 
-cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
+cw7501_open_session(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	struct cw7501_mode_data		md;
 	int				count;
 
-	if (select_secsize(scgp, 2048) < 0)
+	if (select_secsize(usalp, 2048) < 0)
 		return (-1);
 
 	/*
@@ -663,7 +663,7 @@ cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
 		int				page = 0x23;
 		struct cw7501_mode_page_23	*xp23;
 
-		if (!get_mode_params(scgp, page, "Dummy/autopg information",
+		if (!get_mode_params(usalp, page, "Dummy/autopg information",
 				(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 			return (-1);
 		}
@@ -676,7 +676,7 @@ cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 		xp23  = (struct cw7501_mode_page_23 *)mp;
 		xp23->autopg = 0;
-		if (!set_mode_params(scgp, "Dummy/autopg page", mode, len, 0, trackp->secsize))
+		if (!set_mode_params(usalp, "Dummy/autopg page", mode, len, 0, trackp->secsize))
 			return (-1);
 
 		return (0);
@@ -695,21 +695,21 @@ cw7501_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	md.pagex.page24.disktype = toc2sess[track_base(trackp)->tracktype & TOC_MASK];
 	i_to_4_byte(&md.pagex.page24.disk_id, 0x12345);
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 static int 
-cw7501_fixate(SCSI *scgp, cdr_t *dp, track_t *trackp)
+cw7501_fixate(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	if (!is_tao(trackp) && !is_packet(trackp)) {
-		return (scsi_flush_cache(scgp, FALSE));
+		return (scsi_flush_cache(usalp, FALSE));
 	}
 	/*
 	 * 0x00	Finalize Disk (not appendable)
 	 * 0x01	Finalize Session (allow next session)
 	 * 0x10	Finalize track (variable packet writing) - Must fluch cache before
 	 */
-	return (cw7501_finalize(scgp, 0, (track_base(trackp)->tracktype & TOCF_MULTI) ? 0x01 : 0x00));
+	return (cw7501_finalize(usalp, 0, (track_base(trackp)->tracktype & TOCF_MULTI) ? 0x01 : 0x00));
 }
 
 /*--------------------------------------------------------------------------*/
@@ -807,7 +807,7 @@ cw7501_gen_cue(track_t *trackp, void *vcuep, BOOL needgap)
 
 	if (lverbose > 1) {
 		for (i = 0; i < ncue; i++) {
-			scg_prbytes("", (Uchar *)&cue[i], 8);
+			usal_prbytes("", (Uchar *)&cue[i], 8);
 		}
 	}
 	if (cuep)
@@ -842,7 +842,7 @@ fillcue(struct cw7501_cue *cp	/* The target cue entry */,
 }
 
 static int 
-cw7501_send_cue(SCSI *scgp, cdr_t *dp, track_t *trackp)
+cw7501_send_cue(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	struct cw7501_cue *cp;
 	int		ncue;
@@ -867,14 +867,14 @@ cw7501_send_cue(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	stoptime = starttime;
 	gettimeofday(&starttime, (struct timezone *)0);
 
-	scgp->silent++;
-	ret = cw7501_write_dao(scgp, (Uchar *)cp, ncue*8, disktype);
-	scgp->silent--;
+	usalp->silent++;
+	ret = cw7501_write_dao(usalp, (Uchar *)cp, ncue*8, disktype);
+	usalp->silent--;
 	free(cp);
 	if (ret < 0) {
 		errmsgno(EX_BAD, "CUE sheet not accepted. Retrying with minimum pregapsize = 1.\n");
 		ncue = (*dp->cdr_gen_cue)(trackp, &cp, TRUE);
-		ret  = cw7501_write_dao(scgp, (Uchar *)cp, ncue*8, disktype);
+		ret  = cw7501_write_dao(usalp, (Uchar *)cp, ncue*8, disktype);
 		free(cp);
 	}
 	if (ret >= 0 && lverbose) {
@@ -886,9 +886,9 @@ cw7501_send_cue(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 /*--------------------------------------------------------------------------*/
 static int 
-cw7501_rezero(SCSI *scgp, int reset, int dwreset)
+cw7501_rezero(SCSI *usalp, int reset, int dwreset)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -897,20 +897,20 @@ cw7501_rezero(SCSI *scgp, int reset, int dwreset)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_REZERO_UNIT;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.cmd_cdb[5] |= reset ? 0x80 : 0;
 	scmd->cdb.cmd_cdb[5] |= dwreset ? 0x40 : 0;
 
-	scgp->cmdname = "cw7501 rezero";
+	usalp->cmdname = "cw7501 rezero";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 
 static int
-cw7501_read_trackinfo(SCSI *scgp, Uchar *bp, int count, int track, int mode)
+cw7501_read_trackinfo(SCSI *usalp, Uchar *bp, int count, int track, int mode)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t) scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)bp;
@@ -919,23 +919,23 @@ cw7501_read_trackinfo(SCSI *scgp, Uchar *bp, int count, int track, int mode)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE9;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.cmd_cdb[6] = track;
 	g1_cdblen(&scmd->cdb.g1_cdb, count);
 	scmd->cdb.cmd_cdb[9] = (mode & 3) << 6;
 
-	scgp->cmdname = "cw7501 read_track_information";
+	usalp->cmdname = "cw7501 read_track_information";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
 	return (0);
 }
 
 static int 
-cw7501_write_dao(SCSI *scgp, Uchar *bp, int len, int disktype)
+cw7501_write_dao(SCSI *usalp, Uchar *bp, int len, int disktype)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)bp;
@@ -944,13 +944,13 @@ cw7501_write_dao(SCSI *scgp, Uchar *bp, int len, int disktype)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE6;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.cmd_cdb[2] = disktype;
 	g1_cdblen(&scmd->cdb.g1_cdb, len);
 
-	scgp->cmdname = "cw7501 write_dao";
+	usalp->cmdname = "cw7501 write_dao";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
@@ -960,41 +960,41 @@ cw7501_write_dao(SCSI *scgp, Uchar *bp, int len, int disktype)
  * XXX driver interface.
  */
 static int 
-cw7501_reserve_track(SCSI *scgp, unsigned long len)
+cw7501_reserve_track(SCSI *usalp, unsigned long len)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE7;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 /*	scmd->cdb.cmd_cdb[2] = control & 0x0F;*/
 	i_to_4_byte(&scmd->cdb.cmd_cdb[5], len);
 
-	scgp->cmdname = "cw7501 reserve_track";
+	usalp->cmdname = "cw7501 reserve_track";
 
 	comerrno(EX_BAD, "Control (as in set mode) missing.\n");
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int 
-cw7501_set_mode(SCSI *scgp, int phys_form, int control, int subc, 
+cw7501_set_mode(SCSI *usalp, int phys_form, int control, int subc, 
 						int alt, int trackno, int tindex, int packet_size, 
 						int write_mode)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE2;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.cmd_cdb[2] = phys_form & 0x0F;
 	scmd->cdb.cmd_cdb[3] = (control & 0x0F) << 4;
 	scmd->cdb.cmd_cdb[3] |= subc ? 2 : 0;
@@ -1004,17 +1004,17 @@ cw7501_set_mode(SCSI *scgp, int phys_form, int control, int subc,
 	i_to_3_byte(&scmd->cdb.cmd_cdb[6], packet_size);
 	scmd->cdb.cmd_cdb[9] = (write_mode & 0x03) << 6;
 
-	scgp->cmdname = "cw7501 set_mode";
+	usalp->cmdname = "cw7501 set_mode";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int 
-cw7501_finalize(SCSI *scgp, int pad, int fixed)
+cw7501_finalize(SCSI *usalp, int pad, int fixed)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
@@ -1022,13 +1022,13 @@ cw7501_finalize(SCSI *scgp, int pad, int fixed)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 8 * 60;		/* Needs up to 4 minutes */
 	scmd->cdb.g1_cdb.cmd = 0xE3;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.cmd_cdb[1] = pad ? 1 : 0;
 	scmd->cdb.cmd_cdb[8] = fixed & 0x03;
 
-	scgp->cmdname = "cw7501 finalize";
+	usalp->cmdname = "cw7501 finalize";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }

@@ -45,7 +45,7 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
+#include <usal/usalcmd.h>
 #include "auheader.h"
 
 typedef struct {

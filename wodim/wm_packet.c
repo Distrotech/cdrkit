@@ -45,7 +45,7 @@ static	char sccsid[] =
 #include <utypes.h>
 #include <schily.h>
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 #include "wodim.h"
 #include "xio.h"
 
@@ -55,10 +55,10 @@ extern	int	lverbose;
 
 extern	char	*buf;			/* The transfer buffer */
 
-int	write_packet_data(SCSI *scgp, cdr_t *dp, track_t *trackp);
+int	write_packet_data(SCSI *usalp, cdr_t *dp, track_t *trackp);
 
 int
-write_packet_data(SCSI *scgp, cdr_t *dp, track_t *trackp)
+write_packet_data(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	int	track = trackp->trackno;
 	int	f = -1;
@@ -96,14 +96,14 @@ int oper = -1;
 	if (dp->cdr_dstat->ds_flags & DSF_DVD)
 		secsps = 676.27;
 
-	scgp->silent++;
-	if ((*dp->cdr_buffer_cap)(scgp, &bsize, &bfree) < 0)
+	usalp->silent++;
+	if ((*dp->cdr_buffer_cap)(usalp, &bsize, &bfree) < 0)
 		bsize = -1L;
 	if (bsize == 0)		/* If we have no (known) buffer, we cannot */
 		bsize = -1L;	/* retrieve the buffer fill ratio	   */
 	else
 		dp->cdr_dstat->ds_buflow = 0;
-	scgp->silent--;
+	usalp->silent--;
 
 	if (trackp->xfp != NULL)
 		f = xfileno(trackp->xfp);
@@ -186,10 +186,10 @@ int oper = -1;
 		retry:
 		/* XXX Fixed-packet writes can be very slow*/
 		if (is_packet(trackp) && trackp->pktsize > 0)
-			scg_settimeout(scgp, 100);
+			usal_settimeout(usalp, 100);
 		/* XXX */
 		if (is_packet(trackp) && trackp->pktsize == 0) {
-			if ((*dp->cdr_next_wr_address)(scgp, trackp, &nextblock) == 0) {
+			if ((*dp->cdr_next_wr_address)(usalp, trackp, &nextblock) == 0) {
 				/*
 				 * Some drives (e.g. Ricoh MPS6201S) do not
 				 * increment the Next Writable Address value to
@@ -204,7 +204,7 @@ int oper = -1;
 			}
 		}
 
-		amount =  write_secs(scgp, dp, bp, startsec, bytespt, secspt, islast);
+		amount =  write_secs(usalp, dp, bp, startsec, bytespt, secspt, islast);
 		if (amount < 0) {
 			if (is_packet(trackp) && trackp->pktsize == 0 && !retried) {
 				printf("%swrite track data: error after %lld bytes, retry with new packet\n",
@@ -237,9 +237,9 @@ int oper = -1;
 				printf(" (fifo %3d%%)", fper);
 #ifdef	BCAP
 			if (bsize > 0) {			/* buffer size known */
-				scgp->silent++;
-				per = (*dp->cdr_buffer_cap)(scgp, (long *)0, &bfree);
-				scgp->silent--;
+				usalp->silent++;
+				per = (*dp->cdr_buffer_cap)(usalp, (long *)0, &bfree);
+				usalp->silent--;
 				if (per >= 0) {
 					per = 100*(bsize - bfree) / bsize;
 					if (per < 5)
@@ -299,7 +299,7 @@ int oper = -1;
 						track, (Llong)(padbytes >> 10));
 			neednl = FALSE;
 		}
-		pad_track(scgp, dp, trackp, startsec, padbytes,
+		pad_track(usalp, dp, trackp, startsec, padbytes,
 					TRUE, &savbytes);
 		bytes += savbytes;
 		startsec += savbytes / secsize;

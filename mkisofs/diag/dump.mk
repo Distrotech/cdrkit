@@ -28,7 +28,7 @@ CPPOPTS +=	-I../../cdrecord
 CFILES=		dump.c \
 		scsi.c scsi_cdr.c cd_misc.c modes.c \
 		defaults.c getnum.c
-LIBS=		-lrscg -lscg $(LIB_VOLMGT) -ldeflt -lschily $(SCSILIB) $(LIB_SOCKET)
+LIBS=		-lrusal -lusal $(LIB_VOLMGT) -ldeflt -lschily $(SCSILIB) $(LIB_SOCKET)
 XMK_FILE=	devdump_man.mk
 
 ###########################################################################

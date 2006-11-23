@@ -37,11 +37,11 @@ static char     sccsid[] =
                                 (cdb)->count[2] = (len) & 0xFF)
 
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #include "mytype.h"
 #include "cdda2wav.h"
@@ -57,21 +57,21 @@ unsigned char *bufferTOC;
 subq_chnl *SubQbuffer;
 unsigned char *cmd;
 
-static unsigned ReadFullTOCSony(SCSI *scgp);
-static unsigned ReadFullTOCMMC(SCSI *scgp);
+static unsigned ReadFullTOCSony(SCSI *usalp);
+static unsigned ReadFullTOCMMC(SCSI *usalp);
 
 
-int SCSI_emulated_ATAPI_on(SCSI *scgp)
+int SCSI_emulated_ATAPI_on(SCSI *usalp)
 {
 /*	return is_atapi;*/
-	if (scg_isatapi(scgp) > 0)
+	if (usal_isatapi(usalp) > 0)
 		return (TRUE);
 
-	(void) allow_atapi(scgp, TRUE);
-	return (allow_atapi(scgp, TRUE));
+	(void) allow_atapi(usalp, TRUE);
+	return (allow_atapi(usalp, TRUE));
 }
 
-int heiko_mmc(SCSI *scgp)
+int heiko_mmc(SCSI *usalp)
 {
         unsigned char	mode[0x100];
 	int		was_atapi;
@@ -80,11 +80,11 @@ int heiko_mmc(SCSI *scgp)
 
         fillbytes((caddr_t)mode, sizeof(mode), '\0');
 
-        was_atapi = allow_atapi(scgp, 1);
-        scgp->silent++;
-        mp = mmc_cap(scgp, mode);
-        scgp->silent--;
-        allow_atapi(scgp, was_atapi);
+        was_atapi = allow_atapi(usalp, 1);
+        usalp->silent++;
+        mp = mmc_cap(usalp, mode);
+        usalp->silent--;
+        allow_atapi(usalp, was_atapi);
         if (mp == NULL)
                 return (0);
 
@@ -105,7 +105,7 @@ unsigned char orgmode10, orgmode11;
 
 /* get current sector size from SCSI cdrom drive */
 unsigned int 
-get_orig_sectorsize(SCSI *scgp, unsigned char *m4, unsigned char *m10, 
+get_orig_sectorsize(SCSI *usalp, unsigned char *m4, unsigned char *m10, 
                     unsigned char *m11)
 {
       /* first get current values for density, etc. */
@@ -121,8 +121,8 @@ get_orig_sectorsize(SCSI *scgp, unsigned char *m4, unsigned char *m10,
       }
 
       /* do the scsi cmd */
-      if (scgp->verbose) fprintf(stderr, "\nget density and sector size...");
-      if (mode_sense(scgp, modesense, 12, 0x01, 0) < 0)
+      if (usalp->verbose) fprintf(stderr, "\nget density and sector size...");
+      if (mode_sense(usalp, modesense, 12, 0x01, 0) < 0)
 	  fprintf(stderr, "get_orig_sectorsize mode sense failed\n");
 
       /* FIXME: some drives dont deliver block descriptors !!! */
@@ -148,13 +148,13 @@ get_orig_sectorsize(SCSI *scgp, unsigned char *m4, unsigned char *m10,
 
 
 /* switch CDROM scsi drives to given sector size  */
-int set_sectorsize(SCSI *scgp, unsigned int secsize)
+int set_sectorsize(SCSI *usalp, unsigned int secsize)
 {
   static unsigned char mode [4 + 8];
   int retval;
 
   if (orgmode4 == 0xff) {
-    get_orig_sectorsize(scgp, &orgmode4, &orgmode10, &orgmode11);
+    get_orig_sectorsize(usalp, &orgmode4, &orgmode10, &orgmode11);
   }
   if (orgmode4 == 0x82 && secsize == 2048)
     orgmode4 = 0x81;
@@ -167,9 +167,9 @@ int set_sectorsize(SCSI *scgp, unsigned int secsize)
   mode[10] =  secsize >> 8;   /* block length "msb" */
   mode[11] =  secsize & 0xFF; /* block length lsb */
 
-  if (scgp->verbose) fprintf(stderr, "\nset density and sector size...");
+  if (usalp->verbose) fprintf(stderr, "\nset density and sector size...");
   /* do the scsi cmd */
-  if ((retval = mode_select(scgp, mode, 12, 0, scgp->inq->data_format >= 2)) < 0)
+  if ((retval = mode_select(usalp, mode, 12, 0, usalp->inq->data_format >= 2)) < 0)
         fprintf (stderr, "setting sector size failed\n");
 
   return retval;
@@ -177,7 +177,7 @@ int set_sectorsize(SCSI *scgp, unsigned int secsize)
 
 
 /* switch Toshiba/DEC and HP drives from/to cdda density */
-void EnableCddaModeSelect(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
+void EnableCddaModeSelect(SCSI *usalp, int fAudioMode, unsigned uSectorsize)
 {
   /* reserved, Medium type=0, Dev spec Parm = 0, block descriptor len 0 oder 8,
      Density (cd format) 
@@ -200,7 +200,7 @@ void EnableCddaModeSelect(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
                             0, 0, 0};/* Blocklen */
 
   if (orgmode4 == 0 && fAudioMode) {
-    if (0 == get_orig_sectorsize(scgp, &orgmode4, &orgmode10, &orgmode11)) {
+    if (0 == get_orig_sectorsize(usalp, &orgmode4, &orgmode10, &orgmode11)) {
         /* cannot retrieve density, sectorsize */
 	orgmode10 = (CD_FRAMESIZE >> 8L);
 	orgmode11 = (CD_FRAMESIZE & 0xFF);
@@ -219,15 +219,15 @@ void EnableCddaModeSelect(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
     mode [11] = orgmode11; /* (CD_FRAMESIZE & 0xFF); \* block length lsb */
   }
 
-  if (scgp->verbose) fprintf(stderr, "\nset density/sector size (EnableCddaModeSelect)...\n");
+  if (usalp->verbose) fprintf(stderr, "\nset density/sector size (EnableCddaModeSelect)...\n");
   /* do the scsi cmd */
-  if (mode_select(scgp, mode, 12, 0, scgp->inq->data_format >= 2) < 0)
+  if (mode_select(usalp, mode, 12, 0, usalp->inq->data_format >= 2) < 0)
         fprintf (stderr, "Audio mode switch failed\n");
 }
 
 
 /* read CD Text information from the table of contents */
-void ReadTocTextSCSIMMC(SCSI *scgp)
+void ReadTocTextSCSIMMC(SCSI *usalp)
 {
     short datalength;
 
@@ -235,7 +235,7 @@ void ReadTocTextSCSIMMC(SCSI *scgp)
   /* READTOC, MSF, format, res, res, res, Start track/session, len msb,
      len lsb, control */
 	unsigned char *p = bufferTOC;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)bufferTOC;
@@ -244,24 +244,24 @@ void ReadTocTextSCSIMMC(SCSI *scgp)
         scmd->cdb_len = SC_G1_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0x43;		/* Read TOC command */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
         scmd->cdb.g1_cdb.addr[0] = 5;		/* format field */
         scmd->cdb.g1_cdb.res6 = 0;	/* track/session is reserved */
         g1_cdblen(&scmd->cdb.g1_cdb, 4);
 
-        scgp->silent++;
-        if (scgp->verbose) fprintf(stderr, "\nRead TOC CD Text size ...");
+        usalp->silent++;
+        if (usalp->verbose) fprintf(stderr, "\nRead TOC CD Text size ...");
 
-	scgp->cmdname = "read toc size (text)";
+	usalp->cmdname = "read toc size (text)";
 
-        if (scg_cmd(scgp) < 0) {
-          scgp->silent--;
+        if (usal_cmd(usalp) < 0) {
+          usalp->silent--;
 	  if (global.quiet != 1)
             fprintf (stderr, "Read TOC CD Text failed (probably not supported).\n");
 	  p[0] = p[1] = '\0';
           return ;
         }
-        scgp->silent--;
+        usalp->silent--;
 
 	datalength  = (p[0] << 8) | (p[1]);
 	if (datalength <= 2)
@@ -274,24 +274,24 @@ void ReadTocTextSCSIMMC(SCSI *scgp)
         scmd->cdb_len = SC_G1_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0x43;		/* Read TOC command */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
         scmd->cdb.g1_cdb.addr[0] = 5;		/* format field */
         scmd->cdb.g1_cdb.res6 = 0;	/* track/session is reserved */
         g1_cdblen(&scmd->cdb.g1_cdb, 2+datalength);
 
-        scgp->silent++;
-        if (scgp->verbose) fprintf(stderr, "\nRead TOC CD Text data (length %hd)...", 2+datalength);
+        usalp->silent++;
+        if (usalp->verbose) fprintf(stderr, "\nRead TOC CD Text data (length %hd)...", 2+datalength);
 
-	scgp->cmdname = "read toc data (text)";
+	usalp->cmdname = "read toc data (text)";
 
-        if (scg_cmd(scgp) < 0) {
-          scgp->silent--;
+        if (usal_cmd(usalp) < 0) {
+          usalp->silent--;
 	  if (global.quiet != 1)
             fprintf (stderr,  "Read TOC CD Text data failed (probably not supported).\n");
 	  p[0] = p[1] = '\0';
           return ;
         }
-        scgp->silent--;
+        usalp->silent--;
 #else
 	{ FILE *fp;
 	int read_;
@@ -309,11 +309,11 @@ fprintf(stderr, "read %d bytes. sizeof(bufferTOC)=%u\n", read_, CD_FRAMESIZE);
 }
 
 /* read the full TOC */
-static unsigned ReadFullTOCSony(SCSI *scgp)
+static unsigned ReadFullTOCSony(SCSI *usalp)
 {
   /* READTOC, MSF, format, res, res, res, Start track/session, len msb,
      len lsb, control */
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 	unsigned tracks = 99;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
@@ -323,23 +323,23 @@ static unsigned ReadFullTOCSony(SCSI *scgp)
         scmd->cdb_len = SC_G1_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0x43;		/* Read TOC command */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
         scmd->cdb.g1_cdb.res6 = 1;    		/* session */
         g1_cdblen(&scmd->cdb.g1_cdb, 4 + (3 + tracks + 6) * 11);
         scmd->cdb.g1_cdb.vu_97 = 1;   		/* format */
 
-        scgp->silent++;
-        if (scgp->verbose) fprintf(stderr, "\nRead Full TOC Sony ...");
+        usalp->silent++;
+        if (usalp->verbose) fprintf(stderr, "\nRead Full TOC Sony ...");
 
-	scgp->cmdname = "read full toc sony";
+	usalp->cmdname = "read full toc sony";
 
-        if (scg_cmd(scgp) < 0) {
-          scgp->silent--;
+        if (usal_cmd(usalp) < 0) {
+          usalp->silent--;
 	  if (global.quiet != 1)
             fprintf (stderr, "Read Full TOC Sony failed (probably not supported).\n");
           return 0;
         }
-        scgp->silent--;
+        usalp->silent--;
 
 	return (unsigned)((bufferTOC[0] << 8) | bufferTOC[1]);
 }
@@ -698,20 +698,20 @@ fprintf(stderr, "%02x %02x %02x %02x %02x %02x\n"
 }
 
 /* read the table of contents from the cd and fill the TOC array */
-unsigned ReadTocSony(SCSI *scgp)
+unsigned ReadTocSony(SCSI *usalp)
 {
 	unsigned tracks = 0;
 	unsigned return_length;
 
 	struct outer *po = (struct outer *)bufferTOC;
 
-	return_length = ReadFullTOCSony(scgp);
+	return_length = ReadFullTOCSony(usalp);
 
 	/* Check if the format was understood */
 	if ((return_length & 7) == 2 && (bufferTOC[3] - bufferTOC[2]) == (return_length >> 3)) {
 		/* The extended format seems not be understood, fallback to
 		 * the classical format. */
-		return ReadTocSCSI( scgp );
+		return ReadTocSCSI( usalp );
 	}
 
 	tracks = collect_tracks(po, ((return_length - 2) / 11), TRUE);
@@ -720,14 +720,14 @@ unsigned ReadTocSony(SCSI *scgp)
 }
 
 /* read the start of the lead-out from the first session TOC */
-unsigned ReadFirstSessionTOCSony(SCSI *scgp)
+unsigned ReadFirstSessionTOCSony(SCSI *usalp)
 {
 	unsigned return_length;
 	
 	if (first_session_leadout != 0)
 		return first_session_leadout;
 
-	return_length = ReadFullTOCSony(scgp);
+	return_length = ReadFullTOCSony(usalp);
         if (return_length >= 4 + (3 * 11) -2) {
           unsigned off;
 
@@ -755,12 +755,12 @@ unsigned ReadFirstSessionTOCSony(SCSI *scgp)
 }
 
 /* read the full TOC */
-static unsigned ReadFullTOCMMC(SCSI *scgp)
+static unsigned ReadFullTOCMMC(SCSI *usalp)
 {
 
   /* READTOC, MSF, format, res, res, res, Start track/session, len msb,
      len lsb, control */
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 	unsigned tracks = 99;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
@@ -770,32 +770,32 @@ static unsigned ReadFullTOCMMC(SCSI *scgp)
         scmd->cdb_len = SC_G1_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0x43;		/* Read TOC command */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
         scmd->cdb.g1_cdb.addr[0] = 2;		/* format */
         scmd->cdb.g1_cdb.res6 = 1;		/* session */
         g1_cdblen(&scmd->cdb.g1_cdb, 4 + (tracks + 8) * 11);
 
-        scgp->silent++;
-        if (scgp->verbose) fprintf(stderr, "\nRead Full TOC MMC...");
+        usalp->silent++;
+        if (usalp->verbose) fprintf(stderr, "\nRead Full TOC MMC...");
 
-	scgp->cmdname = "read full toc mmc";
+	usalp->cmdname = "read full toc mmc";
 
-        if (scg_cmd(scgp) < 0) {
+        if (usal_cmd(usalp) < 0) {
 	  if (global.quiet != 1)
             fprintf (stderr, "Read Full TOC MMC failed (probably not supported).\n");
 #ifdef	B_BEOS_VERSION
 #else
-          scgp->silent--;
+          usalp->silent--;
           return 0;
 #endif
         }
-        scgp->silent--;
+        usalp->silent--;
 
 	return (unsigned)((bufferTOC[0] << 8) | bufferTOC[1]);
 }
 
 /* read the start of the lead-out from the first session TOC */
-unsigned ReadFirstSessionTOCMMC(SCSI *scgp)
+unsigned ReadFirstSessionTOCMMC(SCSI *usalp)
 {
         unsigned off;
 	unsigned return_length;
@@ -803,7 +803,7 @@ unsigned ReadFirstSessionTOCMMC(SCSI *scgp)
 	if (first_session_leadout != 0)
 		return first_session_leadout;
 
-	return_length = ReadFullTOCMMC(scgp);
+	return_length = ReadFullTOCMMC(usalp);
 
         /* We want the entry with POINT = 0xA2, which has the start position
              of the first session lead out */
@@ -819,23 +819,23 @@ unsigned ReadFirstSessionTOCMMC(SCSI *scgp)
 }
 
 /* read the table of contents from the cd and fill the TOC array */
-unsigned ReadTocMMC(SCSI *scgp)
+unsigned ReadTocMMC(SCSI *usalp)
 {
 	unsigned tracks = 0;
 	unsigned return_length;
 
 	struct outer *po = (struct outer *)bufferTOC;
 
-	return_length = ReadFullTOCMMC(scgp);
+	return_length = ReadFullTOCMMC(usalp);
 	if (return_length - 2 < 4*11 || ((return_length - 2) % 11) != 0)
-		return ReadTocSCSI(scgp);
+		return ReadTocSCSI(usalp);
 
 	tracks = collect_tracks(po, ((return_length - 2) / 11), FALSE);
 	return --tracks;           /* without lead-out */
 }
 
 /* read the table of contents from the cd and fill the TOC array */
-unsigned ReadTocSCSI(SCSI *scgp)
+unsigned ReadTocSCSI(SCSI *usalp)
 {
     unsigned tracks;
     int	result;
@@ -844,7 +844,7 @@ unsigned ReadTocSCSI(SCSI *scgp)
     /* first read the first and last track number */
     /* READTOC, MSF format flag, res, res, res, res, Start track, len msb,
        len lsb, flags */
-    register struct	scg_cmd	*scmd = scgp->scmd;
+    register struct	usal_cmd	*scmd = usalp->scmd;
 
     fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
     scmd->addr = (caddr_t)bufferTOC;
@@ -853,15 +853,15 @@ unsigned ReadTocSCSI(SCSI *scgp)
     scmd->cdb_len = SC_G1_CDBLEN;
     scmd->sense_len = CCS_SENSE_LEN;
     scmd->cdb.g1_cdb.cmd = 0x43;		/* read TOC command */
-    scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+    scmd->cdb.g1_cdb.lun = usal_lun(usalp);
     scmd->cdb.g1_cdb.res6 = 1;		/* start track */
     g1_cdblen(&scmd->cdb.g1_cdb, 4);
 
-    if (scgp->verbose) fprintf(stderr, "\nRead TOC size (standard)...");
+    if (usalp->verbose) fprintf(stderr, "\nRead TOC size (standard)...");
     /* do the scsi cmd (read table of contents) */
 
-    scgp->cmdname = "read toc size";
-    if (scg_cmd(scgp) < 0)
+    usalp->cmdname = "read toc size";
+    if (usal_cmd(usalp) < 0)
 	FatalError ("Read TOC size failed.\n");
     
 
@@ -878,16 +878,16 @@ unsigned ReadTocSCSI(SCSI *scgp)
     scmd->cdb_len = SC_G1_CDBLEN;
     scmd->sense_len = CCS_SENSE_LEN;
     scmd->cdb.g1_cdb.cmd = 0x43;		/* read TOC command */
-    scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+    scmd->cdb.g1_cdb.lun = usal_lun(usalp);
     scmd->cdb.g1_cdb.res = 1;		/* MSF format */
     scmd->cdb.g1_cdb.res6 = 1;		/* start track */
     g1_cdblen(&scmd->cdb.g1_cdb, 4 + tracks * 8);
 
-    if (scgp->verbose) fprintf(stderr, "\nRead TOC tracks (standard MSF)...");
+    if (usalp->verbose) fprintf(stderr, "\nRead TOC tracks (standard MSF)...");
     /* do the scsi cmd (read table of contents) */
 
-    scgp->cmdname = "read toc tracks ";
-    result = scg_cmd(scgp);
+    usalp->cmdname = "read toc tracks ";
+    result = usal_cmd(usalp);
 
     if (result < 0) {
 	/* MSF format did not succeeded */
@@ -920,16 +920,16 @@ fprintf(stderr, "MSF %d %02x %02x %02x %02x %02x %02x %02x %02x\n"
     scmd->cdb_len = SC_G1_CDBLEN;
     scmd->sense_len = CCS_SENSE_LEN;
     scmd->cdb.g1_cdb.cmd = 0x43;		/* read TOC command */
-    scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+    scmd->cdb.g1_cdb.lun = usal_lun(usalp);
     scmd->cdb.g1_cdb.res = 0;		/* LBA format */
     scmd->cdb.g1_cdb.res6 = 1;		/* start track */
     g1_cdblen(&scmd->cdb.g1_cdb, 4 + tracks * 8);
 
-    if (scgp->verbose) fprintf(stderr, "\nRead TOC tracks (standard LBA)...");
+    if (usalp->verbose) fprintf(stderr, "\nRead TOC tracks (standard LBA)...");
     /* do the scsi cmd (read table of contents) */
 
-    scgp->cmdname = "read toc tracks ";
-    if (scg_cmd(scgp) < 0) {
+    usalp->cmdname = "read toc tracks ";
+    if (usal_cmd(usalp) < 0) {
 	FatalError ("Read TOC tracks (lba) failed.\n");
     }
     {
@@ -959,15 +959,15 @@ fprintf(stderr, "LBA %d %02x %02x %02x %02x %02x %02x %02x %02x\n"
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via standard SCSI-2 Read(10) command */
-static int ReadStandardLowlevel(SCSI *scgp, UINT4 *p, unsigned lSector, 
+static int ReadStandardLowlevel(SCSI *usalp, UINT4 *p, unsigned lSector, 
 										  unsigned SectorBurstVal, unsigned secsize);
 
-static int ReadStandardLowlevel(SCSI *scgp, UINT4 *p, unsigned lSector, 
+static int ReadStandardLowlevel(SCSI *usalp, UINT4 *p, unsigned lSector, 
 										  unsigned SectorBurstVal, unsigned secsize)
 {
   /* READ10, flags, block1 msb, block2, block3, block4 lsb, reserved, 
      transfer len msb, transfer len lsb, block addressing mode */
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -976,40 +976,40 @@ static int ReadStandardLowlevel(SCSI *scgp, UINT4 *p, unsigned lSector,
         scmd->cdb_len = SC_G1_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0x28;		/* read 10 command */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.res |= (accepts_fua_bit == 1 ? 1 << 2 : 0);
         g1_cdbaddr(&scmd->cdb.g1_cdb, lSector);
         g1_cdblen(&scmd->cdb.g1_cdb, SectorBurstVal);
-        if (scgp->verbose) fprintf(stderr, "\nReadStandard10 %s (%u)...", secsize > 2048 ? "CDDA" : "CD_DATA", secsize);
+        if (usalp->verbose) fprintf(stderr, "\nReadStandard10 %s (%u)...", secsize > 2048 ? "CDDA" : "CD_DATA", secsize);
 
-	scgp->cmdname = "ReadStandard10";
+	usalp->cmdname = "ReadStandard10";
 
-	if (scg_cmd(scgp)) return 0;
+	if (usal_cmd(usalp)) return 0;
 
 	/* has all or something been read? */
-	return SectorBurstVal - scg_getresid(scgp)/secsize;
+	return SectorBurstVal - usal_getresid(usalp)/secsize;
 }
 
 
 int 
-ReadStandard(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
+ReadStandard(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
-	return ReadStandardLowlevel(scgp, p, lSector, SectorBurstVal, CD_FRAMESIZE_RAW);
+	return ReadStandardLowlevel(usalp, p, lSector, SectorBurstVal, CD_FRAMESIZE_RAW);
 }
 
 int 
-ReadStandardData(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
+ReadStandardData(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
-	return ReadStandardLowlevel(scgp, p, lSector, SectorBurstVal, CD_FRAMESIZE);
+	return ReadStandardLowlevel(usalp, p, lSector, SectorBurstVal, CD_FRAMESIZE);
 }
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via vendor-specific ReadCdda(10) command */
-int ReadCdda10(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
+int ReadCdda10(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
   /* READ10, flags, block1 msb, block2, block3, block4 lsb, reserved, 
      transfer len msb, transfer len lsb, block addressing mode */
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -1018,26 +1018,26 @@ int ReadCdda10(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
         scmd->cdb_len = SC_G1_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0xd4;		/* Read audio command */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.res |= (accepts_fua_bit == 1 ? 1 << 2 : 0);
         g1_cdbaddr(&scmd->cdb.g1_cdb, lSector);
         g1_cdblen(&scmd->cdb.g1_cdb, SectorBurstVal);
-        if (scgp->verbose) fprintf(stderr, "\nReadNEC10 CDDA...");
+        if (usalp->verbose) fprintf(stderr, "\nReadNEC10 CDDA...");
 
-	scgp->cmdname = "Read10 NEC";
+	usalp->cmdname = "Read10 NEC";
 
-	if (scg_cmd(scgp)) return 0;
+	if (usal_cmd(usalp)) return 0;
 
 	/* has all or something been read? */
-	return SectorBurstVal - scg_getresid(scgp)/CD_FRAMESIZE_RAW;
+	return SectorBurstVal - usal_getresid(usalp)/CD_FRAMESIZE_RAW;
 }
 
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via vendor-specific ReadCdda(12) command */
-int ReadCdda12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
+int ReadCdda12(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -1046,19 +1046,19 @@ int ReadCdda12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
         scmd->cdb_len = SC_G5_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g5_cdb.cmd = 0xd8;		/* read audio command */
-        scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.res |= (accepts_fua_bit == 1 ? 1 << 2 : 0);
         g5_cdbaddr(&scmd->cdb.g5_cdb, lSector);
         g5_cdblen(&scmd->cdb.g5_cdb, SectorBurstVal);
 
-        if (scgp->verbose) fprintf(stderr, "\nReadSony12 CDDA...");
+        if (usalp->verbose) fprintf(stderr, "\nReadSony12 CDDA...");
 
-	scgp->cmdname = "Read12";
+	usalp->cmdname = "Read12";
 
-	if (scg_cmd(scgp)) return 0;
+	if (usal_cmd(usalp)) return 0;
 
 	/* has all or something been read? */
-	return SectorBurstVal - scg_getresid(scgp)/CD_FRAMESIZE_RAW;
+	return SectorBurstVal - usal_getresid(usalp)/CD_FRAMESIZE_RAW;
 }
 
 /* Read max. SectorBurst of cdda sectors to buffer
@@ -1068,10 +1068,10 @@ int ReadCdda12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 > normal and the number of sectors is coded in Byte 8 and 9 (begining with 0).
 */
 
-int ReadCdda12Matsushita(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCdda12Matsushita(SCSI *usalp, UINT4 *p, unsigned lSector, 
                          unsigned SectorBurstVal)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
         fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -1080,28 +1080,28 @@ int ReadCdda12Matsushita(SCSI *scgp, UINT4 *p, unsigned lSector,
         scmd->cdb_len = SC_G5_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g5_cdb.cmd = 0xd4;		/* read audio command */
-        scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.res |= (accepts_fua_bit == 1 ? 1 << 2 : 0);
         g5_cdbaddr(&scmd->cdb.g5_cdb, lSector);
         g5_cdblen(&scmd->cdb.g5_cdb, SectorBurstVal);
 
-        if (scgp->verbose) fprintf(stderr, "\nReadMatsushita12 CDDA...");
+        if (usalp->verbose) fprintf(stderr, "\nReadMatsushita12 CDDA...");
 
-	scgp->cmdname = "Read12Matsushita";
+	usalp->cmdname = "Read12Matsushita";
 
-	if (scg_cmd(scgp)) return 0;
+	if (usal_cmd(usalp)) return 0;
 
 	/* has all or something been read? */
-	return SectorBurstVal - scg_getresid(scgp)/CD_FRAMESIZE_RAW;
+	return SectorBurstVal - usal_getresid(usalp)/CD_FRAMESIZE_RAW;
 }
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via MMC standard READ CD command */
-int ReadCddaMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaMMC12(SCSI *usalp, UINT4 *p, unsigned lSector, 
                   unsigned SectorBurstVal)
 {
-	register struct	scg_cmd	*scmd;
-	scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd;
+	scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -1110,56 +1110,56 @@ int ReadCddaMMC12(SCSI *scgp, UINT4 *p, unsigned lSector,
         scmd->cdb_len = SC_G5_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g5_cdb.cmd = 0xbe;		/* read cd command */
-        scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g5_cdb.lun = usal_lun(usalp);
         scmd->cdb.g5_cdb.res = 1 << 1; /* expected sector type field CDDA */
         g5_cdbaddr(&scmd->cdb.g5_cdb, lSector);
         g5x_cdblen(&scmd->cdb.g5_cdb, SectorBurstVal);
 	scmd->cdb.g5_cdb.count[3] = 1 << 4;	/* User data */
 
-        if (scgp->verbose) fprintf(stderr, "\nReadMMC12 CDDA...");
+        if (usalp->verbose) fprintf(stderr, "\nReadMMC12 CDDA...");
 
-	scgp->cmdname = "ReadCD MMC 12";
+	usalp->cmdname = "ReadCD MMC 12";
 
-	if (scg_cmd(scgp)) return 0;
+	if (usal_cmd(usalp)) return 0;
 
 	/* has all or something been read? */
-	return SectorBurstVal - scg_getresid(scgp)/CD_FRAMESIZE_RAW;
+	return SectorBurstVal - usal_getresid(usalp)/CD_FRAMESIZE_RAW;
 }
 
-int ReadCddaFallbackMMC(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaFallbackMMC(SCSI *usalp, UINT4 *p, unsigned lSector, 
                         unsigned SectorBurstVal)
 {
 	static int ReadCdda12_unknown = 0;
 	int retval = -999;
 
-	scgp->silent++;
+	usalp->silent++;
 	if (ReadCdda12_unknown 
-	    || ((retval = ReadCdda12(scgp, p, lSector, SectorBurstVal)) <= 0)) {
+	    || ((retval = ReadCdda12(usalp, p, lSector, SectorBurstVal)) <= 0)) {
 		/* if the command is not available, use the regular
 		 * MMC ReadCd 
 		 */
-		if (retval <= 0 && scg_sense_key(scgp) == 0x05) {
+		if (retval <= 0 && usal_sense_key(usalp) == 0x05) {
 			ReadCdda12_unknown = 1;
 		}
-		scgp->silent--;
+		usalp->silent--;
 		ReadCdRom = ReadCddaMMC12;
 		ReadCdRomSub = ReadCddaSubMMC12;
-		return ReadCddaMMC12(scgp, p, lSector, SectorBurstVal);
+		return ReadCddaMMC12(usalp, p, lSector, SectorBurstVal);
 	}
-	scgp->silent--;
+	usalp->silent--;
 	return retval;
 }
 
 /* Read the Sub-Q-Channel to SubQbuffer. This is the method for
  * drives that do not support subchannel parameters. */
 #ifdef	PROTOTYPES
-static subq_chnl *ReadSubQFallback (SCSI *scgp, unsigned char sq_format, unsigned char track)
+static subq_chnl *ReadSubQFallback (SCSI *usalp, unsigned char sq_format, unsigned char track)
 #else
 static subq_chnl *
-ReadSubQFallback(SCSI *scgp, unsigned char sq_format, unsigned char track)
+ReadSubQFallback(SCSI *usalp, unsigned char sq_format, unsigned char track)
 #endif
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)SubQbuffer;
@@ -1169,17 +1169,17 @@ ReadSubQFallback(SCSI *scgp, unsigned char sq_format, unsigned char track)
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0x42;		/* Read SubQChannel */
 						/* use LBA */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
         scmd->cdb.g1_cdb.addr[0] = 0x40; 	/* SubQ info */
         scmd->cdb.g1_cdb.addr[1] = 0;	 	/* parameter list: all */
         scmd->cdb.g1_cdb.res6 = track;		/* track number */
         g1_cdblen(&scmd->cdb.g1_cdb, 24);
 
-        if (scgp->verbose) fprintf(stderr, "\nRead Subchannel_dumb...");
+        if (usalp->verbose) fprintf(stderr, "\nRead Subchannel_dumb...");
 
-	scgp->cmdname = "Read Subchannel_dumb";
+	usalp->cmdname = "Read Subchannel_dumb";
 
-	if (scg_cmd(scgp) < 0) {
+	if (usal_cmd(usalp) < 0) {
 	  fprintf( stderr, "Read SubQ failed\n");
 	}
 
@@ -1199,14 +1199,14 @@ ReadSubQFallback(SCSI *scgp, unsigned char sq_format, unsigned char track)
 
 /* Read the Sub-Q-Channel to SubQbuffer */
 #ifdef	PROTOTYPES
-subq_chnl *ReadSubQSCSI (SCSI *scgp, unsigned char sq_format, unsigned char track)
+subq_chnl *ReadSubQSCSI (SCSI *usalp, unsigned char sq_format, unsigned char track)
 #else
 subq_chnl *
-ReadSubQSCSI(SCSI *scgp, unsigned char sq_format, unsigned char track)
+ReadSubQSCSI(SCSI *usalp, unsigned char sq_format, unsigned char track)
 #endif
 {
         int resp_size;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
         switch (sq_format) {
           case GET_POSITIONDATA:
@@ -1233,19 +1233,19 @@ ReadSubQSCSI(SCSI *scgp, unsigned char sq_format, unsigned char track)
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g1_cdb.cmd = 0x42;
 						/* use LBA */
-        scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g1_cdb.lun = usal_lun(usalp);
         scmd->cdb.g1_cdb.addr[0] = 0x40; 	/* SubQ info */
         scmd->cdb.g1_cdb.addr[1] = sq_format;	/* parameter list: all */
         scmd->cdb.g1_cdb.res6 = track;		/* track number */
         g1_cdblen(&scmd->cdb.g1_cdb, resp_size);
 
-        if (scgp->verbose) fprintf(stderr, "\nRead Subchannel...");
+        if (usalp->verbose) fprintf(stderr, "\nRead Subchannel...");
 
-	scgp->cmdname = "Read Subchannel";
+	usalp->cmdname = "Read Subchannel";
 
-  if (scg_cmd(scgp) < 0) {
+  if (usal_cmd(usalp) < 0) {
     /* in case of error do a fallback for dumb firmwares */
-    return ReadSubQFallback(scgp, sq_format, track);
+    return ReadSubQFallback(usalp, sq_format, track);
   }
 
 	if (sq_format == GET_POSITIONDATA)
@@ -1266,9 +1266,9 @@ static subq_chnl* fill_subchannel(unsigned char bufferwithQ[])
 }
 
 int 
-ReadCddaSubSony(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
+ReadCddaSubSony(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -1277,29 +1277,29 @@ ReadCddaSubSony(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
         scmd->cdb_len = SC_G5_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g5_cdb.cmd = 0xd8;		/* read audio command */
-        scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.res |= (accepts_fua_bit == 1 ? 1 << 2 : 0);
 	scmd->cdb.g5_cdb.res10 = 0x01;	/* subcode 1 -> cdda + 16 * q sub */
         g5_cdbaddr(&scmd->cdb.g5_cdb, lSector);
         g5_cdblen(&scmd->cdb.g5_cdb, SectorBurstVal);
 
-        if (scgp->verbose) fprintf(stderr, "\nReadSony12 CDDA + SubChannels...");
+        if (usalp->verbose) fprintf(stderr, "\nReadSony12 CDDA + SubChannels...");
 
-	scgp->cmdname = "Read12SubChannelsSony";
+	usalp->cmdname = "Read12SubChannelsSony";
 
-	if (scg_cmd(scgp)) return -1;
+	if (usal_cmd(usalp)) return -1;
 
 	/* has all or something been read? */
-	return scg_getresid(scgp) != 0;
+	return usal_getresid(usalp) != 0;
 }
 
-int ReadCddaSub96Sony(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaSub96Sony(SCSI *usalp, UINT4 *p, unsigned lSector, 
 							 unsigned SectorBurstVal);
 
-int ReadCddaSub96Sony(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaSub96Sony(SCSI *usalp, UINT4 *p, unsigned lSector, 
                       unsigned SectorBurstVal)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -1308,26 +1308,26 @@ int ReadCddaSub96Sony(SCSI *scgp, UINT4 *p, unsigned lSector,
         scmd->cdb_len = SC_G5_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g5_cdb.cmd = 0xd8;		/* read audio command */
-        scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.res |= (accepts_fua_bit == 1 ? 1 << 2 : 0);
 	scmd->cdb.g5_cdb.res10 = 0x02;	/* subcode 2 -> cdda + 96 * q sub */
         g5_cdbaddr(&scmd->cdb.g5_cdb, lSector);
         g5_cdblen(&scmd->cdb.g5_cdb, SectorBurstVal);
 
-        if (scgp->verbose) fprintf(stderr, "\nReadSony12 CDDA + 96 byte SubChannels...");
+        if (usalp->verbose) fprintf(stderr, "\nReadSony12 CDDA + 96 byte SubChannels...");
 
-	scgp->cmdname = "Read12SubChannelsSony";
+	usalp->cmdname = "Read12SubChannelsSony";
 
-	if (scg_cmd(scgp)) return -1;
+	if (usal_cmd(usalp)) return -1;
 
 	/* has all or something been read? */
-	return scg_getresid(scgp) != 0;
+	return usal_getresid(usalp) != 0;
 }
 
-subq_chnl *ReadSubChannelsSony(SCSI *scgp, unsigned lSector)
+subq_chnl *ReadSubChannelsSony(SCSI *usalp, unsigned lSector)
 {
-	/*int retval = ReadCddaSub96Sony(scgp, (UINT4 *)bufferTOC, lSector, 1);*/
-	int retval = ReadCddaSubSony(scgp, (UINT4 *)bufferTOC, lSector, 1);
+	/*int retval = ReadCddaSub96Sony(usalp, (UINT4 *)bufferTOC, lSector, 1);*/
+	int retval = ReadCddaSubSony(usalp, (UINT4 *)bufferTOC, lSector, 1);
 	if (retval != 0) return NULL;
 
 	return fill_subchannel(bufferTOC);
@@ -1335,10 +1335,10 @@ subq_chnl *ReadSubChannelsSony(SCSI *scgp, unsigned lSector)
 
 /* Read max. SectorBurst of cdda sectors to buffer
    via MMC standard READ CD command */
-int ReadCddaSubMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
+int ReadCddaSubMMC12(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SectorBurstVal)
 {
-	register struct	scg_cmd	*scmd;
-	scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd;
+	scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
         scmd->addr = (caddr_t)p;
@@ -1347,58 +1347,58 @@ int ReadCddaSubMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SectorBurs
         scmd->cdb_len = SC_G5_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g5_cdb.cmd = 0xbe;		/* read cd command */
-        scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g5_cdb.lun = usal_lun(usalp);
         scmd->cdb.g5_cdb.res = 1 << 1; /* expected sector type field CDDA */
         g5_cdbaddr(&scmd->cdb.g5_cdb, lSector);
         g5x_cdblen(&scmd->cdb.g5_cdb, SectorBurstVal);
 	scmd->cdb.g5_cdb.count[3] = 1 << 4;	/* User data */
 	scmd->cdb.g5_cdb.res10 = 0x02;	/* subcode 2 -> cdda + 16 * q sub */
 
-        if (scgp->verbose) fprintf(stderr, "\nReadMMC12 CDDA + SUB...");
+        if (usalp->verbose) fprintf(stderr, "\nReadMMC12 CDDA + SUB...");
 
-	scgp->cmdname = "ReadCD Sub MMC 12";
+	usalp->cmdname = "ReadCD Sub MMC 12";
 
-	if (scg_cmd(scgp)) return -1;
+	if (usal_cmd(usalp)) return -1;
 
 	/* has all or something been read? */
-	return scg_getresid(scgp) != 0;
+	return usal_getresid(usalp) != 0;
 }
 
-static subq_chnl *ReadSubChannelsMMC(SCSI *scgp, unsigned lSector);
-static subq_chnl *ReadSubChannelsMMC(SCSI *scgp, unsigned lSector)
+static subq_chnl *ReadSubChannelsMMC(SCSI *usalp, unsigned lSector);
+static subq_chnl *ReadSubChannelsMMC(SCSI *usalp, unsigned lSector)
 {
-	int retval = ReadCddaSubMMC12(scgp, (UINT4 *)bufferTOC, lSector, 1);
+	int retval = ReadCddaSubMMC12(usalp, (UINT4 *)bufferTOC, lSector, 1);
 	if (retval != 0) return NULL;
 
 	return fill_subchannel(bufferTOC);
 }
 
-subq_chnl *ReadSubChannelsFallbackMMC(SCSI *scgp, unsigned lSector)
+subq_chnl *ReadSubChannelsFallbackMMC(SCSI *usalp, unsigned lSector)
 {
 	static int ReadSubSony_unknown = 0;
 	subq_chnl *retval = NULL;
 
-	scgp->silent++;
+	usalp->silent++;
 	if (ReadSubSony_unknown 
-	    || ((retval = ReadSubChannelsSony(scgp, lSector)) == NULL)) {
+	    || ((retval = ReadSubChannelsSony(usalp, lSector)) == NULL)) {
 		/* if the command is not available, use the regular
 		 * MMC ReadCd 
 		 */
-		if (retval == NULL && scg_sense_key(scgp) == 0x05) {
+		if (retval == NULL && usal_sense_key(usalp) == 0x05) {
 			ReadSubSony_unknown = 1;
 		}
-		scgp->silent--;
-		return ReadSubChannelsMMC(scgp, lSector);
+		usalp->silent--;
+		return ReadSubChannelsMMC(usalp, lSector);
 	}
-	scgp->silent--;
+	usalp->silent--;
 	return retval;
 }
 
-subq_chnl *ReadStandardSub(scgp, lSector)
-	SCSI *scgp;
+subq_chnl *ReadStandardSub(usalp, lSector)
+	SCSI *usalp;
 	unsigned lSector;
 {
-	if (0 == ReadStandardLowlevel (scgp, (UINT4 *)bufferTOC, lSector, 1, CD_FRAMESIZE_RAW + 16 )) {
+	if (0 == ReadStandardLowlevel (usalp, (UINT4 *)bufferTOC, lSector, 1, CD_FRAMESIZE_RAW + 16 )) {
 		return NULL;
 	}
 #if	0
@@ -1418,7 +1418,7 @@ fprintf(stderr, "Subchannel Sec %x: %02x %02x %02x %02x\n"
 }
 /********* non standardized speed selects ***********************/
 
-void SpeedSelectSCSIToshiba(SCSI *scgp, unsigned speed)
+void SpeedSelectSCSIToshiba(SCSI *usalp, unsigned speed)
 {
   static unsigned char mode [4 + 3];
   unsigned char *page = mode + 4;
@@ -1430,21 +1430,21 @@ void SpeedSelectSCSIToshiba(SCSI *scgp, unsigned speed)
   page[1] = 1;
   page[2] = speed;   /* 0 for single speed, 1 for double speed (3401) */
 
-  if (scgp->verbose) fprintf(stderr, "\nspeed select Toshiba...");
+  if (usalp->verbose) fprintf(stderr, "\nspeed select Toshiba...");
 
-  scgp->silent++;
+  usalp->silent++;
   /* do the scsi cmd */
-  if ((retval = mode_select(scgp, mode, 7, 0, scgp->inq->data_format >= 2)) < 0)
+  if ((retval = mode_select(usalp, mode, 7, 0, usalp->inq->data_format >= 2)) < 0)
         fprintf (stderr, "speed select Toshiba failed\n");
-  scgp->silent--;
+  usalp->silent--;
 }
 
-void SpeedSelectSCSINEC(SCSI *scgp, unsigned speed)
+void SpeedSelectSCSINEC(SCSI *usalp, unsigned speed)
 {
   static unsigned char mode [4 + 8];
   unsigned char *page = mode + 4;
   int retval;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
   fillbytes((caddr_t)mode, sizeof(mode), '\0');
   /* the first 4 mode bytes are zero. */
@@ -1460,20 +1460,20 @@ void SpeedSelectSCSINEC(SCSI *scgp, unsigned speed)
   scmd->cdb_len = SC_G1_CDBLEN;
   scmd->sense_len = CCS_SENSE_LEN;
   scmd->cdb.g1_cdb.cmd = 0xC5;
-  scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+  scmd->cdb.g1_cdb.lun = usal_lun(usalp);
   scmd->cdb.g1_cdb.addr[0] = 0 ? 1 : 0 | 1 ? 0x10 : 0;
   g1_cdblen(&scmd->cdb.g1_cdb, 12);
 
-  if (scgp->verbose) fprintf(stderr, "\nspeed select NEC...");
+  if (usalp->verbose) fprintf(stderr, "\nspeed select NEC...");
   /* do the scsi cmd */
 
-	scgp->cmdname = "speed select NEC";
+	usalp->cmdname = "speed select NEC";
 
-  if ((retval = scg_cmd(scgp)) < 0)
+  if ((retval = usal_cmd(usalp)) < 0)
         fprintf(stderr ,"speed select NEC failed\n");
 }
 
-void SpeedSelectSCSIPhilipsCDD2600(SCSI *scgp, unsigned speed)
+void SpeedSelectSCSIPhilipsCDD2600(SCSI *usalp, unsigned speed)
 {
   /* MODE_SELECT, page = SCSI-2  save page disabled, reserved, reserved,
      parm list len, flags */
@@ -1488,13 +1488,13 @@ void SpeedSelectSCSIPhilipsCDD2600(SCSI *scgp, unsigned speed)
   page[2] = page [4] = speed;
   page[3] = 1;
 
-  if (scgp->verbose) fprintf(stderr, "\nspeed select Philips...");
+  if (usalp->verbose) fprintf(stderr, "\nspeed select Philips...");
   /* do the scsi cmd */
-  if ((retval = mode_select(scgp, mode, 12, 0, scgp->inq->data_format >= 2)) < 0)
+  if ((retval = mode_select(usalp, mode, 12, 0, usalp->inq->data_format >= 2)) < 0)
         fprintf (stderr, "speed select PhilipsCDD2600 failed\n");
 }
 
-void SpeedSelectSCSISony(SCSI *scgp, unsigned speed)
+void SpeedSelectSCSISony(SCSI *usalp, unsigned speed)
 {
   static unsigned char mode [4 + 4];
   unsigned char *page = mode + 4;
@@ -1506,16 +1506,16 @@ void SpeedSelectSCSISony(SCSI *scgp, unsigned speed)
   page[1] = 2;
   page[2] = speed;
 
-  if (scgp->verbose) fprintf(stderr, "\nspeed select Sony...");
+  if (usalp->verbose) fprintf(stderr, "\nspeed select Sony...");
   /* do the scsi cmd */
-  scgp->silent++;
-  if ((retval = mode_select(scgp, mode, 8, 0, scgp->inq->data_format >= 2)) < 0)
+  usalp->silent++;
+  if ((retval = mode_select(usalp, mode, 8, 0, usalp->inq->data_format >= 2)) < 0)
         fprintf (stderr, "speed select Sony failed\n");
-  scgp->silent--;
+  usalp->silent--;
 }
 
-void SpeedSelectSCSIYamaha (scgp, speed)
-	SCSI *scgp;
+void SpeedSelectSCSIYamaha (usalp, speed)
+	SCSI *usalp;
 	unsigned speed;
 {
   static unsigned char mode [4 + 4];
@@ -1528,16 +1528,16 @@ void SpeedSelectSCSIYamaha (scgp, speed)
   page[1] = 2;
   page[2] = speed;
 
-  if (scgp->verbose) fprintf(stderr, "\nspeed select Yamaha...");
+  if (usalp->verbose) fprintf(stderr, "\nspeed select Yamaha...");
   /* do the scsi cmd */
-  if ((retval = mode_select(scgp, mode, 8, 0, scgp->inq->data_format >= 2)) < 0)
+  if ((retval = mode_select(usalp, mode, 8, 0, usalp->inq->data_format >= 2)) < 0)
         fprintf (stderr, "speed select Yamaha failed\n");
 }
 
-void SpeedSelectSCSIMMC(SCSI *scgp, unsigned speed)
+void SpeedSelectSCSIMMC(SCSI *usalp, unsigned speed)
 {
   int spd;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
    if (speed == 0 || speed == 0xFFFF) {
       spd = 0xFFFF;
@@ -1549,33 +1549,33 @@ void SpeedSelectSCSIMMC(SCSI *scgp, unsigned speed)
         scmd->cdb_len = SC_G5_CDBLEN;
         scmd->sense_len = CCS_SENSE_LEN;
         scmd->cdb.g5_cdb.cmd = 0xBB;
-        scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+        scmd->cdb.g5_cdb.lun = usal_lun(usalp);
         i_to_2_byte(&scmd->cdb.g5_cdb.addr[0], spd);
         i_to_2_byte(&scmd->cdb.g5_cdb.addr[2], 0xffff);
 
-        if (scgp->verbose) fprintf(stderr, "\nspeed select MMC...");
+        if (usalp->verbose) fprintf(stderr, "\nspeed select MMC...");
 
-	scgp->cmdname = "set cd speed";
+	usalp->cmdname = "set cd speed";
 
-	scgp->silent++;
-        if (scg_cmd(scgp) < 0) {
-		if (scg_sense_key(scgp) == 0x05 &&
-		    scg_sense_code(scgp) == 0x20 &&
-		    scg_sense_qual(scgp) == 0x00) {
+	usalp->silent++;
+        if (usal_cmd(usalp) < 0) {
+		if (usal_sense_key(usalp) == 0x05 &&
+		    usal_sense_code(usalp) == 0x20 &&
+		    usal_sense_qual(usalp) == 0x00) {
 			/* this optional command is not implemented */
 		} else {
-			scg_printerr(scgp);
+			usal_printerr(usalp);
                 	fprintf (stderr, "speed select MMC failed\n");
 		}
 	}
-	scgp->silent--;
+	usalp->silent--;
 }
 
 /* request vendor brand and model */
-unsigned char *Inquiry(SCSI *scgp)
+unsigned char *Inquiry(SCSI *usalp)
 {
   static unsigned char *Inqbuffer = NULL;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
   if (Inqbuffer == NULL) {
     Inqbuffer = malloc(36);
@@ -1593,19 +1593,19 @@ unsigned char *Inquiry(SCSI *scgp)
   scmd->cdb_len = SC_G0_CDBLEN;
   scmd->sense_len = CCS_SENSE_LEN;
   scmd->cdb.g0_cdb.cmd = SC_INQUIRY;
-  scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+  scmd->cdb.g0_cdb.lun = usal_lun(usalp);
   scmd->cdb.g0_cdb.count = 36;
         
-	scgp->cmdname = "inquiry";
+	usalp->cmdname = "inquiry";
 
-  if (scg_cmd(scgp) < 0)
+  if (usal_cmd(usalp) < 0)
      return (NULL);
 
   /* define structure with inquiry data */
-  memcpy(scgp->inq, Inqbuffer, sizeof(*scgp->inq)); 
+  memcpy(usalp->inq, Inqbuffer, sizeof(*usalp->inq)); 
 
-  if (scgp->verbose)
-     scg_prbytes("Inquiry Data   :", (Uchar *)Inqbuffer, 22 - scmd->resid);
+  if (usalp->verbose)
+     usal_prbytes("Inquiry Data   :", (Uchar *)Inqbuffer, 22 - scmd->resid);
 
   return (Inqbuffer);
 }
@@ -1619,9 +1619,9 @@ unsigned char *Inquiry(SCSI *scgp)
 #define NO_MEDIA_SC 0x3a
 #define NO_MEDIA_SCQ 0x00
 
-int TestForMedium(SCSI *scgp)
+int TestForMedium(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
   if (interface != GENERIC_SCSI) {
     return 1;
@@ -1635,18 +1635,18 @@ int TestForMedium(SCSI *scgp)
   scmd->cdb_len = SC_G0_CDBLEN;
   scmd->sense_len = CCS_SENSE_LEN;
   scmd->cdb.g0_cdb.cmd = SC_TEST_UNIT_READY;
-  scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+  scmd->cdb.g0_cdb.lun = usal_lun(usalp);
         
-  if (scgp->verbose) fprintf(stderr, "\ntest unit ready...");
-  scgp->silent++;
+  if (usalp->verbose) fprintf(stderr, "\ntest unit ready...");
+  usalp->silent++;
 
-	scgp->cmdname = "test unit ready";
+	usalp->cmdname = "test unit ready";
 
-  if (scg_cmd(scgp) >= 0) {
-    scgp->silent--;
+  if (usal_cmd(usalp) >= 0) {
+    usalp->silent--;
     return 1;
   }
-  scgp->silent--;
+  usalp->silent--;
 
   if (scmd->sense.code >= SC_CLASS_EXTENDED_SENSE) {
     return 
@@ -1659,9 +1659,9 @@ int TestForMedium(SCSI *scgp)
   }
 }
 
-int StopPlaySCSI(SCSI *scgp)
+int StopPlaySCSI(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
   scmd->addr = NULL;
@@ -1670,19 +1670,19 @@ int StopPlaySCSI(SCSI *scgp)
   scmd->cdb_len = SC_G0_CDBLEN;
   scmd->sense_len = CCS_SENSE_LEN;
   scmd->cdb.g0_cdb.cmd = 0x1b;
-  scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+  scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 
-  if (scgp->verbose) fprintf(stderr, "\nstop audio play");
+  if (usalp->verbose) fprintf(stderr, "\nstop audio play");
   /* do the scsi cmd */
 
-	scgp->cmdname = "stop audio play";
+	usalp->cmdname = "stop audio play";
 
-  return scg_cmd(scgp) >= 0 ? 0 : -1;
+  return usal_cmd(usalp) >= 0 ? 0 : -1;
 }
 
-int Play_atSCSI(SCSI *scgp, unsigned int from_sector, unsigned int sectors)
+int Play_atSCSI(SCSI *usalp, unsigned int from_sector, unsigned int sectors)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
   scmd->addr = NULL;
@@ -1691,7 +1691,7 @@ int Play_atSCSI(SCSI *scgp, unsigned int from_sector, unsigned int sectors)
   scmd->cdb_len = SC_G1_CDBLEN;
   scmd->sense_len = CCS_SENSE_LEN;
   scmd->cdb.g1_cdb.cmd = 0x47;
-  scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+  scmd->cdb.g1_cdb.lun = usal_lun(usalp);
   scmd->cdb.g1_cdb.addr[1] = (from_sector + 150) / (60*75);
   scmd->cdb.g1_cdb.addr[2] = ((from_sector + 150) / 75) % 60;
   scmd->cdb.g1_cdb.addr[3] = (from_sector + 150) % 75;
@@ -1699,25 +1699,25 @@ int Play_atSCSI(SCSI *scgp, unsigned int from_sector, unsigned int sectors)
   scmd->cdb.g1_cdb.count[0] = ((from_sector + 150 + sectors) / 75) % 60;
   scmd->cdb.g1_cdb.count[1] = (from_sector + 150 + sectors) % 75;
 
-  if (scgp->verbose) fprintf(stderr, "\nplay sectors...");
+  if (usalp->verbose) fprintf(stderr, "\nplay sectors...");
   /* do the scsi cmd */
 
-	scgp->cmdname = "play sectors";
+	usalp->cmdname = "play sectors";
 
-  return scg_cmd(scgp) >= 0 ? 0 : -1;
+  return usal_cmd(usalp) >= 0 ? 0 : -1;
 }
 
 static caddr_t scsibuffer;	/* page aligned scsi transfer buffer */
 
 void init_scsibuf(SCSI *scsp, unsigned amt);
 
-void init_scsibuf(SCSI *scgp, unsigned amt)
+void init_scsibuf(SCSI *usalp, unsigned amt)
 {
 	if (scsibuffer != NULL) {
 		fprintf(stderr, "the SCSI transfer buffer has already been allocated!\n");
 		exit(SETUPSCSI_ERROR);
 	}
-	scsibuffer = scg_getbuf(scgp, amt);
+	scsibuffer = usal_getbuf(usalp, amt);
 	if (scsibuffer == NULL) {
 		fprintf(stderr, "could not get SCSI transfer buffer!\n");
 		exit(SETUPSCSI_ERROR);

@@ -41,7 +41,7 @@ static char     sccsid[] =
 #include <schily.h>
 #include <device.h>
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #include "mycdrom.h"
 #include "lowlevel.h"
@@ -81,12 +81,12 @@ static unsigned sector_size;
 
 static int err;
 
-static void EnableCdda_cooked(SCSI *scgp, int fAudioMode, unsigned uSectorsize);
+static void EnableCdda_cooked(SCSI *usalp, int fAudioMode, unsigned uSectorsize);
 /* ARGSUSED */
-static void EnableCdda_cooked(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
+static void EnableCdda_cooked(SCSI *usalp, int fAudioMode, unsigned uSectorsize)
 {
 #if	(defined(__FreeBSD__) && __FreeBSD_version >= 400014) || defined(__DragonFly__)  || defined(__FreeBSD_kernel__)
-	if (scgp && scgp->verbose)
+	if (usalp && usalp->verbose)
 		fprintf(stderr, "EnableCdda_cooked (CDRIOCSETBLOCKSIZE)...\n");
 
 	if (fAudioMode) {
@@ -97,7 +97,7 @@ static void EnableCdda_cooked(SCSI *scgp, int fAudioMode, unsigned uSectorsize)
         	ioctl(global.cooked_fd, CDRIOCSETBLOCKSIZE, &sector_size);
 #else
 #if	defined	CDIOCSETCDDA
-	if (scgp && scgp->verbose) {
+	if (usalp && usalp->verbose) {
 		fprintf(stderr, "EnableCdda_cooked (CDIOCSETCDDA)...\n");
 		if (uSectorsize != CD_FRAMESIZE_RAW)
 			fprintf(stderr, "non audio sector size is ignored.\n");

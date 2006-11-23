@@ -59,7 +59,7 @@ static char     sccsid[] =
 #undef DEBUG_CDDBP
 
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #include "mytype.h"
 #include "byteorder.h"
@@ -226,15 +226,15 @@ static int can_read_illleadout(void);
 
 static int can_read_illleadout()
 {
-	SCSI *scgp = get_scsi_p();
+	SCSI *usalp = get_scsi_p();
 
 	UINT4 buffer [CD_FRAMESIZE_RAW/4];
 	if (global.illleadout_cd == 0) return 0;
 
-	scgp->silent++;
+	usalp->silent++;
 	global.reads_illleadout = 
-	    ReadCdRom(scgp, buffer, Get_AudioStartSector(CDROM_LEADOUT), 1);
-	scgp->silent--;
+	    ReadCdRom(usalp, buffer, Get_AudioStartSector(CDROM_LEADOUT), 1);
+	usalp->silent--;
 	return global.reads_illleadout;
 }
 
@@ -2668,7 +2668,7 @@ static subq_chnl *ReadSubChannel(unsigned sec)
 		get_scsi_p()->silent++;
 		sub_ch = ReadSubChannels(get_scsi_p(), sec);
 		get_scsi_p()->silent--;
-		if (sub_ch == NULL /*&& (scg_sense_key(get_scsi_p()) == 5)*/) {
+		if (sub_ch == NULL /*&& (usal_sense_key(get_scsi_p()) == 5)*/) {
 			/* command is not implemented */
 			ReadSubChannels = NULL;
 #if	defined DEBUG_SUB
@@ -3042,13 +3042,13 @@ unsigned ScanIndices(unsigned track, unsigned cd_index, int bulk)
   index_list *baseindex_pool;
   index_list *last_index_entry;
 
-  SCSI *scgp = get_scsi_p();
+  SCSI *usalp = get_scsi_p();
 
   static struct iterator i;
   InitIterator(&i, 1);
   
-  EnableCdda(scgp, 0, 0);
-  EnableCdda(scgp, 1, CD_FRAMESIZE_RAW + 16);
+  EnableCdda(usalp, 0, 0);
+  EnableCdda(usalp, 1, CD_FRAMESIZE_RAW + 16);
 
   if (!global.quiet && !(global.verbose & SHOW_INDICES))
     fprintf(stderr, "seeking index start ...");
@@ -3212,8 +3212,8 @@ unsigned ScanIndices(unsigned track, unsigned cd_index, int bulk)
 	  fputs("\n", stderr);
   if (playing != 0) StopPlay(get_scsi_p());
 
-  EnableCdda(scgp, 0, 0);
-  EnableCdda(scgp, 1, CD_FRAMESIZE_RAW);
+  EnableCdda(usalp, 0, 0);
+  EnableCdda(usalp, 1, CD_FRAMESIZE_RAW);
 
   return retval;
 }

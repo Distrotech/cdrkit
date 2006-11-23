@@ -46,15 +46,15 @@ This package contains the following software:
 
 	-	isovfy verify an ISO-9660 image
 
-- readcd (a stripped down version of scgskeleton)
+- readcd (a stripped down version of usalskeleton)
   By Jörg Schilling schilling@fokus.fhg.de and
   may be used to read data CD's, to write to DVD-RAM
   and to copy Solaris boot CD's
 
-- scgcheck (a program to validate the correct behavior
+- usalcheck (a program to validate the correct behavior
   By Jörg Schilling schilling@fokus.fhg.de and
-  of the low level libscg code and the SCSI transport
+  of the low level libusal code and the SCSI transport
   code of the underlying OS).
 
-- libscg (a highly portable SCSI transport library)
+- libusal (a highly portable SCSI transport library)
   By Jörg Schilling schilling@fokus.fhg.de

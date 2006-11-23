@@ -239,7 +239,7 @@ the misc debug level by one (with -d). If you specify
 .I -dd,
 this equals to 
 .BI debug= 2.
-This may help to find problems while opening a driver for libscg
+This may help to find problems while opening a driver for libusal
 as well as with sector sizes and sector types.
 Using
 .B \-debug
@@ -247,7 +247,7 @@ slows down the process and may be the reason for a buffer underrun.
 .TP
 .BR kdebug= "#, " kd= #
 Tell the 
-.BR scg -driver
+.BR usal -driver
 to modify the kernel debug value while SCSI commands are running.
 .TP
 .BR \-silent ", " \-s
@@ -741,7 +741,7 @@ If no
 .B ts=
 option has been specified,
 .B wodim
-defaults to a transfer size of 63\ kB. If libscg gets lower values from the
+defaults to a transfer size of 63\ kB. If libusal gets lower values from the
 operating system, the value is reduced to the maximum value that is possible
 with the current operating system.
 Sometimes, it may help to further reduce the transfer size or to enhance it,
@@ -2091,7 +2091,7 @@ default speed and the default FIFO size.
 .SH SEE ALSO
 .BR cdda2wav (1),
 .BR readcd (1),
-.BR scg (7),
+.BR usal (7),
 .BR fbk (7),
 .BR mkisofs (8),
 .BR rcmd (3),
@@ -2290,7 +2290,7 @@ during a power failure.
 .TP 15
 Joerg Schilling (schilling@fokus.fhg.de)
 .br
-For writing cdrecord and libscg which represent the most part of wodim's code.
+For writing cdrecord and libusal which represent the most part of wodim's code.
 .PP
 .TP 15
 Bill Swartz	(Bill_Swartz@twolf.com)

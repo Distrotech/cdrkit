@@ -106,7 +106,7 @@ static char     sccsid[] =
 #endif
 #include <vadefs.h>
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #ifdef	HAVE_AREAS
 #include <be/kernel/OS.h>
@@ -632,16 +632,16 @@ static void OpenAudio(char *fname, double rate, long nBitsPerSample,
 
 #include "scsi_cmds.h"
 
-static int RealEnd(SCSI *scgp, UINT4 *buff);
+static int RealEnd(SCSI *usalp, UINT4 *buff);
 
-static int RealEnd(SCSI *scgp, UINT4 *buff)
+static int RealEnd(SCSI *usalp, UINT4 *buff)
 {
-	if (scg_cmd_err(scgp) != 0) {
+	if (usal_cmd_err(usalp) != 0) {
 		int c,k,q;
 
-		k = scg_sense_key(scgp);
-		c = scg_sense_code(scgp);
-		q = scg_sense_qual(scgp);
+		k = usal_sense_key(usalp);
+		c = usal_sense_code(usalp);
+		q = usal_sense_qual(usalp);
 		if ((k == 0x05 /* ILLEGAL_REQUEST */ &&
 		     c == 0x21 /* lba out of range */ &&
 		     q == 0x00) ||
@@ -655,7 +655,7 @@ static int RealEnd(SCSI *scgp, UINT4 *buff)
 		}
 	}
 
-	if (scg_getresid(scgp) > 16) return 1;
+	if (usal_getresid(usalp) > 16) return 1;
 
 	{
 		unsigned char *p;
@@ -1056,10 +1056,10 @@ static void exit_wrapper(int status)
 #endif
 
 	if (child_pid != 0) {
-		SCSI *scgp = get_scsi_p();
-		if (scgp->running) {
-			scgp->cb_fun = on_exitscsi;
-			scgp->cb_arg = (void *)status;
+		SCSI *usalp = get_scsi_p();
+		if (usalp->running) {
+			usalp->cb_fun = on_exitscsi;
+			usalp->cb_arg = (void *)status;
 		} else {
 			on_exitscsi((void *)status);
 		} 
@@ -1365,7 +1365,7 @@ static int do_read(myringbuff *p, unsigned *total_unsuccessful_retries)
 
 		retry_count = 0;
 		do {
-			SCSI *scgp = get_scsi_p();
+			SCSI *usalp = get_scsi_p();
 			int retval;
 #ifdef DEBUG_READS
 fprintf(stderr, "reading from %lu to %lu, overlap %u\n", lSector, lSector + SectorBurst -1, global.overlap);
@@ -1384,17 +1384,17 @@ if (((unsigned)p->data) & (global.pagesize -1) != 0) {
 
 				/* we switch to single sector reads,
 				 * in order to handle the remaining sectors. */
-				scgp->silent++;
+				usalp->silent++;
 				do {
-					int retval2 = ReadCdRomSub( scgp, bufferSub, lSector+singles, 1 );
-					*eorecording = RealEnd( scgp, bufferSub );
+					int retval2 = ReadCdRomSub( usalp, bufferSub, lSector+singles, 1 );
+					*eorecording = RealEnd( usalp, bufferSub );
 					if (*eorecording) {
 						break;
 					}
 					memcpy(p->data+singles*CD_FRAMESAMPLES, bufferSub, CD_FRAMESIZE_RAW);
 					singles++;
 				} while (singles < SectorBurst);
-				scgp->silent--;
+				usalp->silent--;
 
 				if ( *eorecording ) {
 					patch_real_end(lSector+singles);
@@ -1413,7 +1413,7 @@ global.iloop, *nSamplesToDo);
 
 				}
 			} else {
-				retval = ReadCdRom( scgp, p->data, lSector, SectorBurst );
+				retval = ReadCdRom( usalp, p->data, lSector, SectorBurst );
 			}
 			handle_inputendianess(p->data, SectorBurst * CD_FRAMESAMPLES);
 			if (NULL ==

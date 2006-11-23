@@ -45,13 +45,13 @@ static	char sccsid[] =
 #include <utypes.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsitransp.h>
 
 #include "wodim.h"
 #include "crc16.h"
 
-#include <scg/scsireg.h>
+#include <usal/scsireg.h>
 #include "scsimmc.h"
 
 /*#define	SAO_RAW*/
@@ -120,7 +120,7 @@ void clone_toc(track_t *trackp)
 	for (i = 4, j = 0; i < len; i += 11) {
 		fp = (struct ftrackdesc *)&buf[i];
 		if (xdebug)
-			scg_prbytes("FT", (Uchar *)&buf[i], 11);
+			usal_prbytes("FT", (Uchar *)&buf[i], 11);
 		if (fp->sess_number != 1)
 			comerrno(EX_BAD, "Can only copy session # 1.\n");
 
@@ -177,7 +177,7 @@ void clone_toc(track_t *trackp)
 			_subq[j][9] = mr.msf_frame;
 		}
 		if (xdebug)
-			scg_prbytes("TOC  ", _subq[j], 12);
+			usal_prbytes("TOC  ", _subq[j], 12);
 		j++;
 	}
 	_nsubh = j;

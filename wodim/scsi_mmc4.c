@@ -53,29 +53,29 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "scsimmc.h"
 #include "wodim.h"
 
- int	get_supported_cdrw_media_types(SCSI *scgp);
+ int	get_supported_cdrw_media_types(SCSI *usalp);
 
 /*
  * Retrieve list of supported cd-rw media types (feature 0x37)
  */
 int
-get_supported_cdrw_media_types(SCSI *scgp)
+get_supported_cdrw_media_types(SCSI *usalp)
 {
 	Uchar   cbuf[16];
 	int	ret;
 	fillbytes(cbuf, sizeof (cbuf), '\0');
 
-	scgp->silent++;
-	ret = get_configuration(scgp, (char *)cbuf, sizeof (cbuf), 0x37, 2);
-	scgp->silent--;
+	usalp->silent++;
+	ret = get_configuration(usalp, (char *)cbuf, sizeof (cbuf), 0x37, 2);
+	usalp->silent--;
 
 	if (ret < 0)
 		return (-1);

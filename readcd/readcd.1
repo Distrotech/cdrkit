@@ -47,7 +47,7 @@ The
 .I device
 refers to a device location similar to the one used in the wodim command. Refer to its manpage for details.
 .PP
-Also note that this version of readcd uses a modified libscg library which has
+Also note that this version of readcd uses a modified libusal library which has
 a different behaviour compared to the one distributed by its original author.
 
 .SH OPTIONS
@@ -120,7 +120,7 @@ the misc debug level by one (with -d). If you specify
 .I -dd,
 this equals to 
 .BI debug= 2.
-This may help to find problems while opening a driver for libscg.
+This may help to find problems while opening a driver for libusal.
 as well as with sector sizes and sector types.
 Using
 .B \-debug
@@ -128,7 +128,7 @@ slows down the process and may be the reason for a buffer underrun.
 .TP
 .BR kdebug= "#, " kd= #
 Tell the 
-.BR scg -driver
+.BR usal -driver
 to modify the kernel debug value while SCSI commands are running.
 .TP
 .BR \-silent ", " \-s
@@ -218,7 +218,7 @@ If no
 .B ts=
 option has been specified,
 .B readcd
-defaults to a transfer size of 256 kB. If libscg gets lower values from the
+defaults to a transfer size of 256 kB. If libusal gets lower values from the
 operating system, the value is reduced to the maximum value that is possible
 with the current operating system.
 Sometimes, it may help to further reduce the transfer size or to enhance it,

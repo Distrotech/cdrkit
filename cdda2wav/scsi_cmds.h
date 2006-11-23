@@ -15,54 +15,54 @@
 
 extern unsigned char *cmd;
 struct TOC;
-int SCSI_emulated_ATAPI_on(SCSI *scgp);
-unsigned char *Inquiry(SCSI *scgp);
-int TestForMedium(SCSI *scgp);
-void SpeedSelectSCSIMMC(SCSI *scgp, unsigned speed);
-void SpeedSelectSCSIYamaha(SCSI *scgp, unsigned speed);
-void SpeedSelectSCSISony(SCSI *scgp, unsigned speed);
-void SpeedSelectSCSIPhilipsCDD2600(SCSI *scgp, unsigned speed);
-void SpeedSelectSCSINEC(SCSI *scgp, unsigned speed);
-void SpeedSelectSCSIToshiba(SCSI *scgp, unsigned speed);
-subq_chnl *ReadSubQSCSI(SCSI *scgp, unsigned char sq_format, 
+int SCSI_emulated_ATAPI_on(SCSI *usalp);
+unsigned char *Inquiry(SCSI *usalp);
+int TestForMedium(SCSI *usalp);
+void SpeedSelectSCSIMMC(SCSI *usalp, unsigned speed);
+void SpeedSelectSCSIYamaha(SCSI *usalp, unsigned speed);
+void SpeedSelectSCSISony(SCSI *usalp, unsigned speed);
+void SpeedSelectSCSIPhilipsCDD2600(SCSI *usalp, unsigned speed);
+void SpeedSelectSCSINEC(SCSI *usalp, unsigned speed);
+void SpeedSelectSCSIToshiba(SCSI *usalp, unsigned speed);
+subq_chnl *ReadSubQSCSI(SCSI *usalp, unsigned char sq_format, 
 								unsigned char ltrack);
-subq_chnl *ReadSubChannelsSony(SCSI *scgp, unsigned lSector);
-subq_chnl *ReadSubChannelsFallbackMMC(SCSI *scgp, unsigned lSector);
-subq_chnl *ReadStandardSub(SCSI *scgp, unsigned lSector);
-int ReadCddaMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, 
+subq_chnl *ReadSubChannelsSony(SCSI *usalp, unsigned lSector);
+subq_chnl *ReadSubChannelsFallbackMMC(SCSI *usalp, unsigned lSector);
+subq_chnl *ReadStandardSub(SCSI *usalp, unsigned lSector);
+int ReadCddaMMC12(SCSI *usalp, UINT4 *p, unsigned lSector, 
 						unsigned SectorBurstVal);
-int ReadCdda12Matsushita(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCdda12Matsushita(SCSI *usalp, UINT4 *p, unsigned lSector, 
 								 unsigned SectorBurstVal);
-int ReadCdda12(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SecorBurstVal);
-int ReadCdda10(SCSI *scgp, UINT4 *p, unsigned lSector, unsigned SecorBurstVal);
-int ReadStandard(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCdda12(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SecorBurstVal);
+int ReadCdda10(SCSI *usalp, UINT4 *p, unsigned lSector, unsigned SecorBurstVal);
+int ReadStandard(SCSI *usalp, UINT4 *p, unsigned lSector, 
 					  unsigned SctorBurstVal);
-int ReadStandardData(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadStandardData(SCSI *usalp, UINT4 *p, unsigned lSector, 
 							unsigned SctorBurstVal);
-int ReadCddaFallbackMMC(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaFallbackMMC(SCSI *usalp, UINT4 *p, unsigned lSector, 
 								unsigned SctorBurstVal);
-int ReadCddaSubSony(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaSubSony(SCSI *usalp, UINT4 *p, unsigned lSector, 
 						  unsigned SectorBurstVal);
-int ReadCddaSub96Sony(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaSub96Sony(SCSI *usalp, UINT4 *p, unsigned lSector, 
 							 unsigned SectorBurstVal);
-int ReadCddaSubMMC12(SCSI *scgp, UINT4 *p, unsigned lSector, 
+int ReadCddaSubMMC12(SCSI *usalp, UINT4 *p, unsigned lSector, 
 							unsigned SectorBurstVal);
-unsigned ReadTocSony(SCSI *scgp);
-unsigned ReadTocMMC(SCSI *scgp);
-unsigned ReadTocSCSI(SCSI *scgp);
-unsigned ReadFirstSessionTOCSony(SCSI *scgp);
-unsigned ReadFirstSessionTOCMMC(SCSI *scgp);
-void ReadTocTextSCSIMMC(SCSI *scgp);
-int Play_atSCSI(SCSI *scgp, unsigned int from_sector, unsigned int sectors);
-int StopPlaySCSI(SCSI *scgp);
-void EnableCddaModeSelect(SCSI *scgp, int fAudioMode, unsigned uSectorsize);
-int set_sectorsize(SCSI *scgp, unsigned int secsize);
+unsigned ReadTocSony(SCSI *usalp);
+unsigned ReadTocMMC(SCSI *usalp);
+unsigned ReadTocSCSI(SCSI *usalp);
+unsigned ReadFirstSessionTOCSony(SCSI *usalp);
+unsigned ReadFirstSessionTOCMMC(SCSI *usalp);
+void ReadTocTextSCSIMMC(SCSI *usalp);
+int Play_atSCSI(SCSI *usalp, unsigned int from_sector, unsigned int sectors);
+int StopPlaySCSI(SCSI *usalp);
+void EnableCddaModeSelect(SCSI *usalp, int fAudioMode, unsigned uSectorsize);
+int set_sectorsize(SCSI *usalp, unsigned int secsize);
 unsigned int
-get_orig_sectorsize(SCSI *scgp, unsigned char *m4, unsigned char *m10,
+get_orig_sectorsize(SCSI *usalp, unsigned char *m4, unsigned char *m10,
                     unsigned char *m11);
-int heiko_mmc(SCSI *scgp);
-void init_scsibuf(SCSI *scgp, unsigned amt);
-int	myscsierr(SCSI *scgp);
+int heiko_mmc(SCSI *usalp);
+void init_scsibuf(SCSI *usalp, unsigned amt);
+int	myscsierr(SCSI *usalp);
 
 extern int accepts_fua_bit;
 extern unsigned char density;

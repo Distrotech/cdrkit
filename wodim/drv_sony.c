@@ -54,16 +54,16 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "wodim.h"
 
 #ifdef	SONY_DEBUG
-#	define		inc_verbose()	scgp->verbose++
-#	define		dec_verbose()	scgp->verbose--
+#	define		inc_verbose()	usalp->verbose++
+#	define		dec_verbose()	usalp->verbose--
 #else
 #	define		inc_verbose()
 #	define		dec_verbose()
@@ -212,41 +212,41 @@ struct sony_cue {
 
 #define	strbeg(s1, s2)	(strstr((s2), (s1)) == (s2))
 
-static	int	write_start_sony(SCSI *scgp, caddr_t bp, int size);
-static	int	write_continue_sony(SCSI *scgp, caddr_t bp, long sectaddr, 
+static	int	write_start_sony(SCSI *usalp, caddr_t bp, int size);
+static	int	write_continue_sony(SCSI *usalp, caddr_t bp, long sectaddr, 
 											  long size, int blocks, BOOL islast);
-static	int	discontinue_sony(SCSI *scgp);
-static	int	write_track_sony(SCSI *scgp, long track, int sectype);
-static	int	close_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	flush_sony(SCSI *scgp, int track);
-static	int	finalize_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	recover_sony(SCSI *scgp, cdr_t *dp, int track);
-static	int	set_wr_parameter_sony(SCSI *scgp, caddr_t bp, int size);
-static	int	next_wr_addr_sony(SCSI *scgp, track_t *trackp, long *ap);
-static	int	reserve_track_sony(SCSI *scgp, unsigned long len);
-static	int	init_sony(SCSI *scgp, cdr_t *dp);
-static	int	getdisktype_sony(SCSI *scgp, cdr_t *dp);
+static	int	discontinue_sony(SCSI *usalp);
+static	int	write_track_sony(SCSI *usalp, long track, int sectype);
+static	int	close_track_sony(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	flush_sony(SCSI *usalp, int track);
+static	int	finalize_sony(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	recover_sony(SCSI *usalp, cdr_t *dp, int track);
+static	int	set_wr_parameter_sony(SCSI *usalp, caddr_t bp, int size);
+static	int	next_wr_addr_sony(SCSI *usalp, track_t *trackp, long *ap);
+static	int	reserve_track_sony(SCSI *usalp, unsigned long len);
+static	int	init_sony(SCSI *usalp, cdr_t *dp);
+static	int	getdisktype_sony(SCSI *usalp, cdr_t *dp);
 static	void	di_to_dstat_sony(struct sony_924_mode_page_22 *dip, 
 										  dstat_t *dsp);
-static	int	speed_select_sony(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	next_writable_address_sony(SCSI *scgp, long *ap, int track, 
+static	int	speed_select_sony(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	next_writable_address_sony(SCSI *usalp, long *ap, int track, 
 														int sectype, int tracktype);
-static	int	new_track_sony(SCSI *scgp, int track, int sectype, 
+static	int	new_track_sony(SCSI *usalp, int track, int sectype, 
 										int tracktype);
-static	int	open_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	open_session_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	abort_session_sony(SCSI *scgp, cdr_t *dp);
-static	int	get_page22_sony(SCSI *scgp, char *mode);
+static	int	open_track_sony(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	open_session_sony(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	abort_session_sony(SCSI *usalp, cdr_t *dp);
+static	int	get_page22_sony(SCSI *usalp, char *mode);
 static	int	gen_cue_sony(track_t *trackp, void *vcuep, BOOL needgap);
 static	void	fillcue(struct sony_cue *cp, int ca, int tno, int idx, int dataform, int scms, msf_t *mp);
-static	int	send_cue_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	write_leadin_sony(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	sony_attach(SCSI *scgp, cdr_t *dp);
+static	int	send_cue_sony(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	write_leadin_sony(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	sony_attach(SCSI *usalp, cdr_t *dp);
 #ifdef	SONY_DEBUG
 static	void	print_sony_mp22(struct sony_924_mode_page_22 *xp, int len);
 static	void	print_sony_mp23(struct sony_924_mode_page_23 *xp, int len);
 #endif
-static	int	buf_cap_sony(SCSI *scgp, long *, long *);
+static	int	buf_cap_sony(SCSI *usalp, long *, long *);
 
 cdr_t	cdr_sony_cdu924 = {
 	0, 0,
@@ -290,9 +290,9 @@ cdr_t	cdr_sony_cdu924 = {
 };
 
 static int
-write_start_sony(SCSI *scgp, caddr_t bp, int size)
+write_start_sony(SCSI *usalp, caddr_t bp, int size)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -302,25 +302,25 @@ write_start_sony(SCSI *scgp, caddr_t bp, int size)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->sense_len = 26;
 	scmd->cdb.g1_cdb.cmd = 0xE0;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g0_cdbaddr(&scmd->cdb.g0_cdb, size); /* Hack, but Sony is silly */
 
-	scgp->cmdname = "write_start";
+	usalp->cmdname = "write_start";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-write_continue_sony(SCSI *scgp, 
+write_continue_sony(SCSI *usalp, 
                     caddr_t bp      /* address of buffer */, 
                     long sectaddr   /* disk address (sector) to put */, 
                     long size       /* number of bytes to transfer */, 
                     int blocks      /* sector count */, 
                     BOOL islast     /* last write for track */)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -329,67 +329,67 @@ write_continue_sony(SCSI *scgp,
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE1;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g0_cdbaddr(&scmd->cdb.g0_cdb, size); /* Hack, but Sony is silly */
 
-	scgp->cmdname = "write_continue";
+	usalp->cmdname = "write_continue";
 
-	if (scg_cmd(scgp) < 0) {
+	if (usal_cmd(usalp) < 0) {
 		/*
 		 * XXX This seems to happen only sometimes.
 		 */
-		if (scg_sense_code(scgp) != 0x80)
+		if (usal_sense_code(usalp) != 0x80)
 			return (-1);
 	}
-	return (size - scg_getresid(scgp));
+	return (size - usal_getresid(usalp));
 }
 
 static int
-discontinue_sony(SCSI *scgp)
+discontinue_sony(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA|SCG_CMD_RETRY;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE2;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "discontinue";
+	usalp->cmdname = "discontinue";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-write_track_sony(SCSI *scgp, 
+write_track_sony(SCSI *usalp, 
                  long track     /* track number 0 == new track */, 
                  int sectype    /* no sectype for Sony write track */)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA|SCG_CMD_RETRY;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xF5;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, track);
 
-	scgp->cmdname = "write_track";
+	usalp->cmdname = "write_track";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 /* XXX NOCH NICHT FERTIG */
 static int
-close_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
+close_track_sony(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 	int	track = 0;
 
 	if (!is_tao(trackp) && !is_packet(trackp))
@@ -400,37 +400,37 @@ close_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xF0;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, track);
 /* XXX Padding ??? (bit 0 in addr[0] / CDB[2]) */
 
-	scgp->cmdname = "close_track";
+	usalp->cmdname = "close_track";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
 	/*
 	 * Clear the silly "error situation" from Sony´ dummy write end
 	 * but notify if real errors occurred.
 	 */
-	scgp->silent++;
-	if (test_unit_ready(scgp) < 0 && scg_sense_code(scgp) != 0xD4) {
-		scgp->cmdname = "close_track/test_unit_ready";
-		scg_printerr(scgp);
+	usalp->silent++;
+	if (test_unit_ready(usalp) < 0 && usal_sense_code(usalp) != 0xD4) {
+		usalp->cmdname = "close_track/test_unit_ready";
+		usal_printerr(usalp);
 	}
-	scgp->silent--;
+	usalp->silent--;
 
 	return (0);
 }
 
 static int
-finalize_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
+finalize_sony(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 	int	dummy = track_base(trackp)->tracktype & TOCF_DUMMY;
 
 	if (!is_tao(trackp) && !is_packet(trackp)) {
-		wait_unit_ready(scgp, 240);
+		wait_unit_ready(usalp, 240);
 		return (0);
 	}
 	if (dummy) {
@@ -443,21 +443,21 @@ finalize_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 8 * 60;		/* Needs up to 4 minutes */
 	scmd->cdb.g1_cdb.cmd = 0xF1;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.count[1] = ((track_base(trackp)->tracktype & TOCF_MULTI) ? 1 : 0);
 /* XXX Padding ??? (bit 0 in addr[0] / CDB[2]) */
 
-	scgp->cmdname = "finalize";
+	usalp->cmdname = "finalize";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-flush_sony(SCSI *scgp, int track)
+flush_sony(SCSI *usalp, int track)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
@@ -465,43 +465,43 @@ flush_sony(SCSI *scgp, int track)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 8 * 60;		/* Needs up to 4 minutes */
 	scmd->cdb.g1_cdb.cmd = 0xF2;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.cmd_cdb[5] = track;
 /* XXX POE ???	   (bit 1 in addr[0] / CDB[2]) */
 /* XXX Padding ??? (bit 0 in addr[0] / CDB[2]) */
 /* XXX Partial flush ??? (CDB[3]) */
 
-	scgp->cmdname = "flush";
+	usalp->cmdname = "flush";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-recover_sony(SCSI *scgp, cdr_t *dp, int track)
+recover_sony(SCSI *usalp, cdr_t *dp, int track)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xF6;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.addr[3] = track;
 
-	scgp->cmdname = "recover";
+	usalp->cmdname = "recover";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-set_wr_parameter_sony(SCSI *scgp, caddr_t bp, int size)
+set_wr_parameter_sony(SCSI *usalp, caddr_t bp, int size)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -510,55 +510,55 @@ set_wr_parameter_sony(SCSI *scgp, caddr_t bp, int size)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xF8;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdblen(&scmd->cdb.g1_cdb, size);
 
-	scgp->cmdname = "set_write_parameter";
+	usalp->cmdname = "set_write_parameter";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-next_wr_addr_sony(SCSI *scgp, track_t *trackp, long *ap)
+next_wr_addr_sony(SCSI *usalp, track_t *trackp, long *ap)
 {
-	if (next_writable_address_sony(scgp, ap, 0, 0, 0) < 0)
+	if (next_writable_address_sony(usalp, ap, 0, 0, 0) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-reserve_track_sony(SCSI *scgp, unsigned long len)
+reserve_track_sony(SCSI *usalp, unsigned long len)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xF3;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	i_to_4_byte(&scmd->cdb.g1_cdb.addr[3], len);
 
-	scgp->cmdname = "reserve_track";
+	usalp->cmdname = "reserve_track";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int
-init_sony(SCSI *scgp, cdr_t *dp)
+init_sony(SCSI *usalp, cdr_t *dp)
 {
-	return (speed_select_sony(scgp, dp, NULL));
+	return (speed_select_sony(usalp, dp, NULL));
 }
 
 
 #define	IS(what, flag)	printf("  Is %s%s\n", flag?"":"not ", what);
 
 static int
-getdisktype_sony(SCSI *scgp, cdr_t *dp)
+getdisktype_sony(SCSI *usalp, cdr_t *dp)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
 	long	dummy;
@@ -569,7 +569,7 @@ getdisktype_sony(SCSI *scgp, cdr_t *dp)
 	struct scsi_mode_page_header	*mp;
 	struct sony_924_mode_page_22	*xp;
 
-	dummy = get_page22_sony(scgp, mode);
+	dummy = get_page22_sony(usalp, mode);
 	if (dummy >= 0) {
 		mp = (struct scsi_mode_page_header *)
 			(mode + sizeof (struct scsi_mode_header) +
@@ -580,7 +580,7 @@ getdisktype_sony(SCSI *scgp, cdr_t *dp)
 		if (xp->disk_appl_code[0] == 0xFF)
 			dummy = -1;
 	} else {
-		return (drive_getdisktype(scgp, dp));
+		return (drive_getdisktype(usalp, dp));
 	}
 
 	if ((dp->cdr_dstat->ds_cdrflags & RF_PRATIP) != 0 && dummy >= 0) {
@@ -624,7 +624,7 @@ getdisktype_sony(SCSI *scgp, cdr_t *dp)
 	}
 	if (dummy >= 0)
 		di_to_dstat_sony(xp, dsp);
-	return (drive_getdisktype(scgp, dp));
+	return (drive_getdisktype(usalp, dp));
 }
 
 static void
@@ -689,7 +689,7 @@ int	sony_speeds[] = {
 };
 
 static int
-speed_select_sony(SCSI *scgp, cdr_t *dp, int *speedp)
+speed_select_sony(SCSI *usalp, cdr_t *dp, int *speedp)
 {
 	struct cdd_52x_mode_data md;
 	int	count;
@@ -718,7 +718,7 @@ speed_select_sony(SCSI *scgp, cdr_t *dp, int *speedp)
 	 */
 	md.pagex.page_s20.cue_sheet_opt = 0x03;
 
-	err = mode_select(scgp, (Uchar *)&md, count, 0, 1);
+	err = mode_select(usalp, (Uchar *)&md, count, 0, 1);
 	if (err < 0)
 		return (err);
 
@@ -734,11 +734,11 @@ speed_select_sony(SCSI *scgp, cdr_t *dp, int *speedp)
 	md.pagex.page_s31.p_len =  0x02;
 	md.pagex.page_s31.speed = sony_speeds[speed];
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, 1));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, 1));
 }
 
 static int
-next_writable_address_sony(SCSI *scgp, long *ap, int track, int sectype, 
+next_writable_address_sony(SCSI *usalp, long *ap, int track, int sectype, 
                            int tracktype)
 {
 	struct	scsi_mode_page_header *mp;
@@ -750,7 +750,7 @@ next_writable_address_sony(SCSI *scgp, long *ap, int track, int sectype,
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
 	inc_verbose();
-	if (!get_mode_params(scgp, page, "CD track information",
+	if (!get_mode_params(usalp, page, "CD track information",
 			(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 		dec_verbose();
 		return (-1);
@@ -776,7 +776,7 @@ next_writable_address_sony(SCSI *scgp, long *ap, int track, int sectype,
 
 
 static int
-new_track_sony(SCSI *scgp, int track, int sectype, int tracktype)
+new_track_sony(SCSI *usalp, int track, int sectype, int tracktype)
 {
 	struct	scsi_mode_page_header *mp;
 	char			mode[256];
@@ -786,12 +786,12 @@ new_track_sony(SCSI *scgp, int track, int sectype, int tracktype)
 	int	i;
 
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
-	get_page22_sony(scgp, mode);
+	get_page22_sony(usalp, mode);
 
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
 	inc_verbose();
-	if (!get_mode_params(scgp, page, "CD track information",
+	if (!get_mode_params(usalp, page, "CD track information",
 			(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 		dec_verbose();
 		return (-1);
@@ -837,7 +837,7 @@ new_track_sony(SCSI *scgp, int track, int sectype, int tracktype)
 								0);
 	}
 
-	if (mode_select(scgp, (Uchar *)mode, len, 0, scgp->inq->data_format >= 2) < 0) {
+	if (mode_select(usalp, (Uchar *)mode, len, 0, usalp->inq->data_format >= 2) < 0) {
 		return (-1);
 	}
 
@@ -845,7 +845,7 @@ new_track_sony(SCSI *scgp, int track, int sectype, int tracktype)
 }
 
 static int
-open_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
+open_track_sony(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	if (!is_tao(trackp) && !is_packet(trackp)) {
 		if (trackp->pregapsize > 0 && (trackp->flags & TI_PREGAP) == 0) {
@@ -857,7 +857,7 @@ open_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 			/*
 			 * XXX Do we need to check isecsize too?
 			 */
-			pad_track(scgp, dp, trackp,
+			pad_track(usalp, dp, trackp,
 				trackp->trackstart-trackp->pregapsize,
 				(Llong)trackp->pregapsize*trackp->secsize,
 					FALSE, 0);
@@ -865,20 +865,20 @@ open_track_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 		return (0);
 	}
 
-	if (select_secsize(scgp, trackp->secsize) < 0)
+	if (select_secsize(usalp, trackp->secsize) < 0)
 		return (-1);
 
-	if (new_track_sony(scgp, trackp->trackno, trackp->sectype, trackp->tracktype & TOC_MASK) < 0)
+	if (new_track_sony(usalp, trackp->trackno, trackp->sectype, trackp->tracktype & TOC_MASK) < 0)
 		return (-1);
 
-	if (write_track_sony(scgp, 0L, trackp->sectype) < 0)
+	if (write_track_sony(usalp, 0L, trackp->sectype) < 0)
 		return (-1);
 
 	return (0);
 }
 
 static int
-open_session_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
+open_session_sony(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	struct	scsi_mode_page_header *mp;
 	char			mode[256];
@@ -888,7 +888,7 @@ open_session_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
-	if ((len = get_page22_sony(scgp, mode)) < 0)
+	if ((len = get_page22_sony(usalp, mode)) < 0)
 		return (-1);
 
 	mp = (struct scsi_mode_page_header *)
@@ -928,24 +928,24 @@ open_session_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 								0);
 	}
 
-	if (mode_select(scgp, (Uchar *)mode, len, 0, scgp->inq->data_format >= 2) < 0) {
+	if (mode_select(usalp, (Uchar *)mode, len, 0, usalp->inq->data_format >= 2) < 0) {
 		return (-1);
 	}
 /*
  * XXX set write parameter für SAO mit Multi Session (948 only?)
- * XXX set_wr_parameter_sony(scgp, bp, size);
+ * XXX set_wr_parameter_sony(usalp, bp, size);
  */
 	return (0);
 }
 
 static int
-abort_session_sony(SCSI *scgp, cdr_t *dp)
+abort_session_sony(SCSI *usalp, cdr_t *dp)
 {
-	return (discontinue_sony(scgp));
+	return (discontinue_sony(usalp));
 }
 
 static int
-get_page22_sony(SCSI *scgp, char *mode)
+get_page22_sony(SCSI *usalp, char *mode)
 {
 	struct	scsi_mode_page_header *mp;
 	int	len = 0x30;
@@ -955,7 +955,7 @@ get_page22_sony(SCSI *scgp, char *mode)
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
 	inc_verbose();
-	if (!get_mode_params(scgp, page, "CD disk information",
+	if (!get_mode_params(usalp, page, "CD disk information",
 			(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 		dec_verbose();
 		return (-1);
@@ -1096,7 +1096,7 @@ gen_cue_sony(track_t *trackp, void *vcuep, BOOL needgap)
 
 	if (lverbose > 1) {
 		for (i = 0; i < ncue; i++) {
-			scg_prbytes("", (Uchar *)&cue[i], 8);
+			usal_prbytes("", (Uchar *)&cue[i], 8);
 		}
 	}
 	if (cuep)
@@ -1130,7 +1130,7 @@ fillcue(struct sony_cue *cp     /* The target cue entry */,
 }
 
 static int
-send_cue_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
+send_cue_sony(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	struct sony_cue *cp;
 	int		ncue;
@@ -1155,14 +1155,14 @@ send_cue_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	stoptime = starttime;
 	gettimeofday(&starttime, (struct timezone *)0);
 
-	scgp->silent++;
-	ret  = write_start_sony(scgp, (caddr_t)cp, ncue*8);
-	scgp->silent--;
+	usalp->silent++;
+	ret  = write_start_sony(usalp, (caddr_t)cp, ncue*8);
+	usalp->silent--;
 	free(cp);
 	if (ret < 0) {
 		errmsgno(EX_BAD, "CUE sheet not accepted. Retrying with minimum pregapsize = 1.\n");
 		ncue = (*dp->cdr_gen_cue)(trackp, &cp, TRUE);
-		ret  = write_start_sony(scgp, (caddr_t)cp, ncue*8);
+		ret  = write_start_sony(usalp, (caddr_t)cp, ncue*8);
 		free(cp);
 	}
 	if (ret >= 0 && lverbose) {
@@ -1173,7 +1173,7 @@ send_cue_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 }
 
 static int
-write_leadin_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
+write_leadin_sony(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	Uint	i;
 	long	startsec = 0L;
@@ -1192,7 +1192,7 @@ write_leadin_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 				trackp[0].flags &= ~TI_TEXT;
 			}
 		}
-		if ((*dp->cdr_send_cue)(scgp, dp, trackp) < 0) {
+		if ((*dp->cdr_send_cue)(usalp, dp, trackp) < 0) {
 			errmsgno(EX_BAD, "Cannot send CUE sheet.\n");
 			return (-1);
 		}
@@ -1213,7 +1213,7 @@ write_leadin_sony(SCSI *scgp, cdr_t *dp, track_t *trackp)
 			}
 			if (debug || lverbose)
 				printf("Writing lead-in...\n");
-			if (write_cdtext(scgp, dp, startsec) < 0)
+			if (write_cdtext(usalp, dp, startsec) < 0)
 				return (-1);
 
 			dp->cdr_dstat->ds_cdrflags |= RF_LEADIN;
@@ -1270,14 +1270,14 @@ static const char *sd_cdu_924_error_str[] = {
 };
 
 static int
-sony_attach(SCSI *scgp, cdr_t *dp)
+sony_attach(SCSI *usalp, cdr_t *dp)
 {
-	if (scgp->inq != NULL) {
-		if (strbeg("CD-R   CDU94", scgp->inq->prod_ident)) {
+	if (usalp->inq != NULL) {
+		if (strbeg("CD-R   CDU94", usalp->inq->prod_ident)) {
 			dp->cdr_speeddef = 4;
 		}
 	}
-	scg_setnonstderrs(scgp, sd_cdu_924_error_str);
+	usal_setnonstderrs(usalp, sd_cdu_924_error_str);
 	return (0);
 }
 
@@ -1325,13 +1325,13 @@ print_sony_mp23(struct sony_924_mode_page_23 *xp, int len)
 #endif
 
 static int
-buf_cap_sony(SCSI *scgp, long *sp, long *fp)
+buf_cap_sony(SCSI *usalp, long *sp, long *fp)
 {
 	char	resp[8];
 	Ulong	freespace;
 	Ulong	bufsize;
 	int	per;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)resp;
@@ -1340,11 +1340,11 @@ buf_cap_sony(SCSI *scgp, long *sp, long *fp)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xEC;		/* Read buffer cap */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "read buffer cap sony";
+	usalp->cmdname = "read buffer cap sony";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
 	bufsize   = a_to_u_3_byte(&resp[1]);
@@ -1354,7 +1354,7 @@ buf_cap_sony(SCSI *scgp, long *sp, long *fp)
 	if (fp)
 		*fp = freespace;
 
-	if (scgp->verbose || (sp == 0 && fp == 0))
+	if (usalp->verbose || (sp == 0 && fp == 0))
 		printf("BFree: %ld K BSize: %ld K\n", freespace >> 10, bufsize >> 10);
 
 	if (bufsize == 0)

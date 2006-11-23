@@ -61,8 +61,8 @@ static	char sccsid[] =
 #include <patmatch.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsitransp.h>
 
 #include <netinet/in.h>
 #ifdef	HAVE_ARPA_INET_H
@@ -381,11 +381,11 @@ checktarget()
 			continue;
 		DEBUG6("ACCESS %s %s %d.%d,%d,%d\n", user, host, bus, chan, tgt, lun);
 
-		if (bus != -1 && bus != scg_scsibus(scsi_ptr))
+		if (bus != -1 && bus != usal_scsibus(scsi_ptr))
 			continue;
-		if (tgt != -1 && tgt != scg_target(scsi_ptr))
+		if (tgt != -1 && tgt != usal_target(scsi_ptr))
 			continue;
-		if (lun != -1 && lun != scg_lun(scsi_ptr))
+		if (lun != -1 && lun != usal_lun(scsi_ptr))
 			continue;
 		return (TRUE);
 	}
@@ -497,7 +497,7 @@ scsiversion()
 		rscsirespond(-1, EBADF);
 		return;
 	}
-	str = scg_version(scsi_ptr, atoi(what));
+	str = usal_version(scsi_ptr, atoi(what));
 	ret = strlen(str);
 	ret++;	/* Include null char */
 	rscsirespond(ret, geterrno());
@@ -515,7 +515,7 @@ openscsi()
 	char	rbuf[1600];
 
 	if (scsi_ptr != NULL)
-		(void) scg_close(scsi_ptr);
+		(void) usal_close(scsi_ptr);
 
 	readarg(device, sizeof(device));
 	DEBUG1("rscsid: O %s\n", device);
@@ -526,7 +526,7 @@ openscsi()
 		scsi_ptr = NULL;
 		seterrno(EACCES);
 	} else {
-		scsi_ptr = scg_open(device, errstr, sizeof(errstr), debug, lverbose);
+		scsi_ptr = usal_open(device, errstr, sizeof(errstr), debug, lverbose);
 		if (scsi_ptr == NULL) {
 			ret = -1;
 		} else {
@@ -546,16 +546,16 @@ openscsi()
 		return;
 	}
 	DEBUG4("rscsid:>A 0 %d.%d,%d,%d\n", 
-		scg_scsibus(scsi_ptr),
+		usal_scsibus(scsi_ptr),
 		0,
-		scg_target(scsi_ptr),
-		scg_lun(scsi_ptr));
+		usal_target(scsi_ptr),
+		usal_lun(scsi_ptr));
 
 	ret = js_snprintf(rbuf, sizeof(rbuf), "A0\n%d\n%d\n%d\n%d\n",
-		scg_scsibus(scsi_ptr),
+		usal_scsibus(scsi_ptr),
 		0,
-		scg_target(scsi_ptr),
-		scg_lun(scsi_ptr));
+		usal_target(scsi_ptr),
+		usal_lun(scsi_ptr));
 	(void) _nixwrite(STDOUT_FILENO, rbuf, ret);
 }
 
@@ -567,7 +567,7 @@ closescsi()
 
 	readarg(device, sizeof(device));
 	DEBUG1("rscsid: C %s\n", device);
-	ret = scg_close(scsi_ptr);
+	ret = usal_close(scsi_ptr);
 	rscsirespond(ret, geterrno());
 	scsi_ptr = NULL;
 }
@@ -584,7 +584,7 @@ maxdma()
 		rscsirespond(-1, EBADF);
 		return;
 	}
-	ret = scg_bufsize(scsi_ptr, atol(amt));
+	ret = usal_bufsize(scsi_ptr, atol(amt));
 	rscsirespond(ret, geterrno());
 }
 
@@ -600,7 +600,7 @@ getbuf()
 		rscsirespond(-1, EBADF);
 		return;
 	}
-	ret = scg_bufsize(scsi_ptr, atol(amt));
+	ret = usal_bufsize(scsi_ptr, atol(amt));
 	if (preparebuffer(ret) == NULL)
 		ret = -1;
 	rscsirespond(ret, geterrno());
@@ -618,7 +618,7 @@ freebuf()
 		rscsirespond(-1, EBADF);
 		return;
 	}
-	scg_freebuf(scsi_ptr);
+	usal_freebuf(scsi_ptr);
 	Sbuf = NULL;
 	rscsirespond(ret, geterrno());
 }
@@ -637,7 +637,7 @@ havebus()
 		rscsirespond(-1, EBADF);
 		return;
 	}
-	ret = scg_havebus(scsi_ptr, atol(bus));
+	ret = usal_havebus(scsi_ptr, atol(bus));
 	rscsirespond(ret, geterrno());
 }
 
@@ -660,9 +660,9 @@ scsifileno()
 		return;
 	}
 	seterrno(0);
-	ret = scg_settarget(scsi_ptr, atoi(bus), atoi(tgt), atoi(lun));
+	ret = usal_settarget(scsi_ptr, atoi(bus), atoi(tgt), atoi(lun));
 	if (!checktarget()) {
-		scg_settarget(scsi_ptr, -1, -1, -1);
+		usal_settarget(scsi_ptr, -1, -1, -1);
 		ret = -1;
 	}
 	if (geterrno() != 0)
@@ -684,7 +684,7 @@ initiator_id()
 		return;
 	}
 	seterrno(0);
-	ret = scg_initiator_id(scsi_ptr);
+	ret = usal_initiator_id(scsi_ptr);
 	if (geterrno() != 0)
 		rscsirespond(ret, geterrno());
 	else
@@ -704,7 +704,7 @@ isatapi()
 		return;
 	}
 	seterrno(0);
-	ret = scg_isatapi(scsi_ptr);
+	ret = usal_isatapi(scsi_ptr);
 	if (geterrno() != 0)
 		rscsirespond(ret, geterrno());
 	else
@@ -723,14 +723,14 @@ scsireset()
 		rscsirespond(-1, EBADF);
 		return;
 	}
-	ret = scg_reset(scsi_ptr, atoi(what));
+	ret = usal_reset(scsi_ptr, atoi(what));
 	rscsirespond(ret, geterrno());
 }
 
 static void
 sendcmd()
 {
-	register struct	scg_cmd	*scmd;
+	register struct	usal_cmd	*scmd;
 	int	n;
 	int	ret;
 	char	count[CMD_SIZE];
@@ -803,7 +803,7 @@ sendcmd()
 
 	scsi_ptr->cmdname = "";
 
-	ret = scg_cmd(scsi_ptr);
+	ret = usal_cmd(scsi_ptr);
 
 	n = 0;
 	if ((csize - scmd->resid) > 0)
@@ -932,7 +932,7 @@ static char *
 preparebuffer(int size)
 {
 	Sbufsize = size;
-	if ((Sbuf = scg_getbuf(scsi_ptr, Sbufsize)) == NULL) {
+	if ((Sbuf = usal_getbuf(scsi_ptr, Sbufsize)) == NULL) {
 		Sbufsize = 0L;
 		return (Sbuf);
 	}

@@ -43,7 +43,7 @@ static	char sccsid[] =
 #include <standard.h>
 #include <utypes.h>
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 #include "wodim.h"
 
 extern	int	debug;
@@ -52,4 +52,4 @@ extern	int	lverbose;
 
 extern	char	*buf;			/* The transfer buffer */
 
-int	write_session_data(SCSI *scgp, cdr_t *dp, track_t *trackp);
+int	write_session_data(SCSI *usalp, cdr_t *dp, track_t *trackp);

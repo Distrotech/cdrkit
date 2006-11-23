@@ -55,10 +55,10 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "wodim.h"
 
@@ -220,41 +220,41 @@ struct isrc_subcode {		/* subcode for ISRC code */
 #endif
 
 
-static	int	teac_attach(SCSI *scgp, cdr_t *dp);
-static	int	teac_init(SCSI *scgp, cdr_t *dp);
-static	int	teac_getdisktype(SCSI *scgp, cdr_t *dp);
-static	int	speed_select_teac(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	select_secsize_teac(SCSI *scgp, track_t *trackp);
-static	int	next_wr_addr_jvc(SCSI *scgp, track_t *, long *ap);
-static	int	write_teac_xg1(SCSI *scgp, caddr_t, long, long, int, BOOL);
-static	int	cdr_write_teac(SCSI *scgp, caddr_t bp, long sectaddr, long size, 
+static	int	teac_attach(SCSI *usalp, cdr_t *dp);
+static	int	teac_init(SCSI *usalp, cdr_t *dp);
+static	int	teac_getdisktype(SCSI *usalp, cdr_t *dp);
+static	int	speed_select_teac(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	select_secsize_teac(SCSI *usalp, track_t *trackp);
+static	int	next_wr_addr_jvc(SCSI *usalp, track_t *, long *ap);
+static	int	write_teac_xg1(SCSI *usalp, caddr_t, long, long, int, BOOL);
+static	int	cdr_write_teac(SCSI *usalp, caddr_t bp, long sectaddr, long size, 
 										int blocks, BOOL islast);
-static	int	open_track_jvc(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	teac_fixation(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	close_track_teac(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	teac_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	initsub_teac(SCSI *scgp, int toctype, int multi);
-static	int	teac_doopc(SCSI *scgp);
-static	int	teac_opc(SCSI *scgp, caddr_t, int cnt, int doopc);
-static	int	opt_power_judge(SCSI *scgp, int judge);
-static	int	clear_subcode(SCSI *scgp);
-static	int	set_limits(SCSI *scgp, long lba, long length);
-static	int	set_subcode(SCSI *scgp, Uchar *subcode_data, int length);
-static	int	read_disk_info_teac(SCSI *scgp, Uchar *data, int length, 
+static	int	open_track_jvc(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	teac_fixation(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	close_track_teac(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	teac_open_session(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	initsub_teac(SCSI *usalp, int toctype, int multi);
+static	int	teac_doopc(SCSI *usalp);
+static	int	teac_opc(SCSI *usalp, caddr_t, int cnt, int doopc);
+static	int	opt_power_judge(SCSI *usalp, int judge);
+static	int	clear_subcode(SCSI *usalp);
+static	int	set_limits(SCSI *usalp, long lba, long length);
+static	int	set_subcode(SCSI *usalp, Uchar *subcode_data, int length);
+static	int	read_disk_info_teac(SCSI *usalp, Uchar *data, int length, 
 											  int type);
-static	int	teac_freeze(SCSI *scgp, int bp_flag);
-static	int	teac_wr_pma(SCSI *scgp);
-static	int	teac_rd_pma(SCSI *scgp);
-static	int	next_wr_addr_teac(SCSI *scgp, long start_lba, long last_lba);
-static	int	blank_jvc(SCSI *scgp, cdr_t *dp, long addr, int blanktype);
-static	int	buf_cap_teac(SCSI *scgp, long *sp, long *fp);
-static	long	read_peak_buffer_cap_teac(SCSI *scgp);
-static	int	buffer_inquiry_teac(SCSI *scgp, int fmt);
+static	int	teac_freeze(SCSI *usalp, int bp_flag);
+static	int	teac_wr_pma(SCSI *usalp);
+static	int	teac_rd_pma(SCSI *usalp);
+static	int	next_wr_addr_teac(SCSI *usalp, long start_lba, long last_lba);
+static	int	blank_jvc(SCSI *usalp, cdr_t *dp, long addr, int blanktype);
+static	int	buf_cap_teac(SCSI *usalp, long *sp, long *fp);
+static	long	read_peak_buffer_cap_teac(SCSI *usalp);
+static	int	buffer_inquiry_teac(SCSI *usalp, int fmt);
 #ifdef	XXBUFFER
-static	void	check_buffer_teac(SCSI *scgp);
+static	void	check_buffer_teac(SCSI *usalp);
 #endif
 #ifdef	XXDEBUG
-static	void	xxtest_teac(SCSI *scgp);
+static	void	xxtest_teac(SCSI *usalp);
 #endif
 
 
@@ -302,13 +302,13 @@ cdr_t	cdr_teac_cdr50 = {
 };
 
 static int 
-teac_init(SCSI *scgp, cdr_t *dp)
+teac_init(SCSI *usalp, cdr_t *dp)
 {
-	return (speed_select_teac(scgp, dp, NULL));
+	return (speed_select_teac(usalp, dp, NULL));
 }
 
 static int 
-teac_getdisktype(SCSI *scgp, cdr_t *dp)
+teac_getdisktype(SCSI *usalp, cdr_t *dp)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
 	struct scsi_mode_data md;
@@ -320,8 +320,8 @@ teac_getdisktype(SCSI *scgp, cdr_t *dp)
 
 	fillbytes((caddr_t)&md, sizeof (md), '\0');
 
-	(void) test_unit_ready(scgp);
-	if (mode_sense(scgp, (Uchar *)&md, count, page, 0) < 0) {	/* Page n current */
+	(void) test_unit_ready(usalp);
+	if (mode_sense(usalp, (Uchar *)&md, count, page, 0) < 0) {	/* Page n current */
 		return (-1);
 	} else {
 		len = ((struct scsi_mode_header *)&md)->sense_data_len + 1;
@@ -331,11 +331,11 @@ teac_getdisktype(SCSI *scgp, cdr_t *dp)
 
 	l = a_to_u_3_byte(md.blockdesc.nlblock);
 	dsp->ds_maxblocks = l;
-	return (drive_getdisktype(scgp, dp));
+	return (drive_getdisktype(usalp, dp));
 }
 
 static int 
-speed_select_teac(SCSI *scgp, cdr_t *dp, int *speedp)
+speed_select_teac(SCSI *usalp, cdr_t *dp, int *speedp)
 {
 	struct cdd_52x_mode_data md;
 	int	count;
@@ -355,7 +355,7 @@ speed_select_teac(SCSI *scgp, cdr_t *dp, int *speedp)
 	md.pagex.teac_page21.p_len =  0x01;
 	md.pagex.teac_page21.dummy = dummy?3:0;
 
-	status = mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2);
+	status = mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2);
 	if (status < 0)
 		return (status);
 
@@ -372,11 +372,11 @@ speed_select_teac(SCSI *scgp, cdr_t *dp, int *speedp)
 	md.pagex.teac_page31.p_len =  0x02;
 	md.pagex.teac_page31.speed = speed;
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 static int 
-select_secsize_teac(SCSI *scgp, track_t *trackp)
+select_secsize_teac(SCSI *usalp, track_t *trackp)
 {
 	struct scsi_mode_data md;
 	int	count = sizeof (struct scsi_mode_header) +
@@ -386,8 +386,8 @@ select_secsize_teac(SCSI *scgp, track_t *trackp)
 
 	fillbytes((caddr_t)&md, sizeof (md), '\0');
 
-	(void) test_unit_ready(scgp);
-	if (mode_sense(scgp, (Uchar *)&md, count, page, 0) < 0) {	/* Page n current */
+	(void) test_unit_ready(usalp);
+	if (mode_sense(usalp, (Uchar *)&md, count, page, 0) < 0) {	/* Page n current */
 		return (-1);
 	} else {
 		len = ((struct scsi_mode_header *)&md)->sense_data_len + 1;
@@ -403,18 +403,18 @@ select_secsize_teac(SCSI *scgp, track_t *trackp)
 		md.blockdesc.density = 4;
 	i_to_3_byte(md.blockdesc.lblen, trackp->secsize);
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 static int 
-next_wr_addr_jvc(SCSI *scgp, track_t *trackp, long *ap)
+next_wr_addr_jvc(SCSI *usalp, track_t *trackp, long *ap)
 {
 	if (trackp != 0 && trackp->track > 0) {
 		*ap = lba_addr;
 	} else {
 		long	nwa;
 
-		if (read_B0(scgp, TRUE, &nwa, NULL) < 0)
+		if (read_B0(usalp, TRUE, &nwa, NULL) < 0)
 			return (-1);
 
 		*ap = nwa + 150;
@@ -423,14 +423,14 @@ next_wr_addr_jvc(SCSI *scgp, track_t *trackp, long *ap)
 }
 
 static int 
-write_teac_xg1(SCSI *scgp, 
+write_teac_xg1(SCSI *usalp, 
                caddr_t bp       /* address of buffer */, 
                long sectaddr    /* disk address (sector) to put */, 
                long size        /* number of bytes to transfer */,
                int blocks       /* sector count */, 
                BOOL extwr       /* is an extended write */)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -440,20 +440,20 @@ write_teac_xg1(SCSI *scgp,
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = SC_EWRITE;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, sectaddr);
 	g1_cdblen(&scmd->cdb.g1_cdb, blocks);
 	scmd->cdb.g1_cdb.vu_97 = extwr;
 
-	scgp->cmdname = "write_teac_g1";
+	usalp->cmdname = "write_teac_g1";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	return (size - scg_getresid(scgp));
+	return (size - usal_getresid(usalp));
 }
 
 static int 
-cdr_write_teac(SCSI *scgp, 
+cdr_write_teac(SCSI *usalp, 
                caddr_t bp       /* address of buffer */,
                long sectaddr    /* disk address (sector) to put */,
                long size        /* number of bytes to transfer */,
@@ -465,19 +465,19 @@ cdr_write_teac(SCSI *scgp,
 	if (islast)
 		last_done = TRUE;
 
-	ret = write_teac_xg1(scgp, bp, sectaddr, size, blocks, !islast);
+	ret = write_teac_xg1(usalp, bp, sectaddr, size, blocks, !islast);
 	if (ret < 0)
 		return (ret);
 
 	lba_addr = sectaddr + blocks;
 #ifdef	XXBUFFER
-	check_buffer_teac(scgp);
+	check_buffer_teac(usalp);
 #endif
 	return (ret);
 }
 
 static int 
-open_track_jvc(SCSI *scgp, cdr_t *dp, track_t *trackp)
+open_track_jvc(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	int	status;
 	long	blocks;
@@ -486,11 +486,11 @@ open_track_jvc(SCSI *scgp, cdr_t *dp, track_t *trackp)
 
 	last_done = FALSE;
 
-	if (select_secsize_teac(scgp, trackp) < 0)
+	if (select_secsize_teac(usalp, trackp) < 0)
 		return (-1);
 
-	status = clear_subcode(scgp);
-/*next_wr_addr_teac(scgp);*/
+	status = clear_subcode(usalp);
+/*next_wr_addr_teac(usalp);*/
 	if (status < 0)
 		return (status);
 
@@ -500,7 +500,7 @@ if (trackp->pregapsize != 0) {
 		lba_addr, trackp->pregapsize, lba_addr + trackp->pregapsize);
 	}
 
-	status = set_limits(scgp, lba_addr, trackp->pregapsize);
+	status = set_limits(usalp, lba_addr, trackp->pregapsize);
 	if (status < 0)
 		return (status);
 
@@ -511,9 +511,9 @@ if (trackp->pregapsize != 0) {
 			st2mode[trackp->sectype&ST_MASK], ADR_POS, trackp->trackno, 0);
 
 	if (lverbose > 1)
-		scg_prbytes("Subcode:", (Uchar *)&sc, sizeof (sc));
+		usal_prbytes("Subcode:", (Uchar *)&sc, sizeof (sc));
 
-	status = set_subcode(scgp, (Uchar *)&sc, sizeof (sc));
+	status = set_subcode(usalp, (Uchar *)&sc, sizeof (sc));
 	if (status < 0)
 		return (status);
 
@@ -529,7 +529,7 @@ if (trackp->pregapsize != 0) {
 	/*
 	 * XXX Do we need to check isecsize too?
 	 */
-	if (pad_track(scgp, dp, trackp,
+	if (pad_track(usalp, dp, trackp,
 			lba_addr, (Llong)pregapsize*trackp->secsize,
 			FALSE, (Llong *)0) < 0)
 		return (-1);
@@ -555,7 +555,7 @@ if (!is_last(trackp) && trackp[1].pregapsize == 0)
 		printf("set_limits(%ld, %ld)-> %ld\n",
 			lba_addr, blocks, lba_addr + blocks);
 	}
-	status = set_limits(scgp, lba_addr, blocks);
+	status = set_limits(usalp, lba_addr, blocks);
 	if (status < 0)
 		return (status);
 
@@ -566,9 +566,9 @@ if (!is_last(trackp) && trackp[1].pregapsize == 0)
 			st2mode[trackp->sectype&ST_MASK], ADR_POS, trackp->trackno, 1);
 
 	if (lverbose > 1)
-		scg_prbytes("Subcode:", (Uchar *)&sc, sizeof (sc));
+		usal_prbytes("Subcode:", (Uchar *)&sc, sizeof (sc));
 
-	status = set_subcode(scgp, (Uchar *)&sc, sizeof (sc));
+	status = set_subcode(usalp, (Uchar *)&sc, sizeof (sc));
 	if (status < 0)
 		return (status);
 
@@ -581,7 +581,7 @@ if (!is_last(trackp) && trackp[1].pregapsize == 0) {
 		blocks, pregapsize, blocks + pregapsize);
 	}
 
-	status = set_limits(scgp, blocks, pregapsize);
+	status = set_limits(usalp, blocks, pregapsize);
 	if (status < 0)
 		return (status);
 
@@ -593,9 +593,9 @@ if (!is_last(trackp) && trackp[1].pregapsize == 0) {
 			st2mode[trackp->sectype&ST_MASK], ADR_POS, trackp->trackno, 0);
 
 	if (lverbose > 1)
-		scg_prbytes("Subcode:", (Uchar *)&sc, sizeof (sc));
+		usal_prbytes("Subcode:", (Uchar *)&sc, sizeof (sc));
 
-	status = set_subcode(scgp, (Uchar *)&sc, sizeof (sc));
+	status = set_subcode(usalp, (Uchar *)&sc, sizeof (sc));
 	if (status < 0)
 		return (status);
 }
@@ -605,7 +605,7 @@ if (!is_last(trackp) && trackp[1].pregapsize == 0) {
 static	char	sector[3000];
 
 static int 
-close_track_teac(SCSI *scgp, cdr_t *dp, track_t *trackp)
+close_track_teac(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	int	ret = 0;
 
@@ -616,12 +616,12 @@ close_track_teac(SCSI *scgp, cdr_t *dp, track_t *trackp)
 		 * XXX do we really need this ?
 		 * XXX if we need this can we set blocks to 0 ?
 		 */
-		ret =  write_teac_xg1(scgp, sector, lba_addr, 2352, 1, FALSE);
+		ret =  write_teac_xg1(usalp, sector, lba_addr, 2352, 1, FALSE);
 		lba_addr++;
 	}
 	if (!is_audio(trackp))
 		lba_addr += 2;
-	teac_wr_pma(scgp);
+	teac_wr_pma(usalp);
 	return (ret);
 }
 
@@ -691,18 +691,18 @@ static const char *sd_teac50_error_str[] = {
 };
 
 static int 
-teac_attach(SCSI *scgp, cdr_t *dp)
+teac_attach(SCSI *usalp, cdr_t *dp)
 {
-	scg_setnonstderrs(scgp, sd_teac50_error_str);
+	usal_setnonstderrs(usalp, sd_teac50_error_str);
 #ifdef	XXDEBUG
-	xxtest_teac(scgp);
+	xxtest_teac(usalp);
 	exit(0);
 #endif
 	return (0);
 }
 
 static int 
-teac_fixation(SCSI *scgp, cdr_t *dp, track_t *trackp)
+teac_fixation(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	long	lba;
 	int	status;
@@ -716,7 +716,7 @@ extern	char	*buf;
 		 * As long as we cannot read and interpret the PMA, we must
 		 * abort here.
 		 */
-		teac_rd_pma(scgp);
+		teac_rd_pma(usalp);
 /*		errmsgno(EX_BAD, "Cannot fixate zero track disk.\n");*/
 		errmsgno(EX_BAD, "Cannot fixate without track list (not yet implemented).\n");
 		return (-1);
@@ -725,7 +725,7 @@ extern	char	*buf;
 
 	sleep(1);
 
-	status = clear_subcode(scgp);
+	status = clear_subcode(usalp);
 	sleep(1);
 	if (status < 0)
 		return (status);
@@ -799,9 +799,9 @@ extern	char	*buf;
 	status = sp - ((Uchar *)buf);
 	if (lverbose > 1) {
 		printf("Subcode len: %d\n", status);
-		scg_prbytes("Subcode:", (Uchar *)buf, status);
+		usal_prbytes("Subcode:", (Uchar *)buf, status);
 	}
-	status = set_subcode(scgp, (Uchar *)buf, status);
+	status = set_subcode(usalp, (Uchar *)buf, status);
 	sleep(1);
 	if (status < 0)
 		return (status);
@@ -809,13 +809,13 @@ extern	char	*buf;
 	/*
 	 * now write the toc
 	 */
-	status = teac_freeze(scgp, (track_base(trackp)->tracktype & TOCF_MULTI) == 0);
+	status = teac_freeze(usalp, (track_base(trackp)->tracktype & TOCF_MULTI) == 0);
 	return (status);
 
 }
 
 static int 
-teac_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
+teac_open_session(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	Uint	i;
 
@@ -830,21 +830,21 @@ teac_open_session(SCSI *scgp, cdr_t *dp, track_t *trackp)
 			return (-1);
 		}
 	}
-	return (initsub_teac(scgp, track_base(trackp)->tracktype & TOC_MASK,
+	return (initsub_teac(usalp, track_base(trackp)->tracktype & TOC_MASK,
 				track_base(trackp)->tracktype & TOCF_MULTI));
 }
 
 static int 
-initsub_teac(SCSI *scgp, int toctype, int multi)
+initsub_teac(SCSI *usalp, int toctype, int multi)
 {
 	int	status;
 
-	scgp->silent++;
-	if (read_B0(scgp, TRUE, &lba_addr, NULL) < 0)
+	usalp->silent++;
+	if (read_B0(usalp, TRUE, &lba_addr, NULL) < 0)
 		lba_addr = -150;
-	scgp->silent--;
+	usalp->silent--;
 
-	status = clear_subcode(scgp);
+	status = clear_subcode(usalp);
 	if (status < 0)
 		return (status);
 
@@ -852,7 +852,7 @@ initsub_teac(SCSI *scgp, int toctype, int multi)
 }
 
 static int 
-teac_doopc(SCSI *scgp)
+teac_doopc(SCSI *usalp)
 {
 	int	status;
 
@@ -860,7 +860,7 @@ teac_doopc(SCSI *scgp)
 		fprintf(stdout, "Judging disk...");
 		flush();
 	}
-	status = opt_power_judge(scgp, 1);
+	status = opt_power_judge(usalp, 1);
 	if (status < 0) {
 		printf("\n");
 		return (status);
@@ -870,30 +870,30 @@ teac_doopc(SCSI *scgp)
 		flush();
 	}
 
-	status = opt_power_judge(scgp, 0);
+	status = opt_power_judge(usalp, 0);
 	if (lverbose) {
 		fprintf(stdout, "done.\n");
 	}
 	/*
 	 * Check for error codes 0xCD ... 0xCF
 	 */
-	scgp->silent++;
-	if (next_wr_addr_teac(scgp, -1, -1) < 0) {
-		if (scgp->verbose == 0 && scg_sense_key(scgp) != SC_ILLEGAL_REQUEST)
-			scg_printerr(scgp);
+	usalp->silent++;
+	if (next_wr_addr_teac(usalp, -1, -1) < 0) {
+		if (usalp->verbose == 0 && usal_sense_key(usalp) != SC_ILLEGAL_REQUEST)
+			usal_printerr(usalp);
 	}
-	scgp->silent--;
+	usalp->silent--;
 	return (status);
 }
 
 static int 
-teac_opc(SCSI *scgp, caddr_t bp, int cnt, int doopc)
+teac_opc(SCSI *usalp, caddr_t bp, int cnt, int doopc)
 {
 	int	status;
 	int	count = 0;
 
 	do {
-		status = teac_doopc(scgp);
+		status = teac_doopc(usalp);
 	} while (++count <= 1 && status < 0);
 
 	return (status);
@@ -918,9 +918,9 @@ teac_opc(SCSI *scgp, caddr_t bp, int cnt, int doopc)
  * Optimum power calibration for Teac Drives.
  */
 static int 
-opt_power_judge(SCSI *scgp, int judge)
+opt_power_judge(SCSI *usalp, int judge)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -931,21 +931,21 @@ opt_power_judge(SCSI *scgp, int judge)
 	scmd->timeout = 60;
 
 	scmd->cdb.g5_cdb.cmd = SC_OPC_EXECUTE;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.reladr = judge; /* Judge the Disc */
 
-	scgp->cmdname = "opt_power_judge";
+	usalp->cmdname = "opt_power_judge";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 /*
  * Clear subcodes for Teac Drives.
  */
 static int 
-clear_subcode(SCSI *scgp)
+clear_subcode(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -955,21 +955,21 @@ clear_subcode(SCSI *scgp)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g5_cdb.cmd = SC_CLEAR_SUBCODE;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.addr[3] = 0x80;
 
-	scgp->cmdname = "clear subcode";
+	usalp->cmdname = "clear subcode";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 /*
  * Set limits for command linking for Teac Drives.
  */
 static int 
-set_limits(SCSI *scgp, long lba, long length)
+set_limits(SCSI *usalp, long lba, long length)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -979,22 +979,22 @@ set_limits(SCSI *scgp, long lba, long length)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g5_cdb.cmd = SC_SET_LIMITS;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	i_to_4_byte(&scmd->cdb.g5_cdb.addr[0], lba);
 	i_to_4_byte(&scmd->cdb.g5_cdb.count[0], length);
 
-	scgp->cmdname = "set limits";
+	usalp->cmdname = "set limits";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 /*
  * Set subcode for Teac Drives.
  */
 static int 
-set_subcode(SCSI *scgp, Uchar *subcode_data, int length)
+set_subcode(SCSI *usalp, Uchar *subcode_data, int length)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)subcode_data;
@@ -1004,18 +1004,18 @@ set_subcode(SCSI *scgp, Uchar *subcode_data, int length)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g1_cdb.cmd = SC_SET_SUBCODE;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdblen(&scmd->cdb.g1_cdb, length);
 
-	scgp->cmdname = "set subcode";
+	usalp->cmdname = "set subcode";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 static int 
-read_disk_info_teac(SCSI *scgp, Uchar *data, int length, int type)
+read_disk_info_teac(SCSI *usalp, Uchar *data, int length, int type)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)data;
@@ -1025,23 +1025,23 @@ read_disk_info_teac(SCSI *scgp, Uchar *data, int length, int type)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g1_cdb.cmd = SC_READ_DISK_INFO;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
 	scmd->cdb.g1_cdb.reladr = type & 1;
 	scmd->cdb.g1_cdb.res    = (type & 2) >> 1;
 
-	scgp->cmdname = "read disk info teac";
+	usalp->cmdname = "read disk info teac";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 /*
  * Perform the freeze command for Teac Drives.
  */
 static int 
-teac_freeze(SCSI *scgp, int bp_flag)
+teac_freeze(SCSI *usalp, int bp_flag)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -1052,18 +1052,18 @@ teac_freeze(SCSI *scgp, int bp_flag)
 	scmd->timeout = 8 * 60;		/* Needs up to 4 minutes */
 
 	scmd->cdb.g5_cdb.cmd = SC_FREEZE;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.addr[3] = bp_flag ? 0x80 : 0;
 
-	scgp->cmdname = "teac_freeze";
+	usalp->cmdname = "teac_freeze";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 static int 
-teac_wr_pma(SCSI *scgp)
+teac_wr_pma(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -1073,21 +1073,21 @@ teac_wr_pma(SCSI *scgp)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g5_cdb.cmd = SC_WRITE_PMA;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "teac_write_pma";
+	usalp->cmdname = "teac_write_pma";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 /*
  * Read PMA for Teac Drives.
  */
 static int 
-teac_rd_pma(SCSI *scgp)
+teac_rd_pma(SCSI *usalp)
 {
 	unsigned char	xx[256];
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)xx, sizeof (xx), '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -1098,28 +1098,28 @@ teac_rd_pma(SCSI *scgp)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g1_cdb.cmd = SC_READ_PMA;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
 	g1_cdblen(&scmd->cdb.g1_cdb, sizeof (xx));
 
-	scgp->cmdname = "teac_read_pma";
+	usalp->cmdname = "teac_read_pma";
 
-/*	return (scg_cmd(scgp));*/
-	if (scg_cmd(scgp) < 0)
+/*	return (usal_cmd(usalp));*/
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
-	if (scgp->verbose) {
-		scg_prbytes("PMA Data", xx, sizeof (xx) - scg_getresid(scgp));
+	if (usalp->verbose) {
+		usal_prbytes("PMA Data", xx, sizeof (xx) - usal_getresid(usalp));
 	}
 	if (lverbose) {
 		unsigned i;
 		Uchar	*p;
 
-		scg_prbytes("PMA Header: ", xx, 4);
+		usal_prbytes("PMA Header: ", xx, 4);
 		i = xx[2];
 		p = &xx[4];
 		for (; i <= xx[3]; i++) {
-			scg_prbytes("PMA: ", p, 10);
+			usal_prbytes("PMA: ", p, 10);
 			p += 10;
 		}
 	}
@@ -1130,10 +1130,10 @@ teac_rd_pma(SCSI *scgp)
  * Next writable address for Teac Drives.
  */
 static int 
-next_wr_addr_teac(SCSI *scgp, long start_lba, long last_lba)
+next_wr_addr_teac(SCSI *usalp, long start_lba, long last_lba)
 {
 	unsigned char	xx[256];
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)xx, sizeof (xx), '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -1144,30 +1144,30 @@ next_wr_addr_teac(SCSI *scgp, long start_lba, long last_lba)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g5_cdb.cmd = SC_NEXT_WR_ADDRESS;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 
 	i_to_4_byte(&scmd->cdb.g5_cdb.addr[0], start_lba);
 	i_to_4_byte(&scmd->cdb.g5_cdb.count[0], last_lba);
 
-	if (scgp->verbose)
+	if (usalp->verbose)
 		printf("start lba: %ld last lba: %ld\n",
 					start_lba, last_lba);
 
-	scgp->cmdname = "next writable address";
+	usalp->cmdname = "next writable address";
 
-/*	return (scg_cmd(scgp));*/
-	if (scg_cmd(scgp) < 0)
+/*	return (usal_cmd(usalp));*/
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
-	if (scgp->verbose) {
-		scg_prbytes("WRa Data", xx, sizeof (xx) - scg_getresid(scgp));
+	if (usalp->verbose) {
+		usal_prbytes("WRa Data", xx, sizeof (xx) - usal_getresid(usalp));
 		printf("NWA: %ld\n", a_to_4_byte(xx));
 	}
 	return (0);
 }
 
 static int 
-blank_jvc(SCSI *scgp, cdr_t *dp, long addr, int blanktype)
+blank_jvc(SCSI *usalp, cdr_t *dp, long addr, int blanktype)
 {
 	extern	char	*blank_types[];
 
@@ -1176,18 +1176,18 @@ blank_jvc(SCSI *scgp, cdr_t *dp, long addr, int blanktype)
 		flush();
 	}
 
-	return (scsi_blank(scgp, addr, blanktype, FALSE));
+	return (scsi_blank(usalp, addr, blanktype, FALSE));
 }
 
 static int 
-buf_cap_teac(SCSI *scgp, long *sp, long *fp)
+buf_cap_teac(SCSI *usalp, long *sp, long *fp)
 {
 	Ulong	freespace;
 	Ulong	bufsize;
 	long	ret;
 	int	per;
 
-	ret = read_peak_buffer_cap_teac(scgp);
+	ret = read_peak_buffer_cap_teac(usalp);
 	if (ret < 0)
 		return (-1);
 	bufsize = ret;
@@ -1197,7 +1197,7 @@ buf_cap_teac(SCSI *scgp, long *sp, long *fp)
 	if (fp)
 		*fp = freespace;
 
-	if (scgp->verbose || (sp == 0 && fp == 0))
+	if (usalp->verbose || (sp == 0 && fp == 0))
 		printf("BFree: %ld K BSize: %ld K\n", freespace >> 10, bufsize >> 10);
 
 	if (bufsize == 0)
@@ -1211,10 +1211,10 @@ buf_cap_teac(SCSI *scgp, long *sp, long *fp)
 }
 
 static long 
-read_peak_buffer_cap_teac(SCSI *scgp)
+read_peak_buffer_cap_teac(SCSI *usalp)
 {
 	Uchar	xx[4];
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)xx, sizeof (xx), '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -1225,19 +1225,19 @@ read_peak_buffer_cap_teac(SCSI *scgp)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g5_cdb.cmd = SC_READ_PEAK_BUF_CAP;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "read peak buffer capacity";
+	usalp->cmdname = "read peak buffer capacity";
 
 #define	BDEBUG
 #ifndef	BDEBUG
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 #else
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
-	if (scgp->verbose) {
-		scg_prbytes("WRa Data", xx, sizeof (xx) - scg_getresid(scgp));
+	if (usalp->verbose) {
+		usal_prbytes("WRa Data", xx, sizeof (xx) - usal_getresid(usalp));
 		printf("Buffer cap: %ld\n", a_to_u_3_byte(&xx[1]));
 	}
 	return (a_to_u_3_byte(&xx[1]));
@@ -1250,10 +1250,10 @@ read_peak_buffer_cap_teac(SCSI *scgp)
 #define	BI_APP_CODE	0x10
 
 static int 
-buffer_inquiry_teac(SCSI *scgp, int fmt)
+buffer_inquiry_teac(SCSI *usalp, int fmt)
 {
 	Uchar	xx[448];
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)xx, sizeof (xx), '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -1265,7 +1265,7 @@ buffer_inquiry_teac(SCSI *scgp, int fmt)
 	scmd->sense_len = CCS_SENSE_LEN;
 
 	scmd->cdb.g5_cdb.cmd = SC_BUFFER_INQUIRY;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 
 	if (fmt > 0) {
 		scmd->cdb.g5_cdb.addr[3] = fmt;
@@ -1276,21 +1276,21 @@ buffer_inquiry_teac(SCSI *scgp, int fmt)
 /*		scmd->cdb.g5_cdb.addr[3] = BI_APP_CODE;*/
 	}
 
-	scgp->cmdname = "buffer inquiry";
+	usalp->cmdname = "buffer inquiry";
 
 #define	BDEBUG
 #ifndef	BDEBUG
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 #else
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
-	if (scgp->verbose) {
-/*		scg_prbytes("WRa Data", xx, sizeof (xx) - scg_getresid(scgp));*/
-/*		scg_prbytes("WRa Data", xx, 1);*/
+	if (usalp->verbose) {
+/*		usal_prbytes("WRa Data", xx, sizeof (xx) - usal_getresid(usalp));*/
+/*		usal_prbytes("WRa Data", xx, 1);*/
 
 		if (fmt > 0) printf("fmt: %X ", fmt);
-		scg_prbytes("WRa Data", xx, 9);
+		usal_prbytes("WRa Data", xx, 9);
 		printf("%d\n", xx[8] - xx[1]);
 /*		printf("Buffer cap: %ld\n", a_to_u_3_byte(&xx[1]));*/
 	}
@@ -1300,29 +1300,29 @@ buffer_inquiry_teac(SCSI *scgp, int fmt)
 
 #ifdef	XXBUFFER
 static void 
-check_buffer_teac(SCSI *scgp)
+check_buffer_teac(SCSI *usalp)
 {
 	printf("-------\n");
-	buffer_inquiry_teac(scgp, 0);
+	buffer_inquiry_teac(usalp, 0);
 #ifdef	SL
 	usleep(40000);
-	buffer_inquiry_teac(scgp, 0);
+	buffer_inquiry_teac(usalp, 0);
 #endif
-	read_peak_buffer_cap_teac(scgp);
+	read_peak_buffer_cap_teac(usalp);
 }
 #endif
 /*--------------------------------------------------------------------------*/
 #ifdef	XXDEBUG
 #include "scsimmc.h"
 
-static	int	g7_teac(SCSI *scgp);
-static	int	g6_teac(SCSI *scgp);
+static	int	g7_teac(SCSI *usalp);
+static	int	g6_teac(SCSI *usalp);
 
 static int 
-g7_teac(SCSI *scgp)
+g7_teac(SCSI *usalp)
 {
 	Uchar	xx[2048];
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)xx, sizeof (xx), '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -1334,7 +1334,7 @@ g7_teac(SCSI *scgp)
 
 	scmd->cdb.g5_cdb.cmd = 0xDf;
 /*	scmd->cdb.g5_cdb.cmd = 0xE5;*/
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 
 /*	scmd->cdb.g5_cdb.addr[3] = BI_ONE_BYTE;*/
 /*	scmd->size = 1;*/
@@ -1342,16 +1342,16 @@ g7_teac(SCSI *scgp)
 /*	scmd->cdb.g5_cdb.addr[3] = BI_448_BYTE;*/
 /*	scmd->cdb.g5_cdb.addr[3] = BI_APP_CODE;*/
 
-	scgp->cmdname = "g7 teac";
+	usalp->cmdname = "g7 teac";
 
-/*	return (scg_cmd(scgp));*/
-	if (scg_cmd(scgp) < 0)
+/*	return (usal_cmd(usalp));*/
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
-/*	if (scgp->verbose) {*/
-		scg_prbytes("WRa Data", xx, sizeof (xx) - scg_getresid(scgp));
-/*		scg_prbytes("WRa Data", xx, 1);*/
-/*		scg_prbytes("WRa Data", xx, 9);*/
+/*	if (usalp->verbose) {*/
+		usal_prbytes("WRa Data", xx, sizeof (xx) - usal_getresid(usalp));
+/*		usal_prbytes("WRa Data", xx, 1);*/
+/*		usal_prbytes("WRa Data", xx, 9);*/
 /*printf("%d\n", xx[8] - xx[1]);*/
 /*		printf("Buffer cap: %ld\n", a_to_u_3_byte(&xx[1]));*/
 /*	}*/
@@ -1359,10 +1359,10 @@ g7_teac(SCSI *scgp)
 }
 
 static int 
-g6_teac(SCSI *scgp)
+g6_teac(SCSI *usalp)
 {
 	Uchar	xx[2048];
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)xx, sizeof (xx), '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -1379,18 +1379,18 @@ g6_teac(SCSI *scgp)
 	scmd->cdb.g1_cdb.cmd = 0xCe;
 	scmd->cdb.g1_cdb.cmd = 0xCF;
 	scmd->cdb.g1_cdb.cmd = 0xC7;	/* Read TOC */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "g6 teac";
+	usalp->cmdname = "g6 teac";
 
-/*	return (scg_cmd(scgp));*/
-	if (scg_cmd(scgp) < 0)
+/*	return (usal_cmd(usalp));*/
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
-/*	if (scgp->verbose) {*/
-		scg_prbytes("WRa Data", xx, sizeof (xx) - scg_getresid(scgp));
-/*		scg_prbytes("WRa Data", xx, 1);*/
-/*		scg_prbytes("WRa Data", xx, 9);*/
+/*	if (usalp->verbose) {*/
+		usal_prbytes("WRa Data", xx, sizeof (xx) - usal_getresid(usalp));
+/*		usal_prbytes("WRa Data", xx, 1);*/
+/*		usal_prbytes("WRa Data", xx, 9);*/
 /*printf("%d\n", xx[8] - xx[1]);*/
 /*		printf("Buffer cap: %ld\n", a_to_u_3_byte(&xx[1]));*/
 /*	}*/
@@ -1398,24 +1398,24 @@ g6_teac(SCSI *scgp)
 }
 
 static void 
-xxtest_teac(SCSI *scgp)
+xxtest_teac(SCSI *usalp)
 {
-	read_peak_buffer_cap_teac(scgp);
+	read_peak_buffer_cap_teac(usalp);
 
 /*#define	XDI*/
 #ifdef	XDI
 	{
 		Uchar cbuf[512];
 
-/*		read_disk_info_teac(scgp, data, length, type)*/
-/*		read_disk_info_teac(scgp, cbuf, 512, 2);*/
-/*		read_disk_info_teac(scgp, cbuf, 512, 2);*/
-		read_disk_info_teac(scgp, cbuf, 512, 3);
-		scg_prbytes("DI Data", cbuf, sizeof (cbuf) - scg_getresid(scgp));
+/*		read_disk_info_teac(usalp, data, length, type)*/
+/*		read_disk_info_teac(usalp, cbuf, 512, 2);*/
+/*		read_disk_info_teac(usalp, cbuf, 512, 2);*/
+		read_disk_info_teac(usalp, cbuf, 512, 3);
+		usal_prbytes("DI Data", cbuf, sizeof (cbuf) - usal_getresid(usalp));
 	}
 #endif	/* XDI */
 
-	buffer_inquiry_teac(scgp, -1);
+	buffer_inquiry_teac(usalp, -1);
 
 /*#define	XBU*/
 #ifdef	XBU
@@ -1423,15 +1423,15 @@ xxtest_teac(SCSI *scgp)
 		int i;
 
 		for (i = 0; i < 63; i++) {
-			scgp->silent++;
-			buffer_inquiry_teac(scgp, i<<2);
-			scgp->silent--;
+			usalp->silent++;
+			buffer_inquiry_teac(usalp, i<<2);
+			usalp->silent--;
 		}
 	}
 #endif	/* XBU */
 
 /*	printf("LLLL\n");*/
-/*	g7_teac(scgp);*/
-/*	g6_teac(scgp);*/
+/*	g7_teac(usalp);*/
+/*	g6_teac(usalp);*/
 }
 #endif	/* XXDEBUG */

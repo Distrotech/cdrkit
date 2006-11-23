@@ -44,50 +44,50 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>	/* XXX Only for DEV_RICOH_RO_1060C */
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>	/* XXX Only for DEV_RICOH_RO_1060C */
 
 #include "wodim.h"
 
 extern	int	debug;
 extern	int	lverbose;
 
-static	int	load_unload_philips(SCSI *scgp, int);
-static	int	philips_load(SCSI *scgp, cdr_t *dp);
-static	int	philips_unload(SCSI *scgp, cdr_t *dp);
-static	int	philips_dumbload(SCSI *scgp, cdr_t *dp);
-static	int	philips_dumbunload(SCSI *scgp, cdr_t *dp);
+static	int	load_unload_philips(SCSI *usalp, int);
+static	int	philips_load(SCSI *usalp, cdr_t *dp);
+static	int	philips_unload(SCSI *usalp, cdr_t *dp);
+static	int	philips_dumbload(SCSI *usalp, cdr_t *dp);
+static	int	philips_dumbunload(SCSI *usalp, cdr_t *dp);
 static	int	plasmon_buf(SCSI *, long *, long *);
-static	int	recover_philips(SCSI *scgp, cdr_t *dp, int);
-static	int	speed_select_yamaha(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	speed_select_philips(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	speed_select_oldphilips(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	speed_select_dumbphilips(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	speed_select_pioneer(SCSI *scgp, cdr_t *dp, int *speedp);
-static	int	philips_init(SCSI *scgp, cdr_t *dp);
-static	int	philips_getdisktype(SCSI *scgp, cdr_t *dp);
-static	BOOL	capacity_philips(SCSI *scgp, long *lp);
-static	int	first_writable_addr_philips(SCSI *scgp, long *, int, int, int, 
+static	int	recover_philips(SCSI *usalp, cdr_t *dp, int);
+static	int	speed_select_yamaha(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	speed_select_philips(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	speed_select_oldphilips(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	speed_select_dumbphilips(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	speed_select_pioneer(SCSI *usalp, cdr_t *dp, int *speedp);
+static	int	philips_init(SCSI *usalp, cdr_t *dp);
+static	int	philips_getdisktype(SCSI *usalp, cdr_t *dp);
+static	BOOL	capacity_philips(SCSI *usalp, long *lp);
+static	int	first_writable_addr_philips(SCSI *usalp, long *, int, int, int, 
 														 int);
-static	int	next_wr_addr_philips(SCSI *scgp, track_t *trackp, long *ap);
-static	int	reserve_track_philips(SCSI *scgp, unsigned long);
-static	int	scsi_cdr_write_philips(SCSI *scgp, caddr_t bp, long sectaddr, 
+static	int	next_wr_addr_philips(SCSI *usalp, track_t *trackp, long *ap);
+static	int	reserve_track_philips(SCSI *usalp, unsigned long);
+static	int	scsi_cdr_write_philips(SCSI *usalp, caddr_t bp, long sectaddr, 
 												  long size, int blocks, BOOL islast);
-static	int	write_track_info_philips(SCSI *scgp, int);
-static	int	write_track_philips(SCSI *scgp, long, int);
-static	int	open_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	open_track_plasmon(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	open_track_oldphilips(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	open_track_yamaha(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	close_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp);
-static	int	fixation_philips(SCSI *scgp, cdr_t *dp, track_t *trackp);
+static	int	write_track_info_philips(SCSI *usalp, int);
+static	int	write_track_philips(SCSI *usalp, long, int);
+static	int	open_track_philips(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	open_track_plasmon(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	open_track_oldphilips(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	open_track_yamaha(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	close_track_philips(SCSI *usalp, cdr_t *dp, track_t *trackp);
+static	int	fixation_philips(SCSI *usalp, cdr_t *dp, track_t *trackp);
 
-static	int	philips_attach(SCSI *scgp, cdr_t *);
-static	int	plasmon_attach(SCSI *scgp, cdr_t *);
-static	int	ricoh_attach(SCSI *scgp, cdr_t *);
-static	int	philips_getlilo(SCSI *scgp, long *lilenp, long *lolenp);
+static	int	philips_attach(SCSI *usalp, cdr_t *);
+static	int	plasmon_attach(SCSI *usalp, cdr_t *);
+static	int	ricoh_attach(SCSI *usalp, cdr_t *);
+static	int	philips_getlilo(SCSI *usalp, long *lilenp, long *lolenp);
 
 
 struct cdd_52x_mode_page_21 {	/* write track information */
@@ -597,65 +597,65 @@ cdr_t	cdr_ricoh_ro1420 = {
 };
 
 
-static int load_unload_philips(SCSI *scgp, int load)
+static int load_unload_philips(SCSI *usalp, int load)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE7;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.count[1] = !load;
 
-	scgp->cmdname = "philips medium load/unload";
+	usalp->cmdname = "philips medium load/unload";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int 
-philips_load(SCSI *scgp, cdr_t *dp)
+philips_load(SCSI *usalp, cdr_t *dp)
 {
-	return (load_unload_philips(scgp, 1));
+	return (load_unload_philips(usalp, 1));
 }
 
 static int 
-philips_unload(SCSI *scgp, cdr_t *dp)
+philips_unload(SCSI *usalp, cdr_t *dp)
 {
-	return (load_unload_philips(scgp, 0));
+	return (load_unload_philips(usalp, 0));
 }
 
 static int 
-philips_dumbload(SCSI *scgp, cdr_t *dp)
+philips_dumbload(SCSI *usalp, cdr_t *dp)
 {
 	int	ret;
 
-	scgp->silent++;
-	ret = load_unload_philips(scgp, 1);
-	scgp->silent--;
+	usalp->silent++;
+	ret = load_unload_philips(usalp, 1);
+	usalp->silent--;
 	if (ret < 0)
-		return (scsi_load(scgp, dp));
+		return (scsi_load(usalp, dp));
 	return (0);
 }
 
 static int 
-philips_dumbunload(SCSI *scgp, cdr_t *dp)
+philips_dumbunload(SCSI *usalp, cdr_t *dp)
 {
 	int	ret;
 
-	scgp->silent++;
-	ret = load_unload_philips(scgp, 0);
-	scgp->silent--;
+	usalp->silent++;
+	ret = load_unload_philips(usalp, 0);
+	usalp->silent--;
 	if (ret < 0)
-		return (scsi_unload(scgp, dp));
+		return (scsi_unload(usalp, dp));
 	return (0);
 }
 
 static int 
-plasmon_buf(SCSI *scgp, 
+plasmon_buf(SCSI *usalp, 
             long *sp /* Size pointer */, 
             long *fp /* Free space pointer */)
 {
@@ -678,26 +678,26 @@ plasmon_buf(SCSI *scgp,
 }
 
 static int 
-recover_philips(SCSI *scgp, cdr_t *dp, int track)
+recover_philips(SCSI *usalp, cdr_t *dp, int track)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xEC;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "philips recover";
+	usalp->cmdname = "philips recover";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int 
-speed_select_yamaha(SCSI *scgp, cdr_t *dp, int *speedp)
+speed_select_yamaha(SCSI *usalp, cdr_t *dp, int *speedp)
 {
 	struct	scsi_mode_page_header	*mp;
 	char				mode[256];
@@ -714,7 +714,7 @@ speed_select_yamaha(SCSI *scgp, cdr_t *dp, int *speedp)
 	} else {
 		fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
-		if (!get_mode_params(scgp, page, "Speed/Dummy information",
+		if (!get_mode_params(usalp, page, "Speed/Dummy information",
 			(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 			return (-1);
 		}
@@ -740,11 +740,11 @@ speed_select_yamaha(SCSI *scgp, cdr_t *dp, int *speedp)
 	md.pagex.page31.speed = speed;
 	md.pagex.page31.dummy = dummy?1:0;
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 static int 
-speed_select_philips(SCSI *scgp, cdr_t *dp, int *speedp)
+speed_select_philips(SCSI *usalp, cdr_t *dp, int *speedp)
 {
 	struct	scsi_mode_page_header	*mp;
 	char				mode[256];
@@ -761,7 +761,7 @@ speed_select_philips(SCSI *scgp, cdr_t *dp, int *speedp)
 	} else {
 		fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
-		if (!get_mode_params(scgp, page, "Speed/Dummy information",
+		if (!get_mode_params(usalp, page, "Speed/Dummy information",
 			(Uchar *)mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 			return (-1);
 		}
@@ -786,22 +786,22 @@ speed_select_philips(SCSI *scgp, cdr_t *dp, int *speedp)
 	md.pagex.page23.speed = speed;
 	md.pagex.page23.dummy = dummy?1:0;
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 static int 
-speed_select_pioneer(SCSI *scgp, cdr_t *dp, int *speedp)
+speed_select_pioneer(SCSI *usalp, cdr_t *dp, int *speedp)
 {
 	if (speedp != 0 && *speedp < 2) {
 		*speedp = 2;
 		if (lverbose)
 			printf("WARNING: setting to minimum speed (2).\n");
 	}
-	return (speed_select_philips(scgp, dp, speedp));
+	return (speed_select_philips(usalp, dp, speedp));
 }
 
 static int 
-speed_select_oldphilips(SCSI *scgp, cdr_t *dp, int *speedp)
+speed_select_oldphilips(SCSI *usalp, cdr_t *dp, int *speedp)
 {
 	BOOL	dummy = (dp->cdr_cmdflags & F_DUMMY) != 0;
 
@@ -815,24 +815,24 @@ speed_select_oldphilips(SCSI *scgp, cdr_t *dp, int *speedp)
 }
 
 static int 
-speed_select_dumbphilips(SCSI *scgp, cdr_t *dp, int *speedp)
+speed_select_dumbphilips(SCSI *usalp, cdr_t *dp, int *speedp)
 {
-	if (speed_select_philips(scgp, dp, speedp) < 0)
-		return (speed_select_oldphilips(scgp, dp, speedp));
+	if (speed_select_philips(usalp, dp, speedp) < 0)
+		return (speed_select_oldphilips(usalp, dp, speedp));
 	return (0);
 }
 
 static int 
-philips_init(SCSI *scgp, cdr_t *dp)
+philips_init(SCSI *usalp, cdr_t *dp)
 {
-	return ((*dp->cdr_set_speed_dummy)(scgp, dp, NULL));
+	return ((*dp->cdr_set_speed_dummy)(usalp, dp, NULL));
 }
 
 
 #define	IS(what, flag)	printf("  Is %s%s\n", flag?"":"not ", what);
 
 static int 
-philips_getdisktype(SCSI *scgp, cdr_t *dp)
+philips_getdisktype(SCSI *usalp, cdr_t *dp)
 {
 	dstat_t	*dsp = dp->cdr_dstat;
 	char	sbuf[16];
@@ -842,32 +842,32 @@ philips_getdisktype(SCSI *scgp, cdr_t *dp)
 	msf_t	msf;
 	int	audio = -1;
 
-	scgp->silent++;
-	dummy = (*dp->cdr_next_wr_address)(scgp, (track_t *)0, &lilen);
-	scgp->silent--;
+	usalp->silent++;
+	dummy = (*dp->cdr_next_wr_address)(usalp, (track_t *)0, &lilen);
+	usalp->silent--;
 
 	/*
 	 * Check for "Command sequence error" first.
 	 */
 	if ((dsp->ds_cdrflags & RF_WRITE) != 0 &&
 	    dummy < 0 &&
-	    (scg_sense_key(scgp) != SC_ILLEGAL_REQUEST ||
-						scg_sense_code(scgp) != 0x2C)) {
-		reload_media(scgp, dp);
+	    (usal_sense_key(usalp) != SC_ILLEGAL_REQUEST ||
+						usal_sense_code(usalp) != 0x2C)) {
+		reload_media(usalp, dp);
 	}
 
-	scgp->silent++;
-	if (read_subchannel(scgp, sbuf, 0, 12, 0, 1, 0xf0) >= 0) {
+	usalp->silent++;
+	if (read_subchannel(usalp, sbuf, 0, 12, 0, 1, 0xf0) >= 0) {
 		if (sbuf[2] == 0 && sbuf[3] == 8)
 			audio = (sbuf[7] & 0x40) != 0;
 	}
-	scgp->silent--;
+	usalp->silent--;
 
 	if ((dp->cdr_dstat->ds_cdrflags & RF_PRATIP) != 0 &&
 						dummy >= 0 && lilen == 0) {
-		scgp->silent++;
-		dummy = philips_getlilo(scgp, &lilen, &lolen);
-		scgp->silent--;
+		usalp->silent++;
+		dummy = philips_getlilo(usalp, &lilen, &lolen);
+		usalp->silent--;
 
 		if (dummy >= 0) {
 /*			printf("lead-in len: %d lead-out len: %d\n", lilen, lolen);*/
@@ -881,7 +881,7 @@ philips_getdisktype(SCSI *scgp, cdr_t *dp)
 			printf("  ATIP start of lead in:  %ld (%02d:%02d/%02d)\n",
 				-150 - lilen, msf.msf_min, msf.msf_sec, msf.msf_frame);
 
-			if (capacity_philips(scgp, &lolen)) {
+			if (capacity_philips(usalp, &lolen)) {
 				lba_to_msf(lolen, &msf);
 				printf(
 				"  ATIP start of lead out: %ld (%02d:%02d/%02d)\n",
@@ -894,46 +894,46 @@ philips_getdisktype(SCSI *scgp, cdr_t *dp)
 		}
 	}
 
-	if (capacity_philips(scgp, &lolen)) {
+	if (capacity_philips(usalp, &lolen)) {
 		dsp->ds_maxblocks = lolen;
 		dsp->ds_maxrblocks = disk_rcap(&msf, dsp->ds_maxblocks,
 					FALSE,		/* Always not erasable */
 					audio > 0);	/* Audio from read subcode */
 	}
-	scgp->silent++;
-	/*read_subchannel(scgp, bp, track, cnt, msf, subq, fmt); */
+	usalp->silent++;
+	/*read_subchannel(usalp, bp, track, cnt, msf, subq, fmt); */
 
-	if (read_subchannel(scgp, sbuf, 0, 14, 0, 0, 0xf1) >= 0)
-		scg_prbytes("Disk bar code:", (Uchar *)sbuf, 14 - scg_getresid(scgp));
-	scgp->silent--;
+	if (read_subchannel(usalp, sbuf, 0, 14, 0, 0, 0xf1) >= 0)
+		usal_prbytes("Disk bar code:", (Uchar *)sbuf, 14 - usal_getresid(usalp));
+	usalp->silent--;
 
-	return (drive_getdisktype(scgp, dp));
+	return (drive_getdisktype(usalp, dp));
 }
 
 static BOOL 
-capacity_philips(SCSI *scgp, long *lp)
+capacity_philips(SCSI *usalp, long *lp)
 {
 	long	l = 0L;
 	BOOL	succeed = TRUE;
 
-	scgp->silent++;
-	if (read_B0(scgp, FALSE, NULL, &l) >= 0) {
+	usalp->silent++;
+	if (read_B0(usalp, FALSE, NULL, &l) >= 0) {
 		if (debug)
 			printf("lead out B0: %ld\n", l);
 		*lp = l;
-	} else if (read_trackinfo(scgp, 0xAA, &l, NULL, NULL, NULL, NULL) >= 0) {
+	} else if (read_trackinfo(usalp, 0xAA, &l, NULL, NULL, NULL, NULL) >= 0) {
 		if (debug)
 			printf("lead out AA: %ld\n", l);
 		*lp = l;
-	} if (read_capacity(scgp) >= 0) {
-		l = scgp->cap->c_baddr + 1;
+	} if (read_capacity(usalp) >= 0) {
+		l = usalp->cap->c_baddr + 1;
 		if (debug)
 			printf("lead out capacity: %ld\n", l);
 	} else {
 		succeed = FALSE;
 	}
 	*lp = l;
-	scgp->silent--;
+	usalp->silent--;
 	return (succeed);
 }
 
@@ -944,11 +944,11 @@ struct	fwa {
 };
 
 static int 
-first_writable_addr_philips(SCSI *scgp, long *ap, int track, int isaudio, 
+first_writable_addr_philips(SCSI *usalp, long *ap, int track, int isaudio, 
 										int preemp, int npa)
 {
 	struct	fwa	fwa;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)&fwa, sizeof (fwa), '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -958,16 +958,16 @@ first_writable_addr_philips(SCSI *scgp, long *ap, int track, int isaudio,
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE2;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.addr[0] = track;
 	scmd->cdb.g1_cdb.addr[1] = isaudio ? (preemp ? 5 : 4) : 1;
 
 	scmd->cdb.g1_cdb.count[0] = npa?1:0;
 	scmd->cdb.g1_cdb.count[1] = sizeof (fwa);
 
-	scgp->cmdname = "first writeable address philips";
+	usalp->cmdname = "first writeable address philips";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
 	if (ap)
@@ -976,48 +976,48 @@ first_writable_addr_philips(SCSI *scgp, long *ap, int track, int isaudio,
 }
 
 static int 
-next_wr_addr_philips(SCSI *scgp, track_t *trackp, long *ap)
+next_wr_addr_philips(SCSI *usalp, track_t *trackp, long *ap)
 {
 
-/*	if (first_writable_addr_philips(scgp, ap, 0, 0, 0, 1) < 0)*/
-	if (first_writable_addr_philips(scgp, ap, 0, 0, 0, 0) < 0)
+/*	if (first_writable_addr_philips(usalp, ap, 0, 0, 0, 1) < 0)*/
+	if (first_writable_addr_philips(usalp, ap, 0, 0, 0, 0) < 0)
 		return (-1);
 	return (0);
 }
 
 static int 
-reserve_track_philips(SCSI *scgp, unsigned long len)
+reserve_track_philips(SCSI *usalp, unsigned long len)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE4;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	i_to_4_byte(&scmd->cdb.g1_cdb.addr[3], len);
 
-	scgp->cmdname = "philips reserve_track";
+	usalp->cmdname = "philips reserve_track";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int 
-scsi_cdr_write_philips(SCSI *scgp, 
+scsi_cdr_write_philips(SCSI *usalp, 
                        caddr_t bp       /* address of buffer */,
                        long sectaddr    /* disk address (sector) to put */,
                        long size        /* number of bytes to transfer */, 
                        int blocks       /* sector count */, 
                        BOOL islast      /* last write for track */)
 {
-	return (write_xg0(scgp, bp, 0, size, blocks));
+	return (write_xg0(usalp, bp, 0, size, blocks));
 }
 
 static int 
-write_track_info_philips(SCSI *scgp, int sectype)
+write_track_info_philips(SCSI *usalp, int sectype)
 {
 	struct cdd_52x_mode_data md;
 	int	count = sizeof (struct scsi_mode_header) +
@@ -1030,15 +1030,15 @@ write_track_info_philips(SCSI *scgp, int sectype)
 	md.pagex.page21.sectype = sectype & ST_MASK;
 	md.pagex.page21.track = 0;	/* 0 : create new track */
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 static int 
-write_track_philips(SCSI *scgp, 
+write_track_philips(SCSI *usalp, 
 							long track /* track number 0 == new track */, 
                     	int sectype)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA|SCG_CMD_RETRY;
@@ -1046,74 +1046,74 @@ write_track_philips(SCSI *scgp,
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE6;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, track);
 	scmd->cdb.g1_cdb.res6 = sectype & ST_MASK;
 
-	scgp->cmdname = "philips write_track";
+	usalp->cmdname = "philips write_track";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 static int 
-open_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp)
+open_track_philips(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
-	if (select_secsize(scgp, trackp->secsize) < 0)
+	if (select_secsize(usalp, trackp->secsize) < 0)
 		return (-1);
 
-	if (write_track_info_philips(scgp, trackp->sectype) < 0)
+	if (write_track_info_philips(usalp, trackp->sectype) < 0)
 		return (-1);
 
-	if (write_track_philips(scgp, 0, trackp->sectype) < 0)
-		return (-1);
-
-	return (0);
-}
-
-static int 
-open_track_plasmon(SCSI *scgp, cdr_t *dp, track_t *trackp)
-{
-	if (select_secsize(scgp, trackp->secsize) < 0)
-		return (-1);
-
-	if (write_track_info_philips(scgp, trackp->sectype) < 0)
+	if (write_track_philips(usalp, 0, trackp->sectype) < 0)
 		return (-1);
 
 	return (0);
 }
 
 static int 
-open_track_oldphilips(SCSI *scgp, cdr_t *dp, track_t *trackp)
+open_track_plasmon(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
-	if (write_track_philips(scgp, 0, trackp->sectype) < 0)
+	if (select_secsize(usalp, trackp->secsize) < 0)
+		return (-1);
+
+	if (write_track_info_philips(usalp, trackp->sectype) < 0)
 		return (-1);
 
 	return (0);
 }
 
 static int 
-open_track_yamaha(SCSI *scgp, cdr_t *dp, track_t *trackp)
+open_track_oldphilips(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
-	if (select_secsize(scgp, trackp->secsize) < 0)
-		return (-1);
-
-	if (write_track_philips(scgp, 0, trackp->sectype) < 0)
+	if (write_track_philips(usalp, 0, trackp->sectype) < 0)
 		return (-1);
 
 	return (0);
 }
 
 static int 
-close_track_philips(SCSI *scgp, cdr_t *dp, track_t *trackp)
+open_track_yamaha(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
-	return (scsi_flush_cache(scgp, FALSE));
+	if (select_secsize(usalp, trackp->secsize) < 0)
+		return (-1);
+
+	if (write_track_philips(usalp, 0, trackp->sectype) < 0)
+		return (-1);
+
+	return (0);
 }
 
-static int fixation_philips(SCSI *scgp, cdr_t *dp, track_t *trackp)
+static int 
+close_track_philips(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	return (scsi_flush_cache(usalp, FALSE));
+}
+
+static int fixation_philips(SCSI *usalp, cdr_t *dp, track_t *trackp)
+{
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
@@ -1121,14 +1121,14 @@ static int fixation_philips(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 8 * 60;		/* Needs up to 4 minutes */
 	scmd->cdb.g1_cdb.cmd = 0xE9;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.count[1] =
 			((track_base(trackp)->tracktype & TOCF_MULTI) ? 8 : 0) |
 			(track_base(trackp)->tracktype & TOC_MASK);
 
-	scgp->cmdname = "philips fixation";
+	usalp->cmdname = "philips fixation";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
@@ -1287,38 +1287,38 @@ static const char *sd_ro1420_error_str[] = {
 };
 
 static int 
-philips_attach(SCSI *scgp, cdr_t *dp)
+philips_attach(SCSI *usalp, cdr_t *dp)
 {
-	scg_setnonstderrs(scgp, sd_cdd_521_error_str);
+	usal_setnonstderrs(usalp, sd_cdd_521_error_str);
 	return (0);
 }
 
 static int 
-plasmon_attach(SCSI *scgp, cdr_t *dp)
+plasmon_attach(SCSI *usalp, cdr_t *dp)
 {
-	scgp->inq->data_format = 1;	/* Correct the ly */
+	usalp->inq->data_format = 1;	/* Correct the ly */
 
-	scg_setnonstderrs(scgp, sd_cdd_521_error_str);
+	usal_setnonstderrs(usalp, sd_cdd_521_error_str);
 	return (0);
 }
 
 static int 
-ricoh_attach(SCSI *scgp, cdr_t *dp)
+ricoh_attach(SCSI *usalp, cdr_t *dp)
 {
 	if (dp == &cdr_ricoh_ro1060) {
 		errmsgno(EX_BAD, "No support for Ricoh RO-1060C\n");
 		return (-1);
 	}
-	scg_setnonstderrs(scgp, sd_ro1420_error_str);
+	usal_setnonstderrs(usalp, sd_ro1420_error_str);
 	return (0);
 }
 
 static int 
-philips_getlilo(SCSI *scgp, long *lilenp, long *lolenp)
+philips_getlilo(SCSI *usalp, long *lilenp, long *lolenp)
 {
 	char	buf[4];
 	long	li, lo;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = buf;
@@ -1327,16 +1327,16 @@ philips_getlilo(SCSI *scgp, long *lilenp, long *lolenp)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xEE;	/* Read session info */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdblen(&scmd->cdb.g1_cdb, sizeof (buf));
 
-	scgp->cmdname = "philips read session info";
+	usalp->cmdname = "philips read session info";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
-	if (scgp->verbose)
-		scg_prbytes("Session info data: ", (Uchar *)buf, sizeof (buf) - scg_getresid(scgp));
+	if (usalp->verbose)
+		usal_prbytes("Session info data: ", (Uchar *)buf, sizeof (buf) - usal_getresid(usalp));
 
 	li = a_to_u_2_byte(buf);
 	lo = a_to_u_2_byte(&buf[2]);

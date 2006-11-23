@@ -44,7 +44,7 @@ static	char sccsid[] =
 #include <strdefs.h>
 #include <schily.h>
 
-#include <scg/scsitransp.h>	/* For write_leadin() */
+#include <usal/scsitransp.h>	/* For write_leadin() */
 
 #include "cdtext.h"
 #include "wodim.h"
@@ -127,7 +127,7 @@ void			packtext(int tracks, track_t *trackp);
 static BOOL	anytext(int pack_type, int tracks, track_t *trackp);
 static void	fillup_pack(txtarg_t *ap);
 static void	fillpacks(txtarg_t *ap, char *from, int len, int track_no, int pack_type);
-int			write_cdtext(SCSI *scgp, cdr_t *dp, long startsec);
+int			write_cdtext(SCSI *usalp, cdr_t *dp, long startsec);
 static void	eight2six(Uchar *in, Uchar *out);
 static void	six2eight(Uchar *in, Uchar *out);
 
@@ -441,7 +441,7 @@ static void fillpacks(register txtarg_t *ap, register char *from, int len,
 	ap->p = p;
 }
 
-int write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
+int write_cdtext(SCSI *usalp, cdr_t *dp, long startsec)
 {
 	char	*bp = (char *)textsub;
 	int	buflen = textlen;
@@ -450,7 +450,7 @@ int write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
 	long	end = -150;
 	int	secspt = textlen / 96;
 	int	bytespt = textlen;
-	long	maxdma = scgp->maxbuf;
+	long	maxdma = usalp->maxbuf;
 	int	idx;
 	int	secs;
 	int	nbytes;
@@ -461,7 +461,7 @@ int write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
 		 * Try to make each CD-Text transfer use as much data
 		 * as possible.
 		 */
-		bp = scgp->bufptr;
+		bp = usalp->bufptr;
 		for (idx = 0; (idx + textlen) <= maxdma; idx += textlen)
 			movebytes(textsub, &bp[idx], textlen);
 		buflen = idx;
@@ -491,7 +491,7 @@ int write_cdtext(SCSI *scgp, cdr_t *dp, long startsec)
 			}
 /*printf("idx: %d nbytes: %d secs: %d startsec: %ld\n",*/
 /*idx, nbytes, secs, startsec);*/
-			amount = write_secs(scgp, dp,
+			amount = write_secs(usalp, dp,
 				(char *)&bp[idx], startsec, nbytes, secs, FALSE);
 			if (amount < 0) {
 				printf("write CD-Text data: error after %ld bytes\n",

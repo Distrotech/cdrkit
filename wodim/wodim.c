@@ -67,9 +67,9 @@ static	char sccsid[] =
 
 #include "xio.h"
 
-#include <scg/scsireg.h>	/* XXX wegen SC_NOT_READY */
-#include <scg/scsitransp.h>
-#include <scg/scgcmd.h>		/* XXX fuer read_buffer */
+#include <usal/scsireg.h>	/* XXX wegen SC_NOT_READY */
+#include <usal/scsitransp.h>
+#include <usal/usalcmd.h>		/* XXX fuer read_buffer */
 #include "scsi_scan.h"
 
 #include "auheader.h"
@@ -211,12 +211,12 @@ static	void	excdr(int excode, void *arg);
 int	read_buf(int f, char *bp, int size);
 int	fill_buf(int f, track_t *trackp, long secno, char *bp, int size);
 int	get_buf(int f, track_t *trackp, long secno, char **bpp, int size);
-int	write_secs(SCSI *scgp, cdr_t *dp, char *bp, long startsec, int bytespt,
+int	write_secs(SCSI *usalp, cdr_t *dp, char *bp, long startsec, int bytespt,
 					  int secspt, BOOL islast);
-static	int	write_track_data(SCSI *scgp, cdr_t *, track_t *);
-int	pad_track(SCSI *scgp, cdr_t *dp, track_t *trackp, long startsec, 
+static	int	write_track_data(SCSI *usalp, cdr_t *, track_t *);
+int	pad_track(SCSI *usalp, cdr_t *dp, track_t *trackp, long startsec, 
 					 Llong amt, BOOL dolast, Llong *bytesp);
-int	write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, 
+int	write_buf(SCSI *usalp, cdr_t *dp, track_t *trackp, char *bp, 
 					 long startsec, Llong amt, int secsize, BOOL dolast, 
 					 Llong *bytesp);
 static	void	printdata(int, track_t *);
@@ -228,22 +228,22 @@ static	void	setpregaps(int, track_t *);
 static	long	checktsize(int, track_t *);
 static	void	opentracks(track_t *);
 static	void	checksize(track_t *);
-static	BOOL	checkdsize(SCSI *scgp, cdr_t *dp, long tsize, int flags);
+static	BOOL	checkdsize(SCSI *usalp, cdr_t *dp, long tsize, int flags);
 static	void	raise_fdlim(void);
 static	void	raise_memlock(void);
 static	int	gargs(int, char **, int *, track_t *, char **, int *, cdr_t **,
 							int *, long *, int *, int *);
 static	void	set_trsizes(cdr_t *, int, track_t *);
-void		load_media(SCSI *scgp, cdr_t *, BOOL);
-void		unload_media(SCSI *scgp, cdr_t *, int);
-void		reload_media(SCSI *scgp, cdr_t *);
-void		set_secsize(SCSI *scgp, int secsize);
-static	int	get_dmaspeed(SCSI *scgp, cdr_t *);
-static	BOOL	do_opc(SCSI *scgp, cdr_t *, int);
-static	void	check_recovery(SCSI *scgp, cdr_t *, int);
-void		audioread(SCSI *scgp, cdr_t *, int);
-static	void	print_msinfo(SCSI *scgp, cdr_t *);
-static	void	print_toc(SCSI *scgp, cdr_t *);
+void		load_media(SCSI *usalp, cdr_t *, BOOL);
+void		unload_media(SCSI *usalp, cdr_t *, int);
+void		reload_media(SCSI *usalp, cdr_t *);
+void		set_secsize(SCSI *usalp, int secsize);
+static	int	get_dmaspeed(SCSI *usalp, cdr_t *);
+static	BOOL	do_opc(SCSI *usalp, cdr_t *, int);
+static	void	check_recovery(SCSI *usalp, cdr_t *, int);
+void		audioread(SCSI *usalp, cdr_t *, int);
+static	void	print_msinfo(SCSI *usalp, cdr_t *);
+static	void	print_toc(SCSI *usalp, cdr_t *);
 static	void	print_track(int, long, struct msf *, int, int, int);
 #if !defined(HAVE_SYS_PRIOCNTL_H)
 static	int	rt_raisepri(int);
@@ -264,7 +264,7 @@ static int get_cap(cap_value_t cap_array);
 #endif
 
 struct exargs {
-	SCSI	*scgp;
+	SCSI	*usalp;
 	cdr_t	*dp;
 	int	old_secsize;
 	int	flags;
@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 	cdr_t	*dp = (cdr_t *)0;
 	long	startsec = 0L;
 	int	errs = 0;
-	SCSI	*scgp = NULL;
+	SCSI	*usalp = NULL;
 	char	errstr[80];
 	BOOL	gracedone = FALSE;
 	int     ispacket;
@@ -338,7 +338,7 @@ int main(int argc, char *argv[])
 		/*
 		 * Try to lock us im memory (will only work for root)
 		 * but you need access to root anyway to send SCSI commands.
-		 * We need to be root to open /dev/scg? or similar devices
+		 * We need to be root to open /dev/usal? or similar devices
 		 * on other OS variants and we need to be root to be able
 		 * to send SCSI commands at least on AIX and
 		 * Solaris (USCSI only) regardless of the permissions for
@@ -386,30 +386,30 @@ int main(int argc, char *argv[])
 	}
 
 	/*
-	 * Call scg_remote() to force loading the remote SCSI transport library
-	 * code that is located in librscg instead of the dummy remote routines
-	 * that are located inside libscg.
+	 * Call usal_remote() to force loading the remote SCSI transport library
+	 * code that is located in librusal instead of the dummy remote routines
+	 * that are located inside libusal.
 	 */
-	scg_remote();
+	usal_remote();
 	if (dev != NULL &&
 	    ((strncmp(dev, "HELP", 4) == 0) ||
 	    (strncmp(dev, "help", 4) == 0))) {
-		scg_help(stderr);
+		usal_help(stderr);
 		exit(0);
 	}
 
-  scgp = scg_open(dev, errstr, sizeof (errstr),
+  usalp = usal_open(dev, errstr, sizeof (errstr),
         debug, lverbose);
-  if(!scgp && dev) {
+  if(!usalp && dev) {
      char *dalt;
      int len=5+strlen(dev);
      dalt=calloc(len, sizeof(char));
      strcat(dalt, "ATA:");
      strcat(dalt+4, dev);
-     scgp = scg_open(dalt, errstr, sizeof (errstr),
+     usalp = usal_open(dalt, errstr, sizeof (errstr),
            debug, lverbose);
   }
-  if(!scgp)
+  if(!usalp)
   {
      errmsg("\nCannot open SCSI driver!\n"
            "For possible targets try 'wodim -scanbus'.\n"
@@ -474,25 +474,25 @@ int main(int argc, char *argv[])
 	 * XXX It may be that we later get problems in init_faio() because
 	 * XXX this function calls raisepri() to lower the priority slightly.
 	 */
-	scg_settimeout(scgp, timeout);
-	scgp->verbose = scsi_verbose;
-	scgp->silent = silent;
-	scgp->debug = debug;
-	scgp->kdebug = kdebug;
-	scgp->cap->c_bsize = DATA_SEC_SIZE;
+	usal_settimeout(usalp, timeout);
+	usalp->verbose = scsi_verbose;
+	usalp->silent = silent;
+	usalp->debug = debug;
+	usalp->kdebug = kdebug;
+	usalp->cap->c_bsize = DATA_SEC_SIZE;
 
 	if ((flags & F_MSINFO) == 0 || lverbose) {
 		char	*vers;
 		char	*auth;
 
-		vers = scg_version(0, SCG_VERSION);
-		auth = scg_version(0, SCG_AUTHOR);
+		vers = usal_version(0, SCG_VERSION);
+		auth = usal_version(0, SCG_AUTHOR);
 		if(lverbose >1 && auth && vers)
-		  fprintf(stderr, "Using libscg version '%s-%s'.\n", auth, vers);
+		  fprintf(stderr, "Using libusal version '%s-%s'.\n", auth, vers);
 
 
-		vers = scg_version(scgp, SCG_RVERSION);
-		auth = scg_version(scgp, SCG_RAUTHOR);
+		vers = usal_version(usalp, SCG_RVERSION);
+		auth = usal_version(usalp, SCG_RAUTHOR);
 		if (lverbose > 1 && vers && auth)
 		  fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
 	}
@@ -500,23 +500,23 @@ int main(int argc, char *argv[])
 	if (lverbose && driveropts)
 		printf("Driveropts: '%s'\n", driveropts);
 
-/*	bufsize = scg_bufsize(scgp, CDR_BUF_SIZE);*/
-	bufsize = scg_bufsize(scgp, bufsize);
+/*	bufsize = usal_bufsize(usalp, CDR_BUF_SIZE);*/
+	bufsize = usal_bufsize(usalp, bufsize);
 	if (lverbose || debug)
 		fprintf(stderr, "SCSI buffer size: %ld\n", bufsize);
-	if ((buf = scg_getbuf(scgp, bufsize)) == NULL)
+	if ((buf = usal_getbuf(usalp, bufsize)) == NULL)
 		comerr("Cannot get SCSI I/O buffer.\n");
 
 	if ((flags & F_SCANBUS) != 0) {
-		select_target(scgp, stdout);
+		select_target(usalp, stdout);
 		exit(0);
 	}
 	if ((flags & F_RESET) != 0) {
-		if (scg_reset(scgp, SCG_RESET_NOP) < 0)
+		if (usal_reset(usalp, SCG_RESET_NOP) < 0)
 			comerr("Cannot reset (OS does not implement reset).\n");
-		if (scg_reset(scgp, SCG_RESET_TGT) >= 0)
+		if (usal_reset(usalp, SCG_RESET_TGT) >= 0)
 			exit(0);
-		if (scg_reset(scgp, SCG_RESET_BUS) < 0)
+		if (usal_reset(usalp, SCG_RESET_BUS) < 0)
 			comerr("Cannot reset target.\n");
 		exit(0);
 	}
@@ -526,13 +526,13 @@ int main(int argc, char *argv[])
 	 * have.
 	 */
 	if (debug || lverbose)
-		printf("atapi: %d\n", scg_isatapi(scgp));
-	scgp->silent++;
-	test_unit_ready(scgp);	/* eat up unit attention */
-	scgp->silent--;
-	if (!do_inquiry(scgp, (flags & F_MSINFO) == 0 || lverbose)) {
+		printf("atapi: %d\n", usal_isatapi(usalp));
+	usalp->silent++;
+	test_unit_ready(usalp);	/* eat up unit attention */
+	usalp->silent--;
+	if (!do_inquiry(usalp, (flags & F_MSINFO) == 0 || lverbose)) {
 		errmsgno(EX_BAD, "Cannot do inquiry for CD/DVD-Recorder.\n");
-		if (unit_ready(scgp))
+		if (unit_ready(usalp))
 			errmsgno(EX_BAD, "The unit seems to be hung and needs power cycling.\n");
 		exit(EX_BAD);
 	}
@@ -544,24 +544,24 @@ int main(int argc, char *argv[])
 extern	void	gconf(SCSI *);
 
 if (lverbose > 2)
-	gconf(scgp);
+	gconf(usalp);
 }
 #endif
 
 	if ((flags & F_PRCAP) != 0) {
-		print_capabilities(scgp);
-		print_capabilities_mmc4(scgp);
+		print_capabilities(usalp);
+		print_capabilities_mmc4(usalp);
 		exit(0);
 	}
 	if ((flags & F_INQUIRY) != 0)
 		exit(0);
 
 	if (dp == (cdr_t *)NULL) {	/* No driver= option specified	*/
-		dp = get_cdrcmds(scgp);	/* Calls dp->cdr_identify()	*/
-	} else if (!is_unknown_dev(scgp) && dp != get_cdrcmds(scgp)) {
+		dp = get_cdrcmds(usalp);	/* Calls dp->cdr_identify()	*/
+	} else if (!is_unknown_dev(usalp) && dp != get_cdrcmds(usalp)) {
 		errmsgno(EX_BAD, "WARNING: Trying to use other driver on known device.\n");
 	}
-        is_mmc(scgp, &is_cdwr, &is_dvdwr);
+        is_mmc(usalp, &is_cdwr, &is_dvdwr);
         if (ispacket) {
 	    if (is_dvdwr) {
 		track[0].flags |= TI_PACKET; 
@@ -587,7 +587,7 @@ if (lverbose > 2)
 	  }
 	}
 
-	if (!is_cddrive(scgp))
+	if (!is_cddrive(usalp))
 		comerrno(EX_BAD, "Sorry, no CD/DVD-Drive found on this target.\n");
 	/*
 	 * The driver is known, set up data structures...
@@ -620,7 +620,7 @@ if (lverbose > 2)
 			"Sorry, no CD/DVD-Recorder or unsupported CD/DVD-Recorder found on this target.\n");
 		}
 
-		if (!is_mmc(scgp, &is_cdwr, &is_dvdwr))
+		if (!is_mmc(usalp, &is_cdwr, &is_dvdwr))
 			is_cdwr = TRUE;			/* If it is not MMC, it must be a CD writer */
 
 		if (is_dvdwr && !set_cdrcmds("mmc_mdvd", (cdr_t **)NULL)) {
@@ -643,7 +643,7 @@ if (lverbose > 2)
 	/*
 	 * Set up data structures for current drive state.
 	 */
-	if ((*dp->cdr_attach)(scgp, dp) != 0)
+	if ((*dp->cdr_attach)(usalp, dp) != 0)
 		comerrno(EX_BAD, "Cannot attach driver for CD/DVD-Recorder.\n");
 
 	if (lverbose > 1) {
@@ -661,7 +661,7 @@ if (lverbose > 2)
 	}
 	dp->cdr_dstat->ds_wspeed = speed; /* XXX Remove 'speed' in future */
 
-	exargs.scgp	   = scgp;
+	exargs.usalp	   = usalp;
 	exargs.dp	   = dp;
 	exargs.old_secsize = -1;
 	exargs.flags	   = flags;
@@ -671,11 +671,11 @@ if (lverbose > 2)
 		print_drflags(dp);
 		print_wrmodes(dp);
 	}
-	scgp->silent++;
+	usalp->silent++;
 	if ((debug || lverbose)) {
 		tsize = -1;
-		if ((*dp->cdr_buffer_cap)(scgp, &tsize, (long *)0) < 0 || tsize < 0) {
-			if (read_buffer(scgp, buf, 4, 0) >= 0)
+		if ((*dp->cdr_buffer_cap)(usalp, &tsize, (long *)0) < 0 || tsize < 0) {
+			if (read_buffer(usalp, buf, 4, 0) >= 0)
 				tsize = a_to_u_4_byte(buf);
 		}
 		if (tsize > 0) {
@@ -683,9 +683,9 @@ if (lverbose > 2)
 						tsize, tsize >> 10);
 		}
 	}
-	scgp->silent--;
+	usalp->silent--;
 
-	dma_speed = get_dmaspeed(scgp, dp);
+	dma_speed = get_dmaspeed(usalp, dp);
 	if ((debug || lverbose) && dma_speed > 0) {
 		/*
 		 * We do not yet know what medium type is in...
@@ -708,10 +708,10 @@ if (lverbose > 2)
 		/*
 		 * flush cache is not supported by CD-ROMs avoid prob with -toc
 		 */
-		scgp->silent++;
-		scsi_flush_cache(scgp, FALSE);
-		(*dp->cdr_abort_session)(scgp, dp);
-		scgp->silent--;
+		usalp->silent++;
+		scsi_flush_cache(usalp, FALSE);
+		(*dp->cdr_abort_session)(usalp, dp);
+		usalp->silent--;
 		exit(0);
 	}
 
@@ -721,7 +721,7 @@ if (lverbose > 2)
 		 * Do not check if the unit is ready here to allow to open
 		 * an empty unit too.
 		 */
-		unload_media(scgp, dp, flags);
+		unload_media(usalp, dp, flags);
 		exit(0);
 	}
 	flush();
@@ -796,33 +796,33 @@ if (lverbose > 2)
 	on_comerr(exscsi, &exargs);
 
 	if ((flags & F_FORCE) == 0)
-		load_media(scgp, dp, TRUE);
+		load_media(usalp, dp, TRUE);
 
 	if ((flags & (F_LOAD|F_DLCK)) != 0) {
 		if ((flags & F_DLCK) == 0) {
-			scgp->silent++;		/* silently		*/
+			usalp->silent++;		/* silently		*/
 			scsi_prevent_removal(
-				scgp, 0);	/* allow manual open	*/
-			scgp->silent--;		/* if load failed...	*/
+				usalp, 0);	/* allow manual open	*/
+			usalp->silent--;		/* if load failed...	*/
 		}
 		exit(0);			/* we did not change status */
 	}
-	exargs.old_secsize = sense_secsize(scgp, 1);
+	exargs.old_secsize = sense_secsize(usalp, 1);
 	if (exargs.old_secsize < 0)
-		exargs.old_secsize = sense_secsize(scgp, 0);
+		exargs.old_secsize = sense_secsize(usalp, 0);
 	if (debug)
 		printf("Current Secsize: %d\n", exargs.old_secsize);
-	scgp->silent++;
-	if (read_capacity(scgp) < 0) {
+	usalp->silent++;
+	if (read_capacity(usalp) < 0) {
 		if (exargs.old_secsize > 0)
-			scgp->cap->c_bsize = exargs.old_secsize;
+			usalp->cap->c_bsize = exargs.old_secsize;
 	}
-	scgp->silent--;
+	usalp->silent--;
 	if (exargs.old_secsize < 0)
-		exargs.old_secsize = scgp->cap->c_bsize;
-	if (exargs.old_secsize != scgp->cap->c_bsize)
+		exargs.old_secsize = usalp->cap->c_bsize;
+	if (exargs.old_secsize != usalp->cap->c_bsize)
 		errmsgno(EX_BAD, "Warning: blockdesc secsize %d differs from cap secsize %d\n",
-				exargs.old_secsize, scgp->cap->c_bsize);
+				exargs.old_secsize, usalp->cap->c_bsize);
 
 	if (lverbose)
 		printf("Current Secsize: %d\n", exargs.old_secsize);
@@ -834,16 +834,16 @@ if (lverbose > 2)
 		 * In addition, cdrecord -msinfo will not work properly
 		 * if the sector size is not 2048 bytes.
 		 */
-		set_secsize(scgp, DATA_SEC_SIZE);
+		set_secsize(usalp, DATA_SEC_SIZE);
 	}
 
 	/*
 	 * Is this the right place to do this ?
 	 */
-	check_recovery(scgp, dp, flags);
+	check_recovery(usalp, dp, flags);
 
 /*audioread(dp, flags);*/
-/*unload_media(scgp, dp, flags);*/
+/*unload_media(usalp, dp, flags);*/
 /*return 0;*/
 	if (flags & F_WRITE)
 		dp->cdr_dstat->ds_cdrflags |= RF_WRITE;
@@ -859,7 +859,7 @@ if (lverbose > 2)
 			lverbose++;
 		dp->cdr_dstat->ds_cdrflags |= RF_WR_WAIT;
 	}
-	if ((*dp->cdr_getdisktype)(scgp, dp) < 0) {
+	if ((*dp->cdr_getdisktype)(usalp, dp) < 0) {
 		errmsgno(EX_BAD, "Cannot get disk type.\n");
 		if ((flags & F_FORCE) == 0)
 			comexit(EX_BAD);
@@ -896,24 +896,24 @@ if (lverbose > 2)
 	 * XXX Will not return from -dummy to non-dummy without
 	 * XXX opening the tray.
 	 */
-	scgp->silent++;
-	if ((*dp->cdr_init)(scgp, dp) < 0)
+	usalp->silent++;
+	if ((*dp->cdr_init)(usalp, dp) < 0)
 		comerrno(EX_BAD, "Cannot init drive.\n");
-	scgp->silent--;
+	usalp->silent--;
 
 	if (flags & F_SETDROPTS) {
 		/*
 		 * Note that the set speed function also contains
 		 * drive option processing for speed related drive options.
 		 */
-		if ((*dp->cdr_opt1)(scgp, dp) < 0) {
+		if ((*dp->cdr_opt1)(usalp, dp) < 0) {
 			errmsgno(EX_BAD, "Cannot set up 1st set of driver options.\n");
 		}
-		if ((*dp->cdr_set_speed_dummy)(scgp, dp, &speed) < 0) {
+		if ((*dp->cdr_set_speed_dummy)(usalp, dp, &speed) < 0) {
 			errmsgno(EX_BAD, "Cannot set speed/dummy.\n");
 		}
 		dp->cdr_dstat->ds_wspeed = speed; /* XXX Remove 'speed' in future */
-		if ((*dp->cdr_opt2)(scgp, dp) < 0) {
+		if ((*dp->cdr_opt2)(usalp, dp) < 0) {
 			errmsgno(EX_BAD, "Cannot set up 2nd set of driver options.\n");
 		}
 		comexit(0);
@@ -923,11 +923,11 @@ if (lverbose > 2)
 	 * XXX the multi session info we would need to move it here.
 	 */
 	if (flags & F_MSINFO) {
-		print_msinfo(scgp, dp);
+		print_msinfo(usalp, dp);
 		comexit(0);
 	}
 	if (flags & F_TOC) {
-		print_toc(scgp, dp);
+		print_toc(usalp, dp);
 		comexit(0);
 	}
 #ifdef	XXX
@@ -938,7 +938,7 @@ if (lverbose > 2)
 	{
 		Int32_t omb = dp->cdr_dstat->ds_maxblocks;
 
-		if ((*dp->cdr_opt1)(scgp, dp) < 0) {
+		if ((*dp->cdr_opt1)(usalp, dp) < 0) {
 			errmsgno(EX_BAD, "Cannot set up 1st set of driver options.\n");
 		}
 		if (tsize > 0 && omb != dp->cdr_dstat->ds_maxblocks) {
@@ -956,7 +956,7 @@ if (lverbose > 2)
 		 * XXX How do we let the user check the remaining
 		 * XXX disk size witout starting the write process?
 		 */
-		if (!checkdsize(scgp, dp, tsize, flags))
+		if (!checkdsize(usalp, dp, tsize, flags))
 			comexit(EX_BAD);
 	}
 	if (tracks > 0 && fs > 0l) {
@@ -1002,7 +1002,7 @@ if (lverbose > 2)
 
 #endif
 	}
-	if ((*dp->cdr_set_speed_dummy)(scgp, dp, &speed) < 0) {
+	if ((*dp->cdr_set_speed_dummy)(usalp, dp, &speed) < 0) {
 		errmsgno(EX_BAD, "Cannot set speed/dummy.\n");
 		if ((flags & F_FORCE) == 0)
 			comexit(EX_BAD);
@@ -1120,7 +1120,7 @@ if (lverbose > 2)
 	}
 	if ((flags & (F_BLANK|F_FORCE)) == (F_BLANK|F_FORCE)) {
 		printf("Waiting for drive to calm down.\n");
-		wait_unit_ready(scgp, 120);
+		wait_unit_ready(usalp, 120);
 		if (gracewait(dp, &gracedone) < 0) {
 			/*
 			 * In case kill() did not work ;-)
@@ -1128,7 +1128,7 @@ if (lverbose > 2)
 			errs++;
 			goto restore_it;
 		}
-		scsi_blank(scgp, 0L, blanktype, FALSE);
+		scsi_blank(usalp, 0L, blanktype, FALSE);
 	}
 
 	/*
@@ -1144,7 +1144,7 @@ if (lverbose > 2)
  	
  	if (dp->profile == 0x2B && flags & F_SAO && tsize > 0) {
  	    printf("Preparing middle zone location for this DVD+R dual layer disc\n");
- 	    if (!dp->cdr_layer_split(scgp, dp, tsize)) {
+ 	    if (!dp->cdr_layer_split(usalp, dp, tsize)) {
  		errmsgno(EX_BAD, "Cannot send structure for middle zone location.\n");
  		comexit(EX_BAD);
  	    }
@@ -1162,7 +1162,7 @@ if (lverbose > 2)
 			comerrno(EX_BAD, "Input buffer error, aborting.\n");
 		}
 	}
-	wait_unit_ready(scgp, 120);
+	wait_unit_ready(usalp, 120);
 
 	starttime.tv_sec = 0;
 	wstarttime.tv_sec = 0;
@@ -1183,14 +1183,14 @@ if (lverbose > 2)
 		 * This is most likely because they refuse to do OPC
 		 * on a non blank media.
 		 */
-		scgp->silent++;
-		do_opc(scgp, dp, flags);
-		scgp->silent--;
-		wait_unit_ready(scgp, 120);
+		usalp->silent++;
+		do_opc(usalp, dp, flags);
+		usalp->silent--;
+		wait_unit_ready(usalp, 120);
 		if (gettimeofday(&starttime, (struct timezone *)0) < 0)
 			errmsg("Cannot get start time\n");
 
-		if ((*dp->cdr_blank)(scgp, dp, 0L, blanktype) < 0) {
+		if ((*dp->cdr_blank)(usalp, dp, 0L, blanktype) < 0) {
 			errmsgno(EX_BAD, "Cannot blank disk, aborting.\n");
 			if (blanktype != BLANK_DISC) {
 				errmsgno(EX_BAD, "Some drives do not support all blank types.\n");
@@ -1207,7 +1207,7 @@ if (lverbose > 2)
 		 * XXX Erst blank und dann format?
 		 * XXX Wenn ja, dann hier (flags & F_FORMAT) testen
 		 */
-		if (!wait_unit_ready(scgp, 240) || tracks == 0) {
+		if (!wait_unit_ready(usalp, 240) || tracks == 0) {
 			comexit(0);
 		}
       if (flags & F_FORMAT) {
@@ -1220,14 +1220,14 @@ if (lverbose > 2)
           * This is most likely because they refuse to do OPC
           * on a non blank media.
           */
-         scgp->silent++;
-         do_opc(scgp, dp, flags);
-         scgp->silent--;
-         wait_unit_ready(scgp, 120);
+         usalp->silent++;
+         do_opc(usalp, dp, flags);
+         usalp->silent--;
+         wait_unit_ready(usalp, 120);
          if (gettimeofday(&starttime, (struct timezone *)0) < 0)
             errmsg("Cannot get start time\n");
 
-         if ((*dp->cdr_format)(scgp, dp, formattype) < 0) {
+         if ((*dp->cdr_format)(usalp, dp, formattype) < 0) {
             errmsgno(EX_BAD, "Cannot format disk, aborting.\n");
             comexit(EX_BAD);
          }
@@ -1236,7 +1236,7 @@ if (lverbose > 2)
          if (lverbose)
             prtimediff("Formatting time: ", &starttime, &fixtime);
 
-         if (!wait_unit_ready(scgp, 240) || tracks == 0) {
+         if (!wait_unit_ready(usalp, 240) || tracks == 0) {
             comexit(0);
          }
          if (gettimeofday(&starttime, (struct timezone *)0) < 0)
@@ -1255,11 +1255,11 @@ if (lverbose > 2)
 	 * Get the number of the next recordable track by reading the TOC and
 	 * use the number the last current track number.
 	 */
-	scgp->silent++;
-	if (read_tochdr(scgp, dp, NULL, &trackno) < 0) {
+	usalp->silent++;
+	if (read_tochdr(usalp, dp, NULL, &trackno) < 0) {
 		trackno = 0;
 	}
-	scgp->silent--;
+	usalp->silent--;
       
    /* If it is DVD, the information in TOC is fabricated :)
    The real information is from read disk info command*/
@@ -1281,7 +1281,7 @@ if (lverbose > 2)
 		track[i].trackno = i + trackno;	/* Set up real track #	*/
 	}
 
-	if ((*dp->cdr_opt2)(scgp, dp) < 0) {
+	if ((*dp->cdr_opt2)(usalp, dp) < 0) {
 		errmsgno(EX_BAD, "Cannot set up 2nd set of driver options.\n");
 	}
 
@@ -1289,10 +1289,10 @@ if (lverbose > 2)
 	 * Now we actually start writing to the CD/DVD.
 	 * XXX Check total size of the tracks and remaining size of disk.
 	 */
-	if ((*dp->cdr_open_session)(scgp, dp, track) < 0) {
+	if ((*dp->cdr_open_session)(usalp, dp, track) < 0) {
 		comerrno(EX_BAD, "Cannot open new session.\n");
 	}
-	if (!do_opc(scgp, dp, flags))
+	if (!do_opc(usalp, dp, flags))
 		comexit(EX_BAD);
 
 	/*
@@ -1308,7 +1308,7 @@ if (lverbose > 2)
 	/*
 	 * This call may modify trackp[i].trackstart for all tracks.
 	 */
-	if ((*dp->cdr_write_leadin)(scgp, dp, track) < 0)
+	if ((*dp->cdr_write_leadin)(usalp, dp, track) < 0)
 		comerrno(EX_BAD, "Could not write Lead-in.\n");
 
 	if (lverbose && (dp->cdr_dstat->ds_cdrflags & RF_LEADIN) != 0) {
@@ -1323,14 +1323,14 @@ if (lverbose > 2)
 	for (i = 1; i <= tracks; i++) {
 		startsec = 0L;
 
-		if ((*dp->cdr_open_track)(scgp, dp, &track[i]) < 0) {
+		if ((*dp->cdr_open_track)(usalp, dp, &track[i]) < 0) {
 			errmsgno(EX_BAD, "Cannot open next track.\n");
 			errs++;
 			break;
 		}
 
 		if ((flags & (F_SAO|F_RAW)) == 0) {
-			if ((*dp->cdr_next_wr_address)(scgp, &track[i], &startsec) < 0) {
+			if ((*dp->cdr_next_wr_address)(usalp, &track[i], &startsec) < 0) {
 				errmsgno(EX_BAD, "Cannot get next writable address.\n");
 				errs++;
 				break;
@@ -1342,8 +1342,8 @@ if (lverbose > 2)
 						track[i].trackstart);
 			flush();
 		}
-		if (write_track_data(scgp, dp, &track[i]) < 0) {
-			if (cdr_underrun(scgp)) {
+		if (write_track_data(usalp, dp, &track[i]) < 0) {
+			if (cdr_underrun(usalp)) {
 				errmsgno(EX_BAD,
 				"The current problem looks like a buffer underrun.\n");
 				if ((dp->cdr_dstat->ds_cdrflags & RF_BURNFREE) == 0)
@@ -1363,16 +1363,16 @@ if (lverbose > 2)
 			}
 			errs++;
 			sleep(5);
-			unit_ready(scgp);
-			(*dp->cdr_close_track)(scgp, dp, &track[i]);
+			unit_ready(usalp);
+			(*dp->cdr_close_track)(usalp, dp, &track[i]);
 			break;
 		}
-		if ((*dp->cdr_close_track)(scgp, dp, &track[i]) < 0) {
+		if ((*dp->cdr_close_track)(usalp, dp, &track[i]) < 0) {
 			/*
 			 * Check for "Dummy blocks added" message first.
 			 */
-			if (scg_sense_key(scgp) != SC_ILLEGAL_REQUEST ||
-					scg_sense_code(scgp) != 0xB5) {
+			if (usal_sense_key(usalp) != SC_ILLEGAL_REQUEST ||
+					usal_sense_code(usalp) != 0xB5) {
 				errmsgno(EX_BAD, "Cannot close track.\n");
 				errs++;
 				break;
@@ -1389,14 +1389,14 @@ fix_it:
 			printf("Writing Leadout...\n");
 			flush();
 		}
-		write_leadout(scgp, dp, track);
+		write_leadout(usalp, dp, track);
 	}
 	if ((flags & F_NOFIX) == 0) {
 		if (lverbose) {
 			printf("Fixating...\n");
 			flush();
 		}
-		if ((*dp->cdr_fixate)(scgp, dp, track) < 0) {
+		if ((*dp->cdr_fixate)(usalp, dp, track) < 0) {
 			/*
 			 * Ignore fixating errors in dummy mode.
 			 */
@@ -1412,20 +1412,20 @@ fix_it:
 	}
 	if ((dp->cdr_dstat->ds_cdrflags & RF_DID_CDRSTAT) == 0) {
 		dp->cdr_dstat->ds_cdrflags |= RF_DID_CDRSTAT;
-		(*dp->cdr_stats)(scgp, dp);
+		(*dp->cdr_stats)(usalp, dp);
 	}
 	if ((flags & (F_RAW|F_EJECT)) == F_RAW) {
 		/*
 		 * Most drives seem to forget to reread the TOC from disk
 		 * if they are in RAW mode.
 		 */
-		scgp->silent++;
-		if (read_tochdr(scgp, dp, NULL, NULL) < 0) {
-			scgp->silent--;
+		usalp->silent++;
+		if (read_tochdr(usalp, dp, NULL, NULL) < 0) {
+			usalp->silent--;
 			if ((flags & F_DUMMY) == 0)
-				reload_media(scgp, dp);
+				reload_media(usalp, dp);
 		} else {
-			scgp->silent--;
+			usalp->silent--;
 		}
 	}
 
@@ -1749,16 +1749,16 @@ static void
 intfifo(int sig)
 {
 	errmsgno(EX_BAD, "Caught interrupt.\n");
-	if (exargs.scgp) {
-		SCSI	*scgp = exargs.scgp;
+	if (exargs.usalp) {
+		SCSI	*usalp = exargs.usalp;
 
-		if (scgp->running) {
-			if (scgp->cb_fun != NULL) {
+		if (usalp->running) {
+			if (usalp->cb_fun != NULL) {
 				comerrno(EX_BAD, "Second interrupt. Doing hard abort.\n");
 				/* NOTREACHED */
 			}
-			scgp->cb_fun = scsi_cb;
-			scgp->cb_arg = &exargs;
+			usalp->cb_fun = scsi_cb;
+			usalp->cb_arg = &exargs;
 			return;
 		}
 	}
@@ -1775,18 +1775,18 @@ exscsi(int excode, void *arg)
 	 * Try to restore the old sector size.
 	 */
 	if (exp != NULL && exp->exflags == 0) {
-		if (exp->scgp->running) {
+		if (exp->usalp->running) {
 			return;
 		}
 		/*
 		 * flush cache is not supported by CD-ROMs avoid prob with -toc
 		 */
-		exp->scgp->silent++;
-		scsi_flush_cache(exp->scgp, FALSE);
-		(*exp->dp->cdr_abort_session)(exp->scgp, exp->dp);
-		exp->scgp->silent--;
-		set_secsize(exp->scgp, exp->old_secsize);
-		unload_media(exp->scgp, exp->dp, exp->flags);
+		exp->usalp->silent++;
+		scsi_flush_cache(exp->usalp, FALSE);
+		(*exp->dp->cdr_abort_session)(exp->usalp, exp->dp);
+		exp->usalp->silent--;
+		set_secsize(exp->usalp, exp->old_secsize);
+		unload_media(exp->usalp, exp->dp, exp->flags);
 
 		exp->exflags++;	/* Make sure that it only get called once */
 	}
@@ -1802,7 +1802,7 @@ excdr(int excode, void *arg)
 	cdrstats(exp->dp);
 	if ((exp->dp->cdr_dstat->ds_cdrflags & RF_DID_CDRSTAT) == 0) {
 		exp->dp->cdr_dstat->ds_cdrflags |= RF_DID_CDRSTAT;
-		(*exp->dp->cdr_stats)(exp->scgp, exp->dp);
+		(*exp->dp->cdr_stats)(exp->usalp, exp->dp);
 	}
 
 #ifdef	FIFO
@@ -1921,17 +1921,17 @@ get_buf(int f, track_t *trackp, long secno, char **bpp, int size)
 }
 
 int 
-write_secs(SCSI *scgp, cdr_t *dp, char *bp, long startsec, int bytespt, 
+write_secs(SCSI *usalp, cdr_t *dp, char *bp, long startsec, int bytespt, 
         		int secspt, BOOL islast)
 {
 	int	amount;
 
 again:
-	scgp->silent++;
-	amount = (*dp->cdr_write_trackdata)(scgp, bp, startsec, bytespt, secspt, islast);
-	scgp->silent--;
+	usalp->silent++;
+	amount = (*dp->cdr_write_trackdata)(usalp, bp, startsec, bytespt, secspt, islast);
+	usalp->silent--;
 	if (amount < 0) {
-		if (scsi_in_progress(scgp)) {
+		if (scsi_in_progress(usalp)) {
 			/*
 			 * If we sleep too long, the drive buffer is empty
 			 * before we start filling it again. The max. CD speed
@@ -1961,7 +1961,7 @@ again:
 }
 
 static int 
-write_track_data(SCSI *scgp, cdr_t *dp, track_t *trackp)
+write_track_data(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	int	track = trackp->trackno;
 	int	f = -1;
@@ -1997,16 +1997,16 @@ int oper = -1;
 	if (dp->cdr_dstat->ds_flags & DSF_DVD)
 		secsps = 676.27;
 
-	scgp->silent++;
-	if ((*dp->cdr_buffer_cap)(scgp, &bsize, &bfree) < 0)
+	usalp->silent++;
+	if ((*dp->cdr_buffer_cap)(usalp, &bsize, &bfree) < 0)
 		bsize = -1L;
 	if (bsize == 0)		/* If we have no (known) buffer, we cannot */
 		bsize = -1L;	/* retrieve the buffer fill ratio	   */
-	scgp->silent--;
+	usalp->silent--;
 
 
 	if (is_packet(trackp))	/* XXX Ugly hack for now */
-		return (write_packet_data(scgp, dp, trackp));
+		return (write_packet_data(usalp, dp, trackp));
 
 	if (trackp->xfp != NULL)
 		f = xfileno(trackp->xfp);
@@ -2088,7 +2088,7 @@ int oper = -1;
 				islast = TRUE;
 		}
 
-		amount = write_secs(scgp, dp, bp, startsec, bytespt, secspt, islast);
+		amount = write_secs(usalp, dp, bp, startsec, bytespt, secspt, islast);
 		if (amount < 0) {
 			printf("%swrite track data: error after %lld bytes\n",
 							neednl?"\n":"", bytes);
@@ -2114,9 +2114,9 @@ int oper = -1;
 				printf(" (fifo %3d%%)", fper);
 #ifdef	BCAP
 			if (bsize > 0) {			/* buffer size known */
-				scgp->silent++;
-				per = (*dp->cdr_buffer_cap)(scgp, (long *)0, &bfree);
-				scgp->silent--;
+				usalp->silent++;
+				per = (*dp->cdr_buffer_cap)(usalp, (long *)0, &bfree);
+				usalp->silent--;
 				if (per >= 0) {
 					per = 100*(bsize - bfree) / bsize;
 					if ((bsize - bfree) <= amount || per <= 5)
@@ -2189,7 +2189,7 @@ int oper = -1;
 		}
 #ifdef	XBCAP
 		if (bsize > 0) {			/* buffer size known */
-			(*dp->cdr_buffer_cap)(scgp, (long *)0, &bfree);
+			(*dp->cdr_buffer_cap)(usalp, (long *)0, &bfree);
 			per = 100*(bsize - bfree) / bsize;
 			if (per != oper)
 				printf("[buf %3d%%] %3ld %3ld\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b",
@@ -2232,7 +2232,7 @@ int oper = -1;
 					track, (Llong)(padbytes >> 10));
 			neednl = FALSE;
 		}
-		pad_track(scgp, dp, trackp, startsec, padbytes,
+		pad_track(usalp, dp, trackp, startsec, padbytes,
 					TRUE, &savbytes);
 		bytes += savbytes;
 		startsec += savbytes / secsize;
@@ -2244,7 +2244,7 @@ int oper = -1;
 }
 
 int 
-pad_track(SCSI *scgp, cdr_t	*dp, track_t *trackp, long startsec, Llong amt,
+pad_track(SCSI *usalp, cdr_t	*dp, track_t *trackp, long startsec, Llong amt,
 				BOOL dolast, Llong *bytesp)
 {
 	int	track = trackp->trackno;
@@ -2273,12 +2273,12 @@ int oper = -1;
 	if (dp->cdr_dstat->ds_flags & DSF_DVD)
 		secsps = 676.27;
 
-	scgp->silent++;
-	if ((*dp->cdr_buffer_cap)(scgp, &bsize, &bfree) < 0)
+	usalp->silent++;
+	if ((*dp->cdr_buffer_cap)(usalp, &bsize, &bfree) < 0)
 		bsize = -1L;
 	if (bsize == 0)		/* If we have no (known) buffer, we cannot */
 		bsize = -1L;	/* retrieve the buffer fill ratio	   */
-	scgp->silent--;
+	usalp->silent--;
 
 	secsize = trackp->secsize;
 	secspt = trackp->secspt;
@@ -2305,13 +2305,13 @@ int oper = -1;
 			fillsubch(trackp, (Uchar *)buf, startsec, secspt);
 		}
 
-		amount = write_secs(scgp, dp, buf, startsec, bytespt, secspt, islast);
+		amount = write_secs(usalp, dp, buf, startsec, bytespt, secspt, islast);
 		if (amount < 0) {
 			printf("%swrite track pad data: error after %lld bytes\n",
 							neednl?"\n":"", bytes);
 			if (bytesp)
 				*bytesp = bytes;
-(*dp->cdr_buffer_cap)(scgp, (long *)0, (long *)0);
+(*dp->cdr_buffer_cap)(usalp, (long *)0, (long *)0);
 			return (-1);
 		}
 		amt -= amount;
@@ -2333,9 +2333,9 @@ int oper = -1;
 
 #ifdef	BCAP
 			if (bsize > 0) {			/* buffer size known */
-				scgp->silent++;
-				per = (*dp->cdr_buffer_cap)(scgp, (long *)0, &bfree);
-				scgp->silent--;
+				usalp->silent++;
+				per = (*dp->cdr_buffer_cap)(usalp, (long *)0, &bfree);
+				usalp->silent--;
 				if (per >= 0) {
 					per = 100*(bsize - bfree) / bsize;
 					if ((bsize - bfree) <= amount || per <= 5)
@@ -2378,7 +2378,7 @@ int oper = -1;
 
 #ifdef	USE_WRITE_BUF
 int 
-write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, long startsec, 
+write_buf(SCSI *usalp, cdr_t *dp, track_t *trackp, char *bp, long startsec, 
         	  Llong amt, int secsize, BOOL dolast, Llong *bytesp)
 {
 	int	track = trackp->trackno;
@@ -2413,13 +2413,13 @@ write_buf(SCSI *scgp, cdr_t *dp, track_t *trackp, char *bp, long startsec,
 		if (dolast && (amt - bytespt) <= 0)
 			islast = TRUE;
 
-		amount = write_secs(scgp, dp, bp, startsec, bytespt, secspt, islast);
+		amount = write_secs(usalp, dp, bp, startsec, bytespt, secspt, islast);
 		if (amount < 0) {
 			printf("%swrite track data: error after %ld bytes\n",
 							neednl?"\n":"", bytes);
 			if (bytesp)
 				*bytesp = bytes;
-(*dp->cdr_buffer_cap)(scgp, (long *)0, (long *)0);
+(*dp->cdr_buffer_cap)(usalp, (long *)0, (long *)0);
 			return (-1);
 		}
 		amt -= amount;
@@ -2856,16 +2856,16 @@ checksize(track_t *trackp)
 }
 
 static BOOL 
-checkdsize(SCSI *scgp, cdr_t *dp, long tsize, int flags)
+checkdsize(SCSI *usalp, cdr_t *dp, long tsize, int flags)
 {
 	long	startsec = 0L;
 	long	endsec = 0L;
 	dstat_t	*dsp = dp->cdr_dstat;
 	int	profile;
 
-	scgp->silent++;
-	(*dp->cdr_next_wr_address)(scgp, (track_t *)0, &startsec);
-	scgp->silent--;
+	usalp->silent++;
+	(*dp->cdr_next_wr_address)(usalp, (track_t *)0, &startsec);
+	usalp->silent--;
 
 	/*
 	 * This only should happen when the drive is currently in SAO mode.
@@ -3835,7 +3835,7 @@ set_trsizes(cdr_t *dp, int tracks, track_t *trackp)
 }
 
 void 
-load_media(SCSI *scgp, cdr_t *dp, BOOL doexit)
+load_media(SCSI *usalp, cdr_t *dp, BOOL doexit)
 {
 	int	code;
 	int	key;
@@ -3844,22 +3844,22 @@ load_media(SCSI *scgp, cdr_t *dp, BOOL doexit)
 	/*
 	 * Do some preparation before...
 	 */
-	scgp->silent++;			/* Be quiet if this fails		*/
-	test_unit_ready(scgp);		/* First eat up unit attention		*/
-	if ((*dp->cdr_load)(scgp, dp) < 0) {	/* now try to load media and	*/
+	usalp->silent++;			/* Be quiet if this fails		*/
+	test_unit_ready(usalp);		/* First eat up unit attention		*/
+	if ((*dp->cdr_load)(usalp, dp) < 0) {	/* now try to load media and	*/
 		if (!doexit)
 			return;
 		comerrno(EX_BAD, "Cannot load media.\n");
 	}
-	scsi_start_stop_unit(scgp, 1, 0, immed); /* start unit in silent mode	*/
-	scgp->silent--;
+	scsi_start_stop_unit(usalp, 1, 0, immed); /* start unit in silent mode	*/
+	usalp->silent--;
 
-	if (!wait_unit_ready(scgp, 60)) {
-		code = scg_sense_code(scgp);
-		key = scg_sense_key(scgp);
-		scgp->silent++;
-		scsi_prevent_removal(scgp, 0); /* In case someone locked it */
-		scgp->silent--;
+	if (!wait_unit_ready(usalp, 60)) {
+		code = usal_sense_code(usalp);
+		key = usal_sense_key(usalp);
+		usalp->silent++;
+		scsi_prevent_removal(usalp, 0); /* In case someone locked it */
+		usalp->silent--;
 
 		if (!doexit)
 			return;
@@ -3868,30 +3868,30 @@ load_media(SCSI *scgp, cdr_t *dp, BOOL doexit)
 		comerrno(EX_BAD, "CD/DVD-Recorder not ready.\n");
 	}
 
-	scsi_prevent_removal(scgp, 1);
-	scsi_start_stop_unit(scgp, 1, 0, immed);
-	wait_unit_ready(scgp, 120);
-	scgp->silent++;
+	scsi_prevent_removal(usalp, 1);
+	scsi_start_stop_unit(usalp, 1, 0, immed);
+	wait_unit_ready(usalp, 120);
+	usalp->silent++;
 	if(geteuid() == 0) /* EB: needed? Not allowed for non-root, that is sure. */
-      rezero_unit(scgp);	/* Is this needed? Not supported by some drvives */
-	scgp->silent--;
-	test_unit_ready(scgp);
-	scsi_start_stop_unit(scgp, 1, 0, immed);
-	wait_unit_ready(scgp, 120);
+      rezero_unit(usalp);	/* Is this needed? Not supported by some drvives */
+	usalp->silent--;
+	test_unit_ready(usalp);
+	scsi_start_stop_unit(usalp, 1, 0, immed);
+	wait_unit_ready(usalp, 120);
 }
 
 void 
-unload_media(SCSI *scgp, cdr_t *dp, int flags)
+unload_media(SCSI *usalp, cdr_t *dp, int flags)
 {
-	scsi_prevent_removal(scgp, 0);
+	scsi_prevent_removal(usalp, 0);
 	if ((flags & F_EJECT) != 0) {
-		if ((*dp->cdr_unload)(scgp, dp) < 0)
+		if ((*dp->cdr_unload)(usalp, dp) < 0)
 			errmsgno(EX_BAD, "Cannot eject media.\n");
 	}
 }
 
 void 
-reload_media(SCSI *scgp, cdr_t *dp)
+reload_media(SCSI *usalp, cdr_t *dp)
 {
 	char	ans[2];
 #ifdef	F_GETFL
@@ -3899,20 +3899,20 @@ reload_media(SCSI *scgp, cdr_t *dp)
 #endif
 
 	errmsgno(EX_BAD, "Drive needs to reload the media to return to proper status.\n");
-	unload_media(scgp, dp, F_EJECT);
+	unload_media(usalp, dp, F_EJECT);
 
 	/*
 	 * Note that even Notebook drives identify as CDR_TRAYLOAD
 	 */
 	if ((dp->cdr_flags & CDR_TRAYLOAD) != 0) {
-		scgp->silent++;
-		load_media(scgp, dp, FALSE);
-		scgp->silent--;
+		usalp->silent++;
+		load_media(usalp, dp, FALSE);
+		usalp->silent--;
 	}
 
-	scgp->silent++;
+	usalp->silent++;
 	if (((dp->cdr_flags & CDR_TRAYLOAD) == 0) ||
-				!wait_unit_ready(scgp, 5)) {
+				!wait_unit_ready(usalp, 5)) {
 		static FILE	*tty = NULL;
 
 		printf("Re-load disk and hit <CR>");
@@ -3940,26 +3940,26 @@ reload_media(SCSI *scgp, cdr_t *dp)
 		if (fgetline(tty, ans, 1) < 0)
 			comerrno(EX_BAD, "Aborted by EOF on input.\n");
 	}
-	scgp->silent--;
+	usalp->silent--;
 
-	load_media(scgp, dp, TRUE);
+	load_media(usalp, dp, TRUE);
 }
 
 void 
-set_secsize(SCSI *scgp, int secsize)
+set_secsize(SCSI *usalp, int secsize)
 {
 	if (secsize > 0) {
 		/*
 		 * Try to restore the old sector size.
 		 */
-		scgp->silent++;
-		select_secsize(scgp, secsize);
-		scgp->silent--;
+		usalp->silent++;
+		select_secsize(usalp, secsize);
+		usalp->silent--;
 	}
 }
 
 static int 
-get_dmaspeed(SCSI *scgp, cdr_t *dp)
+get_dmaspeed(SCSI *usalp, cdr_t *dp)
 {
 	int	i;
 	long	t;
@@ -3976,9 +3976,9 @@ get_dmaspeed(SCSI *scgp, cdr_t *dp)
 
 	fillbytes((caddr_t)buf, 4, '\0');
 	tsize = 0;
-	scgp->silent++;
-	i = read_buffer(scgp, buf, 4, 0);
-	scgp->silent--;
+	usalp->silent++;
+	i = read_buffer(usalp, buf, 4, 0);
+	usalp->silent--;
 	if (i < 0)
 		return (-1);
 	tsize = a_to_u_4_byte(buf);
@@ -3992,7 +3992,7 @@ get_dmaspeed(SCSI *scgp, cdr_t *dp)
 	if (tsize < bs)
 		bs = tsize;
 	for (i = 0; i < 100; i++) {
-		if (read_buffer(scgp, buf, bs, 0) < 0)
+		if (read_buffer(usalp, buf, bs, 0) < 0)
 			return (-1);
 	}
 	if (gettimeofday(&fixtime, (struct timezone *)0) < 0) {
@@ -4014,14 +4014,14 @@ get_dmaspeed(SCSI *scgp, cdr_t *dp)
 
 
 static BOOL 
-do_opc(SCSI *scgp, cdr_t *dp, int flags)
+do_opc(SCSI *usalp, cdr_t *dp, int flags)
 {
 	if ((flags & F_DUMMY) == 0 && dp->cdr_opc) {
 		if (debug || lverbose) {
 			printf("Performing OPC...\n");
 			flush();
 		}
-		if (dp->cdr_opc(scgp, NULL, 0, TRUE) < 0) {
+		if (dp->cdr_opc(usalp, NULL, 0, TRUE) < 0) {
 			errmsgno(EX_BAD, "OPC failed.\n");
 			if ((flags & F_FORCE) == 0)
 				return (FALSE);
@@ -4031,11 +4031,11 @@ do_opc(SCSI *scgp, cdr_t *dp, int flags)
 }
 
 static void 
-check_recovery(SCSI *scgp, cdr_t *dp, int flags)
+check_recovery(SCSI *usalp, cdr_t *dp, int flags)
 {
-	if ((*dp->cdr_check_recovery)(scgp, dp)) {
+	if ((*dp->cdr_check_recovery)(usalp, dp)) {
 		errmsgno(EX_BAD, "Recovery needed.\n");
-		unload_media(scgp, dp, flags);
+		unload_media(usalp, dp, flags);
 		comexit(EX_BAD);
 	}
 }
@@ -4044,44 +4044,44 @@ check_recovery(SCSI *scgp, cdr_t *dp, int flags)
 #define	DEBUG
 #endif
 void 
-audioread(SCSI *scgp, cdr_t *dp, int flags)
+audioread(SCSI *usalp, cdr_t *dp, int flags)
 {
 #ifdef	DEBUG
 	int speed = 1;
 	int	oflags = dp->cdr_cmdflags;
 
 	dp->cdr_cmdflags &= ~F_DUMMY;
-	if ((*dp->cdr_set_speed_dummy)(scgp, dp, &speed) < 0)
+	if ((*dp->cdr_set_speed_dummy)(usalp, dp, &speed) < 0)
 		comexit(-1);
 	dp->cdr_dstat->ds_wspeed = speed; /* XXX Remove 'speed' in future */
 	dp->cdr_cmdflags = oflags;
 
-	if ((*dp->cdr_set_secsize)(scgp, 2352) < 0)
+	if ((*dp->cdr_set_secsize)(usalp, 2352) < 0)
 		comexit(-1);
-	scgp->cap->c_bsize = 2352;
+	usalp->cap->c_bsize = 2352;
 
-	read_scsi(scgp, buf, 1000, 1);
+	read_scsi(usalp, buf, 1000, 1);
 	printf("XXX:\n");
 	write(1, buf, 512);
-	unload_media(scgp, dp, flags);
+	unload_media(usalp, dp, flags);
 	comexit(0);
 #endif
 }
 
 static void 
-print_msinfo(SCSI *scgp, cdr_t *dp)
+print_msinfo(SCSI *usalp, cdr_t *dp)
 {
 	long	off;
 	long	fa;
 
-	if ((*dp->cdr_session_offset)(scgp, &off) < 0) {
+	if ((*dp->cdr_session_offset)(usalp, &off) < 0) {
 		errmsgno(EX_BAD, "Cannot read session offset\n");
 		return;
 	}
 	if (lverbose)
 		printf("session offset: %ld\n", off);
 
-	if (dp->cdr_next_wr_address(scgp, (track_t *)0, &fa) < 0) {
+	if (dp->cdr_next_wr_address(usalp, (track_t *)0, &fa) < 0) {
 		errmsgno(EX_BAD, "Cannot read first writable address\n");
 		return;
 	}
@@ -4089,7 +4089,7 @@ print_msinfo(SCSI *scgp, cdr_t *dp)
 }
 
 static void 
-print_toc(SCSI *scgp, cdr_t *dp)
+print_toc(SCSI *usalp, cdr_t *dp)
 {
 	int	first;
 	int	last;
@@ -4101,20 +4101,20 @@ print_toc(SCSI *scgp, cdr_t *dp)
 	int	mode;
 	int	i;
 
-	scgp->silent++;
-	if (read_capacity(scgp) < 0) {
-		scgp->silent--;
+	usalp->silent++;
+	if (read_capacity(usalp) < 0) {
+		usalp->silent--;
 		errmsgno(EX_BAD, "Cannot read capacity\n");
 		return;
 	}
-	scgp->silent--;
-	if (read_tochdr(scgp, dp, &first, &last) < 0) {
+	usalp->silent--;
+	if (read_tochdr(usalp, dp, &first, &last) < 0) {
 		errmsgno(EX_BAD, "Cannot read TOC/PMA\n");
 		return;
 	}
 	printf("first: %d last %d\n", first, last);
 	for (i = first; i <= last; i++) {
-		read_trackinfo(scgp, i, &lba, &msf, &adr, &control, &mode);
+		read_trackinfo(usalp, i, &lba, &msf, &adr, &control, &mode);
 		xlba = -150 +
 			msf.msf_frame + (75*msf.msf_sec) + (75*60*msf.msf_min);
 		if (xlba == lba/4)
@@ -4122,17 +4122,17 @@ print_toc(SCSI *scgp, cdr_t *dp)
 		print_track(i, lba, &msf, adr, control, mode);
 	}
 	i = 0xAA;
-	read_trackinfo(scgp, i, &lba, &msf, &adr, &control, &mode);
+	read_trackinfo(usalp, i, &lba, &msf, &adr, &control, &mode);
 	xlba = -150 +
 		msf.msf_frame + (75*msf.msf_sec) + (75*60*msf.msf_min);
 	if (xlba == lba/4)
 		lba = xlba;
 	print_track(i, lba, &msf, adr, control, mode);
 	if (lverbose > 1) {
-		scgp->silent++;
-		if (read_cdtext(scgp) < 0)
+		usalp->silent++;
+		if (read_cdtext(usalp) < 0)
 			errmsgno(EX_BAD, "No CD-Text or CD-Text unaware drive.\n");
-		scgp->silent++;
+		usalp->silent++;
 	}
 }
 

@@ -204,7 +204,7 @@
 .rtx     Ascii 'TBB6' 'TEXT' "TexEdit - Rich Text (text/richtext)"
 .s3m     Raw   'SNPL' 'S3M ' "PlayerPro - ScreamTracker 3 MOD"
 .scc     Raw   'GKON' 'MSX ' "GraphicConverter - MSX pitcure"
-.scg     Raw   'GKON' 'RIX3' "GraphicConverter - ColoRIX"
+.usal     Raw   'GKON' 'RIX3' "GraphicConverter - ColoRIX"
 .sci     Raw   'GKON' 'RIX3' "GraphicConverter - ColoRIX"
 .scp     Raw   'GKON' 'RIX3' "GraphicConverter - ColoRIX"
 .scr     Raw   'GKON' 'RIX3' "GraphicConverter - ColoRIX"

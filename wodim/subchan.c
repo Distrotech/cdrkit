@@ -42,14 +42,14 @@ static	char sccsid[] =
 #include <utypes.h>
 #include <schily.h>
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #include "wodim.h"
 #include "crc16.h"
 
 int	do_leadin(track_t *trackp);
-int	write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart);
-int	write_leadout(SCSI *scgp, cdr_t *dp, track_t *trackp);
+int	write_leadin(SCSI *usalp, cdr_t *dp, track_t *trackp, int leadinstart);
+int	write_leadout(SCSI *usalp, cdr_t *dp, track_t *trackp);
 void	fillsubch(track_t *trackp, Uchar *sp, int secno, int nsecs);
 void	filltpoint(Uchar *sub, int ctrl_adr, int point, msf_t *mp);
 void	fillttime(Uchar *sub, msf_t *mp);
@@ -139,7 +139,7 @@ do_leadin(track_t *trackp)
 	m.msf_frame = 0;
 	filltpoint(_subq[0], ctrl|0x01, 0xA0, &m);
 	if (lverbose > 1)
-		scg_prbytes("", _subq[0], 12);
+		usal_prbytes("", _subq[0], 12);
 
 	/*
 	 * Fill in point 0xA1 for last track # on disk
@@ -152,7 +152,7 @@ do_leadin(track_t *trackp)
 	m.msf_frame = 0;
 	filltpoint(_subq[1], ctrl|0x01, 0xA1, &m);
 	if (lverbose > 1)
-		scg_prbytes("", _subq[1], 12);
+		usal_prbytes("", _subq[1], 12);
 
 	/*
 	 * Fill in point 0xA2 for lead out start time on disk
@@ -163,7 +163,7 @@ do_leadin(track_t *trackp)
 		ctrl |= TM_ALLOW_COPY << 4;
 	filltpoint(_subq[2], ctrl|0x01, 0xA2, &m);
 	if (lverbose > 1)
-		scg_prbytes("", _subq[2], 12);
+		usal_prbytes("", _subq[2], 12);
 
 	/*
 	 * Fill in track start times.
@@ -175,7 +175,7 @@ do_leadin(track_t *trackp)
 			ctrl |= TM_ALLOW_COPY << 4;
 		filltpoint(_subq[i-1+3], ctrl|0x01, to_bcd(trackp[i].trackno), &m);	/* track n */
 		if (lverbose > 1)
-			scg_prbytes("", _subq[i-1+3], 12);
+			usal_prbytes("", _subq[i-1+3], 12);
 	}
 	return (0);
 }
@@ -187,12 +187,12 @@ do_leadin(track_t *trackp)
  * subchannel frames for the lead-in.
  */
 int
-write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart)
+write_leadin(SCSI *usalp, cdr_t *dp, track_t *trackp, int leadinstart)
 {
 	msf_t	m;
 	int	i;
 	Uint	j;
-	Uchar	*bp = scgp->bufptr;
+	Uchar	*bp = usalp->bufptr;
 	Uchar	*subp;
 	Uchar	*sp;
 	int	secsize;
@@ -249,7 +249,7 @@ write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart)
 		fillttime(_subq[j/3], &m);
 		fillcrc(_subq[j/3], 12);
 		if (xdebug > 2)
-			scg_prbytes("", _subq[j/3], 12);
+			usal_prbytes("", _subq[j/3], 12);
 		if (is_raw16(&trackp[0])) {
 			qpto16(subp, _subq[j/3], 0);
 		} else {
@@ -273,7 +273,7 @@ write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart)
 			}
 			encsectors(trackp, bp, startsec, secspt);
 
-			amount = write_secs(scgp, dp,
+			amount = write_secs(usalp, dp,
 					(char *)bp, startsec, bytespt, secspt, FALSE);
 			if (amount < 0) {
 				printf("write leadin data: error after %ld bytes\n",
@@ -296,7 +296,7 @@ write_leadin(SCSI *scgp, cdr_t *dp, track_t *trackp, int leadinstart)
  * Write Track 0xAA (lead-out)
  */
 int
-write_leadout(SCSI *scgp, cdr_t *dp, track_t *trackp)
+write_leadout(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	int	tracks = trackp->tracks;
 	msf_t	m;
@@ -304,7 +304,7 @@ write_leadout(SCSI *scgp, cdr_t *dp, track_t *trackp)
 	int	ctrl;
 	int	i;
 	int	j;
-	Uchar	*bp = scgp->bufptr;
+	Uchar	*bp = usalp->bufptr;
 	Uchar	*subp;
 	Uchar	*sp;
 	int	secsize;
@@ -359,7 +359,7 @@ write_leadout(SCSI *scgp, cdr_t *dp, track_t *trackp)
 		if (j < 150)
 			p = FALSE;
 		if (xdebug > 2)
-			scg_prbytes(p?"P":" ", sub, 12);
+			usal_prbytes(p?"P":" ", sub, 12);
 
 		if (is_raw16(&trackp[0])) {
 			qpto16(subp, sub, p);
@@ -375,7 +375,7 @@ write_leadout(SCSI *scgp, cdr_t *dp, track_t *trackp)
 			}
 			encsectors(trackp, bp, startsec, secspt);
 
-			amount = write_secs(scgp, dp,
+			amount = write_secs(usalp, dp,
 					(char *)bp, startsec, bytespt, secspt, FALSE);
 			if (amount < 0) {
 				printf("write leadout data: error after %ld bytes\n",
@@ -546,7 +546,7 @@ static	Uchar	lastindex = 255;
 		}
 		fillcrc(sub, 12);
 		if (xdebug > 2)
-			scg_prbytes(curindex == 0 ? "P":" ", sub, 12);
+			usal_prbytes(curindex == 0 ? "P":" ", sub, 12);
 		if (is_raw16(trackp)) {
 			qpto16(sup, sub, curindex == 0);
 		} else {

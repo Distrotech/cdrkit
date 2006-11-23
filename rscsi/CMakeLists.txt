@@ -3,7 +3,7 @@ INCLUDE_DIRECTORIES(../include ../wodim ${CMAKE_BINARY_DIR} )
 INCLUDE(../include/AddScgBits.cmake)
 INCLUDE(../include/AddSchilyBits.cmake)
 
-LINK_DIRECTORIES(../libschily ../libscg ../libdeflt)
+LINK_DIRECTORIES(../libschily ../libusal ../libdeflt)
 ADD_EXECUTABLE (rscsi rscsi.c)
 #SET_SOURCE_FILES_PROPERTIES(rscsi.c )
 TARGET_LINK_LIBRARIES(rscsi ${EXTRA_LIBS} deflt)

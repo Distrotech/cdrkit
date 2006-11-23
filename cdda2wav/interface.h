@@ -102,22 +102,22 @@ typedef struct subq_track_isrc {
 struct TOC;
 
 /* cdrom access function pointer */
-extern void     (*EnableCdda)(SCSI *scgp, int Switch, unsigned uSectorsize);
-extern unsigned (*doReadToc)(SCSI *scgp);
-extern void	(*ReadTocText)(SCSI *scgp);
-extern unsigned (*ReadLastAudio)(SCSI *scgp);
-extern int      (*ReadCdRom)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+extern void     (*EnableCdda)(SCSI *usalp, int Switch, unsigned uSectorsize);
+extern unsigned (*doReadToc)(SCSI *usalp);
+extern void	(*ReadTocText)(SCSI *usalp);
+extern unsigned (*ReadLastAudio)(SCSI *usalp);
+extern int      (*ReadCdRom)(SCSI *usalp, UINT4 *p, unsigned lSector, 
 									  unsigned SectorBurstVal);
-extern int      (*ReadCdRomSub)(SCSI *scgp, UINT4 *p, unsigned lSector, 
+extern int      (*ReadCdRomSub)(SCSI *usalp, UINT4 *p, unsigned lSector, 
 										  unsigned SectorBurstVal);
-extern int      (*ReadCdRomData)(SCSI *scgp, unsigned char *p, unsigned lSector,
+extern int      (*ReadCdRomData)(SCSI *usalp, unsigned char *p, unsigned lSector,
 											unsigned SectorBurstVal);
-extern subq_chnl *(*ReadSubQ)(SCSI *scgp, unsigned char sq_format, 
+extern subq_chnl *(*ReadSubQ)(SCSI *usalp, unsigned char sq_format, 
 										unsigned char track);
-extern subq_chnl *(*ReadSubChannels)(SCSI *scgp, unsigned lSector);
-extern void     (*SelectSpeed)(SCSI *scgp, unsigned speed);
-extern int	(*Play_at)(SCSI *scgp, unsigned from_sector, unsigned sectors);
-extern int	(*StopPlay)(SCSI *scgp);
+extern subq_chnl *(*ReadSubChannels)(SCSI *usalp, unsigned lSector);
+extern void     (*SelectSpeed)(SCSI *usalp, unsigned speed);
+extern int	(*Play_at)(SCSI *usalp, unsigned from_sector, unsigned sectors);
+extern int	(*StopPlay)(SCSI *usalp);
 extern void	(*trash_cache)(UINT4 *p, unsigned lSector, unsigned SectorBurstVal);
 
 SCSI    *get_scsi_p(void);

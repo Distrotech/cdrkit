@@ -64,162 +64,162 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "scsimmc.h"
 #include "wodim.h"
 
 #define	strbeg(s1, s2)	(strstr((s2), (s1)) == (s2))
 
-BOOL	unit_ready(SCSI *scgp);
-BOOL	wait_unit_ready(SCSI *scgp, int secs);
-BOOL	scsi_in_progress(SCSI *scgp);
-BOOL	cdr_underrun(SCSI *scgp);
-int	test_unit_ready(SCSI *scgp);
-int	rezero_unit(SCSI *scgp);
-int	request_sense(SCSI *scgp);
-int	request_sense_b(SCSI *scgp, caddr_t bp, int cnt);
-int	inquiry(SCSI *scgp, caddr_t, int);
-int	read_capacity(SCSI *scgp);
-void	print_capacity(SCSI *scgp, FILE *f);
-int	scsi_load_unload(SCSI *scgp, int);
-int	scsi_prevent_removal(SCSI *scgp, int);
-int	scsi_start_stop_unit(SCSI *scgp, int, int, BOOL immed);
-int	scsi_set_speed(SCSI *scgp, int readspeed, int writespeed, int rotctl);
-int	scsi_get_speed(SCSI *scgp, int *readspeedp, int *writespeedp);
-int	qic02(SCSI *scgp, int);
-int	write_xscsi(SCSI *scgp, caddr_t, long, long, int);
-int	write_xg0(SCSI *scgp, caddr_t, long, long, int);
-int	write_xg1(SCSI *scgp, caddr_t, long, long, int);
-int	write_xg5(SCSI *scgp, caddr_t, long, long, int);
-int	seek_scsi(SCSI *scgp, long addr);
-int	seek_g0(SCSI *scgp, long addr);
-int	seek_g1(SCSI *scgp, long addr);
-int	scsi_flush_cache(SCSI *scgp, BOOL immed);
-int	read_buffer(SCSI *scgp, caddr_t bp, int cnt, int mode);
-int	write_buffer(SCSI *scgp, char *buffer, long length, int mode, 
+BOOL	unit_ready(SCSI *usalp);
+BOOL	wait_unit_ready(SCSI *usalp, int secs);
+BOOL	scsi_in_progress(SCSI *usalp);
+BOOL	cdr_underrun(SCSI *usalp);
+int	test_unit_ready(SCSI *usalp);
+int	rezero_unit(SCSI *usalp);
+int	request_sense(SCSI *usalp);
+int	request_sense_b(SCSI *usalp, caddr_t bp, int cnt);
+int	inquiry(SCSI *usalp, caddr_t, int);
+int	read_capacity(SCSI *usalp);
+void	print_capacity(SCSI *usalp, FILE *f);
+int	scsi_load_unload(SCSI *usalp, int);
+int	scsi_prevent_removal(SCSI *usalp, int);
+int	scsi_start_stop_unit(SCSI *usalp, int, int, BOOL immed);
+int	scsi_set_speed(SCSI *usalp, int readspeed, int writespeed, int rotctl);
+int	scsi_get_speed(SCSI *usalp, int *readspeedp, int *writespeedp);
+int	qic02(SCSI *usalp, int);
+int	write_xscsi(SCSI *usalp, caddr_t, long, long, int);
+int	write_xg0(SCSI *usalp, caddr_t, long, long, int);
+int	write_xg1(SCSI *usalp, caddr_t, long, long, int);
+int	write_xg5(SCSI *usalp, caddr_t, long, long, int);
+int	seek_scsi(SCSI *usalp, long addr);
+int	seek_g0(SCSI *usalp, long addr);
+int	seek_g1(SCSI *usalp, long addr);
+int	scsi_flush_cache(SCSI *usalp, BOOL immed);
+int	read_buffer(SCSI *usalp, caddr_t bp, int cnt, int mode);
+int	write_buffer(SCSI *usalp, char *buffer, long length, int mode, 
 						 int bufferid, long offset);
-int	read_subchannel(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, 
+int	read_subchannel(SCSI *usalp, caddr_t bp, int track, int cnt, int msf, 
 							 int subq, int fmt);
-int	read_toc(SCSI *scgp, caddr_t, int, int, int, int);
-int	read_toc_philips(SCSI *scgp, caddr_t, int, int, int, int);
-int	read_header(SCSI *scgp, caddr_t, long, int, int);
-int	read_disk_info(SCSI *scgp, caddr_t, int);
-int	read_track_info(SCSI *scgp, caddr_t, int type, int addr, int cnt);
-int	read_rzone_info(SCSI *scgp, caddr_t bp, int cnt);
-int	reserve_tr_rzone(SCSI *scgp, long size);
-int	read_dvd_structure(SCSI *scgp, caddr_t bp, int cnt, int addr, int layer, 
+int	read_toc(SCSI *usalp, caddr_t, int, int, int, int);
+int	read_toc_philips(SCSI *usalp, caddr_t, int, int, int, int);
+int	read_header(SCSI *usalp, caddr_t, long, int, int);
+int	read_disk_info(SCSI *usalp, caddr_t, int);
+int	read_track_info(SCSI *usalp, caddr_t, int type, int addr, int cnt);
+int	read_rzone_info(SCSI *usalp, caddr_t bp, int cnt);
+int	reserve_tr_rzone(SCSI *usalp, long size);
+int	read_dvd_structure(SCSI *usalp, caddr_t bp, int cnt, int addr, int layer, 
 								 int fmt);
-int	send_dvd_structure(SCSI *scgp, caddr_t bp, int cnt, int layer, int fmt);
-int	send_opc(SCSI *scgp, caddr_t, int cnt, int doopc);
-int	read_track_info_philips(SCSI *scgp, caddr_t, int, int);
-int	scsi_close_tr_session(SCSI *scgp, int type, int track, BOOL immed);
-int	read_master_cue(SCSI *scgp, caddr_t bp, int sheet, int cnt);
-int	send_cue_sheet(SCSI *scgp, caddr_t bp, long size);
-int	read_buff_cap(SCSI *scgp, long *, long *);
-int	scsi_blank(SCSI *scgp, long addr, int blanktype, BOOL immed);
-int	scsi_format(SCSI *scgp, caddr_t addr, int size, BOOL background);
-int	scsi_set_streaming(SCSI *scgp, caddr_t addr, int size);
-BOOL	allow_atapi(SCSI *scgp, BOOL new);
-int	mode_select(SCSI *scgp, Uchar *, int, int, int);
-int	mode_sense(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf);
-int	mode_select_sg0(SCSI *scgp, Uchar *, int, int, int);
-int	mode_sense_sg0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf);
-int	mode_select_g0(SCSI *scgp, Uchar *, int, int, int);
-int	mode_select_g1(SCSI *scgp, Uchar *, int, int, int);
-int	mode_sense_g0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf);
-int	mode_sense_g1(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf);
-int	read_tochdr(SCSI *scgp, cdr_t *, int *, int *);
-int	read_cdtext(SCSI *scgp);
-int	read_trackinfo(SCSI *scgp, int, long *, struct msf *, int *, int *, 
+int	send_dvd_structure(SCSI *usalp, caddr_t bp, int cnt, int layer, int fmt);
+int	send_opc(SCSI *usalp, caddr_t, int cnt, int doopc);
+int	read_track_info_philips(SCSI *usalp, caddr_t, int, int);
+int	scsi_close_tr_session(SCSI *usalp, int type, int track, BOOL immed);
+int	read_master_cue(SCSI *usalp, caddr_t bp, int sheet, int cnt);
+int	send_cue_sheet(SCSI *usalp, caddr_t bp, long size);
+int	read_buff_cap(SCSI *usalp, long *, long *);
+int	scsi_blank(SCSI *usalp, long addr, int blanktype, BOOL immed);
+int	scsi_format(SCSI *usalp, caddr_t addr, int size, BOOL background);
+int	scsi_set_streaming(SCSI *usalp, caddr_t addr, int size);
+BOOL	allow_atapi(SCSI *usalp, BOOL new);
+int	mode_select(SCSI *usalp, Uchar *, int, int, int);
+int	mode_sense(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf);
+int	mode_select_sg0(SCSI *usalp, Uchar *, int, int, int);
+int	mode_sense_sg0(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf);
+int	mode_select_g0(SCSI *usalp, Uchar *, int, int, int);
+int	mode_select_g1(SCSI *usalp, Uchar *, int, int, int);
+int	mode_sense_g0(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf);
+int	mode_sense_g1(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf);
+int	read_tochdr(SCSI *usalp, cdr_t *, int *, int *);
+int	read_cdtext(SCSI *usalp);
+int	read_trackinfo(SCSI *usalp, int, long *, struct msf *, int *, int *, 
 							int *);
-int	read_B0(SCSI *scgp, BOOL isbcd, long *b0p, long *lop);
-int	read_session_offset(SCSI *scgp, long *);
-int	read_session_offset_philips(SCSI *scgp, long *);
-int	sense_secsize(SCSI *scgp, int current);
-int	select_secsize(SCSI *scgp, int);
-BOOL	is_cddrive(SCSI *scgp);
-BOOL	is_unknown_dev(SCSI *scgp);
-int	read_scsi(SCSI *scgp, caddr_t, long, int);
-int	read_g0(SCSI *scgp, caddr_t, long, int);
-int	read_g1(SCSI *scgp, caddr_t, long, int);
-BOOL	getdev(SCSI *scgp, BOOL);
-void	printinq(SCSI *scgp, FILE *f);
-void	printdev(SCSI *scgp);
-BOOL	do_inquiry(SCSI *scgp, BOOL);
-BOOL	recovery_needed(SCSI *scgp, cdr_t *);
-int	scsi_load(SCSI *scgp, cdr_t *);
-int	scsi_unload(SCSI *scgp, cdr_t *);
-int	scsi_cdr_write(SCSI *scgp, caddr_t bp, long sectaddr, long size, 
+int	read_B0(SCSI *usalp, BOOL isbcd, long *b0p, long *lop);
+int	read_session_offset(SCSI *usalp, long *);
+int	read_session_offset_philips(SCSI *usalp, long *);
+int	sense_secsize(SCSI *usalp, int current);
+int	select_secsize(SCSI *usalp, int);
+BOOL	is_cddrive(SCSI *usalp);
+BOOL	is_unknown_dev(SCSI *usalp);
+int	read_scsi(SCSI *usalp, caddr_t, long, int);
+int	read_g0(SCSI *usalp, caddr_t, long, int);
+int	read_g1(SCSI *usalp, caddr_t, long, int);
+BOOL	getdev(SCSI *usalp, BOOL);
+void	printinq(SCSI *usalp, FILE *f);
+void	printdev(SCSI *usalp);
+BOOL	do_inquiry(SCSI *usalp, BOOL);
+BOOL	recovery_needed(SCSI *usalp, cdr_t *);
+int	scsi_load(SCSI *usalp, cdr_t *);
+int	scsi_unload(SCSI *usalp, cdr_t *);
+int	scsi_cdr_write(SCSI *usalp, caddr_t bp, long sectaddr, long size, 
 							int blocks, BOOL islast);
-struct cd_mode_page_2A * mmc_cap(SCSI *scgp, Uchar *modep);
+struct cd_mode_page_2A * mmc_cap(SCSI *usalp, Uchar *modep);
 void	mmc_getval(struct cd_mode_page_2A *mp, BOOL *cdrrp, BOOL *cdwrp, 
 					  BOOL *cdrrwp, BOOL *cdwrwp, BOOL *dvdp, BOOL *dvdwp);
-BOOL	is_mmc(SCSI *scgp, BOOL *cdwp, BOOL *dvdwp);
-BOOL	mmc_check(SCSI *scgp, BOOL *cdrrp, BOOL *cdwrp, BOOL *cdrrwp, 
+BOOL	is_mmc(SCSI *usalp, BOOL *cdwp, BOOL *dvdwp);
+BOOL	mmc_check(SCSI *usalp, BOOL *cdrrp, BOOL *cdwrp, BOOL *cdrrwp, 
 					 BOOL *cdwrwp, BOOL *dvdp, BOOL *dvdwp);
 static	void	print_speed(char *fmt, int val);
-void	print_capabilities(SCSI *scgp);
+void	print_capabilities(SCSI *usalp);
 
 BOOL
-unit_ready(SCSI *scgp)
+unit_ready(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
-	if (test_unit_ready(scgp) >= 0)		/* alles OK */
+	if (test_unit_ready(usalp) >= 0)		/* alles OK */
 		return (TRUE);
 	else if (scmd->error >= SCG_FATAL)	/* nicht selektierbar */
 		return (FALSE);
 
-	if (scg_sense_key(scgp) == SC_UNIT_ATTENTION) {
-		if (test_unit_ready(scgp) >= 0)	/* alles OK */
+	if (usal_sense_key(usalp) == SC_UNIT_ATTENTION) {
+		if (test_unit_ready(usalp) >= 0)	/* alles OK */
 			return (TRUE);
 	}
-	if ((scg_cmd_status(scgp) & ST_BUSY) != 0) {
+	if ((usal_cmd_status(usalp) & ST_BUSY) != 0) {
 		/*
 		 * Busy/reservation_conflict
 		 */
 		usleep(500000);
-		if (test_unit_ready(scgp) >= 0)	/* alles OK */
+		if (test_unit_ready(usalp) >= 0)	/* alles OK */
 			return (TRUE);
 	}
-	if (scg_sense_key(scgp) == -1) {	/* non extended Sense */
-		if (scg_sense_code(scgp) == 4)	/* NOT_READY */
+	if (usal_sense_key(usalp) == -1) {	/* non extended Sense */
+		if (usal_sense_code(usalp) == 4)	/* NOT_READY */
 			return (FALSE);
 		return (TRUE);
 	}
 						/* FALSE wenn NOT_READY */
-	return (scg_sense_key(scgp) != SC_NOT_READY);
+	return (usal_sense_key(usalp) != SC_NOT_READY);
 }
 
 BOOL
-wait_unit_ready(SCSI *scgp, int secs)
+wait_unit_ready(SCSI *usalp, int secs)
 {
 	int	i;
 	int	c;
 	int	k;
 	int	ret;
 
-	scgp->silent++;
-	ret = test_unit_ready(scgp);		/* eat up unit attention */
+	usalp->silent++;
+	ret = test_unit_ready(usalp);		/* eat up unit attention */
 	if (ret < 0)
-		ret = test_unit_ready(scgp);	/* got power on condition? */
-	scgp->silent--;
+		ret = test_unit_ready(usalp);	/* got power on condition? */
+	usalp->silent--;
 
 	if (ret >= 0)				/* success that's enough */
 		return (TRUE);
 
-	scgp->silent++;
-	for (i = 0; i < secs && (ret = test_unit_ready(scgp)) < 0; i++) {
-		if (scgp->scmd->scb.busy != 0) {
+	usalp->silent++;
+	for (i = 0; i < secs && (ret = test_unit_ready(usalp)) < 0; i++) {
+		if (usalp->scmd->scb.busy != 0) {
 			sleep(1);
 			continue;
 		}
-		c = scg_sense_code(scgp);
-		k = scg_sense_key(scgp);
+		c = usal_sense_code(usalp);
+		k = usal_sense_key(usalp);
 		/*
 		 * Abort quickly if it does not make sense to wait.
 		 * 0x30 == Cannot read medium
@@ -227,51 +227,51 @@ wait_unit_ready(SCSI *scgp, int secs)
 		 */
 		if ((k == SC_NOT_READY && (c == 0x3A || c == 0x30)) ||
 		    (k == SC_MEDIUM_ERROR)) {
-			if (scgp->silent <= 1)
-				scg_printerr(scgp);
-			scgp->silent--;
+			if (usalp->silent <= 1)
+				usal_printerr(usalp);
+			usalp->silent--;
 			return (FALSE);
 		}
 		sleep(1);
 	}
-	scgp->silent--;
+	usalp->silent--;
 	if (ret < 0)
 		return (FALSE);
 	return (TRUE);
 }
 
 BOOL
-scsi_in_progress(SCSI *scgp)
+scsi_in_progress(SCSI *usalp)
 {
-	if (scg_sense_key(scgp) == SC_NOT_READY &&
+	if (usal_sense_key(usalp) == SC_NOT_READY &&
 		/*
 		 * Logigal unit not ready operation/long_write in progress
 		 */
-	    scg_sense_code(scgp) == 0x04 &&
-	    (scg_sense_qual(scgp) == 0x04 || /* CyberDr. "format in progress"*/
-	    scg_sense_qual(scgp) == 0x07 || /* "operation in progress"	    */
-	    scg_sense_qual(scgp) == 0x08)) { /* "long write in progress"    */
+	    usal_sense_code(usalp) == 0x04 &&
+	    (usal_sense_qual(usalp) == 0x04 || /* CyberDr. "format in progress"*/
+	    usal_sense_qual(usalp) == 0x07 || /* "operation in progress"	    */
+	    usal_sense_qual(usalp) == 0x08)) { /* "long write in progress"    */
 		return (TRUE);
 	} else {
-		if (scgp->silent <= 1)
-			scg_printerr(scgp);
+		if (usalp->silent <= 1)
+			usal_printerr(usalp);
 	}
 	return (FALSE);
 }
 
 BOOL
-cdr_underrun(SCSI *scgp)
+cdr_underrun(SCSI *usalp)
 {
-	if ((scg_sense_key(scgp) != SC_ILLEGAL_REQUEST &&
-	    scg_sense_key(scgp) != SC_MEDIUM_ERROR))
+	if ((usal_sense_key(usalp) != SC_ILLEGAL_REQUEST &&
+	    usal_sense_key(usalp) != SC_MEDIUM_ERROR))
 		return (FALSE);
 
-	if ((scg_sense_code(scgp) == 0x21 &&
-	    (scg_sense_qual(scgp) == 0x00 ||	/* logical block address out of range */
-	    scg_sense_qual(scgp) == 0x02)) ||	/* invalid address for write */
+	if ((usal_sense_code(usalp) == 0x21 &&
+	    (usal_sense_qual(usalp) == 0x00 ||	/* logical block address out of range */
+	    usal_sense_qual(usalp) == 0x02)) ||	/* invalid address for write */
 
-	    (scg_sense_code(scgp) == 0x0C &&
-	    scg_sense_qual(scgp) == 0x09)) {	/* write error - loss of streaming */
+	    (usal_sense_code(usalp) == 0x0C &&
+	    usal_sense_qual(usalp) == 0x09)) {	/* write error - loss of streaming */
 		return (TRUE);
 	}
 	/*
@@ -283,28 +283,28 @@ cdr_underrun(SCSI *scgp)
 }
 
 int
-test_unit_ready(SCSI *scgp)
+test_unit_ready(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
 	scmd->size = 0;
-	scmd->flags = SCG_DISRE_ENA | (scgp->silent ? SCG_SILENT:0);
+	scmd->flags = SCG_DISRE_ENA | (usalp->silent ? SCG_SILENT:0);
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_TEST_UNIT_READY;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "test unit ready";
+	usalp->cmdname = "test unit ready";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-rezero_unit(SCSI *scgp)
+rezero_unit(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -313,18 +313,18 @@ rezero_unit(SCSI *scgp)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_REZERO_UNIT;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 
-	scgp->cmdname = "rezero unit";
+	usalp->cmdname = "rezero unit";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-request_sense(SCSI *scgp)
+request_sense(SCSI *usalp)
 {
 		char	sensebuf[CCS_SENSE_LEN];
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -334,21 +334,21 @@ request_sense(SCSI *scgp)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_REQUEST_SENSE;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.count = CCS_SENSE_LEN;
 
-	scgp->cmdname = "request_sense";
+	usalp->cmdname = "request_sense";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	scg_prsense((Uchar *)sensebuf, CCS_SENSE_LEN - scg_getresid(scgp));
+	usal_prsense((Uchar *)sensebuf, CCS_SENSE_LEN - usal_getresid(usalp));
 	return (0);
 }
 
 int
-request_sense_b(SCSI *scgp, caddr_t bp, int cnt)
+request_sense_b(SCSI *usalp, caddr_t bp, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -358,20 +358,20 @@ request_sense_b(SCSI *scgp, caddr_t bp, int cnt)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_REQUEST_SENSE;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.count = cnt;
 
-	scgp->cmdname = "request_sense";
+	usalp->cmdname = "request_sense";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-inquiry(SCSI *scgp, caddr_t bp, int cnt)
+inquiry(SCSI *usalp, caddr_t bp, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes(bp, cnt, '\0');
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -381,36 +381,36 @@ inquiry(SCSI *scgp, caddr_t bp, int cnt)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_INQUIRY;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.count = cnt;
 
-	scgp->cmdname = "inquiry";
+	usalp->cmdname = "inquiry";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	if (scgp->verbose)
-		scg_prbytes("Inquiry Data   :", (Uchar *)bp, cnt - scg_getresid(scgp));
+	if (usalp->verbose)
+		usal_prbytes("Inquiry Data   :", (Uchar *)bp, cnt - usal_getresid(usalp));
 	return (0);
 }
 
 int
-read_capacity(SCSI *scgp)
+read_capacity(SCSI *usalp)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
-	scmd->addr = (caddr_t)scgp->cap;
+	scmd->addr = (caddr_t)usalp->cap;
 	scmd->size = sizeof (struct scsi_capacity);
 	scmd->flags = SCG_RECV_DATA|SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x25;	/* Read Capacity */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdblen(&scmd->cdb.g1_cdb, 0); /* Full Media */
 
-	scgp->cmdname = "read capacity";
+	usalp->cmdname = "read capacity";
 
-	if (scg_cmd(scgp) < 0) {
+	if (usal_cmd(usalp) < 0) {
 		return (-1);
 	} else {
 		long	cbsize;
@@ -420,98 +420,98 @@ read_capacity(SCSI *scgp)
 		 * c_bsize & c_baddr are signed Int32_t
 		 * so we use signed int conversion here.
 		 */
-		cbsize = a_to_4_byte(&scgp->cap->c_bsize);
-		cbaddr = a_to_4_byte(&scgp->cap->c_baddr);
-		scgp->cap->c_bsize = cbsize;
-		scgp->cap->c_baddr = cbaddr;
+		cbsize = a_to_4_byte(&usalp->cap->c_bsize);
+		cbaddr = a_to_4_byte(&usalp->cap->c_baddr);
+		usalp->cap->c_bsize = cbsize;
+		usalp->cap->c_baddr = cbaddr;
 	}
 	return (0);
 }
 
 void
-print_capacity(SCSI *scgp, FILE *f)
+print_capacity(SCSI *usalp, FILE *f)
 {
 	long	kb;
 	long	mb;
 	long	prmb;
 	double	dkb;
 
-	dkb =  (scgp->cap->c_baddr+1.0) * (scgp->cap->c_bsize/1024.0);
+	dkb =  (usalp->cap->c_baddr+1.0) * (usalp->cap->c_bsize/1024.0);
 	kb = dkb;
 	mb = dkb / 1024.0;
 	prmb = dkb / 1000.0 * 1.024;
 	fprintf(f, "Capacity: %ld Blocks = %ld kBytes = %ld MBytes = %ld prMB\n",
-		(long)scgp->cap->c_baddr+1, kb, mb, prmb);
-	fprintf(f, "Sectorsize: %ld Bytes\n", (long)scgp->cap->c_bsize);
+		(long)usalp->cap->c_baddr+1, kb, mb, prmb);
+	fprintf(f, "Sectorsize: %ld Bytes\n", (long)usalp->cap->c_bsize);
 }
 
 int
-scsi_load_unload(SCSI *scgp, int load)
+scsi_load_unload(SCSI *usalp, int load)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G5_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g5_cdb.cmd = 0xA6;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g5_cdb.addr[1] = load?3:2;
 	scmd->cdb.g5_cdb.count[2] = 0; /* slot # */
 
-	scgp->cmdname = "medium load/unload";
+	usalp->cmdname = "medium load/unload";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-scsi_prevent_removal(SCSI *scgp, int prevent)
+scsi_prevent_removal(SCSI *usalp, int prevent)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = 0x1E;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.count = prevent & 1;
 
-	scgp->cmdname = "prevent/allow medium removal";
+	usalp->cmdname = "prevent/allow medium removal";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 
 int
-scsi_start_stop_unit(SCSI *scgp, int flg, int loej, BOOL immed)
+scsi_start_stop_unit(SCSI *usalp, int flg, int loej, BOOL immed)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = 0x1B;	/* Start Stop Unit */
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.count = (flg ? 1:0) | (loej ? 2:0);
 
 	if (immed)
 		scmd->cdb.cmd_cdb[1] |= 0x01;
 
-	scgp->cmdname = "start/stop unit";
+	usalp->cmdname = "start/stop unit";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-scsi_set_streaming(SCSI *scgp, caddr_t perf_desc, int size)
+scsi_set_streaming(SCSI *usalp, caddr_t perf_desc, int size)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = perf_desc;
@@ -523,25 +523,25 @@ scsi_set_streaming(SCSI *scgp, caddr_t perf_desc, int size)
 	scmd->cdb.cmd_cdb[11] = 0;
 	scmd->cdb.cmd_cdb[10] = size;
 
-	scgp->cmdname = "set streaming";
+	usalp->cmdname = "set streaming";
 
 	printf("scsi_set_streaming\n");
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
     
 int
-scsi_set_speed(SCSI *scgp, int readspeed, int writespeed, int rotctl)
+scsi_set_speed(SCSI *usalp, int readspeed, int writespeed, int rotctl)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G5_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g5_cdb.cmd = 0xBB;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 
 	if (readspeed < 0)
 		i_to_2_byte(&scmd->cdb.g5_cdb.addr[0], 0xFFFF);
@@ -554,23 +554,23 @@ scsi_set_speed(SCSI *scgp, int readspeed, int writespeed, int rotctl)
 
 	scmd->cdb.cmd_cdb[1] |= rotctl & 0x03;
 
-	scgp->cmdname = "set cd speed";
+	usalp->cmdname = "set cd speed";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-scsi_get_speed(SCSI *scgp, int *readspeedp, int *writespeedp)
+scsi_get_speed(SCSI *usalp, int *readspeedp, int *writespeedp)
 {
 	struct	cd_mode_page_2A *mp;
 	Uchar	m[256];
 	int	val;
 
-	scgp->silent++;
-	mp = mmc_cap(scgp, m); /* Get MMC capabilities in allocated mp */
-	scgp->silent--;
+	usalp->silent++;
+	mp = mmc_cap(usalp, m); /* Get MMC capabilities in allocated mp */
+	usalp->silent--;
 	if (mp == NULL)
 		return (-1);	/* Pre SCSI-3/mmc drive		*/
 
@@ -590,9 +590,9 @@ scsi_get_speed(SCSI *scgp, int *readspeedp, int *writespeedp)
 
 
 int
-qic02(SCSI *scgp, int cmd)
+qic02(SCSI *usalp, int cmd)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -601,32 +601,32 @@ qic02(SCSI *scgp, int cmd)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = DEF_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = 0x0D;	/* qic02 Sysgen SC4000 */
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.mid_addr = cmd;
 
-	scgp->cmdname = "qic 02";
-	return (scg_cmd(scgp));
+	usalp->cmdname = "qic 02";
+	return (usal_cmd(usalp));
 }
 
 #define	G0_MAXADDR	0x1FFFFFL
 
 int 
-write_xscsi(SCSI *scgp, caddr_t bp, long addr, long size, int cnt)
+write_xscsi(SCSI *usalp, caddr_t bp, long addr, long size, int cnt)
 {
 	if (addr <= G0_MAXADDR)
-		return (write_xg0(scgp, bp, addr, size, cnt));
+		return (write_xg0(usalp, bp, addr, size, cnt));
 	else
-		return (write_xg1(scgp, bp, addr, size, cnt));
+		return (write_xg1(usalp, bp, addr, size, cnt));
 }
 
 int 
-write_xg0(SCSI *scgp, 
+write_xg0(SCSI *usalp, 
           caddr_t bp    /* address of buffer */, 
           long addr     /* disk address (sector) to put */, 
           long size     /* number of bytes to transfer */, 
           int cnt       /* sectorcount */)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -636,25 +636,25 @@ write_xg0(SCSI *scgp,
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_WRITE;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	g0_cdbaddr(&scmd->cdb.g0_cdb, addr);
 	scmd->cdb.g0_cdb.count = cnt;
 
-	scgp->cmdname = "write_g0";
+	usalp->cmdname = "write_g0";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	return (size - scg_getresid(scgp));
+	return (size - usal_getresid(usalp));
 }
 
 int 
-write_xg1(SCSI *scgp, 
+write_xg1(SCSI *usalp, 
           caddr_t bp    /* address of buffer */, 
           long addr     /* disk address (sector) to put */, 
           long size     /* number of bytes to transfer */, 
           int cnt       /* sectorcount */)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -664,25 +664,25 @@ write_xg1(SCSI *scgp,
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = SC_EWRITE;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, addr);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "write_g1";
+	usalp->cmdname = "write_g1";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	return (size - scg_getresid(scgp));
+	return (size - usal_getresid(usalp));
 }
 
 int 
-write_xg5(SCSI *scgp,
+write_xg5(SCSI *usalp,
           caddr_t bp    /* address of buffer */, 
           long addr     /* disk address (sector) to put */, 
           long size     /* number of bytes to transfer */, 
           int cnt       /* sectorcount */)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -692,66 +692,66 @@ write_xg5(SCSI *scgp,
 	scmd->cdb_len = SC_G5_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g5_cdb.cmd = 0xAA;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	g5_cdbaddr(&scmd->cdb.g5_cdb, addr);
 	g5_cdblen(&scmd->cdb.g5_cdb, cnt);
 
-	scgp->cmdname = "write_g5";
+	usalp->cmdname = "write_g5";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	return (size - scg_getresid(scgp));
+	return (size - usal_getresid(usalp));
 }
 
 int
-seek_scsi(SCSI *scgp, long addr)
+seek_scsi(SCSI *usalp, long addr)
 {
 	if (addr <= G0_MAXADDR)
-		return (seek_g0(scgp, addr));
+		return (seek_g0(usalp, addr));
 	else
-		return (seek_g1(scgp, addr));
+		return (seek_g1(usalp, addr));
 }
 
 int
-seek_g0(SCSI *scgp, long addr)
+seek_g0(SCSI *usalp, long addr)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = 0x0B;	/* Seek */
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	g0_cdbaddr(&scmd->cdb.g0_cdb, addr);
 
-	scgp->cmdname = "seek_g0";
+	usalp->cmdname = "seek_g0";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-seek_g1(SCSI *scgp, long addr)
+seek_g1(SCSI *usalp, long addr)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x2B;	/* Seek G1 */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, addr);
 
-	scgp->cmdname = "seek_g1";
+	usalp->cmdname = "seek_g1";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-scsi_flush_cache(SCSI *scgp, BOOL immed)
+scsi_flush_cache(SCSI *usalp, BOOL immed)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
@@ -759,22 +759,22 @@ scsi_flush_cache(SCSI *scgp, BOOL immed)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 2 * 60;		/* Max: sizeof (CDR-cache)/150KB/s */
 	scmd->cdb.g1_cdb.cmd = 0x35;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
 	if (immed)
 		scmd->cdb.cmd_cdb[1] |= 0x02;
 
-	scgp->cmdname = "flush cache";
+	usalp->cmdname = "flush cache";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_buffer(SCSI *scgp, caddr_t bp, int cnt, int mode)
+read_buffer(SCSI *usalp, caddr_t bp, int cnt, int mode)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -783,20 +783,20 @@ read_buffer(SCSI *scgp, caddr_t bp, int cnt, int mode)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x3C;	/* Read Buffer */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.cmd_cdb[1] |= (mode & 7);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read buffer";
+	usalp->cmdname = "read buffer";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-write_buffer(SCSI *scgp, char *buffer, long length, int mode, int bufferid, 
+write_buffer(SCSI *usalp, char *buffer, long length, int mode, int bufferid, 
              long offset)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 	char			*cdb;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
@@ -818,19 +818,19 @@ write_buffer(SCSI *scgp, char *buffer, long length, int mode, int bufferid,
 	cdb[7] = (length >> 8) & 0xff;
 	cdb[8] = length & 0xff;
 
-	scgp->cmdname = "write_buffer";
+	usalp->cmdname = "write_buffer";
 
-	if (scg_cmd(scgp) >= 0)
+	if (usal_cmd(usalp) >= 0)
 		return (1);
 	return (0);
 }
 
 int
-read_subchannel(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int subq, 
+read_subchannel(SCSI *usalp, caddr_t bp, int track, int cnt, int msf, int subq, 
 					 int fmt)
 
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -839,7 +839,7 @@ read_subchannel(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int subq,
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x42;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	if (msf)
 		scmd->cdb.g1_cdb.res = 1;
 	if (subq)
@@ -848,17 +848,17 @@ read_subchannel(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int subq,
 	scmd->cdb.g1_cdb.res6 = track;
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read subchannel";
+	usalp->cmdname = "read subchannel";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_toc(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int fmt)
+read_toc(SCSI *usalp, caddr_t bp, int track, int cnt, int msf, int fmt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -867,24 +867,24 @@ read_toc(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int fmt)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x43;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	if (msf)
 		scmd->cdb.g1_cdb.res = 1;
 	scmd->cdb.g1_cdb.addr[0] = fmt & 0x0F;
 	scmd->cdb.g1_cdb.res6 = track;
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read toc";
+	usalp->cmdname = "read toc";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_toc_philips(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int fmt)
+read_toc_philips(SCSI *usalp, caddr_t bp, int track, int cnt, int msf, int fmt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -894,7 +894,7 @@ read_toc_philips(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int fmt)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 4 * 60;		/* May last  174s on a TEAC CD-R55S */
 	scmd->cdb.g1_cdb.cmd = 0x43;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	if (msf)
 		scmd->cdb.g1_cdb.res = 1;
 	scmd->cdb.g1_cdb.res6 = track;
@@ -905,17 +905,17 @@ read_toc_philips(SCSI *scgp, caddr_t bp, int track, int cnt, int msf, int fmt)
 	if (fmt & 2)
 		scmd->cdb.g1_cdb.vu_97 = 1;
 
-	scgp->cmdname = "read toc";
+	usalp->cmdname = "read toc";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_header(SCSI *scgp, caddr_t bp, long addr, int cnt, int msf)
+read_header(SCSI *usalp, caddr_t bp, long addr, int cnt, int msf)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -924,23 +924,23 @@ read_header(SCSI *scgp, caddr_t bp, long addr, int cnt, int msf)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x44;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	if (msf)
 		scmd->cdb.g1_cdb.res = 1;
 	g1_cdbaddr(&scmd->cdb.g1_cdb, addr);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read header";
+	usalp->cmdname = "read header";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_disk_info(SCSI *scgp, caddr_t bp, int cnt)
+read_disk_info(SCSI *usalp, caddr_t bp, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -950,20 +950,20 @@ read_disk_info(SCSI *scgp, caddr_t bp, int cnt)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 4 * 60;		/* Needs up to 2 minutes */
 	scmd->cdb.g1_cdb.cmd = 0x51;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read disk info";
+	usalp->cmdname = "read disk info";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_track_info(SCSI *scgp, caddr_t bp, int type, int addr, int cnt)
+read_track_info(SCSI *usalp, caddr_t bp, int type, int addr, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -973,35 +973,35 @@ read_track_info(SCSI *scgp, caddr_t bp, int type, int addr, int cnt)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 4 * 60;		/* Needs up to 2 minutes */
 	scmd->cdb.g1_cdb.cmd = 0x52;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 /*	scmd->cdb.cmd_cdb[1] = type & 0x03;*/
 	scmd->cdb.cmd_cdb[1] = type;
 	g1_cdbaddr(&scmd->cdb.g1_cdb, addr);	/* LBA/Track/Session */
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read track info";
+	usalp->cmdname = "read track info";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-reserve_track(SCSI *scgp, Ulong size)
+reserve_track(SCSI *usalp, Ulong size)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof(*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x53;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	i_to_4_byte(&scmd->cdb.g1_cdb.addr[3], size);
 
-	scgp->cmdname = "reserve track";
+	usalp->cmdname = "reserve track";
 
-	if (scg_cmd(scgp) < 0) 
+	if (usal_cmd(usalp) < 0) 
 		return (-1);
 
 	return (0);
@@ -1009,15 +1009,15 @@ reserve_track(SCSI *scgp, Ulong size)
 }
 
 int
-read_rzone_info(SCSI *scgp, caddr_t bp, int cnt)
+read_rzone_info(SCSI *usalp, caddr_t bp, int cnt)
 {
-	return (read_track_info(scgp, bp, TI_TYPE_LBA, 0, cnt));
+	return (read_track_info(usalp, bp, TI_TYPE_LBA, 0, cnt));
 }
 
 int
-reserve_tr_rzone(SCSI *scgp, long size /* number of blocks */)
+reserve_tr_rzone(SCSI *usalp, long size /* number of blocks */)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)0;
@@ -1026,22 +1026,22 @@ reserve_tr_rzone(SCSI *scgp, long size /* number of blocks */)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x53;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 
 	i_to_4_byte(&scmd->cdb.g1_cdb.addr[3], size);
 
-	scgp->cmdname = "reserve_track_rzone";
+	usalp->cmdname = "reserve_track_rzone";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_dvd_structure(SCSI *scgp, caddr_t bp, int cnt, int addr, int layer, 
+read_dvd_structure(SCSI *usalp, caddr_t bp, int cnt, int addr, int layer, 
                    int fmt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -1051,23 +1051,23 @@ read_dvd_structure(SCSI *scgp, caddr_t bp, int cnt, int addr, int layer,
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 4 * 60;		/* Needs up to 2 minutes ??? */
 	scmd->cdb.g5_cdb.cmd = 0xAD;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	g5_cdbaddr(&scmd->cdb.g5_cdb, addr);
 	g5_cdblen(&scmd->cdb.g5_cdb, cnt);
 	scmd->cdb.g5_cdb.count[0] = layer;
 	scmd->cdb.g5_cdb.count[1] = fmt;
 
-	scgp->cmdname = "read dvd structure";
+	usalp->cmdname = "read dvd structure";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-send_dvd_structure(SCSI *scgp, caddr_t bp, int cnt, int layer, int fmt)
+send_dvd_structure(SCSI *usalp, caddr_t bp, int cnt, int layer, int fmt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -1077,22 +1077,22 @@ send_dvd_structure(SCSI *scgp, caddr_t bp, int cnt, int layer, int fmt)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 4 * 60;		/* Needs up to 2 minutes ??? */
 	scmd->cdb.g5_cdb.cmd = 0xBF;
-	scmd->cdb.g5_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g5_cdb.lun = usal_lun(usalp);
 	g5_cdblen(&scmd->cdb.g5_cdb, cnt);
 
 	scmd->cdb.cmd_cdb[7] = fmt;
 
-	scgp->cmdname = "send dvd structure";
+	usalp->cmdname = "send dvd structure";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-send_opc(SCSI *scgp, caddr_t bp, int cnt, int doopc)
+send_opc(SCSI *usalp, caddr_t bp, int cnt, int doopc)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -1102,21 +1102,21 @@ send_opc(SCSI *scgp, caddr_t bp, int cnt, int doopc)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 60;
 	scmd->cdb.g1_cdb.cmd = 0x54;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.reladr = doopc?1:0;
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "send opc";
+	usalp->cmdname = "send opc";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_track_info_philips(SCSI *scgp, caddr_t bp, int track, int cnt)
+read_track_info_philips(SCSI *usalp, caddr_t bp, int track, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -1125,21 +1125,21 @@ read_track_info_philips(SCSI *scgp, caddr_t bp, int track, int cnt)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0xE5;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, track);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read track info";
+	usalp->cmdname = "read track info";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-scsi_close_tr_session(SCSI *scgp, int type, int track, BOOL immed)
+scsi_close_tr_session(SCSI *usalp, int type, int track, BOOL immed)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
@@ -1147,7 +1147,7 @@ scsi_close_tr_session(SCSI *scgp, int type, int track, BOOL immed)
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->timeout = 8 * 60;		/* Needs up to 4 minutes */
 	scmd->cdb.g1_cdb.cmd = 0x5B;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.addr[0] = type;
 	scmd->cdb.g1_cdb.addr[3] = track;
 
@@ -1158,17 +1158,17 @@ scsi_close_tr_session(SCSI *scgp, int type, int track, BOOL immed)
 	scmd->cdb.g1_cdb.reladr = 1;	/* IMM hack to test Mitsumi behaviour*/
 #endif
 
-	scgp->cmdname = "close track/session";
+	usalp->cmdname = "close track/session";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-read_master_cue(SCSI *scgp, caddr_t bp, int sheet, int cnt)
+read_master_cue(SCSI *usalp, caddr_t bp, int sheet, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -1177,21 +1177,21 @@ read_master_cue(SCSI *scgp, caddr_t bp, int sheet, int cnt)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x59;		/* Read master cue */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g1_cdb.addr[2] = sheet;
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read master cue";
+	usalp->cmdname = "read master cue";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);
 }
 
 int
-send_cue_sheet(SCSI *scgp, caddr_t bp, long size)
+send_cue_sheet(SCSI *usalp, caddr_t bp, long size)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -1200,24 +1200,24 @@ send_cue_sheet(SCSI *scgp, caddr_t bp, long size)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x5D;	/* Send CUE sheet */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdblen(&scmd->cdb.g1_cdb, size);
 
-	scgp->cmdname = "send_cue_sheet";
+	usalp->cmdname = "send_cue_sheet";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (size - scmd->resid);
 }
 
 int
-read_buff_cap(SCSI *scgp, long *sp, long *fp)
+read_buff_cap(SCSI *usalp, long *sp, long *fp)
 {
 	char	resp[12];
 	Ulong	freespace;
 	Ulong	bufsize;
 	int	per;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)resp;
@@ -1226,12 +1226,12 @@ read_buff_cap(SCSI *scgp, long *sp, long *fp)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x5C;		/* Read buffer cap */
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdblen(&scmd->cdb.g1_cdb, sizeof (resp));
 
-	scgp->cmdname = "read buffer cap";
+	usalp->cmdname = "read buffer cap";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
 
 	bufsize   = a_to_u_4_byte(&resp[4]);
@@ -1241,7 +1241,7 @@ read_buff_cap(SCSI *scgp, long *sp, long *fp)
 	if (fp)
 		*fp = freespace;
 
-	if (scgp->verbose || (sp == 0 && fp == 0))
+	if (usalp->verbose || (sp == 0 && fp == 0))
 		printf("BFree: %ld K BSize: %ld K\n", freespace >> 10, bufsize >> 10);
 
 	if (bufsize == 0)
@@ -1255,9 +1255,9 @@ read_buff_cap(SCSI *scgp, long *sp, long *fp)
 }
 
 int
-scsi_blank(SCSI *scgp, long addr, int blanktype, BOOL immed)
+scsi_blank(SCSI *usalp, long addr, int blanktype, BOOL immed)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->flags = SCG_DISRE_ENA;
@@ -1272,15 +1272,15 @@ scsi_blank(SCSI *scgp, long addr, int blanktype, BOOL immed)
 		scmd->cdb.g5_cdb.res |= 8;
 /*		scmd->cdb.cmd_cdb[1] |= 0x10;*/
 
-	scgp->cmdname = "blank unit";
+	usalp->cmdname = "blank unit";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-scsi_format(SCSI *scgp, caddr_t addr, int size, BOOL background)
+scsi_format(SCSI *usalp, caddr_t addr, int size, BOOL background)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 	int progress=0, ret=-1, pid=-1;
 	unsigned char sense_table[18];
 	int i;
@@ -1298,10 +1298,10 @@ scsi_format(SCSI *scgp, caddr_t addr, int size, BOOL background)
 	scmd->cdb.cmd_cdb[1] = 0x11;  /* "FmtData" and "Format Code" */
 	scmd->cdb.cmd_cdb[5] = 0;
 
-	scgp->cmdname = "format unit";
+	usalp->cmdname = "format unit";
 
 	printf("scsi_format: running\n");
-	ret = (scg_cmd(scgp));
+	ret = (usal_cmd(usalp));
 	printf("scsi_format: post processing %d\n", ret);
 	if (ret == -1) return ret;
 	if (background) {
@@ -1310,7 +1310,7 @@ scsi_format(SCSI *scgp, caddr_t addr, int size, BOOL background)
 		else {
 			if (!pid) {
 			    while (1) {
-				if (test_unit_ready(scgp) >= 0)
+				if (test_unit_ready(usalp) >= 0)
 				    break;
 				sleep(1);
 			    }
@@ -1322,8 +1322,8 @@ scsi_format(SCSI *scgp, caddr_t addr, int size, BOOL background)
 	sleep(20);
 	i = 0;
 	while (progress < 0xfff0 && !(progress == 0 && i > 50)) {
-		test_unit_ready(scgp);
-		request_sense_b(scgp, (caddr_t)sense_table, 18);
+		test_unit_ready(usalp);
+		request_sense_b(usalp, (caddr_t)sense_table, 18);
 		progress = sense_table[16]<<8|sense_table[17];
 		printf("\rFormating in progress: %.2f %% done [%d].                           ", (float)(progress*100)/0x10000,progress);
 		usleep(100000);
@@ -1346,7 +1346,7 @@ scsi_format(SCSI *scgp, caddr_t addr, int size, BOOL background)
 static BOOL	is_atapi;
 
 BOOL
-allow_atapi(SCSI *scgp, BOOL new)
+allow_atapi(SCSI *usalp, BOOL new)
 {
 	BOOL	old = is_atapi;
 	Uchar	mode[256];
@@ -1354,43 +1354,43 @@ allow_atapi(SCSI *scgp, BOOL new)
 	if (new == old)
 		return (old);
 
-	scgp->silent++;
+	usalp->silent++;
 	/*
 	 * If a bad drive has been reset before, we may need to fire up two
 	 * test unit ready commands to clear status.
 	 */
-	(void) unit_ready(scgp);
+	(void) unit_ready(usalp);
 	if (new &&
-	    mode_sense_g1(scgp, mode, 8, 0x3F, 0) < 0) {	/* All pages current */
+	    mode_sense_g1(usalp, mode, 8, 0x3F, 0) < 0) {	/* All pages current */
 		new = FALSE;
 	}
-	scgp->silent--;
+	usalp->silent--;
 
 	is_atapi = new;
 	return (old);
 }
 
 int
-mode_select(SCSI *scgp, Uchar *dp, int cnt, int smp, int pf)
+mode_select(SCSI *usalp, Uchar *dp, int cnt, int smp, int pf)
 {
 	if (is_atapi)
-		return (mode_select_sg0(scgp, dp, cnt, smp, pf));
-	return (mode_select_g0(scgp, dp, cnt, smp, pf));
+		return (mode_select_sg0(usalp, dp, cnt, smp, pf));
+	return (mode_select_g0(usalp, dp, cnt, smp, pf));
 }
 
 int
-mode_sense(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
+mode_sense(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf)
 {
 	if (is_atapi)
-		return (mode_sense_sg0(scgp, dp, cnt, page, pcf));
-	return (mode_sense_g0(scgp, dp, cnt, page, pcf));
+		return (mode_sense_sg0(usalp, dp, cnt, page, pcf));
+	return (mode_sense_g0(usalp, dp, cnt, page, pcf));
 }
 
 /*
  * Simulate mode select g0 with mode select g1.
  */
 int
-mode_select_sg0(SCSI *scgp, Uchar *dp, int cnt, int smp, int pf)
+mode_select_sg0(SCSI *usalp, Uchar *dp, int cnt, int smp, int pf)
 {
 	Uchar	xmode[256+4];
 	int	amt = cnt;
@@ -1414,16 +1414,16 @@ mode_select_sg0(SCSI *scgp, Uchar *dp, int cnt, int smp, int pf)
 	xmode[5] = 0;
 	i_to_2_byte(&xmode[6], (unsigned int)dp[3]);
 
-	if (scgp->verbose) scg_prbytes("Mode Parameters (un-converted)", dp, cnt);
+	if (usalp->verbose) usal_prbytes("Mode Parameters (un-converted)", dp, cnt);
 
-	return (mode_select_g1(scgp, xmode, amt, smp, pf));
+	return (mode_select_g1(usalp, xmode, amt, smp, pf));
 }
 
 /*
  * Simulate mode sense g0 with mode sense g1.
  */
 int
-mode_sense_sg0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
+mode_sense_sg0(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf)
 {
 	Uchar	xmode[256+4];
 	int	amt = cnt;
@@ -1440,10 +1440,10 @@ mode_sense_sg0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
 	} else {
 		amt += 4;
 	}
-	if (mode_sense_g1(scgp, xmode, amt, page, pcf) < 0)
+	if (mode_sense_g1(usalp, xmode, amt, page, pcf) < 0)
 		return (-1);
 
-	amt = cnt - scg_getresid(scgp);
+	amt = cnt - usal_getresid(usalp);
 /*
  * For tests: Solaris 8 & LG CD-ROM always returns resid == amt
  */
@@ -1465,14 +1465,14 @@ mode_sense_sg0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
 	len = a_to_u_2_byte(&xmode[6]);
 	dp[3] = len;
 
-	if (scgp->verbose) scg_prbytes("Mode Sense Data (converted)", dp, amt);
+	if (usalp->verbose) usal_prbytes("Mode Sense Data (converted)", dp, amt);
 	return (0);
 }
 
 int
-mode_select_g0(SCSI *scgp, Uchar *dp, int cnt, int smp, int pf)
+mode_select_g0(SCSI *usalp, Uchar *dp, int cnt, int smp, int pf)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)dp;
@@ -1481,24 +1481,24 @@ mode_select_g0(SCSI *scgp, Uchar *dp, int cnt, int smp, int pf)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_MODE_SELECT;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.high_addr = smp ? 1 : 0 | pf ? 0x10 : 0;
 	scmd->cdb.g0_cdb.count = cnt;
 
-	if (scgp->verbose) {
+	if (usalp->verbose) {
 		fprintf(stderr, "%s ", smp?"Save":"Set ");
-		scg_prbytes("Mode Parameters", dp, cnt);
+		usal_prbytes("Mode Parameters", dp, cnt);
 	}
 
-	scgp->cmdname = "mode select g0";
+	usalp->cmdname = "mode select g0";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-mode_select_g1(SCSI *scgp, Uchar *dp, int cnt, int smp, int pf)
+mode_select_g1(SCSI *usalp, Uchar *dp, int cnt, int smp, int pf)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)dp;
@@ -1507,24 +1507,24 @@ mode_select_g1(SCSI *scgp, Uchar *dp, int cnt, int smp, int pf)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x55;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	scmd->cdb.g0_cdb.high_addr = smp ? 1 : 0 | pf ? 0x10 : 0;
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	if (scgp->verbose) {
+	if (usalp->verbose) {
 		printf("%s ", smp?"Save":"Set ");
-		scg_prbytes("Mode Parameters", dp, cnt);
+		usal_prbytes("Mode Parameters", dp, cnt);
 	}
 
-	scgp->cmdname = "mode select g1";
+	usalp->cmdname = "mode select g1";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-mode_sense_g0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
+mode_sense_g0(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)dp;
@@ -1534,7 +1534,7 @@ mode_sense_g0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_MODE_SENSE;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 #ifdef	nonono
 	scmd->cdb.g0_cdb.high_addr = 1<<4;	/* DBD Disable Block desc. */
 #endif
@@ -1542,18 +1542,18 @@ mode_sense_g0(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
 	scmd->cdb.g0_cdb.count = page ? 0xFF : 24;
 	scmd->cdb.g0_cdb.count = cnt;
 
-	scgp->cmdname = "mode sense g0";
+	usalp->cmdname = "mode sense g0";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	if (scgp->verbose) scg_prbytes("Mode Sense Data", dp, cnt - scg_getresid(scgp));
+	if (usalp->verbose) usal_prbytes("Mode Sense Data", dp, cnt - usal_getresid(usalp));
 	return (0);
 }
 
 int
-mode_sense_g1(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
+mode_sense_g1(SCSI *usalp, Uchar *dp, int cnt, int page, int pcf)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = (caddr_t)dp;
@@ -1562,18 +1562,18 @@ mode_sense_g1(SCSI *scgp, Uchar *dp, int cnt, int page, int pcf)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x5A;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 #ifdef	nonono
 	scmd->cdb.g0_cdb.high_addr = 1<<4;	/* DBD Disable Block desc. */
 #endif
 	scmd->cdb.g1_cdb.addr[0] = (page&0x3F) | ((pcf<<6)&0xC0);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "mode sense g1";
+	usalp->cmdname = "mode sense g1";
 
-	if (scg_cmd(scgp) < 0)
+	if (usal_cmd(usalp) < 0)
 		return (-1);
-	if (scgp->verbose) scg_prbytes("Mode Sense Data", dp, cnt - scg_getresid(scgp));
+	if (usalp->verbose) usal_prbytes("Mode Sense Data", dp, cnt - usal_getresid(usalp));
 	return (0);
 }
 
@@ -1628,7 +1628,7 @@ struct trackheader {
 
 
 int
-read_tochdr(SCSI *scgp, cdr_t *dp, int *fp, int *lp)
+read_tochdr(SCSI *usalp, cdr_t *dp, int *fp, int *lp)
 {
 	struct	tocheader *tp;
 	char	xb[256];
@@ -1637,8 +1637,8 @@ read_tochdr(SCSI *scgp, cdr_t *dp, int *fp, int *lp)
 	tp = (struct tocheader *)xb;
 
 	fillbytes((caddr_t)xb, sizeof (xb), '\0');
-	if (read_toc(scgp, xb, 0, sizeof (struct tocheader), 0, FMT_TOC) < 0) {
-		if (scgp->silent == 0)
+	if (read_toc(usalp, xb, 0, sizeof (struct tocheader), 0, FMT_TOC) < 0) {
+		if (usalp->silent == 0)
 			errmsgno(EX_BAD, "Cannot read TOC header\n");
 		return (-1);
 	}
@@ -1654,7 +1654,7 @@ read_tochdr(SCSI *scgp, cdr_t *dp, int *fp, int *lp)
 }
 
 int
-read_cdtext(SCSI *scgp)
+read_cdtext(SCSI *usalp)
 {
 	struct	tocheader *tp;
 	char	xb[256];
@@ -1664,16 +1664,16 @@ read_cdtext(SCSI *scgp)
 	tp = (struct tocheader *)xb;
 
 	fillbytes((caddr_t)xb, sizeof (xb), '\0');
-	if (read_toc(scgp, xb, 0, sizeof (struct tocheader), 0, FMT_CDTEXT) < 0) {
-		if (scgp->silent == 0 || scgp->verbose > 0)
+	if (read_toc(usalp, xb, 0, sizeof (struct tocheader), 0, FMT_CDTEXT) < 0) {
+		if (usalp->silent == 0 || usalp->verbose > 0)
 			errmsgno(EX_BAD, "Cannot read CD-Text header\n");
 		return (-1);
 	}
 	len = a_to_u_2_byte(tp->len) + sizeof (struct tocheader)-2;
 	printf("CD-Text len: %d\n", len);
 
-	if (read_toc(scgp, xxb, 0, len, 0, FMT_CDTEXT) < 0) {
-		if (scgp->silent == 0)
+	if (read_toc(usalp, xxb, 0, len, 0, FMT_CDTEXT) < 0) {
+		if (usalp->silent == 0)
 			errmsgno(EX_BAD, "Cannot read CD-Text\n");
 		return (-1);
 	}
@@ -1685,7 +1685,7 @@ read_cdtext(SCSI *scgp)
 }
 
 int
-read_trackinfo(SCSI *scgp, int track, long *offp, struct msf *msfp, int *adrp, 
+read_trackinfo(SCSI *usalp, int track, long *offp, struct msf *msfp, int *adrp, 
 					int *controlp, int *modep)
 {
 	struct	diskinfo *dp;
@@ -1695,8 +1695,8 @@ read_trackinfo(SCSI *scgp, int track, long *offp, struct msf *msfp, int *adrp,
 	dp = (struct diskinfo *)xb;
 
 	fillbytes((caddr_t)xb, sizeof (xb), '\0');
-	if (read_toc(scgp, xb, track, sizeof (struct diskinfo), 0, FMT_TOC) < 0) {
-		if (scgp->silent <= 0)
+	if (read_toc(usalp, xb, track, sizeof (struct diskinfo), 0, FMT_TOC) < 0) {
+		if (usalp->silent <= 0)
 			errmsgno(EX_BAD, "Cannot read TOC\n");
 		return (-1);
 	}
@@ -1712,13 +1712,13 @@ read_trackinfo(SCSI *scgp, int track, long *offp, struct msf *msfp, int *adrp,
 		*controlp = dp->desc[0].control;
 
 	if (msfp) {
-		scgp->silent++;
-		if (read_toc(scgp, xb, track, sizeof (struct diskinfo), 1, FMT_TOC)
+		usalp->silent++;
+		if (read_toc(usalp, xb, track, sizeof (struct diskinfo), 1, FMT_TOC)
 									>= 0) {
 			msfp->msf_min = dp->desc[0].addr[1];
 			msfp->msf_sec = dp->desc[0].addr[2];
 			msfp->msf_frame = dp->desc[0].addr[3];
-		} else if (read_toc(scgp, xb, track, sizeof (struct diskinfo), 0, FMT_TOC)
+		} else if (read_toc(usalp, xb, track, sizeof (struct diskinfo), 0, FMT_TOC)
 									>= 0) {
 			/*
 			 * Some drives (e.g. the Philips CDD-522) don't support
@@ -1732,7 +1732,7 @@ read_trackinfo(SCSI *scgp, int track, long *offp, struct msf *msfp, int *adrp,
 			msfp->msf_sec = 0;
 			msfp->msf_frame = 0;
 		}
-		scgp->silent--;
+		usalp->silent--;
 	}
 
 	if (modep == NULL)
@@ -1745,20 +1745,20 @@ read_trackinfo(SCSI *scgp, int track, long *offp, struct msf *msfp, int *adrp,
 
 	fillbytes((caddr_t)xb, sizeof (xb), '\0');
 
-	scgp->silent++;
-	if (read_header(scgp, xb, *offp, 8, 0) >= 0) {
+	usalp->silent++;
+	if (read_header(usalp, xb, *offp, 8, 0) >= 0) {
 		*modep = xb[0];
-	} else if (read_track_info_philips(scgp, xb, track, 14) >= 0) {
+	} else if (read_track_info_philips(usalp, xb, track, 14) >= 0) {
 		*modep = xb[0xb] & 0xF;
 	} else {
 		*modep = -1;
 	}
-	scgp->silent--;
+	usalp->silent--;
 	return (0);
 }
 
 int
-read_B0(SCSI *scgp, BOOL isbcd, long *b0p, long *lop)
+read_B0(SCSI *usalp, BOOL isbcd, long *b0p, long *lop)
 {
 	struct	fdiskinfo *dp;
 	struct	ftrackdesc *tp;
@@ -1770,25 +1770,25 @@ read_B0(SCSI *scgp, BOOL isbcd, long *b0p, long *lop)
 	dp = (struct fdiskinfo *)xb;
 
 	fillbytes((caddr_t)xb, sizeof (xb), '\0');
-	if (read_toc_philips(scgp, xb, 1, sizeof (struct tocheader), 0, FMT_FULLTOC) < 0) {
+	if (read_toc_philips(usalp, xb, 1, sizeof (struct tocheader), 0, FMT_FULLTOC) < 0) {
 		return (-1);
 	}
 	len = a_to_u_2_byte(dp->hd.len) + sizeof (struct tocheader)-2;
 	if (len <  (int)sizeof (struct fdiskinfo))
 		return (-1);
-	if (read_toc_philips(scgp, xb, 1, len, 0, FMT_FULLTOC) < 0) {
+	if (read_toc_philips(usalp, xb, 1, len, 0, FMT_FULLTOC) < 0) {
 		return (-1);
 	}
-	if (scgp->verbose) {
-		scg_prbytes("TOC data: ", (Uchar *)xb,
-			len > (int)sizeof (xb) - scg_getresid(scgp) ?
-				sizeof (xb) - scg_getresid(scgp) : len);
+	if (usalp->verbose) {
+		usal_prbytes("TOC data: ", (Uchar *)xb,
+			len > (int)sizeof (xb) - usal_getresid(usalp) ?
+				sizeof (xb) - usal_getresid(usalp) : len);
 
 		tp = &dp->desc[0];
 		pe = &xb[len];
 
 		while ((char *)tp < pe) {
-			scg_prbytes("ENT: ", (Uchar *)tp, 11);
+			usal_prbytes("ENT: ", (Uchar *)tp, 11);
 			tp++;
 		}
 	}
@@ -1800,8 +1800,8 @@ read_B0(SCSI *scgp, BOOL isbcd, long *b0p, long *lop)
 			continue;
 		if (tp->point != 0xB0)
 			continue;
-		if (scgp->verbose)
-			scg_prbytes("B0: ", (Uchar *)tp, 11);
+		if (usalp->verbose)
+			usal_prbytes("B0: ", (Uchar *)tp, 11);
 		if (isbcd) {
 			l = msf_to_lba(from_bcd(tp->amin),
 				from_bcd(tp->asec),
@@ -1814,7 +1814,7 @@ read_B0(SCSI *scgp, BOOL isbcd, long *b0p, long *lop)
 		if (b0p)
 			*b0p = l;
 
-		if (scgp->verbose)
+		if (usalp->verbose)
 			printf("B0 start: %ld\n", l);
 
 		if (isbcd) {
@@ -1827,7 +1827,7 @@ read_B0(SCSI *scgp, BOOL isbcd, long *b0p, long *lop)
 				tp->pframe, TRUE);
 		}
 
-		if (scgp->verbose)
+		if (usalp->verbose)
 			printf("B0 lout: %ld\n", l);
 		if (lop)
 			*lop = l;
@@ -1841,7 +1841,7 @@ read_B0(SCSI *scgp, BOOL isbcd, long *b0p, long *lop)
  * Return address of first track in last session (SCSI-3/mmc version).
  */
 int
-read_session_offset(SCSI *scgp, long *offp)
+read_session_offset(SCSI *usalp, long *offp)
 {
 	struct	diskinfo *dp;
 	char	xb[256];
@@ -1850,24 +1850,24 @@ read_session_offset(SCSI *scgp, long *offp)
 	dp = (struct diskinfo *)xb;
 
 	fillbytes((caddr_t)xb, sizeof (xb), '\0');
-	if (read_toc(scgp, (caddr_t)xb, 0, sizeof (struct tocheader), 0, FMT_SINFO) < 0)
+	if (read_toc(usalp, (caddr_t)xb, 0, sizeof (struct tocheader), 0, FMT_SINFO) < 0)
 		return (-1);
 
-	if (scgp->verbose)
-		scg_prbytes("tocheader: ",
-		(Uchar *)xb, sizeof (struct tocheader) - scg_getresid(scgp));
+	if (usalp->verbose)
+		usal_prbytes("tocheader: ",
+		(Uchar *)xb, sizeof (struct tocheader) - usal_getresid(usalp));
 
 	len = a_to_u_2_byte(dp->hd.len) + sizeof (struct tocheader)-2;
 	if (len > (int)sizeof (xb)) {
 		errmsgno(EX_BAD, "Session info too big.\n");
 		return (-1);
 	}
-	if (read_toc(scgp, (caddr_t)xb, 0, len, 0, FMT_SINFO) < 0)
+	if (read_toc(usalp, (caddr_t)xb, 0, len, 0, FMT_SINFO) < 0)
 		return (-1);
 
-	if (scgp->verbose)
-		scg_prbytes("tocheader: ",
-			(Uchar *)xb, len - scg_getresid(scgp));
+	if (usalp->verbose)
+		usal_prbytes("tocheader: ",
+			(Uchar *)xb, len - usal_getresid(usalp));
 
 	dp = (struct diskinfo *)xb;
 	if (offp)
@@ -1879,7 +1879,7 @@ read_session_offset(SCSI *scgp, long *offp)
  * Return address of first track in last session (pre SCSI-3 version).
  */
 int
-read_session_offset_philips(SCSI *scgp, long *offp)
+read_session_offset_philips(SCSI *usalp, long *offp)
 {
 	struct	sinfo *sp;
 	char	xb[256];
@@ -1888,14 +1888,14 @@ read_session_offset_philips(SCSI *scgp, long *offp)
 	sp = (struct sinfo *)xb;
 
 	fillbytes((caddr_t)xb, sizeof (xb), '\0');
-	if (read_toc_philips(scgp, (caddr_t)xb, 0, sizeof (struct siheader), 0, FMT_SINFO) < 0)
+	if (read_toc_philips(usalp, (caddr_t)xb, 0, sizeof (struct siheader), 0, FMT_SINFO) < 0)
 		return (-1);
 	len = a_to_u_2_byte(sp->hd.len) + sizeof (struct siheader)-2;
 	if (len > (int)sizeof (xb)) {
 		errmsgno(EX_BAD, "Session info too big.\n");
 		return (-1);
 	}
-	if (read_toc_philips(scgp, (caddr_t)xb, 0, len, 0, FMT_SINFO) < 0)
+	if (read_toc_philips(usalp, (caddr_t)xb, 0, len, 0, FMT_SINFO) < 0)
 		return (-1);
 	/*
 	 * Old drives return the number of finished sessions in first/finished
@@ -1912,7 +1912,7 @@ read_session_offset_philips(SCSI *scgp, long *offp)
 }
 
 int
-sense_secsize(SCSI *scgp, int current)
+sense_secsize(SCSI *usalp, int current)
 {
 	Uchar	mode[0x100];
 	Uchar	*p;
@@ -1920,14 +1920,14 @@ sense_secsize(SCSI *scgp, int current)
 	int	len;
 	int	secsize = -1;
 
-	scgp->silent++;
-	(void) unit_ready(scgp);
-	scgp->silent--;
+	usalp->silent++;
+	(void) unit_ready(usalp);
+	usalp->silent--;
 
 	/* XXX Quick and dirty, musz verallgemeinert werden !!! */
 
 	fillbytes(mode, sizeof (mode), '\0');
-	scgp->silent++;
+	usalp->silent++;
 
 	len =	sizeof (struct scsi_mode_header) +
 		sizeof (struct scsi_mode_blockdesc);
@@ -1935,15 +1935,15 @@ sense_secsize(SCSI *scgp, int current)
 	 * Wenn wir hier get_mode_params() nehmen bekommen wir die Warnung:
 	 * Warning: controller returns wrong page 1 for All pages page (3F).
 	 */
-	if (mode_sense(scgp, mode, len, 0x3F, current?0:2) < 0) {
+	if (mode_sense(usalp, mode, len, 0x3F, current?0:2) < 0) {
 		fillbytes(mode, sizeof (mode), '\0');
-		if (mode_sense(scgp, mode, len, 0, current?0:2) < 0)	{ /* VU (block desc) */
-			scgp->silent--;
+		if (mode_sense(usalp, mode, len, 0, current?0:2) < 0)	{ /* VU (block desc) */
+			usalp->silent--;
 			return (-1);
 		}
 	}
 	if (mode[3] == 8) {
-		if (scgp->debug) {
+		if (usalp->debug) {
 			printf("Density: 0x%X\n", mode[4]);
 			printf("Blocks:  %ld\n", a_to_u_3_byte(&mode[5]));
 			printf("Blocklen:%ld\n", a_to_u_3_byte(&mode[9]));
@@ -1957,8 +1957,8 @@ sense_secsize(SCSI *scgp, int current)
 	 * mode_sense of all pages. So try to avoid to run this
 	 * command if possible.
 	 */
-	if (scgp->debug &&
-	    mode_sense(scgp, mode, 0xFE, 0x3F, current?0:2) >= 0) {	/* All Pages */
+	if (usalp->debug &&
+	    mode_sense(usalp, mode, 0xFE, 0x3F, current?0:2) >= 0) {	/* All Pages */
 
 		ep = mode+mode[0];	/* Points to last byte of data */
 		p = &mode[4];
@@ -1970,37 +1970,37 @@ sense_secsize(SCSI *scgp, int current)
 		}
 		printf("\n");
 	}
-	scgp->silent--;
+	usalp->silent--;
 
 	return (secsize);
 }
 
 int
-select_secsize(SCSI *scgp, int secsize)
+select_secsize(SCSI *usalp, int secsize)
 {
 	struct scsi_mode_data md;
 	int	count = sizeof (struct scsi_mode_header) +
 			sizeof (struct scsi_mode_blockdesc);
 
-	(void) test_unit_ready(scgp);	/* clear any error situation */
+	(void) test_unit_ready(usalp);	/* clear any error situation */
 
 	fillbytes((caddr_t)&md, sizeof (md), '\0');
 	md.header.blockdesc_len = 8;
 	i_to_3_byte(md.blockdesc.lblen, secsize);
 
-	return (mode_select(scgp, (Uchar *)&md, count, 0, scgp->inq->data_format >= 2));
+	return (mode_select(usalp, (Uchar *)&md, count, 0, usalp->inq->data_format >= 2));
 }
 
 BOOL
-is_cddrive(SCSI *scgp)
+is_cddrive(SCSI *usalp)
 {
-	return (scgp->inq->type == INQ_ROMD || scgp->inq->type == INQ_WORM);
+	return (usalp->inq->type == INQ_ROMD || usalp->inq->type == INQ_WORM);
 }
 
 BOOL
-is_unknown_dev(SCSI *scgp)
+is_unknown_dev(SCSI *usalp)
 {
-	return (scgp->dev == DEV_UNKNOWN);
+	return (usalp->dev == DEV_UNKNOWN);
 }
 
 #ifndef	DEBUG
@@ -2009,96 +2009,96 @@ is_unknown_dev(SCSI *scgp)
 #ifdef	DEBUG
 
 int
-read_scsi(SCSI *scgp, caddr_t bp, long addr, int cnt)
+read_scsi(SCSI *usalp, caddr_t bp, long addr, int cnt)
 {
 	if (addr <= G0_MAXADDR && cnt < 256 && !is_atapi)
-		return (read_g0(scgp, bp, addr, cnt));
+		return (read_g0(usalp, bp, addr, cnt));
 	else
-		return (read_g1(scgp, bp, addr, cnt));
+		return (read_g1(usalp, bp, addr, cnt));
 }
 
 int
-read_g0(SCSI *scgp, caddr_t bp, long addr, int cnt)
+read_g0(SCSI *usalp, caddr_t bp, long addr, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
-	if (scgp->cap->c_bsize <= 0)
+	if (usalp->cap->c_bsize <= 0)
 		raisecond("capacity_not_set", 0L);
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
-	scmd->size = cnt*scgp->cap->c_bsize;
+	scmd->size = cnt*usalp->cap->c_bsize;
 	scmd->flags = SCG_RECV_DATA|SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G0_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g0_cdb.cmd = SC_READ;
-	scmd->cdb.g0_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g0_cdb.lun = usal_lun(usalp);
 	g0_cdbaddr(&scmd->cdb.g0_cdb, addr);
 	scmd->cdb.g0_cdb.count = cnt;
 /*	scmd->cdb.g0_cdb.vu_56 = 1;*/
 
-	scgp->cmdname = "read_g0";
+	usalp->cmdname = "read_g0";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 int
-read_g1(SCSI *scgp, caddr_t bp, long addr, int cnt)
+read_g1(SCSI *usalp, caddr_t bp, long addr, int cnt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
-	if (scgp->cap->c_bsize <= 0)
+	if (usalp->cap->c_bsize <= 0)
 		raisecond("capacity_not_set", 0L);
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
-	scmd->size = cnt*scgp->cap->c_bsize;
+	scmd->size = cnt*usalp->cap->c_bsize;
 	scmd->flags = SCG_RECV_DATA|SCG_DISRE_ENA;
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = SC_EREAD;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	g1_cdbaddr(&scmd->cdb.g1_cdb, addr);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "read_g1";
+	usalp->cmdname = "read_g1";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 #endif	/* DEBUG */
 
 BOOL
-getdev(SCSI *scgp, BOOL print)
+getdev(SCSI *usalp, BOOL print)
 {
 		BOOL	got_inquiry = TRUE;
 		char	vendor_info[8+1];
 		char	prod_ident[16+1];
 		char	prod_revision[4+1];
 		int	inq_len = 0;
-	register struct	scg_cmd	*scmd = scgp->scmd;
-	register struct scsi_inquiry *inq = scgp->inq;
+	register struct	usal_cmd	*scmd = usalp->scmd;
+	register struct scsi_inquiry *inq = usalp->inq;
 
 
 	fillbytes((caddr_t)inq, sizeof (*inq), '\0');
-	scgp->dev = DEV_UNKNOWN;
-	scgp->silent++;
-	(void) unit_ready(scgp);
+	usalp->dev = DEV_UNKNOWN;
+	usalp->silent++;
+	(void) unit_ready(usalp);
 	if (scmd->error >= SCG_FATAL &&
 				!(scmd->scb.chk && scmd->sense_count > 0)) {
-		scgp->silent--;
+		usalp->silent--;
 		return (FALSE);
 	}
 
 
 /*	if (scmd->error < SCG_FATAL || scmd->scb.chk && scmd->sense_count > 0){*/
 
-	if (inquiry(scgp, (caddr_t)inq, sizeof (*inq)) < 0) {
+	if (inquiry(usalp, (caddr_t)inq, sizeof (*inq)) < 0) {
 		got_inquiry = FALSE;
 	} else {
-		inq_len = sizeof (*inq) - scg_getresid(scgp);
+		inq_len = sizeof (*inq) - usal_getresid(usalp);
 	}
 	if (!got_inquiry) {
-		if (scgp->verbose) {
+		if (usalp->verbose) {
 			printf(
 		"error: %d scb.chk: %d sense_count: %d sense.code: 0x%x\n",
 				scmd->error, scmd->scb.chk,
@@ -2118,17 +2118,17 @@ getdev(SCSI *scgp, BOOL print)
 
 		if (scmd->scb.chk && scmd->sense_count == 4) {
 			/* Test auf SYSGEN				 */
-			(void) qic02(scgp, 0x12);	/* soft lock on  */
-			if (qic02(scgp, 1) < 0) {	/* soft lock off */
-				scgp->dev = DEV_ACB40X0;
-/*				scgp->dev = acbdev();*/
+			(void) qic02(usalp, 0x12);	/* soft lock on  */
+			if (qic02(usalp, 1) < 0) {	/* soft lock off */
+				usalp->dev = DEV_ACB40X0;
+/*				usalp->dev = acbdev();*/
 			} else {
-				scgp->dev = DEV_SC4000;
+				usalp->dev = DEV_SC4000;
 				inq->type = INQ_SEQD;
 				inq->removable = 1;
 			}
 		}
-	} else if (scgp->verbose) {
+	} else if (usalp->verbose) {
 		int	i;
 		int	len = inq->add_len + 5;
 		Uchar	ibuf[256+5];
@@ -2136,8 +2136,8 @@ getdev(SCSI *scgp, BOOL print)
 		Uchar	c;
 
 		if (len > (int)sizeof (*inq) &&
-				inquiry(scgp, (caddr_t)ibuf, inq->add_len+5) >= 0) {
-			len = inq->add_len+5 - scg_getresid(scgp);
+				inquiry(usalp, (caddr_t)ibuf, inq->add_len+5) >= 0) {
+			len = inq->add_len+5 - usal_getresid(usalp);
 			ip = ibuf;
 		} else {
 			len = sizeof (*inq);
@@ -2185,12 +2185,12 @@ getdev(SCSI *scgp, BOOL print)
 			}
 		}
 		if (inq->add_len == 0) {
-			if (scgp->dev == DEV_UNKNOWN && got_inquiry) {
-				scgp->dev = DEV_ACB5500;
+			if (usalp->dev == DEV_UNKNOWN && got_inquiry) {
+				usalp->dev = DEV_ACB5500;
 				strcpy(inq->vendor_info,
 					"ADAPTEC ACB-5500        FAKE");
 
-			} else switch (scgp->dev) {
+			} else switch (usalp->dev) {
 
 			case DEV_ACB40X0:
 				strcpy(inq->vendor_info,
@@ -2210,38 +2210,38 @@ getdev(SCSI *scgp, BOOL print)
 				break;
 			}
 		} else if (inq->add_len < 31) {
-			scgp->dev = DEV_NON_CCS_DSK;
+			usalp->dev = DEV_NON_CCS_DSK;
 
 		} else if (strbeg("EMULEX", vendor_info)) {
 			if (strbeg("MD21", prod_ident))
-				scgp->dev = DEV_MD21;
+				usalp->dev = DEV_MD21;
 			if (strbeg("MD23", prod_ident))
-				scgp->dev = DEV_MD23;
+				usalp->dev = DEV_MD23;
 			else
-				scgp->dev = DEV_CCS_GENDISK;
+				usalp->dev = DEV_CCS_GENDISK;
 		} else if (strbeg("ADAPTEC", vendor_info)) {
 			if (strbeg("ACB-4520", prod_ident))
-				scgp->dev = DEV_ACB4520A;
+				usalp->dev = DEV_ACB4520A;
 			if (strbeg("ACB-4525", prod_ident))
-				scgp->dev = DEV_ACB4525;
+				usalp->dev = DEV_ACB4525;
 			else
-				scgp->dev = DEV_CCS_GENDISK;
+				usalp->dev = DEV_CCS_GENDISK;
 		} else if (strbeg("SONY", vendor_info) &&
 					strbeg("SMO-C501", prod_ident)) {
-			scgp->dev = DEV_SONY_SMO;
+			usalp->dev = DEV_SONY_SMO;
 		} else {
-			scgp->dev = DEV_CCS_GENDISK;
+			usalp->dev = DEV_CCS_GENDISK;
 		}
 		break;
 
 	case INQ_SEQD:
-		if (scgp->dev == DEV_SC4000) {
+		if (usalp->dev == DEV_SC4000) {
 			strcpy(inq->vendor_info,
 				"SYSGEN  SC4000          FAKE");
 		} else if (inq->add_len == 0 &&
 					inq->removable &&
 						inq->ansi_version == 1) {
-			scgp->dev = DEV_MT02;
+			usalp->dev = DEV_MT02;
 			strcpy(inq->vendor_info,
 				"EMULEX  MT02            FAKE");
 		}
@@ -2251,48 +2251,48 @@ getdev(SCSI *scgp, BOOL print)
 	case INQ_ROMD:
 	case INQ_WORM:
 		if (strbeg("RXT-800S", prod_ident))
-			scgp->dev = DEV_RXT800S;
+			usalp->dev = DEV_RXT800S;
 
 		/*
 		 * Start of CD-Recorders:
 		 */
 		if (strbeg("ACER", vendor_info)) {
 			if (strbeg("CR-4020C", prod_ident))
-				scgp->dev = DEV_RICOH_RO_1420C;
+				usalp->dev = DEV_RICOH_RO_1420C;
 
 		} else if (strbeg("CREATIVE", vendor_info)) {
 			if (strbeg("CDR2000", prod_ident))
-				scgp->dev = DEV_RICOH_RO_1060C;
+				usalp->dev = DEV_RICOH_RO_1060C;
 
 		} else if (strbeg("GRUNDIG", vendor_info)) {
 			if (strbeg("CDR100IPW", prod_ident))
-				scgp->dev = DEV_CDD_2000;
+				usalp->dev = DEV_CDD_2000;
 
 		} else if (strbeg("JVC", vendor_info)) {
 			if (strbeg("XR-W2001", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 			else if (strbeg("XR-W2010", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 			else if (strbeg("R2626", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 
 		} else if (strbeg("MITSBISH", vendor_info)) {
 
 #ifdef	XXXX_REALLY
 			/* It's MMC compliant */
 			if (strbeg("CDRW226", prod_ident))
-				scgp->dev = DEV_MMC_CDRW;
+				usalp->dev = DEV_MMC_CDRW;
 #else
 			/* EMPTY */
 #endif
 
 		} else if (strbeg("MITSUMI", vendor_info)) {
 			/* Don't know any product string */
-			scgp->dev = DEV_CDD_522;
+			usalp->dev = DEV_CDD_522;
 
 		} else if (strbeg("OPTIMA", vendor_info)) {
 			if (strbeg("CD-R 650", prod_ident))
-				scgp->dev = DEV_SONY_CDU_924;
+				usalp->dev = DEV_SONY_CDU_924;
 
 		} else if (strbeg("PHILIPS", vendor_info) ||
 				strbeg("IMS", vendor_info) ||
@@ -2300,126 +2300,126 @@ getdev(SCSI *scgp, BOOL print)
 				strbeg("HP", vendor_info)) {
 
 			if (strbeg("CDD521/00", prod_ident))
-				scgp->dev = DEV_CDD_521_OLD;
+				usalp->dev = DEV_CDD_521_OLD;
 			else if (strbeg("CDD521/02", prod_ident))
-				scgp->dev = DEV_CDD_521_OLD;		/* PCD 200R? */
+				usalp->dev = DEV_CDD_521_OLD;		/* PCD 200R? */
 			else if (strbeg("CDD521", prod_ident))
-				scgp->dev = DEV_CDD_521;
+				usalp->dev = DEV_CDD_521;
 
 			if (strbeg("CDD522", prod_ident))
-				scgp->dev = DEV_CDD_522;
+				usalp->dev = DEV_CDD_522;
 			if (strbeg("PCD225", prod_ident))
-				scgp->dev = DEV_CDD_522;
+				usalp->dev = DEV_CDD_522;
 			if (strbeg("KHSW/OB", prod_ident))	/* PCD600 */
-				scgp->dev = DEV_PCD_600;
+				usalp->dev = DEV_PCD_600;
 			if (strbeg("CDR-240", prod_ident))
-				scgp->dev = DEV_CDD_2000;
+				usalp->dev = DEV_CDD_2000;
 
 			if (strbeg("CDD20", prod_ident))
-				scgp->dev = DEV_CDD_2000;
+				usalp->dev = DEV_CDD_2000;
 			if (strbeg("CDD26", prod_ident))
-				scgp->dev = DEV_CDD_2600;
+				usalp->dev = DEV_CDD_2600;
 
 			if (strbeg("C4324/C4325", prod_ident))
-				scgp->dev = DEV_CDD_2000;
+				usalp->dev = DEV_CDD_2000;
 			if (strbeg("CD-Writer 6020", prod_ident))
-				scgp->dev = DEV_CDD_2600;
+				usalp->dev = DEV_CDD_2600;
 
 		} else if (strbeg("PINNACLE", vendor_info)) {
 			if (strbeg("RCD-1000", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 			if (strbeg("RCD5020", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 			if (strbeg("RCD5040", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 			if (strbeg("RCD 4X4", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 
 		} else if (strbeg("PIONEER", vendor_info)) {
 			if (strbeg("CD-WO DW-S114X", prod_ident))
-				scgp->dev = DEV_PIONEER_DW_S114X;
+				usalp->dev = DEV_PIONEER_DW_S114X;
 			else if (strbeg("CD-WO DR-R504X", prod_ident))	/* Reoprt from philip@merge.com */
-				scgp->dev = DEV_PIONEER_DW_S114X;
+				usalp->dev = DEV_PIONEER_DW_S114X;
 			else if (strbeg("DVD-R DVR-S101", prod_ident))
-				scgp->dev = DEV_PIONEER_DVDR_S101;
+				usalp->dev = DEV_PIONEER_DVDR_S101;
 
 		} else if (strbeg("PLASMON", vendor_info)) {
 			if (strbeg("RF4100", prod_ident))
-				scgp->dev = DEV_PLASMON_RF_4100;
+				usalp->dev = DEV_PLASMON_RF_4100;
 			else if (strbeg("CDR4220", prod_ident))
-				scgp->dev = DEV_CDD_2000;
+				usalp->dev = DEV_CDD_2000;
 
 		} else if (strbeg("PLEXTOR", vendor_info)) {
 			if (strbeg("CD-R   PX-R24CS", prod_ident))
-				scgp->dev = DEV_RICOH_RO_1420C;
+				usalp->dev = DEV_RICOH_RO_1420C;
 
 		} else if (strbeg("RICOH", vendor_info)) {
 			if (strbeg("RO-1420C", prod_ident))
-				scgp->dev = DEV_RICOH_RO_1420C;
+				usalp->dev = DEV_RICOH_RO_1420C;
 			if (strbeg("RO1060C", prod_ident))
-				scgp->dev = DEV_RICOH_RO_1060C;
+				usalp->dev = DEV_RICOH_RO_1060C;
 
 		} else if (strbeg("SAF", vendor_info)) {	/* Smart & Friendly */
 			if (strbeg("CD-R2004", prod_ident) ||
 			    strbeg("CD-R2006 ", prod_ident))
-				scgp->dev = DEV_SONY_CDU_924;
+				usalp->dev = DEV_SONY_CDU_924;
 			else if (strbeg("CD-R2006PLUS", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 			else if (strbeg("CD-RW226", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 			else if (strbeg("CD-R4012", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 
 		} else if (strbeg("SANYO", vendor_info)) {
 			if (strbeg("CD-WO CRD-R24S", prod_ident))
-				scgp->dev = DEV_CDD_521;
+				usalp->dev = DEV_CDD_521;
 
 		} else if (strbeg("SONY", vendor_info)) {
 			if (strbeg("CD-R   CDU92", prod_ident) ||
 			    strbeg("CD-R   CDU94", prod_ident))
-				scgp->dev = DEV_SONY_CDU_924;
+				usalp->dev = DEV_SONY_CDU_924;
 
 		} else if (strbeg("TEAC", vendor_info)) {
 			if (strbeg("CD-R50S", prod_ident) ||
 			    strbeg("CD-R55S", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 
 		} else if (strbeg("TRAXDATA", vendor_info) ||
 				strbeg("Traxdata", vendor_info)) {
 			if (strbeg("CDR4120", prod_ident))
-				scgp->dev = DEV_TEAC_CD_R50S;
+				usalp->dev = DEV_TEAC_CD_R50S;
 
 		} else if (strbeg("T.YUDEN", vendor_info)) {
 			if (strbeg("CD-WO EW-50", prod_ident))
-				scgp->dev = DEV_TYUDEN_EW50;
+				usalp->dev = DEV_TYUDEN_EW50;
 
 		} else if (strbeg("WPI", vendor_info)) {	/* Wearnes */
 			if (strbeg("CDR-632P", prod_ident))
-				scgp->dev = DEV_CDD_2600;
+				usalp->dev = DEV_CDD_2600;
 
 		} else if (strbeg("YAMAHA", vendor_info)) {
 			if (strbeg("CDR10", prod_ident))
-				scgp->dev = DEV_YAMAHA_CDR_100;
+				usalp->dev = DEV_YAMAHA_CDR_100;
 			if (strbeg("CDR200", prod_ident))
-				scgp->dev = DEV_YAMAHA_CDR_400;
+				usalp->dev = DEV_YAMAHA_CDR_400;
 			if (strbeg("CDR400", prod_ident))
-				scgp->dev = DEV_YAMAHA_CDR_400;
+				usalp->dev = DEV_YAMAHA_CDR_400;
 
 		} else if (strbeg("MATSHITA", vendor_info)) {
 			if (strbeg("CD-R   CW-7501", prod_ident))
-				scgp->dev = DEV_MATSUSHITA_7501;
+				usalp->dev = DEV_MATSUSHITA_7501;
 			if (strbeg("CD-R   CW-7502", prod_ident))
-				scgp->dev = DEV_MATSUSHITA_7502;
+				usalp->dev = DEV_MATSUSHITA_7502;
 		}
-		if (scgp->dev == DEV_UNKNOWN) {
+		if (usalp->dev == DEV_UNKNOWN) {
 			/*
 			 * We do not have Manufacturer strings for
 			 * the following drives.
 			 */
 			if (strbeg("CDS615E", prod_ident))	/* Olympus */
-				scgp->dev = DEV_SONY_CDU_924;
+				usalp->dev = DEV_SONY_CDU_924;
 		}
-		if (scgp->dev == DEV_UNKNOWN && inq->type == INQ_ROMD) {
+		if (usalp->dev == DEV_UNKNOWN && inq->type == INQ_ROMD) {
 			BOOL	cdrr	 = FALSE;
 			BOOL	cdwr	 = FALSE;
 			BOOL	cdrrw	 = FALSE;
@@ -2427,55 +2427,55 @@ getdev(SCSI *scgp, BOOL print)
 			BOOL	dvd	 = FALSE;
 			BOOL	dvdwr	 = FALSE;
 
-			scgp->dev = DEV_CDROM;
+			usalp->dev = DEV_CDROM;
 
-			if (mmc_check(scgp, &cdrr, &cdwr, &cdrrw, &cdwrw,
+			if (mmc_check(usalp, &cdrr, &cdwr, &cdrrw, &cdwrw,
 								&dvd, &dvdwr))
-				scgp->dev = DEV_MMC_CDROM;
+				usalp->dev = DEV_MMC_CDROM;
 			if (cdwr)
-				scgp->dev = DEV_MMC_CDR;
+				usalp->dev = DEV_MMC_CDR;
 			if (cdwrw)
-				scgp->dev = DEV_MMC_CDRW;
+				usalp->dev = DEV_MMC_CDRW;
 			if (dvd)
-				scgp->dev = DEV_MMC_DVD;
+				usalp->dev = DEV_MMC_DVD;
 			if (dvdwr)
-				scgp->dev = DEV_MMC_DVD_WR;
+				usalp->dev = DEV_MMC_DVD_WR;
 		}
 		break;
 
 	case INQ_PROCD:
 		if (strbeg("BERTHOLD", vendor_info)) {
 			if (strbeg("", prod_ident))
-				scgp->dev = DEV_HRSCAN;
+				usalp->dev = DEV_HRSCAN;
 		}
 		break;
 
 	case INQ_SCAN:
-		scgp->dev = DEV_MS300A;
+		usalp->dev = DEV_MS300A;
 		break;
 	}
-	scgp->silent--;
+	usalp->silent--;
 	if (!print)
 		return (TRUE);
 
-	if (scgp->dev == DEV_UNKNOWN && !got_inquiry) {
+	if (usalp->dev == DEV_UNKNOWN && !got_inquiry) {
 #ifdef	PRINT_INQ_ERR
-		scg_printerr(scgp);
+		usal_printerr(usalp);
 #endif
 		return (FALSE);
 	}
 
-	printinq(scgp, stdout);
+	printinq(usalp, stdout);
 	return (TRUE);
 }
 
 void
-printinq(SCSI *scgp, FILE *f)
+printinq(SCSI *usalp, FILE *f)
 {
-	register struct scsi_inquiry *inq = scgp->inq;
+	register struct scsi_inquiry *inq = usalp->inq;
 
 	fprintf(f, "Device type    : ");
-	scg_fprintdev(f, inq);
+	usal_fprintdev(f, inq);
 	fprintf(f, "Version        : %d\n", inq->ansi_version);
 	fprintf(f, "Response Format: %d\n", inq->data_format);
 	if (inq->data_format >= 2) {
@@ -2502,11 +2502,11 @@ printinq(SCSI *scgp, FILE *f)
 }
 
 void
-printdev(SCSI *scgp)
+printdev(SCSI *usalp)
 {
 	printf("Device seems to be: ");
 
-	switch (scgp->dev) {
+	switch (usalp->dev) {
 
 	case DEV_UNKNOWN:	printf("unknown");		break;
 	case DEV_ACB40X0:	printf("Adaptec 4000/4010/4070"); break;
@@ -2553,7 +2553,7 @@ printdev(SCSI *scgp)
 	case DEV_PIONEER_DVDR_S101:printf("Pioneer DVD-R S101"); break;
 
 	default:		printf("Missing Entry for dev %d",
-						scgp->dev);	break;
+						usalp->dev);	break;
 
 	}
 	printf(".\n");
@@ -2561,11 +2561,11 @@ printdev(SCSI *scgp)
 }
 
 BOOL
-do_inquiry(SCSI *scgp, int print)
+do_inquiry(SCSI *usalp, int print)
 {
-	if (getdev(scgp, print)) {
+	if (getdev(usalp, print)) {
 		if (print)
-			printdev(scgp);
+			printdev(usalp);
 		return (TRUE);
 	} else {
 		return (FALSE);
@@ -2573,14 +2573,14 @@ do_inquiry(SCSI *scgp, int print)
 }
 
 BOOL
-recovery_needed(SCSI *scgp, cdr_t *dp)
+recovery_needed(SCSI *usalp, cdr_t *dp)
 {
 		int err;
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
-	scgp->silent++;
-	err = test_unit_ready(scgp);
-	scgp->silent--;
+	usalp->silent++;
+	err = test_unit_ready(usalp);
+	usalp->silent--;
 
 	if (err >= 0)
 		return (FALSE);
@@ -2595,21 +2595,21 @@ recovery_needed(SCSI *scgp, cdr_t *dp)
 }
 
 int
-scsi_load(SCSI *scgp, cdr_t *dp)
+scsi_load(SCSI *usalp, cdr_t *dp)
 {
 	int	key;
 	int	code;
 
 	if ((dp->cdr_flags & CDR_CADDYLOAD) == 0) {
-		if (scsi_start_stop_unit(scgp, 1, 1, dp && (dp->cdr_cmdflags&F_IMMED)) >= 0)
+		if (scsi_start_stop_unit(usalp, 1, 1, dp && (dp->cdr_cmdflags&F_IMMED)) >= 0)
 			return (0);
 	}
 
-	if (wait_unit_ready(scgp, 60))
+	if (wait_unit_ready(usalp, 60))
 		return (0);
 
-	key = scg_sense_key(scgp);
-	code = scg_sense_code(scgp);
+	key = usal_sense_key(usalp);
+	code = usal_sense_code(usalp);
 
 	if (key == SC_NOT_READY && (code == 0x3A || code == 0x30)) {
 		errmsgno(EX_BAD, "Cannot load media with %s drive!\n",
@@ -2620,24 +2620,24 @@ scsi_load(SCSI *scgp, cdr_t *dp)
 }
 
 int
-scsi_unload(SCSI *scgp, cdr_t *dp)
+scsi_unload(SCSI *usalp, cdr_t *dp)
 {
-	return (scsi_start_stop_unit(scgp, 0, 1, dp && (dp->cdr_cmdflags&F_IMMED)));
+	return (scsi_start_stop_unit(usalp, 0, 1, dp && (dp->cdr_cmdflags&F_IMMED)));
 }
 
 int 
-scsi_cdr_write(SCSI *scgp, 
+scsi_cdr_write(SCSI *usalp, 
                caddr_t bp       /* address of buffer */, 
                long sectaddr    /* disk address (sector) to put */, 
                long size        /* number of bytes to transfer */, 
                int blocks       /* sector count */, 
                BOOL islast      /* last write for track */)
 {
-	return (write_xg1(scgp, bp, sectaddr, size, blocks));
+	return (write_xg1(usalp, bp, sectaddr, size, blocks));
 }
 
 struct cd_mode_page_2A *
-mmc_cap(SCSI *scgp, Uchar *modep)
+mmc_cap(SCSI *usalp, Uchar *modep)
 {
 	int	len;
 	int	val;
@@ -2649,11 +2649,11 @@ mmc_cap(SCSI *scgp, Uchar *modep)
 retry:
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
-	if (!get_mode_params(scgp, 0x2A, "CD capabilities",
+	if (!get_mode_params(usalp, 0x2A, "CD capabilities",
 			mode, (Uchar *)0, (Uchar *)0, (Uchar *)0, &len)) {
 
-		if (scg_sense_key(scgp) == SC_NOT_READY) {
-			if (wait_unit_ready(scgp, 60))
+		if (usal_sense_key(usalp) == SC_NOT_READY) {
+			if (wait_unit_ready(usalp, 60))
 				goto retry;
 		}
 		return (NULL);		/* Pre SCSI-3/mmc drive		*/
@@ -2734,7 +2734,7 @@ mmc_getval(struct cd_mode_page_2A *mp,
 }
 
 BOOL
-is_mmc(SCSI *scgp, BOOL *cdwp, BOOL *dvdwp)
+is_mmc(SCSI *usalp, BOOL *cdwp, BOOL *dvdwp)
 {
 	BOOL	cdwr	= FALSE;
 	BOOL	cdwrw	= FALSE;
@@ -2744,7 +2744,7 @@ is_mmc(SCSI *scgp, BOOL *cdwp, BOOL *dvdwp)
 	if (dvdwp)
 		*dvdwp = FALSE;
 
-	if (!mmc_check(scgp, NULL, &cdwr, NULL, &cdwrw, NULL, dvdwp))
+	if (!mmc_check(usalp, NULL, &cdwr, NULL, &cdwrw, NULL, dvdwp))
 		return (FALSE);
 
 	if (cdwp)
@@ -2754,7 +2754,7 @@ is_mmc(SCSI *scgp, BOOL *cdwp, BOOL *dvdwp)
 }
 
 BOOL
-mmc_check(SCSI *scgp, 
+mmc_check(SCSI *usalp, 
           BOOL *cdrrp   /* CD ROM */, 
           BOOL *cdwrp   /* CD-R writer */, 
           BOOL *cdrrwp  /* CD-RW reader */, 
@@ -2766,16 +2766,16 @@ mmc_check(SCSI *scgp,
 	BOOL	was_atapi;
 	struct	cd_mode_page_2A *mp;
 
-	if (scgp->inq->type != INQ_ROMD)
+	if (usalp->inq->type != INQ_ROMD)
 		return (FALSE);
 
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
-	was_atapi = allow_atapi(scgp, TRUE);
-	scgp->silent++;
-	mp = mmc_cap(scgp, mode);
-	scgp->silent--;
-	allow_atapi(scgp, was_atapi);
+	was_atapi = allow_atapi(usalp, TRUE);
+	usalp->silent++;
+	mp = mmc_cap(usalp, mode);
+	usalp->silent--;
+	allow_atapi(usalp, was_atapi);
 	if (mp == NULL)
 		return (FALSE);
 
@@ -2798,7 +2798,7 @@ print_speed(char *fmt, int val)
 #define	SVAL(what, val)		printf("  %s: %s\n", what, val)
 
 void
-print_capabilities(SCSI *scgp)
+print_capabilities(SCSI *usalp)
 {
 	BOOL	was_atapi;
 	Uchar	mode[0x100];
@@ -2810,16 +2810,16 @@ static	const	char	*load[8] = {"caddy", "tray", "pop-up", "reserved(3)",
 static	const	char	*rotctl[4] = {"CLV/PCAV", "CAV", "reserved(2)", "reserved(3)"};
 
 
-	if (scgp->inq->type != INQ_ROMD)
+	if (usalp->inq->type != INQ_ROMD)
 		return;
 
 	fillbytes((caddr_t)mode, sizeof (mode), '\0');
 
-	was_atapi = allow_atapi(scgp, TRUE);	/* Try to switch to 10 byte mode cmds */
-	scgp->silent++;
-	mp = mmc_cap(scgp, mode);
-	scgp->silent--;
-	allow_atapi(scgp, was_atapi);
+	was_atapi = allow_atapi(usalp, TRUE);	/* Try to switch to 10 byte mode cmds */
+	usalp->silent++;
+	mp = mmc_cap(usalp, mode);
+	usalp->silent--;
+	allow_atapi(usalp, was_atapi);
 	if (mp == NULL)
 		return;
 

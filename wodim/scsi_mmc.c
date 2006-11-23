@@ -54,10 +54,10 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "scsimmc.h"
 #include "wodim.h"
@@ -66,24 +66,24 @@ extern	int	xdebug;
 
 
 
-int	get_configuration(SCSI *scgp, caddr_t bp, int cnt, int st_feature, 
+int	get_configuration(SCSI *usalp, caddr_t bp, int cnt, int st_feature, 
 								int rt);
-static	int	get_conflen(SCSI *scgp, int st_feature, int rt);
-int	get_curprofile(SCSI *scgp);
-static	int	get_profiles(SCSI *scgp, caddr_t bp, int cnt);
-int	print_profiles(SCSI *scgp);
-int	get_proflist(SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
+static	int	get_conflen(SCSI *usalp, int st_feature, int rt);
+int	get_curprofile(SCSI *usalp);
+static	int	get_profiles(SCSI *usalp, caddr_t bp, int cnt);
+int	print_profiles(SCSI *usalp);
+int	get_proflist(SCSI *usalp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
 						 BOOL *ddcdp);
-int	get_wproflist(SCSI *scgp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, 
+int	get_wproflist(SCSI *usalp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, 
 						  BOOL *ddcdp);
 
 /*
  * Get feature codes
  */
 int
-get_configuration(SCSI *scgp, caddr_t bp, int cnt, int st_feature, int rt)
+get_configuration(SCSI *usalp, caddr_t bp, int cnt, int st_feature, int rt)
 {
-	register struct	scg_cmd	*scmd = scgp->scmd;
+	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	fillbytes((caddr_t)scmd, sizeof (*scmd), '\0');
 	scmd->addr = bp;
@@ -92,7 +92,7 @@ get_configuration(SCSI *scgp, caddr_t bp, int cnt, int st_feature, int rt)
 	scmd->cdb_len = SC_G1_CDBLEN;
 	scmd->sense_len = CCS_SENSE_LEN;
 	scmd->cdb.g1_cdb.cmd = 0x46;
-	scmd->cdb.g1_cdb.lun = scg_lun(scgp);
+	scmd->cdb.g1_cdb.lun = usal_lun(usalp);
 	if (rt & 1)
 		scmd->cdb.g1_cdb.reladr  = 1;
 	if (rt & 2)
@@ -101,28 +101,28 @@ get_configuration(SCSI *scgp, caddr_t bp, int cnt, int st_feature, int rt)
 	i_to_2_byte(scmd->cdb.g1_cdb.addr, st_feature);
 	g1_cdblen(&scmd->cdb.g1_cdb, cnt);
 
-	scgp->cmdname = "get_configuration";
+	usalp->cmdname = "get_configuration";
 
-	return (scg_cmd(scgp));
+	return (usal_cmd(usalp));
 }
 
 /*
  * Retrieve feature code list length
  */
 static int
-get_conflen(SCSI *scgp, int st_feature, int rt)
+get_conflen(SCSI *usalp, int st_feature, int rt)
 {
 	Uchar	cbuf[8];
 	int	flen;
 	int	i;
 
 	fillbytes(cbuf, sizeof (cbuf), '\0');
-	scgp->silent++;
-	i = get_configuration(scgp, (char *)cbuf, sizeof (cbuf), st_feature, rt);
-	scgp->silent--;
+	usalp->silent++;
+	i = get_configuration(usalp, (char *)cbuf, sizeof (cbuf), st_feature, rt);
+	usalp->silent--;
 	if (i < 0)
 		return (-1);
-	i = sizeof (cbuf) - scg_getresid(scgp);
+	i = sizeof (cbuf) - usal_getresid(usalp);
 	if (i < 4)
 		return (-1);
 
@@ -133,7 +133,7 @@ get_conflen(SCSI *scgp, int st_feature, int rt)
 }
 
 int
-get_curprofile(SCSI *scgp)
+get_curprofile(SCSI *usalp)
 {
 	Uchar	cbuf[8];
 	int	amt;
@@ -142,13 +142,13 @@ get_curprofile(SCSI *scgp)
 	int	i;
 
 	fillbytes(cbuf, sizeof (cbuf), '\0');
-	scgp->silent++;
-	i = get_configuration(scgp, (char *)cbuf, sizeof (cbuf), 0, 0);
-	scgp->silent--;
+	usalp->silent++;
+	i = get_configuration(usalp, (char *)cbuf, sizeof (cbuf), 0, 0);
+	usalp->silent--;
 	if (i < 0)
 		return (-1);
 
-	amt = sizeof (cbuf) - scg_getresid(scgp);
+	amt = sizeof (cbuf) - usal_getresid(usalp);
 	if (amt < 8)
 		return (-1);
 	flen = a_to_u_4_byte(cbuf);
@@ -158,7 +158,7 @@ get_curprofile(SCSI *scgp)
 	profile = a_to_u_2_byte(&cbuf[6]);
 
 	if (xdebug > 1)
-		scg_prbytes("Features: ", cbuf, amt);
+		usal_prbytes("Features: ", cbuf, amt);
 
 	if (xdebug > 0)
 		printf("feature len: %d current profile 0x%04X len %d\n",
@@ -168,25 +168,25 @@ get_curprofile(SCSI *scgp)
 }
 
 static int
-get_profiles(SCSI *scgp, caddr_t bp, int cnt)
+get_profiles(SCSI *usalp, caddr_t bp, int cnt)
 {
 	int	amt;
 	int	flen;
 	int	i;
 
-	flen = get_conflen(scgp, 0, 0);
+	flen = get_conflen(usalp, 0, 0);
 	if (flen < 0)
 		return (-1);
 	if (cnt < flen)
 		flen = cnt;
 
 	fillbytes(bp, cnt, '\0');
-	scgp->silent++;
-	i = get_configuration(scgp, (char *)bp, flen, 0, 0);
-	scgp->silent--;
+	usalp->silent++;
+	i = get_configuration(usalp, (char *)bp, flen, 0, 0);
+	usalp->silent--;
 	if (i < 0)
 		return (-1);
-	amt = flen - scg_getresid(scgp);
+	amt = flen - usal_getresid(usalp);
 
 	flen = a_to_u_4_byte(bp);
 	if ((flen+4) < amt)
@@ -196,7 +196,7 @@ get_profiles(SCSI *scgp, caddr_t bp, int cnt)
 }
 
 int
-print_profiles(SCSI *scgp)
+print_profiles(SCSI *usalp)
 {
 	Uchar	cbuf[1024];
 	Uchar	*p;
@@ -206,13 +206,13 @@ print_profiles(SCSI *scgp)
 	int	i;
 	int	n;
 
-	flen = get_profiles(scgp, (caddr_t)cbuf, sizeof (cbuf));
+	flen = get_profiles(usalp, (caddr_t)cbuf, sizeof (cbuf));
 	if (flen < 0)
 		return (-1);
 
 	p = cbuf;
 	if (xdebug > 1)
-		scg_prbytes("Features: ", cbuf, flen);
+		usal_prbytes("Features: ", cbuf, flen);
 
 	curprofile = a_to_u_2_byte(&p[6]);
 	if (xdebug > 0)
@@ -239,7 +239,7 @@ print_profiles(SCSI *scgp)
 }
 
 int
-get_proflist(SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, 
+get_proflist(SCSI *usalp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, 
              BOOL *ddcdp)
 {
 	Uchar	cbuf[1024];
@@ -255,13 +255,13 @@ get_proflist(SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
 	BOOL	dvdplus	= FALSE;
 	BOOL	ddcd	= FALSE;
 
-	flen = get_profiles(scgp, (caddr_t)cbuf, sizeof (cbuf));
+	flen = get_profiles(usalp, (caddr_t)cbuf, sizeof (cbuf));
 	if (flen < 0)
 		return (-1);
 
 	p = cbuf;
 	if (xdebug > 1)
-		scg_prbytes("Features: ", cbuf, flen);
+		usal_prbytes("Features: ", cbuf, flen);
 
 	curprofile = a_to_u_2_byte(&p[6]);
 	if (xdebug > 0)
@@ -311,7 +311,7 @@ get_proflist(SCSI *scgp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
 }
 
 int
-get_wproflist(SCSI *scgp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp)
+get_wproflist(SCSI *usalp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp)
 {
 	Uchar	cbuf[1024];
 	Uchar	*p;
@@ -325,7 +325,7 @@ get_wproflist(SCSI *scgp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp)
 	BOOL	dvdplus	= FALSE;
 	BOOL	ddcd	= FALSE;
 
-	flen = get_profiles(scgp, (caddr_t)cbuf, sizeof (cbuf));
+	flen = get_profiles(usalp, (caddr_t)cbuf, sizeof (cbuf));
 	if (flen < 0)
 		return (-1);
 	p = cbuf;

@@ -84,7 +84,7 @@ static char     sccsid[] =
 #endif
 #endif
 
-#include <scg/scsitransp.h>
+#include <usal/scsitransp.h>
 
 #ifdef	USE_BEOS_AREAS
 #include	<be/kernel/OS.h>

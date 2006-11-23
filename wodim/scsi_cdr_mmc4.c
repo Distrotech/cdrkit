@@ -52,28 +52,28 @@ static	char sccsid[] =
 #include <intcvt.h>
 #include <schily.h>
 
-#include <scg/scgcmd.h>
-#include <scg/scsidefs.h>
-#include <scg/scsireg.h>
-#include <scg/scsitransp.h>
+#include <usal/usalcmd.h>
+#include <usal/scsidefs.h>
+#include <usal/scsireg.h>
+#include <usal/scsitransp.h>
 
 #include "scsimmc.h"
 #include "wodim.h"
 
-void	print_capabilities_mmc4(SCSI *scgp);
+void	print_capabilities_mmc4(SCSI *usalp);
 
 #define	DOES(what, flag)	printf("  Does %s%s\n", flag?"":"not ", what)
 
 
 void
-print_capabilities_mmc4(SCSI *scgp)
+print_capabilities_mmc4(SCSI *usalp)
 {
 	int	cdrw_types;
 
-	if (scgp->inq->type != INQ_ROMD)
+	if (usalp->inq->type != INQ_ROMD)
 		return;
 
-	cdrw_types = get_supported_cdrw_media_types(scgp);
+	cdrw_types = get_supported_cdrw_media_types(usalp);
 	if (cdrw_types != -1) {
 		printf("\nSupported CD-RW media types according to MMC-4 feature 0x37:\n");
 		DOES("write multi speed       CD-RW media", (cdrw_types & CDR_CDRW_MULTI));
