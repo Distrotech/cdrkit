@@ -452,7 +452,7 @@ static void Check_interface_for_device(struct stat *statstruct, char *pdev_name)
 #if defined(__linux__)
     int is_scsi = 1;
 #endif
-#if !defined (STAT_MACROS_BROKEN) || (STAT_MACROS_BROKEN != 1)
+#ifndef STAT_MACROS_BROKEN
     if (!S_ISCHR(statstruct->st_mode) &&
 	!S_ISBLK(statstruct->st_mode)) {
       fprintf(stderr, "%s is not a device\n",pdev_name);
