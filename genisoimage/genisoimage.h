@@ -547,7 +547,6 @@ extern	size_t	convert_to_unicode	(unsigned char *buffer,
 #   else
 extern	void	convert_to_unicode	(unsigned char *buffer,
 			int size, char *source, struct unls_table *inls);
->>>>>>> .merge-rechts.r368
 #   endif
 extern	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
 #endif
