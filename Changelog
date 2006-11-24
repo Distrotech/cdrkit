@@ -14,6 +14,7 @@ cdrkit (1.1.x) UNRELEASED; urgency=low
 
   [ Lorenz Minder ]
   * user output junk filter in icedax/toc.c
+  * flexible ascii conversion buffer
 
  -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
 
