@@ -548,7 +548,7 @@ extern	size_t	convert_to_unicode	(unsigned char *buffer,
 extern	void	convert_to_unicode	(unsigned char *buffer,
 			int size, char *source, struct unls_table *inls);
 #   endif
-extern	int	joliet_strlen		__PR((const char *string, struct unls_table *inls));
+extern	int	joliet_strlen	(const char *string, struct unls_table *inls);
 #endif
 extern unsigned char conv_charset(unsigned char, struct unls_table *,
 											 struct unls_table *);

@@ -1556,35 +1556,65 @@ static const char *a2h[255-191] = {
 "&yuml;",
 };
 
-static char *ascii2html(unsigned char *inp);
-
 static char *ascii2html(unsigned char *inp)
 {
-	static unsigned char outline[300];
-	unsigned char *outp = outline;
+	static size_t buflen = 256;
+	static char *outline = 0;
+	size_t pos = 0;
 
-#define copy_translation(a,b) else if (*inp == (a)) \
-{ strcpy((char *)outp, (b)); outp += sizeof((b))-1; }
+	/* init */
+	if(!outline) {
+		outline = malloc(buflen);
+		if(outline == 0) {
+			fprintf(stderr, "error: memory exhausted\n");
+			_exit(EXIT_FAILURE);
+		}
+	}
+
+	outline[pos] = '\0';
 
 	while (*inp != '\0') {
-		if (0) ;
-		copy_translation('"', "&quot;")
-		copy_translation('&', "&amp;")
-		copy_translation('<', "&lt;")
-		copy_translation('>', "&gt;")
-		copy_translation(160, "&nbsp;")
-		else if (*inp < 192) {
-			*outp++ = *inp;
-		} else {
-			strcpy((char *)outp, a2h[*inp-192]);
-			outp += strlen(a2h[*inp-192]);
+
+		/* Pick the sequence to insert */
+		const char *insert;
+		char b[2];
+		const int c = (unsigned char)*inp;
+		switch(c) {
+			case '"':	insert = "&quot;";	break;
+			case '&':	insert = "&amp;";	break;
+			case '<':	insert = "&lt;";	break;
+			case '>':	insert = "&gt;";	break;
+			case 160:	insert = "&nbsp;";	break;
+			default: {
+					 if(c < 192) {
+						 b[0] = c;
+						 b[1] = '\0';
+						 insert = b;
+					 } else {
+						 insert = a2h[c - 192];
+					 }
+				 }
+		};
+
+		/* Resize buffer */
+		const size_t l = strlen(insert);
+		while(pos + l + 1 >= buflen) {
+			outline = realloc(outline, buflen *= 2);
+			if(outline == 0) {
+				fprintf(stderr, "error: memory exhausted\n");
+				_exit(EXIT_FAILURE);
+			}
 		}
-		inp++;
+
+		/* Copy in */
+		strcpy(&outline[pos], insert);
+		pos += l;
+
+		++inp;
 	}
-	*outp = '\0';
-	return (char *) outline;
+
+	return outline;
 }
-#undef copy_translation
 
 static void emit_cdindex_form(char *fname_baseval)
 {
