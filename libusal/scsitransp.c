@@ -67,7 +67,7 @@ static	char sccsid[] =
  *	string is related to a modified source.
  */
 static	char	_usal_version[]		= CDRKIT_VERSION;	/* The global libusal version	*/
-static	char	_usal_auth_cdrkit[]	= "Cdrkit maintainers";	/* The author for this module	*/
+static	char	_usal_auth_cdrkit[]	= "Cdrkit";	/* The author for this module	*/
 
 #define	DEFTIMEOUT	20	/* Default timeout for SCSI command transport */
 

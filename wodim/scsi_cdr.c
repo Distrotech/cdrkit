@@ -525,7 +525,8 @@ scsi_set_streaming(SCSI *usalp, caddr_t perf_desc, int size)
 
 	usalp->cmdname = "set streaming";
 
-	printf("scsi_set_streaming\n");
+  if(usalp->verbose) 
+     fprintf(stderr, "scsi_set_streaming\n");
 	if (usal_cmd(usalp) < 0)
 		return (-1);
 	return (0);

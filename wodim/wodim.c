@@ -355,8 +355,9 @@ int main(int argc, char *argv[])
 		 * XXX mlockall() needs root privilleges.
 		 */
 		if (mlockall(MCL_CURRENT|MCL_FUTURE) < 0) {
-			errmsg("WARNING: Cannot do mlockall(2).\n");
-			errmsgno(EX_BAD, "WARNING: This causes a high risk for buffer underruns.\n");
+       if(lverbose>2)
+          fprintf(stderr,
+                "W: Cannot do mlockall(2). Possibly increased risk for buffer underruns.\n");
 		}
 #endif
 
@@ -458,7 +459,7 @@ int main(int argc, char *argv[])
 
 #ifdef __linux__
 	/* get the rawio capability */
-  if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose)) 
+  if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose>2)) 
   {
 		perror("Warning: Cannot gain SYS_RAWIO capability");
     fprintf(stderr, "Possible reason: wodim not installed SUID root.\n");
@@ -988,7 +989,7 @@ if (lverbose > 2)
 				comerr("Panic cannot set back effective uid.\n");
 		}
 #ifdef __linux__
-		if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose))
+		if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose>2))
 			perror("Error: Cannot gain SYS_RAWIO capability, is wodim installed SUID root? Reason");
 #endif
 
@@ -4224,7 +4225,8 @@ rt_raisepri(int pri)
 	fillbytes(&scp, sizeof (scp), '\0');
 	scp.sched_priority = sched_get_priority_max(SCHED_RR) - pri;
 	if (sched_setscheduler(0, SCHED_RR, &scp) < 0) {
-		errmsg("WARNING: Cannot set RR-scheduler\n");
+		if(lverbose>2)
+       errmsg("WARNING: Cannot set RR-scheduler\n");
 		return (-1);
 	}
 	return (0);
@@ -4265,7 +4267,8 @@ rt_raisepri(int pri)
 
 	/* set priority class */
 	if (SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS) == FALSE) {
-		errmsgno(EX_BAD, "No realtime priority class possible.\n");
+		if(debug || lverbose>2)
+       errmsgno(EX_BAD, "No realtime priority class possible.\n");
 		return (-1);
 	}
 
@@ -4299,8 +4302,10 @@ raisepri(int pri)
 #if	defined(HAVE_SETPRIORITY) && defined(PRIO_PROCESS)
 
 	if (setpriority(PRIO_PROCESS, getpid(), -20 + pri) < 0) {
-		errmsg("WARNING: Cannot set priority using setpriority().\n");
-		errmsgno(EX_BAD, "WARNING: This causes a high risk for buffer underruns.\n");
+		if(debug || lverbose>2)
+       fprintf(stderr,
+             "WARNING: Cannot set priority using setpriority(),"
+             "increased risk for buffer underruns.\n");
 	}
 #else
 #ifdef	HAVE_DOSSETPRIORITY	/* RT priority on OS/2 */
