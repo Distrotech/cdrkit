@@ -624,12 +624,6 @@ if (lverbose > 2)
 		if (is_dvdwr && !set_cdrcmds("mmc_mdvd", (cdr_t **)NULL)) {
 			errmsgno(EX_BAD,
 			"Internal error, DVD driver failure. Please report to debburn-devel@lists.alioth.debian.org.\n");
-       /*
-			errmsgno(EX_BAD,
-			"This version of cdrecord does not include DVD-R/DVD-RW support code.\n");
-			errmsgno(EX_BAD,
- 			"See /usr/share/doc/cdrecord/README.DVD.Debian for details on DVD support.\n");
-      */
 		}
 		/*
 		 * Only exit if this is not the ProDVD test binary.
@@ -829,7 +823,7 @@ if (lverbose > 2)
 		/*
 		 * Some drives (e.g. Plextor) don't like to write correctly
 		 * in SAO mode if the sector size is set to 512 bytes.
-		 * In addition, cdrecord -msinfo will not work properly
+		 * In addition, wodim -msinfo will not work properly
 		 * if the sector size is not 2048 bytes.
 		 */
 		set_secsize(usalp, DATA_SEC_SIZE);

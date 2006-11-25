@@ -430,7 +430,7 @@ parse_textfile(track_t trackp[], state_t *sp)
 		trackp[0].flags |= TI_TEXT;
 	} else {
 		errmsgno(EX_BAD, "Ignoring CDTEXTFILE '%s'.\n", word);
-		errmsgno(EX_BAD, "If you like to write CD-Text, call cdrecord -text.\n");
+		errmsgno(EX_BAD, "If you like to write CD-Text, call wodim -text.\n");
 	}
 
 	checkextra();

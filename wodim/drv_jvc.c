@@ -712,7 +712,7 @@ extern	char	*buf;
 
 	if (trackp->tracks < 1) {
 		/*
-		 * We come here if cdrecord isonly called with the -fix option.
+		 * We come here if wodim isonly called with the -fix option.
 		 * As long as we cannot read and interpret the PMA, we must
 		 * abort here.
 		 */
