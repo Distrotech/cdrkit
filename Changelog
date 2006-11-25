@@ -14,6 +14,7 @@ cdrkit (1.1.x) UNRELEASED; urgency=medium
     (RemainsOfLibSchily).
   * reenabled selection of the DVD driver, accidentaly disabled in 1.0, when
     beeing in non-verbose mode
+  * made dirsplit work with file symlinks
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in

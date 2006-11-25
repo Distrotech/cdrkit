@@ -288,9 +288,10 @@ sub explore {
          next unless (eval("\$f=~$opt_filter;"));
       }
 
-      # directory, may still be a symlink. With $opt_follow do always follow,
-      # otherwise check it is not a symlink.
-      if(-d $f && ( $opt_follow || !-l $f) ) {
+      if(-l $f && ! $opt_follow) {
+         push(@files, $f);
+      }
+      elsif(-d $f) {
          push(@dirs, $f);
       }
       else {
@@ -484,7 +485,7 @@ dirsplit [options] [advanced options] < directory >
   4: like 2, but the max. size of the atoms is limited to $max (storing the
                rest on another medium)
 
- -F|--follow   Follow directory symlinks. File symlinks not supported yet.
+ -F|--follow   Follow symlinks. Use with care!
  -b|--blksize  NUMBER, block size of the target filesystem (currently $bsize).
  -o|--overhead NUMBER, overhead caused by directory entries (as factor for the
                filename length, default: 50, empiricaly found for Joliet+RR
