@@ -118,7 +118,7 @@ else {
 # check for pointless requests
 my $testsize=0;
 for(@sizes) {
-   die "Too large object(s) ($_) for the given max size: @{$names{$_}}\n" if($_>$max);
+   die "Too large object(s) ($_) for the given max size: @{$names{$_}} (maybe coalesced in arrays, check manually)\n" if($_>$max);
 
    $testsize+=$_;
 }
@@ -221,6 +221,42 @@ for(@result) {
 }
 
 exit $ret;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -346,13 +382,11 @@ sub insitem {
    if($opt_simple) {
       # now the simplest method to fill the bins, just take a new one when the
       # object-to-be-added no longer fits
-      if($simpleBinSizes[$simplePos]+$size < $max) {
-         $simpleBinSizes[$simplePos]+=$size;
-      }
-      else { 
+      if($simpleBinSizes[$simplePos]+$size > $max) {
          $globwaste += ( $max-$simpleBinSizes[$simplePos] );
          $simplePos++;
       };
+      $simpleBinSizes[$simplePos]+=$size;
       push( @{$result[$simplePos]}, $object);
    }
    
