@@ -1198,13 +1198,12 @@ checkextra()
 }
 
 /* VARARGS1 */
-static void 
-cueabort(const char *fmt, ...)
+static void cueabort(const char *fmt, ...)
 {
 	va_list	args;
-
-	va_start(args, fmt);
-	comerrno(EX_BAD, "%r on line %d in '%s'.\n",
-		fmt, args, lineno, fname);
+  va_start(args, fmt);
+  vfprintf(stderr, fmt, args);
 	va_end(args);
+  fprintf(stderr, " on line %d in '%s'.\n", lineno, fname);
+  exit(EXIT_FAILURE);
 }

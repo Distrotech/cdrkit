@@ -56,6 +56,9 @@ static	char sccsid[] =
 #include <usal/scsitransp.h>
 #include "usaltimes.h"
 
+#include <stdarg.h>
+
+
 /*
  *	Warning: you may change this source, but if you do that
  *	you need to change the _usal_version and _usal_auth* string below.
@@ -1288,8 +1291,6 @@ usal_printdev(struct scsi_inquiry *ip)
 	usal_fprintdev(stdout, ip);
 }
 
-#include <vadefs.h>
-
 /*
  * print into the SCSI error buffer, adjust the next write pointer.
  */
@@ -1301,7 +1302,7 @@ usal_printf(SCSI *usalp, const char *form, ...)
 	va_list	args;
 
 	va_start(args, form);
-	cnt = snprintf(usalp->errptr, usal_errrsize(usalp), "%r", form, args);
+	cnt = vsnprintf(usalp->errptr, usal_errrsize(usalp), form, args);
 	va_end(args);
 
 	if (cnt < 0) {
