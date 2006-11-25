@@ -81,8 +81,6 @@ static	char sccsid[] =
 #include <sys/capability.h> 	/* for rawio capability */
 #endif
 
-#define cdr_version "1.0"
-
 #if defined(_POSIX_PRIORITY_SCHEDULING) && _POSIX_PRIORITY_SCHEDULING -0 >= 0
 #ifdef  HAVE_SYS_PRIOCNTL_H	/* The preferred SYSvR4 schduler */
 #else
@@ -319,7 +317,7 @@ int main(int argc, char *argv[])
 	if (flags & F_VERSION) {
 	   fprintf(stderr,
 			 "Cdrecord-yelling-line-to-tell-frontends-to-use-it-like-version 2.01.01a03-dvd \n"
-		 "Wodim " cdr_version "\n"
+		 "Wodim " CDRKIT_VERSION "\n"
 		 "Copyright (C) 2006 Cdrkit suite contributors\n"
 		 "Based on works from Joerg Schilling, Copyright (C) 1995-2006, J. Schilling\n"
 		 );

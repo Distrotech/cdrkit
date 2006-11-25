@@ -1,5 +1,9 @@
 PROJECT (INCLUDES)
 
+FILE(READ "${CMAKE_SOURCE_DIR}/VERSION" CDRKIT_VERSION)
+STRING(REPLACE "\n" "" CDRKIT_VERSION "${CDRKIT_VERSION}")
+MESSAGE("Configuring Cdrkit, version ${CDRKIT_VERSION}")
+
 # auto-generated header with sizeof magic
 INCLUDE(CheckTypeSize)
 CHECK_TYPE_SIZE(short SIZE_SHORT)
@@ -117,6 +121,7 @@ return 0;
 }
 ")
 CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_INET_NTOA)
+
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 

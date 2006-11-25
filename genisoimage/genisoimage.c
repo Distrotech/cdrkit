@@ -86,7 +86,7 @@ static	char sccsid[] =
 struct directory *root = NULL;
 int		path_ind;
 
-char	version_string[] = "genisoimage 2.01.01a05-unofficial-iconv";
+char	version_string[] = "genisoimage " CDRKIT_VERSION;
 
 char		*outfile;
 FILE		*discimage;
@@ -1049,11 +1049,7 @@ susage(int excode)
 	fprintf(stderr, "Usage: %s [options] -o file directory ...\n", program_name);
 	fprintf(stderr, "\nUse %s -help\n", program_name);
 	fprintf(stderr, "to get a list of valid options.\n");
-	fprintf(stderr, 
-        "\nNOTE: This version of genisoimage differs from the one published by Eric Youngdale\n"
-        "and from the one included in cdrtools (by Joerg Schilling).\n"
-        "It provides a different set of features and has different problems.\n"
-        "Report errors to debburn-devel@lists.alioth.debian.org.\n");
+	fprintf(stderr, "\nReport problems to debburn-devel@lists.alioth.debian.org.\n");
 
 	exit(excode);
 }
@@ -1149,10 +1145,7 @@ usage(int excode)
 		}
 	}
 	fprintf(stderr, 
-        "\nNOTE: This version of genisoimage differs from the one published by Eric Youngdale\n"
-        "and from the one included in cdrtools (by Joerg Schilling).\n"
-        "It provides a different set of features and has different problems.\n"
-        "Report errors to debburn-devel@lists.alioth.debian.org.\n");
+        "\nReport problems to debburn-devel@lists.alioth.debian.org.\n");
 	exit(excode);
 }
 
@@ -2162,12 +2155,6 @@ main(int argc, char *argv[])
 			break;
 		case OPTION_PVERSION:
 			printf("%s (%s)\n", version_string, HOST_SYSTEM);
-#ifdef	OPTION_SILO_BOOT
-			printf("Warning: this is unofficial (modified) version of genisoimage that incorporates\n");
-			printf("	support for a non Sparc compliant boot method called SILO.\n");
-			printf("	The official method to create Sparc boot CDs is to use -sparc-boot\n");
-			printf("	In case of problems first test with an official version of genisoimage.\n");
-#endif
 			exit(0);
 			break;
 		case OPTION_NOSPLIT_SL_COMPONENT:

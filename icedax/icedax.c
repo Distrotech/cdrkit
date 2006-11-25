@@ -2168,12 +2168,9 @@ int main(int argc, char *argv[])
 		/* No more file type arguments */;
 	moreargs = cav - argv;
 	if (version) {
-		fputs ("cdda2wav version ", stderr);
-		fputs (VERSION, stderr);
-		fputs ("\n"
-          "NOTE: modified version of the cdrkit suite, differs from the original\n", stderr);
-		exit (NO_ERROR);
-	}
+     fprintf(stderr, "icedax " CDRKIT_VERSION "\n");
+     exit(EXIT_SUCCESS);
+  }
 	if (help) {
 		usage();
 	}

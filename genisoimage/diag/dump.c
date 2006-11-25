@@ -279,7 +279,7 @@ main(int argc, char *argv[])
 	if (help)
 		usage(0);
 	if (prvers) {
-		printf("devdump %s (%s)\n", "2.01.01a03", HOST_SYSTEM);
+		printf("devdump %s (%s)\n", CDRKIT_VERSION, HOST_SYSTEM);
 		exit(0);
 	}
 	cac = argc - 1;

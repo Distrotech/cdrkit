@@ -281,4 +281,4 @@
 #define HAVE_DYN_ARRAYS 1		/* If the compiler allows dynamic sized arrays */
 
 #define HOST_SYSTEM "@CMAKE_SYSTEM_NAME@"
-#cmakedefine CDRKIT_VERSION "@CDRKIT_VERSION@-$Rev$"
+#cmakedefine CDRKIT_VERSION "@CDRKIT_VERSION@ [$Rev$]"

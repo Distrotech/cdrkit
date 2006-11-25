@@ -225,7 +225,7 @@ struct	scsi_format_data fmt;
 static void
 usage(int ret)
 {
-	fprintf(stderr, "Usage:\treadcd [options]\n");
+	fprintf(stderr, "Usage:\treadom [options]\n");
 	fprintf(stderr, "options:\n");
 	fprintf(stderr, "\t-version	print version information and exit\n");
 	fprintf(stderr, "\tdev=target	SCSI target to use\n");
@@ -314,12 +314,12 @@ main(int argc, char *argv[])
 	}
 	if (help)
 		usage(0);
-	if (pversion) {
-		printf("readcd %s (%s) "
-		       "Copyright (C) 1987, 1995-2006 Joerg Schilling\n",
-		       cdr_version, HOST_SYSTEM);
-		printf("(using modified version of libusal -- "
-		       "don't bother Joerg Schilling with problems)\n");
+  if (pversion) {
+     printf("readom " CDRKIT_VERSION " (" HOST_SYSTEM ")\n"
+           "Copyright (C) 1987, 1995-2006 Joerg Schilling\n"
+           "Copyright (C) 2006 Cdrkit maintainers\n"
+           "(modified version of <censored> -- "
+           "don't bother Joerg Schilling with problems)\n");
 		exit(0);
 	}
 
