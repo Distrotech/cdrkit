@@ -5,7 +5,7 @@ INCLUDE(../include/AddSchilyBits.cmake)
 
 AUX_SOURCE_DIRECTORY(. readom_SRCS)
 
-LINK_DIRECTORIES(../libschily ../libusal ../libdeflt)
+LINK_DIRECTORIES(../librols ../libusal ../libdeflt)
 
 ADD_DEFINITIONS(-DCLONE_WRITE)
 

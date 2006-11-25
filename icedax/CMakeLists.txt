@@ -17,7 +17,7 @@ IF (WIN32)
 	LIST(APPEND EXTRA_LIBS winmm)
 ENDIF (WIN32)
 
-LINK_DIRECTORIES(../libschily ../libusal ../libdeflt ../libparanoia)
+LINK_DIRECTORIES(../librols ../libusal ../libdeflt ../libparanoia)
 ADD_EXECUTABLE (icedax aifc.c aiff.c base64.c cd_misc.c icedax.c defaults.c getnum.c interface.c ioctl.c md5c.c modes.c raw.c resample.c ringbuff.c scsi_cdr.c scsi_cmds.c scsi_scan.c semshm.c setuid.c sha_func.c sndconfig.c sun.c toc.c wav.c)
 TARGET_LINK_LIBRARIES(icedax ${EXTRA_LIBS})
 SET_TARGET_PROPERTIES(icedax PROPERTIES  SKIP_BUILD_RPATH TRUE)

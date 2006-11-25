@@ -14,7 +14,7 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
    MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
 endif(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
 
-LINK_DIRECTORIES(../libschily ../libusal ../libdeflt ../libedc)
+LINK_DIRECTORIES(../librols ../libusal ../libdeflt ../libedc)
 
 ADD_DEFINITIONS(-DHAVE_LIB_EDC_ECC -DCLONE_WRITE)
 

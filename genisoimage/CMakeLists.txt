@@ -28,7 +28,7 @@ SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c d
 	boot-mipsel.c endian.c  )
 
 #SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES )
-LINK_DIRECTORIES(../libhfs_iso ../libschily ../libusal ../libunls ../libdeflt)
+LINK_DIRECTORIES(../libhfs_iso ../librols ../libusal ../libunls ../libdeflt)
 
 ADD_EXECUTABLE (genisoimage genisoimage.c ${MKISOFS_MOST_SRCS})
 TARGET_LINK_LIBRARIES(genisoimage hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
