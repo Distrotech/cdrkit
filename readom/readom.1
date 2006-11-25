@@ -1,4 +1,6 @@
-.\" @(#)readcd.1	1.23 06/01/12 Copyright 1996-2006 J. Schilling
+.\" @(#)readom.1	1.23 06/01/12 Copyright 1996-2006 J. Schilling
+.\" 
+.\" Modified version of readcd.1 by J. Schilling, 11/2006
 .\" 
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License version 2
@@ -29,25 +31,25 @@
 .if n .ds o oe
 .if n .ds u ue
 .if n .ds s sz
-.TH READCD 1 "Version 2.0" "J\*org Schilling" "Schily\'s USER COMMANDS"
+.TH READOM 1 "Version 2.0" "J\*org Schilling" "Schily\'s USER COMMANDS"
 .SH NAME
-readcd \- read or write data Compact Discs
+readom \- read or write data Compact Discs
 .SH SYNOPSIS
-.B readcd
+.B readom
 .BI dev= device
 [
 .I options
 ]
 
 .SH DESCRIPTION
-.B Readcd
+.B Readom
 is used to read or write Compact Discs.
 .PP
 The
 .I device
 refers to a device location similar to the one used in the wodim command. Refer to its manpage for details.
 .PP
-Also note that this version of readcd uses a modified libusal library which has
+Also note that this version of readom uses a modified libusal library which has
 a different behaviour compared to the one distributed by its original author.
 
 .SH OPTIONS
@@ -55,7 +57,7 @@ a different behaviour compared to the one distributed by its original author.
 If no options except the 
 .I dev=
 option have been specified, 
-.B readcd
+.B readom
 goes into interactive mode.
 Select a primary function and then follow the instructions.
 .PP
@@ -89,7 +91,7 @@ targets on this virtual SCSI bus.
 If no 
 .I dev
 option is present, 
-.B readcd
+.B readom
 will try to get the device from the 
 .B CDR_DEVICE
 environment.
@@ -155,13 +157,13 @@ slows down the process.
 .BI f= file
 Specify the filename where the output should be written or the inout should
 be taken from. Using '-' as filename will cause
-.B readcd
+.B readom
 to use 
 .BR stdout " resp. " stdin .
 .TP
 .B \-w
 Switch to write mode. If this option is not present,
-.B readcd
+.B readom
 reads from the specified device.
 .TP
 .B \-c2scan
@@ -201,7 +203,7 @@ This is about 150 KB/s for CD-ROM and about 172 KB/s for CD-Audio.
 If no 
 .I speed
 option is present, 
-.B readcd
+.B readom
 will use maximum speed.
 Only MMC compliant drives will benefit from this option.
 The speed of non MMC drives is not changed.
@@ -217,7 +219,7 @@ option is the same as for wodim fs=# or sdd bs=#.
 If no 
 .B ts=
 option has been specified,
-.B readcd
+.B readom
 defaults to a transfer size of 256 kB. If libusal gets lower values from the
 operating system, the value is reduced to the maximum value that is possible
 with the current operating system.
@@ -243,20 +245,20 @@ added.
 .TP
 .B \-noerror
 Do not abort if the high level error checking in
-.B readcd
+.B readom
 found an uncorrectable error in the data stream.
 .TP
 .B \-nocorr
 Switch the drive into a mode where it ignores read errors in data sectors that
 are a result of uncorrectable ECC/EDC errors before reading.
 If
-.B readcd
+.B readom
 completes, the error recovery mode of the drive is switched back to the remembered 
 old mode.
 .TP
 .BI retries= #
 Set the retry count for high level retries in
-.B readcd
+.B readom
 to 
 .IR # .
 The default is to do 128 retries which may be too much if you like to read a CD
@@ -285,7 +287,7 @@ as factor based on
 .I "single speed
 of the current medium.
 This only works if
-.B readcd
+.B readom
 is able to determine the current medium type.
 .SH EXAMPLES
 .PP
@@ -296,12 +298,12 @@ set to 2.
 To read the complete media from a CD-ROM writing the data to the file
 .IR cdimage.raw :
 .PP
-    readcd dev=2,0 f=cdimage.raw
+    readom dev=2,0 f=cdimage.raw
 .PP
 To read sectors from range 150 ... 10000 from a CD-ROM writing the data to the file
 .IR cdimage.raw :
 .PP
-    readcd dev=2,0 sectors=150-10000 f=cdimage.raw
+    readom dev=2,0 sectors=150-10000 f=cdimage.raw
 .PP
 To write the data from the file
 .I cdimage.raw
@@ -309,7 +311,7 @@ To write the data from the file
 .BR mkisofs )
 to a DVD-RAM, call:
 .PP
-    readcd dev=2,0 -w f=cdimage.raw
+    readom dev=2,0 -w f=cdimage.raw
 
 .SH ENVIRONMENT
 .TP
@@ -357,9 +359,9 @@ login shell.
 .SH NOTES
 .PP
 Unless you want to risk getting problems,
-.B readcd
+.B readom
 should be run as root. If you don't want to allow users to become root on your system,
-.B readcd
+.B readom
 may safely be installed suid root.
 For more information see the additional notes of your system/program
 distribution or README.suidroot which is part of the Cdrkit source.
@@ -367,7 +369,7 @@ distribution or README.suidroot which is part of the Cdrkit source.
 Documentation of the
 .B wodim
 program contains more technical details which could also apply to
-.B readcd.
+.B readom.
 
 .SH DIAGNOSTICS
 .PP
@@ -376,7 +378,7 @@ A typical error message for a SCSI command looks like:
 .sp
 .RS
 .nf
-readcd: I/O error. test unit ready: scsi sendcmd: no error
+readom: I/O error. test unit ready: scsi sendcmd: no error
 CDB:  00 20 00 00 00 00
 status: 0x2 (CHECK CONDITION)
 Sense Bytes: 70 00 05 00 00 00 00 0A 00 00 00 00 25 00 00 00 00 00
@@ -430,9 +432,9 @@ that the command really needed to complete.
 .SH BUGS
 .PP
 The 
-.B readcd
+.B readom
 program described here is the Cdrkit spinoff from the original
-.B reacd
+.B readcd
 application (see AUTHOR section for details). It may contain bugs not present
 in the original implementation.
 .PP
@@ -442,7 +444,7 @@ For platform specific bugs, see the corresponding README.platform file in the
 Cdrkit documentation (eg. README.linux).
 
 .SH "MAILING LISTS
-If you want to actively take part on the development of readcd,
+If you want to actively take part on the development of readom,
 you may join the developer mailing list via this URL:
 .sp
 .B
@@ -464,7 +466,7 @@ Germany
 .fi
 
 .PP
-This is application is a spinoff from the original implementation delivered in
+This is application is a spinoff from the original implementation of readcd delivered in
 the cdrtools package [1] created by Joerg Schilling, who deserves the most credits
 for its success. However, he is not involved into the development
 of this spinoff and therefore he shall not be made responsible for any problem

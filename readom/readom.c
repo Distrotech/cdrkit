@@ -389,9 +389,9 @@ main(int argc, char *argv[])
 			int	err = geterrno();
 
 			errmsgno(err, "%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
-			errmsgno(EX_BAD, "For possible targets try 'readcd -scanbus'.%s\n",
+			errmsgno(EX_BAD, "For possible targets try 'wodim -scanbus'.%s\n",
 						geteuid() ? " Make sure you are root.":"");
-			errmsgno(EX_BAD, "For possible transport specifiers try 'readcd dev=help'.\n");
+			errmsgno(EX_BAD, "For possible transport specifiers try 'wodim dev=help'.\n");
 			exit(err);
 		}
 	} else {
@@ -735,7 +735,7 @@ doit(SCSI *usalp)
 		printf("7:wne  8:floppy 9:verify 10:checkcmds  11:read disk 12:write disk\n");
 		printf("13:scsireset 14:seektest 15: readda 16: reada 17: c2err\n");
 #ifdef	CLONE_WRITE
-		printf("18:readcd 19: lin 20: full toc\n");
+		printf("18:readom 19: lin 20: full toc\n");
 #endif
 
 		getint("Enter selection:", &i, 0, 20);
