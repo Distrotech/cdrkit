@@ -45,13 +45,6 @@ TRY_COMPILE(HAVE_UNION_WAIT ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test
 #MESSAGE("syswait: ${HAVE_UNION_WAIT}")
 #ENDIF(NOT HAVE_UNION_WAIT)
 
-SET(HAVE_GETNAMEINFO true)
-SET(HAVE_INET_NTOA true)
-IF (WIN32) # workaround for cygwin 
-SET(HAVE_GETNAMEINFO false)
-SET(HAVE_INET_NTOA false)
-ENDIF (WIN32) # workaround for cygwin 
-
 FIND_FILE(HAVE_SYS_DKIO_H "sys/dkio.h")
 FIND_FILE(HAVE_SUN_DKIO_H "sun/dkio.h")
 FIND_FILE(HAVE_STDARG_H "stdarg.h")
@@ -93,23 +86,37 @@ FIND_FILE(HAVE_SYS_IPC_H "sys/ipc.h")
 INCLUDE(CheckCSourceCompiles)
 
 
-   SET(TESTSRC " 
-#include <stdlib.h>
-         int main() { return ( (int) drand48()  )  ; }
-         ")
 SET(CMAKE_REQUIRED_LIBRARIES )
-   CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_DRAND48)
-
-
-
-   SET(TESTSRC " 
+SET(TESTSRC " 
 #include <stdlib.h>
-         int main() { return ( (int) drand()  )  ; }
-         ")
-SET(CMAKE_REQUIRED_LIBRARIES )
-   CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_DRAND)
-
-
+int main() { return ( (int) drand48()  )  ; }
+")
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_DRAND48)
+SET(TESTSRC " 
+#include <stdlib.h>
+int main() { return ( (int) drand()  )  ; }
+")
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_DRAND)
+SET(TESTSRC " 
+#include <sys/socket.h>
+#include <netdb.h>
+int main(int argc, char **argv) {
+struct sockaddr sa;
+return getnameinfo(&sa, 1, argv[0], 1, argv[1], 1, 0);
+}
+")
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_GETNAMEINFO)
+SET(TESTSRC " 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+int main(int a, char **b) {
+struct in_addr in;
+inet_ntoa(in);
+return 0;
+}
+")
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_INET_NTOA)
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 
