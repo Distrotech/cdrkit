@@ -155,7 +155,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -180,7 +180,7 @@ usalo_open(SCSI *usalp, char *device)
 		}
 	}
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"PP Bus: %d\n", usallocal(usalp)->pgbus);
 	}
 #else
@@ -211,11 +211,11 @@ usalo_open(SCSI *usalp, char *device)
 		if (usallocal(usalp)->pgbus != busno)
 			return (0);
 #endif
-		js_snprintf(devname, sizeof (devname), "/dev/pg%d", tgt);
+		snprintf(devname, sizeof (devname), "/dev/pg%d", tgt);
 		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 						"Cannot open '%s'", devname);
 			return (0);
 		}
@@ -224,7 +224,7 @@ usalo_open(SCSI *usalp, char *device)
 	} else {
 		tlun = 0;
 		for (tgt = 0; tgt < MAX_TGT; tgt++) {
-			js_snprintf(devname, sizeof (devname), "/dev/pg%d", tgt);
+			snprintf(devname, sizeof (devname), "/dev/pg%d", tgt);
 			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 			if (f < 0) {
 				/*
@@ -232,11 +232,11 @@ usalo_open(SCSI *usalp, char *device)
 				 * if at least one open succeeded.
 				 */
 				if (usalp->errstr)
-					js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '/dev/pg*'");
 				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
 					if (usalp->errstr)
-						js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '%s'", devname);
 					return (0);
 				}
@@ -259,7 +259,7 @@ openbydev:
 /*		if (f < 0 && errno == ENOENT) {*/
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'",
 					device);
 			return (0);
@@ -317,7 +317,7 @@ usalo_getbuf(SCSI *usalp, long amt)
 	char    *ret;
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	ret = valloc((size_t)(amt+getpagesize()));

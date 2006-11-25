@@ -296,7 +296,7 @@ usal_yes(char *msg)
 {
 	char okbuf[10];
 
-	js_printf("%s", msg);
+	printf("%s", msg);
 	flush();
 	if (getline(okbuf, sizeof (okbuf)) == EOF)
 		exit(EX_BAD);
@@ -311,10 +311,10 @@ usal_yes(char *msg)
 static void
 usal_sighandler(int sig)
 {
-	js_printf("\n");
+	printf("\n");
 	if (scsi_running) {
-		js_printf("Running command: %s\n", scsi_command);
-		js_printf("Resetting SCSI - Bus.\n");
+		printf("Running command: %s\n", scsi_command);
+		printf("Resetting SCSI - Bus.\n");
 		if (usal_reset(usalp) < 0)
 			errmsg("Cannot reset SCSI - Bus.\n");
 	}
@@ -419,7 +419,7 @@ usal_svhead(SCSI *usalp, char *buf, int maxcnt)
 	if (usalp->verbose <= 0)
 		return (0);
 
-	amt = js_snprintf(p, maxcnt,
+	amt = snprintf(p, maxcnt,
 		"\nExecuting '%s' command on Bus %d Target %d, Lun %d timeout %ds\n",
 								/* XXX Really this ??? */
 /*		usalp->cmdname, usal_scsibus(usalp), usal_target(usalp), usalp->scmd->cdb.g0_cdb.lun,*/
@@ -491,13 +491,13 @@ usal_svtail(SCSI *usalp, int *retp, char *buf, int maxcnt)
 			 * A DMA residual count < 0 (-1) is a hint for a DMA
 			 * overrun but does not affect the transfer count.
 			 */
-			amt = js_snprintf(p, maxcnt, "DMA overrun, ");
+			amt = snprintf(p, maxcnt, "DMA overrun, ");
 			if (amt < 0)
 				return (amt);
 			p += amt;
 			maxcnt -= amt;
 		}
-		amt = js_snprintf(p, maxcnt, "resid: %d\n", usalp->scmd->resid);
+		amt = snprintf(p, maxcnt, "resid: %d\n", usalp->scmd->resid);
 		if (amt < 0)
 			return (amt);
 		p += amt;
@@ -669,23 +669,27 @@ usal__sprinterr(SCSI *usalp, char *buf, int maxcnt)
 				 * We need to cast timeval->* to long because
 				 * of the broken sys/time.h in Linux.
 				 */
-	case SCG_TIMEOUT  :	js_snprintf(errbuf, sizeof (errbuf),
+	case SCG_TIMEOUT  :	snprintf(errbuf, sizeof (errbuf),
 					"cmd timeout after %ld.%03ld (%d) s",
 					(long)usalp->cmdstop->tv_sec,
 					(long)usalp->cmdstop->tv_usec/1000,
 								cp->timeout);
 				err = errbuf;
 				break;
-	default:		js_snprintf(errbuf, sizeof (errbuf),
+	default:		snprintf(errbuf, sizeof (errbuf),
 					"error: %d", cp->error);
 				err = errbuf;
 	}
 
 	if (usalp->cmdname != NULL && usalp->cmdname[0] != '\0')
 		cmdname = usalp->cmdname;
-	amt = serrmsgno(cp->ux_errno, p, maxcnt, "%s: scsi sendcmd: %s\n", cmdname, err);
+	/*amt = serrmsgno(cp->ux_errno, p, maxcnt, "%s: scsi sendcmd: %s\n", cmdname, err);
 	if (amt < 0)
 		return (amt);
+    */
+  amt=snprintf(p, maxcnt, "Errno: %d (%s), %s scsi sendcmd: %s\n", cp->ux_errno, strerror(cp->ux_errno), cmdname, err);
+  if(amt>=maxcnt || amt<0)
+     return (amt);
 	p += amt;
 	maxcnt -= amt;
 
@@ -756,7 +760,7 @@ usal_printwdata(SCSI *usalp)
 	register struct	usal_cmd	*scmd = usalp->scmd;
 
 	if (scmd->size > 0 && (scmd->flags & SCG_RECV_DATA) == 0) {
-		js_fprintf(stderr, "Sending %d (0x%X) bytes of data.\n",
+		fprintf(stderr, "Sending %d (0x%X) bytes of data.\n",
 			scmd->size, scmd->size);
 		usal_prbytes("Write Data: ",
 			(Uchar *)scmd->addr,
@@ -775,7 +779,7 @@ usal_sprintwdata(SCSI *usalp, char *buf, int maxcnt)
 	register int		amt;
 
 	if (scmd->size > 0 && (scmd->flags & SCG_RECV_DATA) == 0) {
-		amt = js_snprintf(p, maxcnt,
+		amt = snprintf(p, maxcnt,
 			"Sending %d (0x%X) bytes of data.\n",
 			scmd->size, scmd->size);
 		if (amt < 0)
@@ -804,7 +808,7 @@ usal_printrdata(SCSI *usalp)
 	register int		trcnt = usal_getdmacnt(usalp);
 
 	if (scmd->size > 0 && (scmd->flags & SCG_RECV_DATA) != 0) {
-		js_fprintf(stderr, "Got %d (0x%X), expecting %d (0x%X) bytes of data.\n",
+		fprintf(stderr, "Got %d (0x%X), expecting %d (0x%X) bytes of data.\n",
 			trcnt, trcnt,
 			scmd->size, scmd->size);
 		usal_prbytes("Received Data: ",
@@ -825,7 +829,7 @@ usal_sprintrdata(SCSI *usalp, char *buf, int maxcnt)
 	register int		trcnt = usal_getdmacnt(usalp);
 
 	if (scmd->size > 0 && (scmd->flags & SCG_RECV_DATA) != 0) {
-		amt = js_snprintf(p, maxcnt,
+		amt = snprintf(p, maxcnt,
 			"Got %d (0x%X), expecting %d (0x%X) bytes of data.\n",
 			trcnt, trcnt,
 			scmd->size, scmd->size);
@@ -852,7 +856,7 @@ usal_sprintrdata(SCSI *usalp, char *buf, int maxcnt)
 void
 usal_printresult(SCSI *usalp)
 {
-	js_fprintf(stderr, "cmd finished after %ld.%03lds timeout %ds\n",
+	fprintf(stderr, "cmd finished after %ld.%03lds timeout %ds\n",
 		(long)usalp->cmdstop->tv_sec,
 		(long)usalp->cmdstop->tv_usec/1000,
 		usalp->scmd->timeout);
@@ -870,7 +874,7 @@ usal_sprintresult(SCSI *usalp, char *buf, int maxcnt)
 	register char		*p = buf;
 	register int		amt;
 
-	amt = js_snprintf(p, maxcnt,
+	amt = snprintf(p, maxcnt,
 		"cmd finished after %ld.%03lds timeout %ds\n",
 		(long)usalp->cmdstop->tv_sec,
 		(long)usalp->cmdstop->tv_usec/1000,
@@ -918,21 +922,21 @@ usal_sprintstatus(SCSI *usalp, char *buf, int maxcnt)
 	register char	*p = buf;
 	register int	amt;
 
-	amt = js_snprintf(p, maxcnt, "status: 0x%x ", *(Uchar *)&cp->scb);
+	amt = snprintf(p, maxcnt, "status: 0x%x ", *(Uchar *)&cp->scb);
 	if (amt < 0)
 		return (amt);
 	p += amt;
 	maxcnt -= amt;
 #ifdef	SCSI_EXTENDED_STATUS
 	if (cp->scb.ext_st1) {
-		amt = js_snprintf(p, maxcnt, "0x%x ", ((Uchar *)&cp->scb)[1]);
+		amt = snprintf(p, maxcnt, "0x%x ", ((Uchar *)&cp->scb)[1]);
 		if (amt < 0)
 			return (amt);
 		p += amt;
 		maxcnt -= amt;
 	}
 	if (cp->scb.ext_st2) {
-		amt = js_snprintf(p, maxcnt, "0x%x ", ((Uchar *)&cp->scb)[2]);
+		amt = snprintf(p, maxcnt, "0x%x ", ((Uchar *)&cp->scb)[2]);
 		if (amt < 0)
 			return (amt);
 		p += amt;
@@ -954,7 +958,7 @@ usal_sprintstatus(SCSI *usalp, char *buf, int maxcnt)
 	if (cp->scb.ext_st1 && cp->scb.ha_er)
 		err2 = " host adapter detected error";
 #endif
-	amt = js_snprintf(p, maxcnt, "(%s%s)\n", err, err2);
+	amt = snprintf(p, maxcnt, "(%s%s)\n", err, err2);
 	if (amt < 0)
 		return (amt);
 	p += amt;
@@ -967,10 +971,10 @@ usal_sprintstatus(SCSI *usalp, char *buf, int maxcnt)
 void
 usal_fprbytes(FILE *f, char *s, register Uchar *cp, register int n)
 {
-	js_fprintf(f, "%s", s);
+	fprintf(f, "%s", s);
 	while (--n >= 0)
-		js_fprintf(f, " %02X", *cp++);
-	js_fprintf(f, "\n");
+		fprintf(f, " %02X", *cp++);
+	fprintf(f, "\n");
 }
 
 /*
@@ -981,15 +985,15 @@ usal_fprascii(FILE *f, char *s, register Uchar *cp, register int n)
 {
 	register int	c;
 
-	js_fprintf(f, "%s", s);
+	fprintf(f, "%s", s);
 	while (--n >= 0) {
 		c = *cp++;
 		if (c >= ' ' && c < 0177)
-			js_fprintf(f, "%c", c);
+			fprintf(f, "%c", c);
 		else
-			js_fprintf(f, ".");
+			fprintf(f, ".");
 	}
-	js_fprintf(f, "\n");
+	fprintf(f, "\n");
 }
 
 /*
@@ -1023,20 +1027,20 @@ usal_sprbytes(char *buf, int maxcnt, char *s, register Uchar *cp, register int n
 	register char	*p = buf;
 	register int	amt;
 
-	amt = js_snprintf(p, maxcnt, "%s", s);
+	amt = snprintf(p, maxcnt, "%s", s);
 	if (amt < 0)
 		return (amt);
 	p += amt;
 	maxcnt -= amt;
 
 	while (--n >= 0) {
-		amt = js_snprintf(p, maxcnt, " %02X", *cp++);
+		amt = snprintf(p, maxcnt, " %02X", *cp++);
 		if (amt < 0)
 			return (amt);
 		p += amt;
 		maxcnt -= amt;
 	}
-	amt = js_snprintf(p, maxcnt, "\n");
+	amt = snprintf(p, maxcnt, "\n");
 	if (amt < 0)
 		return (amt);
 	p += amt;
@@ -1053,7 +1057,7 @@ usal_sprascii(char *buf, int maxcnt, char *s, register Uchar *cp, register int n
 	register int	amt;
 	register int	c;
 
-	amt = js_snprintf(p, maxcnt, "%s", s);
+	amt = snprintf(p, maxcnt, "%s", s);
 	if (amt < 0)
 		return (amt);
 	p += amt;
@@ -1062,15 +1066,15 @@ usal_sprascii(char *buf, int maxcnt, char *s, register Uchar *cp, register int n
 	while (--n >= 0) {
 		c = *cp++;
 		if (c >= ' ' && c < 0177)
-			amt = js_snprintf(p, maxcnt, "%c", c);
+			amt = snprintf(p, maxcnt, "%c", c);
 		else
-			amt = js_snprintf(p, maxcnt, ".");
+			amt = snprintf(p, maxcnt, ".");
 		if (amt < 0)
 			return (amt);
 		p += amt;
 		maxcnt -= amt;
 	}
-	amt = js_snprintf(p, maxcnt, "\n");
+	amt = snprintf(p, maxcnt, "\n");
 	if (amt < 0)
 		return (amt);
 	p += amt;
@@ -1194,85 +1198,85 @@ void
 usal_fprintdev(FILE *f, struct scsi_inquiry *ip)
 {
 	if (ip->removable)
-		js_fprintf(f, "Removable ");
+		fprintf(f, "Removable ");
 	if (ip->data_format >= 2) {
 		switch (ip->qualifier) {
 
 		case INQ_DEV_PRESENT:
 			break;
 		case INQ_DEV_NOTPR:
-			js_fprintf(f, "not present ");
+			fprintf(f, "not present ");
 			break;
 		case INQ_DEV_RES:
-			js_fprintf(f, "reserved ");
+			fprintf(f, "reserved ");
 			break;
 		case INQ_DEV_NOTSUP:
 			if (ip->type == INQ_NODEV) {
-				js_fprintf(f, "unsupported\n"); return;
+				fprintf(f, "unsupported\n"); return;
 			}
-			js_fprintf(f, "unsupported ");
+			fprintf(f, "unsupported ");
 			break;
 		default:
-			js_fprintf(f, "vendor specific %d ",
+			fprintf(f, "vendor specific %d ",
 						(int)ip->qualifier);
 		}
 	}
 	switch (ip->type) {
 
 	case INQ_DASD:
-		js_fprintf(f, "Disk");		break;
+		fprintf(f, "Disk");		break;
 	case INQ_SEQD:
-		js_fprintf(f, "Tape");		break;
+		fprintf(f, "Tape");		break;
 	case INQ_PRTD:
-		js_fprintf(f, "Printer");	break;
+		fprintf(f, "Printer");	break;
 	case INQ_PROCD:
-		js_fprintf(f, "Processor");	break;
+		fprintf(f, "Processor");	break;
 	case INQ_WORM:
-		js_fprintf(f, "WORM");		break;
+		fprintf(f, "WORM");		break;
 	case INQ_ROMD:
-		js_fprintf(f, "CD-ROM");	break;
+		fprintf(f, "CD-ROM");	break;
 	case INQ_SCAN:
-		js_fprintf(f, "Scanner");	break;
+		fprintf(f, "Scanner");	break;
 	case INQ_OMEM:
-		js_fprintf(f, "Optical Storage"); break;
+		fprintf(f, "Optical Storage"); break;
 	case INQ_JUKE:
-		js_fprintf(f, "Juke Box");	break;
+		fprintf(f, "Juke Box");	break;
 	case INQ_COMM:
-		js_fprintf(f, "Communication");	break;
+		fprintf(f, "Communication");	break;
 	case INQ_IT8_1:
-		js_fprintf(f, "IT8 1");		break;
+		fprintf(f, "IT8 1");		break;
 	case INQ_IT8_2:
-		js_fprintf(f, "IT8 2");		break;
+		fprintf(f, "IT8 2");		break;
 	case INQ_STARR:
-		js_fprintf(f, "Storage array");	break;
+		fprintf(f, "Storage array");	break;
 	case INQ_ENCL:
-		js_fprintf(f, "Enclosure services"); break;
+		fprintf(f, "Enclosure services"); break;
 	case INQ_SDAD:
-		js_fprintf(f, "Simple direct access"); break;
+		fprintf(f, "Simple direct access"); break;
 	case INQ_OCRW:
-		js_fprintf(f, "Optical card r/w"); break;
+		fprintf(f, "Optical card r/w"); break;
 	case INQ_BRIDGE:
-		js_fprintf(f, "Bridging expander"); break;
+		fprintf(f, "Bridging expander"); break;
 	case INQ_OSD:
-		js_fprintf(f, "Object based storage"); break;
+		fprintf(f, "Object based storage"); break;
 	case INQ_ADC:
-		js_fprintf(f, "Automation/Drive Interface"); break;
+		fprintf(f, "Automation/Drive Interface"); break;
 	case INQ_WELLKNOWN:
-		js_fprintf(f, "Well known lun"); break;
+		fprintf(f, "Well known lun"); break;
 
 	case INQ_NODEV:
 		if (ip->data_format >= 2) {
-			js_fprintf(f, "unknown/no device");
+			fprintf(f, "unknown/no device");
 			break;
 		} else if (ip->qualifier == INQ_DEV_NOTSUP) {
-			js_fprintf(f, "unit not present");
+			fprintf(f, "unit not present");
 			break;
 		}
 	default:
-		js_fprintf(f, "unknown device type 0x%x",
+		fprintf(f, "unknown device type 0x%x",
 						(int)ip->type);
 	}
-	js_fprintf(f, "\n");
+	fprintf(f, "\n");
 }
 
 /*
@@ -1297,7 +1301,7 @@ usal_printf(SCSI *usalp, const char *form, ...)
 	va_list	args;
 
 	va_start(args, form);
-	cnt = js_snprintf(usalp->errptr, usal_errrsize(usalp), "%r", form, args);
+	cnt = snprintf(usalp->errptr, usal_errrsize(usalp), "%r", form, args);
 	va_end(args);
 
 	if (cnt < 0) {

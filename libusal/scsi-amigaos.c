@@ -163,7 +163,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr) {
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		}
@@ -186,7 +186,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (device == NULL || *device == '\0') {
 
 		if (last_bus == -1) {
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"No scsi device found");
 			return (-1);
 		}
@@ -226,7 +226,7 @@ usalo_open(SCSI *usalp, char *device)
 					}
 				}
 			} else {
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Scsi device %s not found", device);
 			}
 		} else {
@@ -243,7 +243,7 @@ usalo_open(SCSI *usalp, char *device)
 					nopen++;
 				}
 			} else {
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Scsi device %s not found", device);
 			}
 		}
@@ -284,7 +284,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = valloc((size_t)(amt));
@@ -619,7 +619,7 @@ amiga_open_scsi(int bus, int tgt, int lun, SCSI *usalp)
 
 	if (dev == NULL) {
 		if (usalp->errstr) {
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"No scsi device found at bus %ld\n", bus);
 		}
 		return (-1);
@@ -639,7 +639,7 @@ amiga_open_scsi(int bus, int tgt, int lun, SCSI *usalp)
 				printf("trying %s, unit %ld\n", dev, unit);
 			if (OpenDevice(dev, unit, (struct IORequest *)request[fd].ioReq, 0L)) {
 				if (usalp->errstr) {
-					js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 						"Cannot open %s\n",	dev);
 				}
 				if (request[fd].ref_count == 0) {
@@ -654,13 +654,13 @@ amiga_open_scsi(int bus, int tgt, int lun, SCSI *usalp)
 			}
 		} else {
 			if (usalp->errstr) {
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot create IOReq");
 			}
 		}
 	} else {
 		if (usalp->errstr) {
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Cannot open Message Port");
 		}
 	}

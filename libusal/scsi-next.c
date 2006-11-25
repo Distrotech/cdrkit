@@ -122,7 +122,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -131,7 +131,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -149,7 +149,7 @@ usalo_open(SCSI *usalp, char *device)
 	}
 
 	for (i = 0; i < 4; i++) {
-		js_snprintf(devname, sizeof (devname), "/dev/sg%d", i);
+		snprintf(devname, sizeof (devname), "/dev/sg%d", i);
 		f = open(devname, O_RDWR);
 		if (usalp->debug > 0)
 			errmsg("open(devname: '%s') : %d\n", devname, f);
@@ -168,7 +168,7 @@ usalo_open(SCSI *usalp, char *device)
 			usallocal(usalp)->max_scsibus = i;
 		}
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"maxbus: %d\n", usallocal(usalp)->max_scsibus);
 		}
 		if (usallocal(usalp)->max_scsibus <= 0) {
@@ -182,7 +182,7 @@ usalo_open(SCSI *usalp, char *device)
 		return (1);
 	}
 	if (usalp->errstr)
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			"Cannot open '/dev/sg*'");
 	return (0);
 }
@@ -208,12 +208,12 @@ usal_setup(SCSI *usalp, int busno, int tgt, int tlun, BOOL ex)
 	sadr.sa_lun = tlun;
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usal_setup curbus %d -> %d\n", usallocal(usalp)->cur_scsibus, busno);
 	}
 
 	if (usalp->debug > 0 && ((usallocal(usalp)->cur_scsibus < 0 || usallocal(usalp)->cur_scsibus != busno)))
-		js_fprintf((FILE *)usalp->errfile, "setting SCSI bus to: %d\n", busno);
+		fprintf((FILE *)usalp->errfile, "setting SCSI bus to: %d\n", busno);
 	if ((usallocal(usalp)->cur_scsibus < 0 || usallocal(usalp)->cur_scsibus != busno) &&
 				ioctl(usallocal(usalp)->usalfile, SGIOCCNTR, &busno) < 0) {
 
@@ -226,7 +226,7 @@ usal_setup(SCSI *usalp, int busno, int tgt, int tlun, BOOL ex)
 	usallocal(usalp)->cur_scsibus	= busno;
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"setting target/lun to: %d/%d\n", tgt, tlun);
 	}
 	if (ioctl(usallocal(usalp)->usalfile, SGIOCSTL, &sadr) < 0) {
@@ -250,7 +250,7 @@ usalo_maxdma(SCSI *usalp, long amt)
 	if (ioctl(usallocal(usalp)->usalfile, SGIOCMAXDMA, &m) >= 0) {
 		maxdma = m;
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"maxdma: %d\n", maxdma);
 		}
 	}
@@ -271,7 +271,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = valloc((size_t)(amt));
@@ -378,12 +378,12 @@ usalo_send(SCSI *usalp)
 		sp->ux_errno = 0;
 	}
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "dma_dir:     %X\n", req.sr_dma_dir);
-		js_fprintf((FILE *)usalp->errfile, "dma_addr:    %X\n", req.sr_addr);
-		js_fprintf((FILE *)usalp->errfile, "io_time:     %d\n", req.sr_ioto);
-		js_fprintf((FILE *)usalp->errfile, "io_status:   %d\n", req.sr_io_status);
-		js_fprintf((FILE *)usalp->errfile, "scsi_status: %X\n", req.sr_scsi_status);
-		js_fprintf((FILE *)usalp->errfile, "dma_xfer:    %d\n", req.sr_dma_xfr);
+		fprintf((FILE *)usalp->errfile, "dma_dir:     %X\n", req.sr_dma_dir);
+		fprintf((FILE *)usalp->errfile, "dma_addr:    %X\n", req.sr_addr);
+		fprintf((FILE *)usalp->errfile, "io_time:     %d\n", req.sr_ioto);
+		fprintf((FILE *)usalp->errfile, "io_status:   %d\n", req.sr_io_status);
+		fprintf((FILE *)usalp->errfile, "scsi_status: %X\n", req.sr_scsi_status);
+		fprintf((FILE *)usalp->errfile, "dma_xfer:    %d\n", req.sr_dma_xfr);
 	}
 	sp->u_scb.cmd_scb[0] = req.sr_scsi_status;
 	sp->sense_count = sizeof (esense_reply_t);

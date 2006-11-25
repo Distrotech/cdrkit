@@ -202,7 +202,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -212,7 +212,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -245,7 +245,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = malloc((size_t)(amt));
@@ -267,9 +267,9 @@ usalo_havebus(SCSI *usalp, int busno)
 	char		buf[128];
 
 	if (busno < 8)
-		js_snprintf(buf, sizeof (buf), "/dev/bus/scsi/%d", busno);
+		snprintf(buf, sizeof (buf), "/dev/bus/scsi/%d", busno);
 	else
-		js_snprintf(buf, sizeof (buf), "/dev/disk/ide/atapi/%d", busno-8);
+		snprintf(buf, sizeof (buf), "/dev/disk/ide/atapi/%d", busno-8);
 	if (stat(buf, &sb))
 		return (FALSE);
 	return (TRUE);
@@ -287,12 +287,12 @@ usalo_fileno(SCSI *usalp, int busno, int tgt, int tlun)
 			return (f->fd);
 	}
 	if (busno < 8) {
-		js_snprintf(buf, sizeof (buf),
+		snprintf(buf, sizeof (buf),
 					"/dev/bus/scsi/%d/%d/%d/raw",
 					busno, tgt, tlun);
 	} else {
 		char *tgtstr = (tgt == 0) ? "master" : (tgt == 1) ? "slave" : "dummy";
-		js_snprintf(buf, sizeof (buf),
+		snprintf(buf, sizeof (buf),
 					"/dev/disk/ide/atapi/%d/%s/%d/raw",
 					busno-8, tgtstr, tlun);
 	}

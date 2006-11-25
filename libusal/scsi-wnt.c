@@ -227,7 +227,7 @@ InitSCSIPT(void)
 	sptihamax = 0;
 	i = 0;
 	do {
-		js_snprintf(adapter_name, sizeof (adapter_name), "\\\\.\\SCSI%d:", i);
+		snprintf(adapter_name, sizeof (adapter_name), "\\\\.\\SCSI%d:", i);
 		fh = CreateFile(adapter_name, GENERIC_READ | GENERIC_WRITE,
 						FILE_SHARE_READ | FILE_SHARE_WRITE,
 						NULL,
@@ -259,7 +259,7 @@ InitSCSIPT(void)
 		sptiglobal.drive[i].hDevice = INVALID_HANDLE_VALUE;
 
 	for (i = NUM_FLOPPY_DRIVES; i < NUM_MAX_NTSCSI_DRIVES; i++) {
-		js_snprintf(buf, sizeof (buf), "%c:\\", (char)('A'+i));
+		snprintf(buf, sizeof (buf), "%c:\\", (char)('A'+i));
 		uDriveType = GetDriveType(buf);
 #ifdef	CDROM_ONLY
 		if (uDriveType == DRIVE_CDROM) {
@@ -438,10 +438,10 @@ GetFileHandle(BYTE i, BOOL openshared)
 		dwFlags |= GENERIC_WRITE;
 		dwAccessMode |= FILE_SHARE_WRITE;
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "SPTI: GetFileHandle(): Setting for Win2K\n");
+		fprintf(usalp_errfile, "SPTI: GetFileHandle(): Setting for Win2K\n");
 #endif
 	}
-	js_snprintf(buf, sizeof (buf), "\\\\.\\%c:", (char)('A'+i));
+	snprintf(buf, sizeof (buf), "\\\\.\\%c:", (char)('A'+i));
 #ifdef CREATE_NONSHARED
 	if (openshared) {
 		fh = CreateFile(buf, dwFlags, dwAccessMode, NULL,
@@ -476,9 +476,9 @@ GetFileHandle(BYTE i, BOOL openshared)
 	}
 #ifdef _DEBUG_SCSIPT
 	if (fh == INVALID_HANDLE_VALUE)
-		js_fprintf(usalp_errfile, "SPTI: CreateFile() failed! -> %d\n", GetLastError());
+		fprintf(usalp_errfile, "SPTI: CreateFile() failed! -> %d\n", GetLastError());
 	else
-		js_fprintf(usalp_errfile, "SPTI: CreateFile() returned %d\n", GetLastError());
+		fprintf(usalp_errfile, "SPTI: CreateFile() returned %d\n", GetLastError());
 #endif
 
 	return (fh);
@@ -501,20 +501,20 @@ GetDriveInformation(BYTE i, DRIVE *pDrive)
 	BYTE		inqData[NTSCSI_HA_INQUIRY_SIZE];
 
 #ifdef _DEBUG_SCSIPT
-	js_fprintf(usalp_errfile, "SPTI: Checking drive %c:", 'A'+i);
+	fprintf(usalp_errfile, "SPTI: Checking drive %c:", 'A'+i);
 #endif
 
 	fh = GetFileHandle(i, TRUE);	/* No NONSHARED Create for inquiry */
 
 	if (fh == INVALID_HANDLE_VALUE) {
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "       : fh == INVALID_HANDLE_VALUE\n");
+		fprintf(usalp_errfile, "       : fh == INVALID_HANDLE_VALUE\n");
 #endif
 		return;
 	}
 
 #ifdef _DEBUG_SCSIPT
-	js_fprintf(usalp_errfile, "       : Index %d: fh == %08X\n", i, fh);
+	fprintf(usalp_errfile, "       : Index %d: fh == %08X\n", i, fh);
 #endif
 
 
@@ -547,7 +547,7 @@ GetDriveInformation(BYTE i, DRIVE *pDrive)
 	if (!status) {
 		CloseHandle(fh);
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "SPTI: Error DeviceIoControl() -> %d\n", GetLastError());
+		fprintf(usalp_errfile, "SPTI: Error DeviceIoControl() -> %d\n", GetLastError());
 #endif
 		return;
 	}
@@ -563,7 +563,7 @@ GetDriveInformation(BYTE i, DRIVE *pDrive)
 			&scsiAddr, sizeof (SCSI_ADDRESS), &returned,
 			NULL)) {
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "Device %c: Port=%d, PathId=%d, TargetId=%d, Lun=%d\n",
+		fprintf(usalp_errfile, "Device %c: Port=%d, PathId=%d, TargetId=%d, Lun=%d\n",
 			(char)i+'A', scsiAddr.PortNumber, scsiAddr.PathId,
 			scsiAddr.TargetId, scsiAddr.Lun);
 #endif
@@ -586,18 +586,18 @@ GetDriveInformation(BYTE i, DRIVE *pDrive)
 		pDrive->driveLetter = i;
 		pDrive->hDevice = INVALID_HANDLE_VALUE;
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "USB/Firewire Device %c: Port=%d, TargetId=%d, Lun=%d\n", (char)i+'A', i, 0, 0);
+		fprintf(usalp_errfile, "USB/Firewire Device %c: Port=%d, TargetId=%d, Lun=%d\n", (char)i+'A', i, 0, 0);
 #endif
 	} else {
 		pDrive->bUsed	= FALSE;
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "SPTI: Device %s: Error DeviceIoControl(): %d\n", (char)i+'A', GetLastError());
+		fprintf(usalp_errfile, "SPTI: Device %s: Error DeviceIoControl(): %d\n", (char)i+'A', GetLastError());
 #endif
 		CloseHandle(fh);
 		return;
 	}
 #ifdef _DEBUG_SCSIPT
-	js_fprintf(usalp_errfile,  "SPTI: Adding drive %c: (%d:%d:%d)\n", 'A'+i,
+	fprintf(usalp_errfile,  "SPTI: Adding drive %c: (%d:%d:%d)\n", 'A'+i,
 					pDrive->ha, pDrive->tgt, pDrive->lun);
 #endif
 	CloseHandle(fh);
@@ -637,7 +637,7 @@ SPTIGetDeviceIndex(BYTE ha, BYTE tgt, BYTE lun)
 	BYTE	i;
 
 #ifdef _DEBUG_SCSIPT
-	js_fprintf(usalp_errfile,  "SPTI: SPTIGetDeviceIndex\n");
+	fprintf(usalp_errfile,  "SPTI: SPTIGetDeviceIndex\n");
 #endif
 
 	for (i = NUM_FLOPPY_DRIVES; i < NUM_MAX_NTSCSI_DRIVES; i++) {
@@ -701,8 +701,8 @@ SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHere
 	length = sizeof (swb);
 
 #ifdef _DEBUG_SCSIPT
-	js_fprintf(usalp_errfile, "SPTI: SPTIExecSCSICmd: calling DeviceIoControl()");
-	js_fprintf(usalp_errfile, "       : cmd == 0x%02X", swb.spt.Cdb[0]);
+	fprintf(usalp_errfile, "SPTI: SPTIExecSCSICmd: calling DeviceIoControl()");
+	fprintf(usalp_errfile, "       : cmd == 0x%02X", swb.spt.Cdb[0]);
 #endif
 	status = DeviceIoControl(sptiglobal.drive[idx].hDevice,
 			    IOCTL_SCSI_PASS_THROUGH_DIRECT,
@@ -718,7 +718,7 @@ SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHere
 	if (status && swb.spt.ScsiStatus == 0) {
 		lpsrb->SRB_Status = SS_COMP;
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "       : SRB_Status == SS_COMP\n");
+		fprintf(usalp_errfile, "       : SRB_Status == SS_COMP\n");
 #endif
 	} else {
 		DWORD	dwErrCode;
@@ -729,7 +729,7 @@ SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHere
 
 		dwErrCode = GetLastError();
 #ifdef _DEBUG_SCSIPT
-		js_fprintf(usalp_errfile, "       : error == %d   handle == %08X\n", dwErrCode, sptiglobal.drive[idx].hDevice);
+		fprintf(usalp_errfile, "       : error == %d   handle == %08X\n", dwErrCode, sptiglobal.drive[idx].hDevice);
 #endif
 		/*
 		 * KLUDGE ALERT! KLUDGE ALERT! KLUDGE ALERT!
@@ -753,7 +753,7 @@ SPTIExecSCSICommand(LPSRB_ExecSCSICmd lpsrb, int sptTimeOutValue, BOOL bBeenHere
 				}
 			}
 #ifdef _DEBUG_SCSIPT
-			js_fprintf(usalp_errfile, "SPTI: SPTIExecSCSICommand: Retrying after ERROR_MEDIA_CHANGED\n");
+			fprintf(usalp_errfile, "SPTI: SPTIExecSCSICommand: Retrying after ERROR_MEDIA_CHANGED\n");
 #endif
 			return (SPTIExecSCSICommand(lpsrb, sptTimeOutValue, TRUE));
 		}
@@ -818,7 +818,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -831,7 +831,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -847,7 +847,7 @@ devok:
 			bUsingSCSIPT = FALSE;
 
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"usalo_open: Prefered SCSI transport: %s\n",
 					bUsingSCSIPT ? "SPTI":"ASPI");
 		}
@@ -859,7 +859,7 @@ devok:
 			bForceAccess = TRUE;
 		}
 		if (device != NULL && usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"usalo_open: Selected SCSI transport: %s\n",
 					bUsingSCSIPT ? "SPTI":"ASPI");
 		}
@@ -931,7 +931,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = malloc((size_t)(amt));
@@ -1010,7 +1010,7 @@ usalo_reset(SCSI *usalp, int what)
 		return (-1);
 	}
 	if (bUsingSCSIPT) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 					"Reset SCSI device not implemented with SPTI\n");
 		return (-1);
 	}
@@ -1019,7 +1019,7 @@ usalo_reset(SCSI *usalp, int what)
 	 * XXX Does this reset TGT or BUS ???
 	 */
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"Attempting to reset SCSI device\n");
 	}
 
@@ -1027,7 +1027,7 @@ usalo_reset(SCSI *usalp, int what)
 	 * Check if ASPI library is loaded
 	 */
 	if (AspiLoaded <= 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"error in usalo_reset: ASPI driver not loaded !\n");
 		return (-1);
 	}
@@ -1082,7 +1082,7 @@ usalo_reset(SCSI *usalp, int what)
 	 * Check condition
 	 */
 	if (s.SRB_Status != SS_COMP) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 					"ERROR! 0x%08X\n", s.SRB_Status);
 
 		/*
@@ -1092,7 +1092,7 @@ usalo_reset(SCSI *usalp, int what)
 	}
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 					"Reset SCSI device completed\n");
 	}
 
@@ -1109,34 +1109,34 @@ DebugScsiSend(SCSI *usalp, SRB_ExecSCSICmd *s, int bDisplayBuffer)
 {
 	int i;
 
-	js_fprintf((FILE *)usalp->errfile, "\n\nDebugScsiSend\n");
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_Cmd          = 0x%02x\n", s->SRB_Cmd);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_HaId         = 0x%02x\n", s->SRB_HaId);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_Flags        = 0x%02x\n", s->SRB_Flags);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_Target       = 0x%02x\n", s->SRB_Target);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_Lun          = 0x%02x\n", s->SRB_Lun);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_BufLen       = 0x%02x\n", s->SRB_BufLen);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_BufPointer   = %x\n",	   s->SRB_BufPointer);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_CDBLen       = 0x%02x\n", s->SRB_CDBLen);
-	js_fprintf((FILE *)usalp->errfile, "s->SRB_SenseLen     = 0x%02x\n", s->SRB_SenseLen);
-	js_fprintf((FILE *)usalp->errfile, "s->CDBByte          =");
+	fprintf((FILE *)usalp->errfile, "\n\nDebugScsiSend\n");
+	fprintf((FILE *)usalp->errfile, "s->SRB_Cmd          = 0x%02x\n", s->SRB_Cmd);
+	fprintf((FILE *)usalp->errfile, "s->SRB_HaId         = 0x%02x\n", s->SRB_HaId);
+	fprintf((FILE *)usalp->errfile, "s->SRB_Flags        = 0x%02x\n", s->SRB_Flags);
+	fprintf((FILE *)usalp->errfile, "s->SRB_Target       = 0x%02x\n", s->SRB_Target);
+	fprintf((FILE *)usalp->errfile, "s->SRB_Lun          = 0x%02x\n", s->SRB_Lun);
+	fprintf((FILE *)usalp->errfile, "s->SRB_BufLen       = 0x%02x\n", s->SRB_BufLen);
+	fprintf((FILE *)usalp->errfile, "s->SRB_BufPointer   = %x\n",	   s->SRB_BufPointer);
+	fprintf((FILE *)usalp->errfile, "s->SRB_CDBLen       = 0x%02x\n", s->SRB_CDBLen);
+	fprintf((FILE *)usalp->errfile, "s->SRB_SenseLen     = 0x%02x\n", s->SRB_SenseLen);
+	fprintf((FILE *)usalp->errfile, "s->CDBByte          =");
 	for (i = 0; i < min(s->SRB_CDBLen, 16); i++) {
-		js_fprintf((FILE *)usalp->errfile, " %02X ", s->CDBByte[i]);
+		fprintf((FILE *)usalp->errfile, " %02X ", s->CDBByte[i]);
 	}
-	js_fprintf((FILE *)usalp->errfile, "\n");
+	fprintf((FILE *)usalp->errfile, "\n");
 
 	/*
 	if (bDisplayBuffer != 0 && s->SRB_BufLen >= 8) {
 
-		js_fprintf((FILE *)usalp->errfile, "s->SRB_BufPointer   =");
+		fprintf((FILE *)usalp->errfile, "s->SRB_BufPointer   =");
 		for (i = 0; i < 8; i++) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 					" %02X ", ((char *)s->SRB_BufPointer)[i]);
 		}
-		js_fprintf((FILE *)usalp->errfile, "\n");
+		fprintf((FILE *)usalp->errfile, "\n");
 	}
 */
-	js_fprintf((FILE *)usalp->errfile, "Debug done\n");
+	fprintf((FILE *)usalp->errfile, "Debug done\n");
 }
 #endif
 
@@ -1283,7 +1283,7 @@ usalo_send(SCSI *usalp)
 	if (sp->cdb_len > 16) {
 		sp->error = SCG_FATAL;
 		sp->ux_errno = EINVAL;
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"sp->cdb_len > sizeof (SRB_ExecSCSICmd.CDBByte). Fatal error in usalo_send, exiting...\n");
 		return (-1);
 	}
@@ -1358,7 +1358,7 @@ usalo_send(SCSI *usalp)
 
 		if (s->SRB_Status == SS_PENDING) { /* Check if we got a timeout */
 			if (usalp->debug > 0) {
-				js_fprintf((FILE *)usalp->errfile,
+				fprintf((FILE *)usalp->errfile,
 						"Timeout....\n");
 			}
 			scsiabort(usalp, s);
@@ -1376,7 +1376,7 @@ usalo_send(SCSI *usalp)
 	 */
 	if (s->SRB_Status != SS_COMP) {
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"Error in usalo_send: s->SRB_Status is 0x%x\n", s->SRB_Status);
 		}
 
@@ -1384,7 +1384,7 @@ usalo_send(SCSI *usalp)
 		copy_sensedata(s, sp);		/* Copy sense and status    */
 
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"Mapped to: error %d errno: %d\n", sp->error, sp->ux_errno);
 		}
 		return (1);
@@ -1417,7 +1417,7 @@ open_driver(SCSI *usalp)
 	int	i;
 
 #ifdef DEBUG_WNTASPI
-	js_fprintf((FILE *)usalp->errfile, "enter open_driver\n");
+	fprintf((FILE *)usalp->errfile, "enter open_driver\n");
 #endif
 
 	/*
@@ -1460,14 +1460,14 @@ open_driver(SCSI *usalp)
 			if (errno == 0)
 				errno = ENOSYS;
 		}
-		js_fprintf((FILE *)usalp->errfile, "Can not load %s driver! ",
+		fprintf((FILE *)usalp->errfile, "Can not load %s driver! ",
 						bUsingSCSIPT ? "SPTI":"ASPI");
 		return (FALSE);
 	}
 
 	if (bUsingSCSIPT) {
 		if (usalp->debug > 0)
-			js_fprintf((FILE *)usalp->errfile, "using SPTI Transport\n");
+			fprintf((FILE *)usalp->errfile, "using SPTI Transport\n");
 
 		if (!sptiglobal.numAdapters)
 			astatus = (DWORD)(MAKEWORD(0, SS_NO_ADAPTERS));
@@ -1481,20 +1481,20 @@ open_driver(SCSI *usalp)
 	HACount    = LOBYTE(LOWORD(astatus));
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"open_driver %lX HostASPIStatus=0x%x HACount=0x%x\n", astatus, ASPIStatus, HACount);
 	}
 
 	if (ASPIStatus != SS_COMP && ASPIStatus != SS_NO_ADAPTERS) {
-		js_fprintf((FILE *)usalp->errfile, "Could not find any host adapters\n");
-		js_fprintf((FILE *)usalp->errfile, "ASPIStatus == 0x%02X", ASPIStatus);
+		fprintf((FILE *)usalp->errfile, "Could not find any host adapters\n");
+		fprintf((FILE *)usalp->errfile, "ASPIStatus == 0x%02X", ASPIStatus);
 		return (FALSE);
 	}
 	busses = HACount;
 
 #ifdef DEBUG_WNTASPI
-	js_fprintf((FILE *)usalp->errfile, "open_driver HostASPIStatus=0x%x HACount=0x%x\n", ASPIStatus, HACount);
-	js_fprintf((FILE *)usalp->errfile, "leaving open_driver\n");
+	fprintf((FILE *)usalp->errfile, "open_driver HostASPIStatus=0x%x HACount=0x%x\n", ASPIStatus, HACount);
+	fprintf((FILE *)usalp->errfile, "leaving open_driver\n");
 #endif
 
 	for (i = 0; i < busses; i++) {
@@ -1522,7 +1522,7 @@ load_aspi(SCSI *usalp)
 	 */
 	if (hAspiLib == NULL) {
 #ifdef	not_done_later
-		js_fprintf((FILE *)usalp->errfile, "Can not load ASPI driver! ");
+		fprintf((FILE *)usalp->errfile, "Can not load ASPI driver! ");
 #endif
 		return (FALSE);
 	}
@@ -1540,7 +1540,7 @@ load_aspi(SCSI *usalp)
 #endif
 
 	if ((pfnGetASPI32SupportInfo == NULL) || (pfnSendASPI32Command == NULL)) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"ASPI function not found in library! ");
 		return (FALSE);
 	}
@@ -1626,11 +1626,11 @@ ha_inquiry(SCSI *usalp, int id, SRB_HAInquiry *ip)
 		Status = pfnSendASPI32Command((LPSRB)ip);
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "Status : %ld\n",	Status);
-		js_fprintf((FILE *)usalp->errfile, "hacount: %d\n", ip->HA_Count);
-		js_fprintf((FILE *)usalp->errfile, "SCSI id: %d\n", ip->HA_SCSI_ID);
-		js_fprintf((FILE *)usalp->errfile, "Manager: '%.16s'\n", ip->HA_ManagerId);
-		js_fprintf((FILE *)usalp->errfile, "Identif: '%.16s'\n", ip->HA_Identifier);
+		fprintf((FILE *)usalp->errfile, "Status : %ld\n",	Status);
+		fprintf((FILE *)usalp->errfile, "hacount: %d\n", ip->HA_Count);
+		fprintf((FILE *)usalp->errfile, "SCSI id: %d\n", ip->HA_SCSI_ID);
+		fprintf((FILE *)usalp->errfile, "Manager: '%.16s'\n", ip->HA_ManagerId);
+		fprintf((FILE *)usalp->errfile, "Identif: '%.16s'\n", ip->HA_Identifier);
 		usal_prbytes("Unique:", ip->HA_Unique, 16);
 	}
 	if (ip->SRB_Status != SS_COMP)
@@ -1647,12 +1647,12 @@ resetSCSIBus(SCSI *usalp)
 	SRB_BusDeviceReset	s;
 
 	if (bUsingSCSIPT) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 					"Reset SCSI bus not implemented with SPTI\n");
 		return (FALSE);
 	}
 
-	js_fprintf((FILE *)usalp->errfile, "Attempting to reset SCSI bus\n");
+	fprintf((FILE *)usalp->errfile, "Attempting to reset SCSI bus\n");
 
 	Event = CreateEvent(NULL, TRUE, FALSE, NULL);
 
@@ -1693,7 +1693,7 @@ resetSCSIBus(SCSI *usalp)
 	 * Check condition
 	 */
 	if (s.SRB_Status != SS_COMP) {
-		js_fprintf((FILE *)usalp->errfile, "ERROR  0x%08X\n", s.SRB_Status);
+		fprintf((FILE *)usalp->errfile, "ERROR  0x%08X\n", s.SRB_Status);
 
 		/*
 		 * Indicate that error has occured
@@ -1715,13 +1715,13 @@ scsiabort(SCSI *usalp, SRB_ExecSCSICmd *sp)
 	SRB_Abort		s;
 
 	if (bUsingSCSIPT) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 					"Abort SCSI not implemented with SPTI\n");
 		return (FALSE);
 	}
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"Attempting to abort SCSI command\n");
 	}
 
@@ -1729,7 +1729,7 @@ scsiabort(SCSI *usalp, SRB_ExecSCSICmd *sp)
 	 * Check if ASPI library is loaded
 	 */
 	if (AspiLoaded <= 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"error in scsiabort: ASPI driver not loaded !\n");
 		return (FALSE);
 	}
@@ -1751,7 +1751,7 @@ scsiabort(SCSI *usalp, SRB_ExecSCSICmd *sp)
 	 * Check condition
 	 */
 	if (s.SRB_Status != SS_COMP) {
-		js_fprintf((FILE *)usalp->errfile, "Abort ERROR! 0x%08X\n", s.SRB_Status);
+		fprintf((FILE *)usalp->errfile, "Abort ERROR! 0x%08X\n", s.SRB_Status);
 
 		/*
 		 * Indicate that error has occured
@@ -1760,7 +1760,7 @@ scsiabort(SCSI *usalp, SRB_ExecSCSICmd *sp)
 	}
 
 	if (usalp->debug > 0)
-		js_fprintf((FILE *)usalp->errfile, "Abort SCSI command completed\n");
+		fprintf((FILE *)usalp->errfile, "Abort SCSI command completed\n");
 
 	/*
 	 * Everything went OK

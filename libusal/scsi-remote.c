@@ -291,7 +291,7 @@ usalo_ropen(usalp, device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			"Illegal value for busno, target or lun '%d,%d,%d'",
 			busno, tgt, tlun);
 
@@ -315,7 +315,7 @@ usalo_ropen(usalp, device)
 	if (device == NULL || (strncmp(device, "REMOTE", 6) != 0) ||
 				(device = strchr(device, ':')) == NULL) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal remote device syntax");
 		return (-1);
 	}
@@ -323,7 +323,7 @@ usalo_ropen(usalp, device)
 	/*
 	 * Save non user@host:device
 	 */
-	js_snprintf(devname, sizeof (devname), "%s", device);
+	snprintf(devname, sizeof (devname), "%s", device);
 
 	if ((p = strchr(devname, ':')) != NULL)
 		*p++ = '\0';
@@ -331,7 +331,7 @@ usalo_ropen(usalp, device)
 	f = rscsigetconn(usalp, devname);
 	if (f < 0) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Cannot get connection to remote host");
 		return (-1);
 	}
@@ -557,7 +557,7 @@ rscsigetconn(usalp, host)
 
 		if (d > sizeof (rscsiuser))
 			d = sizeof (rscsiuser);
-		js_snprintf(rscsiuser, sizeof (rscsiuser), "%.*s", (int)d, host);
+		snprintf(rscsiuser, sizeof (rscsiuser), "%.*s", (int)d, host);
 		name = rscsiuser;
 		host = &p[1];
 	} else {
@@ -599,7 +599,7 @@ rscsiversion(usalp, fd, what)
 	char	*p;
 	int	ret;
 
-	js_snprintf(cbuf, sizeof (cbuf), "V%d\n", what);
+	snprintf(cbuf, sizeof (cbuf), "V%d\n", what);
 	ret = rscsicmd(usalp, fd, "version", cbuf);
 	p = malloc(ret);
 	if (p == NULL)
@@ -621,7 +621,7 @@ rscsiopen(usalp, fd, fname)
 	int	tgt;
 	int	lun;
 
-	js_snprintf(cbuf, sizeof (cbuf), "O%s\n", fname?fname:"");
+	snprintf(cbuf, sizeof (cbuf), "O%s\n", fname?fname:"");
 	ret = rscsicmd(usalp, fd, "open", cbuf);
 	if (ret < 0)
 		return (ret);
@@ -651,7 +651,7 @@ rscsimaxdma(usalp, fd, amt)
 {
 	char	cbuf[CMD_SIZE];
 
-	js_snprintf(cbuf, sizeof (cbuf), "D%ld\n", amt);
+	snprintf(cbuf, sizeof (cbuf), "D%ld\n", amt);
 	return (rscsicmd(usalp, fd, "maxdma", cbuf));
 }
 
@@ -665,7 +665,7 @@ rscsigetbuf(usalp, fd, amt)
 	int	size;
 	int	ret;
 
-	js_snprintf(cbuf, sizeof (cbuf), "M%ld\n", amt);
+	snprintf(cbuf, sizeof (cbuf), "M%ld\n", amt);
 	ret = rscsicmd(usalp, fd, "getbuf", cbuf);
 	if (ret < 0)
 		return (ret);
@@ -715,7 +715,7 @@ rscsihavebus(usalp, fd, busno)
 {
 	char	cbuf[2*CMD_SIZE];
 
-	js_snprintf(cbuf, sizeof (cbuf), "B%d\n%d\n",
+	snprintf(cbuf, sizeof (cbuf), "B%d\n%d\n",
 		busno,
 		0);
 	return (rscsicmd(usalp, fd, "havebus", cbuf));
@@ -731,7 +731,7 @@ rscsifileno(usalp, fd, busno, tgt, tlun)
 {
 	char	cbuf[3*CMD_SIZE];
 
-	js_snprintf(cbuf, sizeof (cbuf), "T%d\n%d\n%d\n%d\n",
+	snprintf(cbuf, sizeof (cbuf), "T%d\n%d\n%d\n%d\n",
 		busno,
 		0,
 		tgt,
@@ -763,7 +763,7 @@ rscsireset(usalp, fd, what)
 {
 	char	cbuf[CMD_SIZE];
 
-	js_snprintf(cbuf, sizeof (cbuf), "R%d\n", what);
+	snprintf(cbuf, sizeof (cbuf), "R%d\n", what);
 	return (rscsicmd(usalp, fd, "reset", cbuf));
 }
 
@@ -778,7 +778,7 @@ rscsiscmd(usalp, fd, sp)
 	int	amt = 0;
 	int	voidsize = 0;
 
-	ret = js_snprintf(cbuf, sizeof (cbuf), "S%d\n%d\n%d\n%d\n%d\n",
+	ret = snprintf(cbuf, sizeof (cbuf), "S%d\n%d\n%d\n%d\n%d\n",
 		sp->size, sp->flags,
 		sp->cdb_len, sp->sense_len,
 		sp->timeout);

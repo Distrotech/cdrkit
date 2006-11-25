@@ -148,7 +148,6 @@ extern	int	filewrite(FILE *, void *, int);
 extern	int	ffilewrite(FILE *, void *, int);
 extern	int	flush(void);
 extern	int	fpipe(FILE **);
-/*extern	int	fprintf __PR((FILE *, const char *, ...)) __printflike__(2, 3);*/
 extern	int	getbroken(FILE *, char *, char, char **, int);
 extern	int	ofindline(FILE *, char, const char *, int, char **, int);
 extern	int	peekc(FILE *);
@@ -216,7 +215,6 @@ extern	unsigned char	*patmatch(const unsigned char *, const int *,
 extern	unsigned char	*patlmatch(const unsigned char *, const int *,
 											  const unsigned char *, int, int, int, int[]);
 
-/*extern	int	printf __PR((const char *, ...)) __printflike__(1, 2);*/
 extern	char	*movebytes(const void *, void *, int);
 
 extern	void	save_args(int, char **);
@@ -233,17 +231,6 @@ extern	void	setfp(void * const *);
 extern	int	wait_chld(int);		/* for fspawnv_nowait() */
 extern	int	geterrno(void);
 extern	void	raisecond(const char *, long);
-#ifdef	FOUND_SIZE_T
-/*
- * We currently cannot define this here because there IXIX has a definition
- * than violates the standard.
- */
-#ifndef	HAVE_SNPRINTF
-/*PRINTFLIKE3*/
-extern	int	snprintf(char *, size_t, const char *, ...) __printflike__(3, 4);
-#endif
-#endif
-/*extern	int	sprintf __PR((char *, const char *, ...)); ist woanders falsch deklariert !!!*/
 extern	char	*strcatl(char *, ...);
 extern	int	streql(const char *, const char *);
 #ifdef	va_arg
@@ -254,19 +241,6 @@ extern	int	format(void (*)(char, long), long, const char *, void *);
 
 extern	int	ftoes(char *, double, int, int);
 extern	int	ftofs(char *, double, int, int);
-
-#ifdef	EOF	/* stdio.h has been included */
-/*PRINTFLIKE2*/
-extern	int	js_fprintf(FILE *, const char *, ...) __printflike__(2, 3);
-/*PRINTFLIKE1*/
-extern	int	js_printf(const char *, ...) __printflike__(1, 2);
-#ifdef	FOUND_SIZE_T
-/*PRINTFLIKE3*/
-extern	int	js_snprintf(char *, size_t, const char *, ...) __printflike__(3, 4);
-#endif
-/*PRINTFLIKE2*/
-extern	int	js_sprintf(char *, const char *, ...) __printflike__(2, 3);
-#endif	/* EOF */
 
 extern	void	swabbytes(void *, int);
 extern	char	**getmainfp(void);

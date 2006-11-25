@@ -202,7 +202,7 @@ usalo_aopen(SCSI *usalp, char *device)
 	if (bus >= MAX_SCHILLY_HOSTS || target >= MAX_TGT || lun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for bus, target or lun '%d,%d,%d'",
 				bus, target, lun);
 
@@ -244,7 +244,7 @@ usalo_aopen(SCSI *usalp, char *device)
 atascan:
 	if (scan_internal(usalp, &nopen)) {
 		if (usalp->errstr)
-			js_printf(usalp->errstr, "INFO: scan_internal(...) failed");
+			printf(usalp->errstr, "INFO: scan_internal(...) failed");
 		return (-1);
 	}
 	return (nopen);
@@ -253,7 +253,7 @@ openbydev:
 	if (device != NULL && strncmp(device, "ATAPI:", 6) == 0)
 		device += 6;
 	if (usalp->debug > 3) {
-		js_fprintf((FILE *) usalp->errfile, "INFO: do usalo_open openbydev");
+		fprintf((FILE *) usalp->errfile, "INFO: do usalo_open openbydev");
 	}
 	if (device != NULL && *device != '\0') {
 		int	schilly_bus,
@@ -264,7 +264,7 @@ openbydev:
 
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'", device);
 			return (0);
 		}
@@ -299,19 +299,19 @@ scan_internal(SCSI *usalp, int *nopen)
 			if ((f = open(device, O_RDONLY | O_NONBLOCK)) < 0) {
 				if (errno != ENOENT && errno != ENXIO && errno != ENODEV && errno != EACCES) {
 					if (usalp->debug > 4) {
-						js_fprintf((FILE *) usalp->errfile,
+						fprintf((FILE *) usalp->errfile,
 						"try open(%s) return %i, errno %i, cancel\n", device, f, errno);
 					}
 					return (-2);
 				} else if (errno == ENOENT || errno == ENODEV) {
 					if (usalp->debug > 4) {
-						js_fprintf((FILE *) usalp->errfile,
+						fprintf((FILE *) usalp->errfile,
 						"try open(%s) return %i, errno %i\n", device, f, errno);
 					}
 					if (0 == i) {
 						DEVFS = FALSE;
 						if (usalp->debug > 4) {
-							js_fprintf((FILE *) usalp->errfile,
+							fprintf((FILE *) usalp->errfile,
 							"DEVFS not detected, continuing with old dev\n");
 						}
 					}
@@ -319,17 +319,17 @@ scan_internal(SCSI *usalp, int *nopen)
 				}
 				if (usalp->debug > 4) {
 					if (errno == EACCES) {
-						js_fprintf((FILE *) usalp->errfile,
+						fprintf((FILE *) usalp->errfile,
 						"errno (EACCESS), you don't have the needed rights for %s\n",
 						device);
 					}
-					js_fprintf((FILE *) usalp->errfile,
+					fprintf((FILE *) usalp->errfile,
 					"try open(%s) return %i, errno %i, trying next cdrom\n",
 					device, f, errno);
 				}
 			} else {
 				if (usalp->debug > 4) {
-					js_fprintf((FILE *) usalp->errfile,
+					fprintf((FILE *) usalp->errfile,
 					"try open(%s) return %i errno %i calling sg_mapdev(...)\n",
 					device, f, errno);
 				}
@@ -348,7 +348,7 @@ scan_internal(SCSI *usalp, int *nopen)
 			if ((f = open(device, O_RDONLY | O_NONBLOCK)) < 0) {
 				if (errno != ENOENT && errno != ENXIO && errno != ENODEV && errno != EACCES) {
 					if (usalp->debug > 4) {
-						js_fprintf((FILE *) usalp->errfile,
+						fprintf((FILE *) usalp->errfile,
 						"try open(%s) return %i, errno %i, cancel\n",
 						device, f, errno);
 					}
@@ -371,7 +371,7 @@ scan_internal(SCSI *usalp, int *nopen)
 			if ((f = open(device, O_RDONLY | O_NONBLOCK)) < 0) {
 				if (errno != ENOENT && errno != ENXIO && errno != EACCES) {
 					if (usalp->debug > 4) {
-						js_fprintf((FILE *) usalp->errfile,
+						fprintf((FILE *) usalp->errfile,
 						"try open(%s) return %i, errno %i, cancel\n",
 						device, f, errno);
 					}
@@ -383,7 +383,7 @@ scan_internal(SCSI *usalp, int *nopen)
 				/* ugly hack, make better, when you can. Alex */
 				if (0 > ioctl(f, CDROM_DRIVE_STATUS, CDSL_CURRENT)) {
 					if (usalp->debug > 4) {
-						js_fprintf((FILE *) usalp->errfile,
+						fprintf((FILE *) usalp->errfile,
 						"%s is not a cdrom, skipping\n",
 						device);
 					}
@@ -691,7 +691,7 @@ sg_amapdev(SCSI *usalp, int f, char *device, int *schillybus, int *target,
 		strncpy(tmp, device, sizeof (tmp));
 	}
 	if (usalp->debug > 3) {
-		js_fprintf((FILE *) usalp->errfile, "INFO: %s -> %s\n", device, tmp);
+		fprintf((FILE *) usalp->errfile, "INFO: %s -> %s\n", device, tmp);
 	}
 	memset(token, 0x00, sizeof (token));
 	i = 0;
@@ -793,7 +793,7 @@ sg_amapdev(SCSI *usalp, int f, char *device, int *schillybus, int *target,
 				if (Bus == -1) {
 					Bus = n;
 					if (usalp->debug > 0) {
-						js_fprintf((FILE *)usalp->errfile,
+						fprintf((FILE *)usalp->errfile,
 							"SCSI Bus: %d (mapped from %d)\n",
 							Bus, Ino);
 					}
@@ -816,7 +816,7 @@ sg_amapdev(SCSI *usalp, int f, char *device, int *schillybus, int *target,
 	}
 
 	if (usalp->verbose)
-		js_printf(usalp->errstr, "INFO: subsystem %s: h %i, b %i, t %i, l %i",
+		printf(usalp->errstr, "INFO: subsystem %s: h %i, b %i, t %i, l %i",
 			token[ID_TOKEN_SUBSYSTEM], h, b, t, l);
 
 	first_free_schilly_bus = usalo_aget_first_free_shillybus(usalp, subsystem, h, b);
@@ -837,7 +837,7 @@ sg_amapdev(SCSI *usalp, int f, char *device, int *schillybus, int *target,
 		*lun = l;
 
 		if (usalp->debug > 1) {
-			js_fprintf((FILE *) usalp->errfile,
+			fprintf((FILE *) usalp->errfile,
 				"INFO: /dev/%s, (host%d/bus%d/target%d/lun%d) will be mapped on the schilly bus No %d (%d,%d,%d)\n",
 				token[ID_TOKEN_SUBSYSTEM], h, b, t, l,
 				first_free_schilly_bus, first_free_schilly_bus, t, l);
@@ -864,7 +864,7 @@ sg_amapdev_scsi(SCSI *usalp, int f, int *busp, int *tgtp, int *lunp,
 		return (FALSE);
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *) usalp->errfile,
+		fprintf((FILE *) usalp->errfile,
 			"INFO: l1: 0x%lX l2: 0x%lX\n", sg_id.l1, sg_id.l2);
 	}
 	if (ioctl(f, SCSI_IOCTL_GET_BUS_NUMBER, &Bus) < 0) {
@@ -875,7 +875,7 @@ sg_amapdev_scsi(SCSI *usalp, int f, int *busp, int *tgtp, int *lunp,
 	Chan = (sg_id.l1 >> 16) & 0xFF;
 	Ino = (sg_id.l1 >> 24) & 0xFF;
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *) usalp->errfile,
+		fprintf((FILE *) usalp->errfile,
 			"INFO: Bus: %d Target: %d Lun: %d Chan: %d Ino: %d\n",
 			Bus, Target, Lun, Chan, Ino);
 	}
@@ -936,7 +936,7 @@ usalo_afileno(SCSI *usalp, int busno, int tgt, int tlun)
 static int
 usalo_ainitiator_id(SCSI *usalp)
 {
-	js_printf(usalp->errstr, "NOT IMPELEMENTED: usalo_initiator_id");
+	printf(usalp->errstr, "NOT IMPELEMENTED: usalo_initiator_id");
 	return (-1);
 }
 
@@ -1057,7 +1057,7 @@ usalo_asend(SCSI *usalp)
 		sp->ux_errno = geterrno();
 
 	if (ret < 0 && usalp->debug > 4) {
-		js_fprintf((FILE *) usalp->errfile,
+		fprintf((FILE *) usalp->errfile,
 			"ioctl(CDROM_SEND_PACKET) ret: %d\n", ret);
 	}
 	/*

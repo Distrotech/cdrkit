@@ -124,7 +124,7 @@ usal_open(char *scsidev, char *errs, int slen, int debug, int be_verbose)
 	usalp = usal_smalloc();
 	if (usalp == NULL) {
 		if (errs)
-			js_snprintf(errs, slen, "No memory for SCSI structure");
+			snprintf(errs, slen, "No memory for SCSI structure");
 		return ((SCSI *)0);
 	}
 	usalp->debug = debug;
@@ -228,7 +228,7 @@ usal_open(char *scsidev, char *errs, int slen, int debug, int be_verbose)
 					if (*astoi(&devp[2], &lun) != '\0') {
 						errno = EINVAL;
 						if (errs)
-							js_snprintf(errs, slen,
+							snprintf(errs, slen,
 								"Invalid lun specifier '%s'",
 										&devp[2]);
 						return ((SCSI *)0);
@@ -279,24 +279,24 @@ nulldevice:
 		/*
 		 * XXX May this happen after we allow tgt to repesent tgt,0 ?
 		 */
-		js_fprintf(stderr, "WARNING: device not valid, trying to use default target...\n");
+		fprintf(stderr, "WARNING: device not valid, trying to use default target...\n");
 		usal_settarget(usalp, 0, 6, 0);
 	}
 	if (be_verbose && scsidev != NULL) {
-		js_fprintf(stderr, "scsidev: '%s'\n", scsidev);
+		fprintf(stderr, "scsidev: '%s'\n", scsidev);
 		if (devname[0] != '\0')
-			js_fprintf(stderr, "devname: '%s'\n", devname);
-		js_fprintf(stderr, "scsibus: %d target: %d lun: %d\n",
+			fprintf(stderr, "devname: '%s'\n", devname);
+		fprintf(stderr, "scsibus: %d target: %d lun: %d\n",
 					usal_scsibus(usalp), usal_target(usalp), usal_lun(usalp));
 	}
 	if (debug > 0) {
-		js_fprintf(stderr, "usal__open(%s) %d,%d,%d\n",
+		fprintf(stderr, "usal__open(%s) %d,%d,%d\n",
 			devname,
 			usal_scsibus(usalp), usal_target(usalp), usal_lun(usalp));
 	}
 	if (usal__open(usalp, devname) <= 0) {
 		if (errs && usalp->errstr)
-			js_snprintf(errs, slen, "%s", usalp->errstr);
+			snprintf(errs, slen, "%s", usalp->errstr);
 		usal_sfree(usalp);
 		return ((SCSI *)0);
 	}
@@ -344,7 +344,7 @@ usal_scandev(char *devp, char *errs, int slen, int *busp, int *tgtp, int *lunp)
 			n++;
 		} else {
 			if (errs)
-				js_snprintf(errs, slen, "Invalid bus or target specifier in '%s'", devp);
+				snprintf(errs, slen, "Invalid bus or target specifier in '%s'", devp);
 			return (-1);
 		}
 	}
@@ -356,7 +356,7 @@ usal_scandev(char *devp, char *errs, int slen, int *busp, int *tgtp, int *lunp)
 			n++;
 		} else {
 			if (errs)
-				js_snprintf(errs, slen, "Invalid target or lun specifier in '%s'", devp);
+				snprintf(errs, slen, "Invalid target or lun specifier in '%s'", devp);
 			return (-1);
 		}
 	}
@@ -366,7 +366,7 @@ usal_scandev(char *devp, char *errs, int slen, int *busp, int *tgtp, int *lunp)
 			n++;
 		} else {
 			if (errs)
-				js_snprintf(errs, slen, "Invalid lun specifier in '%s'", devp);
+				snprintf(errs, slen, "Invalid lun specifier in '%s'", devp);
 			return (-1);
 		}
 	}
@@ -385,7 +385,7 @@ usal_scandev(char *devp, char *errs, int slen, int *busp, int *tgtp, int *lunp)
 
 	if (x1 < 0 || x2 < 0 || x3 < 0) {
 		if (errs)
-			js_snprintf(errs, slen, "Invalid value for bus, target or lun (%d,%d,%d)",
+			snprintf(errs, slen, "Invalid value for bus, target or lun (%d,%d,%d)",
 				*busp, *tgtp, *lunp);
 		return (-1);
 	}

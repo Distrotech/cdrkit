@@ -115,7 +115,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (device == NULL || *device == '\0') {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"'devname' must be specified on this OS");
 		return (-1);
 	}
@@ -132,7 +132,7 @@ usalo_open(SCSI *usalp, char *device)
 
 	if ((usallocal(usalp)->fd = open(device, O_RDONLY, 0)) < 0) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Cannot open '%s'", device);
 		return (-1);
 	}
@@ -168,7 +168,7 @@ usalo_getbuf(SCSI *usalp, long amt)
 	void	*addr;
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "usalo_getbuf: %ld bytes\n", amt);
+		fprintf((FILE *)usalp->errfile, "usalo_getbuf: %ld bytes\n", amt);
 	}
 
 	if ((addr = mmap(NULL, amt, PROT_READ | PROT_WRITE | PROT_NOCACHE,

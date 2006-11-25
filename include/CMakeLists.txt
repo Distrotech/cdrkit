@@ -54,7 +54,6 @@ ENDIF (WIN32) # workaround for cygwin
 
 FIND_FILE(HAVE_SYS_DKIO_H "sys/dkio.h")
 FIND_FILE(HAVE_SUN_DKIO_H "sun/dkio.h")
-FIND_FILE(HAVE_NAN_H "nan.h")
 FIND_FILE(HAVE_STDARG_H "stdarg.h")
 FIND_FILE(HAVE_STDLIB_H "stdlib.h")
 FIND_FILE(HAVE_STRING_H "string.h")
@@ -93,12 +92,24 @@ FIND_FILE(HAVE_SYS_IPC_H "sys/ipc.h")
 
 INCLUDE(CheckCSourceCompiles)
 
+
    SET(TESTSRC " 
-#include <math.h>
-         int main() { return isinf(1); }
+#include <stdlib.h>
+         int main() { return ( (int) drand48()  )  ; }
          ")
 SET(CMAKE_REQUIRED_LIBRARIES )
-   CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_ISINF)
+   CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_DRAND48)
+
+
+
+   SET(TESTSRC " 
+#include <stdlib.h>
+         int main() { return ( (int) drand()  )  ; }
+         ")
+SET(CMAKE_REQUIRED_LIBRARIES )
+   CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_DRAND)
+
+
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 

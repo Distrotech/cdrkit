@@ -739,18 +739,18 @@ usal_sensemsg(register int ctype, register int code, register int qual,
 			vec = sd_ccs_error_str;
 	}
 	if (code == 0x40) {
-		js_snprintf(sbuf, maxcnt,
+		snprintf(sbuf, maxcnt,
 			"diagnostic failure on component 0x%X", qual);
 		return (sbuf);
 	}
 	if (code == 0x4D) {
-		js_snprintf(sbuf, maxcnt,
+		snprintf(sbuf, maxcnt,
 			"tagged overlapped commands, queue tag is 0x%X",
 									qual);
 		return (sbuf);
 	}
 	if (code == 0x70) {
-		js_snprintf(sbuf, maxcnt,
+		snprintf(sbuf, maxcnt,
 			"decompression exception short algorithm id of 0x%X",
 									qual);
 		return (sbuf);
@@ -759,10 +759,10 @@ usal_sensemsg(register int ctype, register int code, register int qual,
 		return ((char *)NULL);
 
 	if (code < 0x80) {
-		js_snprintf(sbuf, maxcnt, "invalid sense code 0x%X", code);
+		snprintf(sbuf, maxcnt, "invalid sense code 0x%X", code);
 		return (sbuf);
 	}
-	js_snprintf(sbuf, maxcnt, "vendor unique sense code 0x%X", code);
+	snprintf(sbuf, maxcnt, "vendor unique sense code 0x%X", code);
 	return (sbuf);
 }
 
@@ -843,7 +843,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 	}
 */
 	cmdname = "";
-	n = js_snprintf(obuf, sizeleft, "%sSense Key: 0x%X %s%s, Segment %d\n",
+	n = snprintf(obuf, sizeleft, "%sSense Key: 0x%X %s%s, Segment %d\n",
 		cmdname, key, sensekey,
 		(sense->code == 0x71)?", deferred error":"",
 		segment);
@@ -853,7 +853,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 	}
 	obuf += n;
 	sizeleft -= n;
-	n = js_snprintf(obuf, sizeleft, "Sense Code: 0x%02X Qual 0x%02X %s%s%s%s Fru 0x%X\n",
+	n = snprintf(obuf, sizeleft, "Sense Code: 0x%02X Qual 0x%02X %s%s%s%s Fru 0x%X\n",
 		code, qual, *sensemsg?"(":"", sensemsg, *sensemsg?")":"",
 		badqual? " [No matching qualifier]":"",
 		fru);
@@ -863,7 +863,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 	}
 	obuf += n;
 	sizeleft -= n;
-	n = js_snprintf(obuf, sizeleft, "Sense flags: Blk %d %s%s%s%s",
+	n = snprintf(obuf, sizeleft, "Sense flags: Blk %d %s%s%s%s",
 		blkno, blkvalid?"(valid) ":"(not valid) ",
 		fm?"file mark detected ":"",
 		eom?"end of medium ":"",
@@ -875,7 +875,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 	obuf += n;
 	sizeleft -= n;
 	if (!sksv) {
-		n = js_snprintf(obuf, sizeleft, "\n");
+		n = snprintf(obuf, sizeleft, "\n");
 		if (n <= 0) {
 			obuf[0] = '\0';
 			return (maxcnt - sizeleft);
@@ -887,7 +887,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 	switch (key) {
 
 	case SC_ILLEGAL_REQUEST:
-		n = js_snprintf(obuf, sizeleft, "error refers to %s part, bit ptr %d %s field ptr %d",
+		n = snprintf(obuf, sizeleft, "error refers to %s part, bit ptr %d %s field ptr %d",
 			ext_sense->cd? "command":"data",
 			(int)ext_sense->bptr,
 			ext_sense->bpv? "(valid)":"(not valid)",
@@ -904,7 +904,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 	case SC_RECOVERABLE_ERROR:
 	case SC_HARDWARE_ERROR:
 	case SC_MEDIUM_ERROR:
-		n = js_snprintf(obuf, sizeleft, "actual retry count %d",
+		n = snprintf(obuf, sizeleft, "actual retry count %d",
 			ext_sense->field_ptr[0] << 8 |
 			ext_sense->field_ptr[1]);
 		if (n <= 0) {
@@ -916,7 +916,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 		break;
 
 	case SC_NOT_READY:
-		n = js_snprintf(obuf, sizeleft, "operation %d%% done",
+		n = snprintf(obuf, sizeleft, "operation %d%% done",
 			(100*(ext_sense->field_ptr[0] << 8 |
 			      ext_sense->field_ptr[1]))/(unsigned)65536);
 		if (n < 0) {
@@ -927,7 +927,7 @@ usal__errmsg(SCSI *usalp, char *obuf, int maxcnt,
 		sizeleft -= n;
 		break;
 	}
-	n = js_snprintf(obuf, sizeleft, "\n");
+	n = snprintf(obuf, sizeleft, "\n");
 	if (n <= 0) {
 		obuf[0] = '\0';
 		return (maxcnt - sizeleft);
@@ -965,14 +965,14 @@ print_err(code, ctype)
 		break;
 #endif
 	}
-	js_printf("error code: 0x%x", code);
+	printf("error code: 0x%x", code);
 	if (vec == (char **)NULL)
 		return;
 
 	for (i = 0; i < 2; i++) {
 		while (*vec != (char *) NULL) {
 			if (code == (Uchar)*vec[0]) {
-				js_printf(" (%s)", (char *)((int)(*vec)+1));
+				printf(" (%s)", (char *)((int)(*vec)+1));
 				return;
 			} else
 				vec++;
@@ -989,18 +989,18 @@ int main(int argc, char *argv[])
 
 #ifdef ACB
 	for (i = 0; i < 0x30; i++) {
-/*		js_printf("Code: 0x%x	Key: 0x%x	", i, sd_adaptec_keys[i]);*/
-		js_printf("Key: 0x%x %-16s ", sd_adaptec_keys[i],
+/*		printf("Code: 0x%x	Key: 0x%x	", i, sd_adaptec_keys[i]);*/
+		printf("Key: 0x%x %-16s ", sd_adaptec_keys[i],
 					sd_sense_keys[sd_adaptec_keys[i]] );
 		js_print_err(i, CTYPE_ACB4000);
-		js_printf("\n");
+		printf("\n");
 	}
 #else
 /*	for (i = 0; i < 0x84; i++) {*/
 	for (i = 0; i < 0xd8; i++) {
 /*		print_err(i, CTYPE_SMO_C501);*/
 		print_err(i, DEV_CDD_521);
-		js_printf("\n");
+		printf("\n");
 	}
 #endif
 }

@@ -461,12 +461,12 @@ parse_file(track_t trackp[], state_t *sp)
 
 		if (strchr(word, '/') == 0 &&
 		    strchr(cuename(), '/') != 0) {
-			js_snprintf(cname, sizeof (cname),
+			snprintf(cname, sizeof (cname),
 				"%s", cuename());
 			p = strrchr(cname, '/');
 			if (p)
 				*p = '\0';
-			js_snprintf(newname, sizeof (newname),
+			snprintf(newname, sizeof (newname),
 				"%s/%s", cname, word);
 			word = newname;
 			sp->xfp = xopen(word, O_RDONLY|O_BINARY, 0);

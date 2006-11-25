@@ -120,7 +120,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -144,11 +144,11 @@ usalo_open(SCSI *usalp, char *device)
 
 	if (busno >= 0 && tgt >= 0 && tlun >= 0) {
 
-		js_snprintf(devname, sizeof (devname), "/dev/rcd%d", tgt);
+		snprintf(devname, sizeof (devname), "/dev/rcd%d", tgt);
 		f = openx(devname, 0, 0, SC_DIAGNOSTIC);
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'. Specify device number (1 for cd1) as target (1,0)",
 					devname);
 			return (0);
@@ -157,7 +157,7 @@ usalo_open(SCSI *usalp, char *device)
 		return (1);
 	} else {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Unable to scan on AIX");
 		return (0);
 	}
@@ -166,7 +166,7 @@ openbydev:
 		f = openx(device, 0, 0, SC_DIAGNOSTIC);
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'",
 					devname);
 			return (0);
@@ -225,7 +225,7 @@ usalo_getbuf(SCSI *usalp, long amt)
 #endif
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"usalo_getbuf: %ld bytes\n", amt);
 	}
 	/*
@@ -334,16 +334,16 @@ do_usal_cmd(SCSI *usalp, struct usal_cmd *sp)
 	ret = ioctl(usalp->fd, DKIOCMD, &req);
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "ret: %d errno: %d (%s)\n", ret, errno, errmsgstr(errno));
-		js_fprintf((FILE *)usalp->errfile, "data_length:     %d\n", req.data_length);
-		js_fprintf((FILE *)usalp->errfile, "buffer:          0x%X\n", req.buffer);
-		js_fprintf((FILE *)usalp->errfile, "timeout_value:   %d\n", req.timeout_value);
-		js_fprintf((FILE *)usalp->errfile, "status_validity: %d\n", req.status_validity);
-		js_fprintf((FILE *)usalp->errfile, "scsi_bus_status: 0x%X\n", req.scsi_bus_status);
-		js_fprintf((FILE *)usalp->errfile, "adapter_status:  0x%X\n", req.adapter_status);
-		js_fprintf((FILE *)usalp->errfile, "adap_q_status:   0x%X\n", req.adap_q_status);
-		js_fprintf((FILE *)usalp->errfile, "q_tag_msg:       0x%X\n", req.q_tag_msg);
-		js_fprintf((FILE *)usalp->errfile, "flags:           0X%X\n", req.flags);
+		fprintf((FILE *)usalp->errfile, "ret: %d errno: %d (%s)\n", ret, errno, errmsgstr(errno));
+		fprintf((FILE *)usalp->errfile, "data_length:     %d\n", req.data_length);
+		fprintf((FILE *)usalp->errfile, "buffer:          0x%X\n", req.buffer);
+		fprintf((FILE *)usalp->errfile, "timeout_value:   %d\n", req.timeout_value);
+		fprintf((FILE *)usalp->errfile, "status_validity: %d\n", req.status_validity);
+		fprintf((FILE *)usalp->errfile, "scsi_bus_status: 0x%X\n", req.scsi_bus_status);
+		fprintf((FILE *)usalp->errfile, "adapter_status:  0x%X\n", req.adapter_status);
+		fprintf((FILE *)usalp->errfile, "adap_q_status:   0x%X\n", req.adap_q_status);
+		fprintf((FILE *)usalp->errfile, "q_tag_msg:       0x%X\n", req.q_tag_msg);
+		fprintf((FILE *)usalp->errfile, "flags:           0X%X\n", req.flags);
 	}
 	if (ret < 0) {
 		sp->ux_errno = geterrno();

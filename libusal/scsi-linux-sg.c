@@ -302,7 +302,7 @@ usalo_version(SCSI *usalp, int what)
 
 				if (usallocal(usalp)->drvers >= 0) {
 					n = usallocal(usalp)->drvers;
-					js_snprintf(kv, sizeof (kv),
+					snprintf(kv, sizeof (kv),
 					"%d.%d.%d",
 					n/10000, (n%10000)/100, n%100);
 
@@ -348,7 +348,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -361,36 +361,8 @@ usalo_open(SCSI *usalp, char *device)
 		}
 #endif
 		if (strcmp(device, "ATA") == 0) {
-			/*
-			 * Sending generic SCSI commands via /dev/hd* is a
-			 * really bad idea when there also is a generic
-			 * SCSI driver interface - it breaks the protocol
-			 * layering model. A better idea would be to
-			 * have a SCSI host bus adapter driver that sends
-			 * the SCSI commands via the ATA hardware. This way,
-			 * the layering model would be honored.
-			 *
-			 * People like Jens Axboe should finally fix the DMA
-			 * bugs in the ide-scsi hostadaptor emulation module
-			 * from Linux instead of publishing childish patches
-			 * to the comment above.
-			 */
 			use_ata = TRUE;
 			device = NULL;
-#if 0 // WTF, stop spamming
-			if (usalp->overbose) {
-				/*
-				 * I strongly encourage people who believe that
-				 * they need to patch this message away to read
-				 * the messages in the Solaris USCSI libusal
-				 * layer instead of wetting their tissues while
-				 * being unwilling to look besides their
-				 * own belly button.
-				 */
-				js_fprintf((FILE *)usalp->errfile,
-				"#########################################################################################\n#\n#  Warning: Using ATAPI via /dev/hd* interface. Use dev=ATA:X,Y,Z or dev=/dev/hdX\n\#\n#########################################################################################\n");
-			}
-#endif
 		}
 	}
 
@@ -438,7 +410,7 @@ scanopen:
 /* If a device was specified with ATA:x,y,z try to open this device instead of
  * uselessly opening all of them until we reach the specified one */
 	if (use_ata) for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
-		js_snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
+		snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
 					/* O_NONBLOCK is dangerous */
 		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
@@ -447,11 +419,11 @@ scanopen:
 			 * if at least one open succeeded.
 			 */
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '/dev/hd*'");
 			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
 				if (usalp->errstr)
-					js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '%s'", devname);
 				/* return (0); */
             continue;
@@ -461,7 +433,7 @@ scanopen:
 
 			if (ioctl(f, SG_GET_TIMEOUT, &iparm) < 0) {
 				if (usalp->errstr)
-					js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"SCSI unsupported with '/dev/hd*'");
 				close(f);
 				continue;
@@ -479,7 +451,7 @@ scanopen:
 		usalp->errstr[0] = '\0';
 
 	if (nopen == 0) for (i = 0; i < 32; i++) {
-		js_snprintf(devname, sizeof (devname), "/dev/sg%d", i);
+		snprintf(devname, sizeof (devname), "/dev/sg%d", i);
 					/* O_NONBLOCK is dangerous */
 		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
@@ -488,13 +460,13 @@ scanopen:
 			 * if at least one open succeeded.
 			 */
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '/dev/sg*'");
 			if(errno == EACCES || errno==EPERM)
 				continue;
 			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
 				if (usalp->errstr)
-					js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '%s'", devname);
 				return (0);
 			}
@@ -510,7 +482,7 @@ scanopen:
 		usalp->errstr[0] = '\0';
 
 	if (nopen == 0) for (i = 0; i <= 25; i++) {
-		js_snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
+		snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
 					/* O_NONBLOCK is dangerous */
 		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 		if (f < 0) {
@@ -519,13 +491,13 @@ scanopen:
 			 * if at least one open succeeded.
 			 */
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '/dev/sg*'");
 			if(errno == EACCES || errno==EPERM)
 				continue;
 			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
 				if (usalp->errstr)
-					js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '%s'", devname);
 				return (0);
 			}
@@ -560,7 +532,7 @@ openbydev:
 			 * makes no sense to try the /dev/pg* driver.
 			 */
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'",
 					device);
 			return (0);
@@ -593,13 +565,13 @@ openpg:
 	nopen += pg_open(usalp, device);
 #endif
 	if (usalp->debug > 0) for (b = 0; b < MAX_SCG; b++) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"Bus: %d cookie: %X\n",
 			b, usallocal(usalp)->buscookies[b]);
 		for (t = 0; t < MAX_TGT; t++) {
 			for (l = 0; l < MAX_LUN; l++) {
 				if (usallocal(usalp)->usalfiles[b][t][l] != (short)-1) {
-					js_fprintf((FILE *)usalp->errfile,
+					fprintf((FILE *)usalp->errfile,
 						"file (%d,%d,%d): %d\n",
 						b, t, l, usallocal(usalp)->usalfiles[b][t][l]);
 				}
@@ -679,7 +651,7 @@ sg_setup(SCSI *usalp, int f, int busno, int tgt, int tlun, int ataidx)
 		if (ioctl(f, SG_GET_VERSION_NUM, &n) >= 0) {
 			usallocal(usalp)->drvers = n;
 			if (usalp->overbose) {
-				js_fprintf((FILE *)usalp->errfile,
+				fprintf((FILE *)usalp->errfile,
 					"Linux sg driver version: %d.%d.%d\n",
 					n/10000, (n%10000)/100, n%100);
 			}
@@ -699,7 +671,7 @@ sg_setup(SCSI *usalp, int f, int busno, int tgt, int tlun, int ataidx)
 	if (Bus == -1) {
 		Bus = n;
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"SCSI Bus: %d (mapped from %d)\n", Bus, Ino);
 		}
 	}
@@ -852,7 +824,7 @@ sg_mapdev(SCSI *usalp, int f, int *busp, int *tgtp, int *lunp, int *chanp,
 	if (ioctl(f, SCSI_IOCTL_GET_IDLUN, &sg_id))
 		return (FALSE);
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"l1: 0x%lX l2: 0x%lX\n", sg_id.l1, sg_id.l2);
 	}
 	if (ioctl(f, SCSI_IOCTL_GET_BUS_NUMBER, &Bus) < 0) {
@@ -864,7 +836,7 @@ sg_mapdev(SCSI *usalp, int f, int *busp, int *tgtp, int *lunp, int *chanp,
 	Chan	= (sg_id.l1 >> 16) & 0xFF;
 	Ino	= (sg_id.l1 >> 24) & 0xFF;
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"Bus: %d Target: %d Lun: %d Chan: %d Ino: %d\n",
 			Bus, Target, Lun, Chan, Ino);
 	}
@@ -954,7 +926,7 @@ sg_raisedma(SCSI *usalp, long newmax)
 				if (ioctl(f, SG_GET_RESERVED_SIZE, &val) < 0)
 					continue;
 				if (usalp->debug > 0) {
-					js_fprintf((FILE *)usalp->errfile,
+					fprintf((FILE *)usalp->errfile,
 						"Target (%d,%d,%d): DMA max %d old max: %ld\n",
 						b, t, l, val, newmax);
 				}
@@ -1013,7 +985,7 @@ usalo_getbuf(SCSI *usalp, long amt)
 	char	*ret;
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"usalo_getbuf: %ld bytes\n", amt);
 	}
 	/*
@@ -1235,7 +1207,7 @@ usalo_send(SCSI *usalp)
 
 	ret = ioctl(usalp->fd, SG_IO, &sg_io);
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"ioctl ret: %d\n", ret);
 	}
 
@@ -1262,7 +1234,7 @@ usalo_send(SCSI *usalp)
 	sp->sense_count = sg_io.sb_len_wr;
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"host_status: %02X driver_status: %02X\n",
 				sg_io.host_status, sg_io.driver_status);
 	}
@@ -1397,7 +1369,7 @@ sg_rwsend(SCSI *usalp)
 			(usallocal(usalp)->SCSIbuf - (sizeof (struct sg_header)));
 	} else {
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"DMA addr: 0x%8.8lX size: %d - using copy buffer\n",
 				(long)sp->addr, sp->size);
 		}
@@ -1410,7 +1382,7 @@ sg_rwsend(SCSI *usalp)
 						SCG_MAX_CMD +
 						sizeof (struct sg_header));
 				if (usalp->debug > 0) {
-					js_fprintf((FILE *)usalp->errfile,
+					fprintf((FILE *)usalp->errfile,
 						"Allocated DMA copy buffer, addr: 0x%8.8lX size: %ld\n",
 						(long)usallocal(usalp)->xbuf,
 						usalp->maxbuf);
@@ -1628,7 +1600,7 @@ sg_rwsend(SCSI *usalp)
 
 	if (usalp->verbose > 0 && usalp->debug > 0) {
 #ifdef	SG_GET_BUFSIZE
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"status: 0x%08X pack_len: %d, reply_len: %d pack_id: %d result: %d wn: %d gn: %d cdb_len: %d sense_len: %d sense[0]: %02X\n",
 				GETINT(sgp->hd.sg_cmd_status),
 				GETINT(sgp->hd.pack_len),
@@ -1641,7 +1613,7 @@ sg_rwsend(SCSI *usalp)
 				sgp->hd.sense_len,
 				sgp->hd.sense_buffer[0]);
 #else
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"pack_len: %d, reply_len: %d pack_id: %d result: %d sense[0]: %02X\n",
 				GETINT(sgp->hd.pack_len),
 				GETINT(sgp->hd.reply_len),
@@ -1650,10 +1622,10 @@ sg_rwsend(SCSI *usalp)
 				sgp->hd.sense_buffer[0]);
 #endif
 #ifdef	DEBUG
-		js_fprintf((FILE *)usalp->errfile, "sense: ");
+		fprintf((FILE *)usalp->errfile, "sense: ");
 		for (i = 0; i < 16; i++)
-			js_fprintf((FILE *)usalp->errfile, "%02X ", sgp->hd.sense_buffer[i]);
-		js_fprintf((FILE *)usalp->errfile, "\n");
+			fprintf((FILE *)usalp->errfile, "%02X ", sgp->hd.sense_buffer[i]);
+		fprintf((FILE *)usalp->errfile, "\n");
 #endif
 	}
 

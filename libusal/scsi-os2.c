@@ -107,7 +107,7 @@ static void
 exit_func()
 {
 	if (!close_driver())
-		js_fprintf(stderr, "Cannot close OS/2-ASPI-Router!\n");
+		fprintf(stderr, "Cannot close OS/2-ASPI-Router!\n");
 }
 
 /*
@@ -154,7 +154,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -163,7 +163,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -204,25 +204,25 @@ usalo_getbuf(SCSI *usalp, long amt)
 	ULONG rc;
 
 #ifdef DEBUG
-	js_fprintf((FILE *)usalp->errfile, "usalo_getbuf: %ld bytes\n", amt);
+	fprintf((FILE *)usalp->errfile, "usalo_getbuf: %ld bytes\n", amt);
 #endif
 	rc = DosAllocMem(&buffer, amt, OBJ_TILE | PAG_READ | PAG_WRITE | PAG_COMMIT);
 
 	if (rc) {
-		js_fprintf((FILE *)usalp->errfile, "Cannot allocate buffer.\n");
+		fprintf((FILE *)usalp->errfile, "Cannot allocate buffer.\n");
 		return ((void *)0);
 	}
 	usalp->bufbase = buffer;
 
 #ifdef DEBUG
-	js_fprintf((FILE *)usalp->errfile, "Buffer allocated at: 0x%x\n", usalp->bufbase);
+	fprintf((FILE *)usalp->errfile, "Buffer allocated at: 0x%x\n", usalp->bufbase);
 #endif
 
 	/* Lock memory */
 	if (init_buffer(usalp->bufbase))
 		return (usalp->bufbase);
 
-	js_fprintf((FILE *)usalp->errfile, "Cannot lock memory buffer.\n");
+	fprintf((FILE *)usalp->errfile, "Cannot lock memory buffer.\n");
 	return ((void *)0); /* Error */
 }
 
@@ -230,7 +230,7 @@ static void
 usalo_freebuf(SCSI *usalp)
 {
 	if (usalp->bufbase && DosFreeMem(usalp->bufbase)) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 		"Cannot free buffer memory for ASPI-Router!\n"); /* Free our memory buffer if not already done */
 	}
 	if (buffer == usalp->bufbase)
@@ -305,7 +305,7 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
 	rc = DosDevIOCtl(driver_handle, 0x92, 0x02, (void*) &SRBlock, sizeof (SRB), &cbParam,
 			(void*) &SRBlock, sizeof (SRB), &cbreturn);
 	if (rc) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"DosDevIOCtl() failed in resetDevice.\n");
 		return (1);			/* DosDevIOCtl failed */
 	} else {
@@ -316,9 +316,9 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
 	if (SRBlock.status != SRB_Done)
 		return (3);
 #ifdef DEBUG
-	js_fprintf((FILE *)usalp->errfile,
+	fprintf((FILE *)usalp->errfile,
 		"resetDevice of host: %d target: %d lun: %d successful.\n", usal_scsibus(usalp), usal_target(usalp), usal_lun(usalp));
-	js_fprintf((FILE *)usalp->errfile,
+	fprintf((FILE *)usalp->errfile,
 		"SRBlock.ha_status: 0x%x, SRBlock.target_status: 0x%x, SRBlock.satus: 0x%x\n",
 				SRBlock.u.cmd.ha_status, SRBlock.u.cmd.target_status, SRBlock.status);
 #endif
@@ -371,7 +371,7 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
 	if (sp->cdb_len > sizeof (SRBlock.u.cmd.cdb_st)) { /* commandsize too big */
 		sp->error = SCG_FATAL;
 		sp->ux_errno = EINVAL;
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"sp->cdb_len > SRBlock.u.cmd.cdb_st. Fatal error in usalo_send, exiting...\n");
 		return (-1);
 	}
@@ -420,7 +420,7 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
 			(void*) &SRBlock, sizeof (SRB), &cbreturn);
 
 	if (rc) {		/* An error occured */
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"DosDevIOCtl() in sendCommand failed.\n");
 		sp->error = SCG_FATAL;
 		sp->ux_errno = EIO;	/* Später vielleicht errno einsetzen */
@@ -433,13 +433,13 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
 				/* Timeout */
 				sp->error = SCG_TIMEOUT;
 				sp->ux_errno = EIO;
-				js_fprintf((FILE *)usalp->errfile,
+				fprintf((FILE *)usalp->errfile,
 						"Timeout during SCSI-Command.\n");
 				return (1);
 			}
 			sp->error = SCG_FATAL;
 			sp->ux_errno = EIO;
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 					"Fatal Error during DosWaitEventSem().\n");
 			return (1);
 		}
@@ -447,7 +447,7 @@ static	SRB	SRBlock;			/* XXX makes it non reentrant */
 		/* The command is processed */
 		if (SRBlock.status == SRB_Done) {	/* succesful completion */
 #ifdef DEBUG
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"Command successful finished. SRBlock.status=0x%x\n\n", SRBlock.status);
 #endif
 			sp->sense_count = 0;
@@ -540,7 +540,7 @@ open_driver(SCSI *usalp)
 			OPEN_SHARE_DENYREADWRITE | OPEN_ACCESS_READWRITE,
 			NULL);
 	if (rc) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"Cannot open ASPI-Router!\n");
 
 		return (FALSE);		/* opening failed -> return false*/
@@ -550,7 +550,7 @@ open_driver(SCSI *usalp)
 	if (DosCreateEventSem(NULL, &postSema,	/* create event semaphore */
 				DC_SEM_SHARED, 0)) {
 		DosClose(driver_handle);
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"Cannot create event semaphore!\n");
 
 		return (FALSE);
@@ -591,9 +591,9 @@ close_driver()
 			return (FALSE);		/* closing failed -> return false */
 		driver_handle = 0;
 		if (DosCloseEventSem(postSema))
-			js_fprintf(stderr, "Cannot close event semaphore!\n");
+			fprintf(stderr, "Cannot close event semaphore!\n");
 		if (buffer && DosFreeMem(buffer)) {
-			js_fprintf(stderr,
+			fprintf(stderr,
 			"Cannot free buffer memory for ASPI-Router!\n"); /* Free our memory buffer if not already done */
 		}
 		buffer = NULL;

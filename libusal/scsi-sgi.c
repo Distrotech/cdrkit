@@ -134,7 +134,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -143,7 +143,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -163,7 +163,7 @@ usalo_open(SCSI *usalp, char *device)
 
 	if (busno >= 0 && tgt >= 0 && tlun >= 0) {
 
-		js_snprintf(devname, sizeof (devname),
+		snprintf(devname, sizeof (devname),
 				"/dev/scsi/sc%dd%dl%d", busno, tgt, tlun);
 #ifdef	USE_DSLIB
 		dsp = dsopen(devname, O_RDWR);
@@ -173,7 +173,7 @@ usalo_open(SCSI *usalp, char *device)
 		f = open(devname, O_RDWR);
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'",
 					devname);
 			return (-1);
@@ -189,7 +189,7 @@ usalo_open(SCSI *usalp, char *device)
 			for (t = 0; t < MAX_TGT; t++) {
 /*				for (l = 0; l < MAX_LUN; l++) {*/
 				for (l = 0; l < 1; l++) {
-					js_snprintf(devname, sizeof (devname),
+					snprintf(devname, sizeof (devname),
 							"/dev/scsi/sc%dd%dl%d", b, t, l);
 					f = open(devname, O_RDWR);
 					if (f >= 0) {
@@ -242,7 +242,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = valloc((size_t)(amt));

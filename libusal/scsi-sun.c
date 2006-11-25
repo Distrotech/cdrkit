@@ -206,7 +206,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno '%d'", busno);
 		return (-1);
 	}
@@ -218,7 +218,7 @@ usalo_open(SCSI *usalp, char *device)
 #else
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 #endif
@@ -228,7 +228,7 @@ usalo_open(SCSI *usalp, char *device)
 		usalp->local = malloc(sizeof (struct usal_local));
 		if (usalp->local == NULL) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "No memory for usal_local");
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "No memory for usal_local");
 			return (0);
 		}
 
@@ -244,12 +244,12 @@ usalo_open(SCSI *usalp, char *device)
 		 */
 		if (busno >= 0 && busno != i)
 			continue;
-		js_snprintf(devname, sizeof (devname), "/dev/usal%d", i);
+		snprintf(devname, sizeof (devname), "/dev/usal%d", i);
 		f = open(devname, O_RDWR);
 		if (f < 0) {
 			if (errno != ENOENT && errno != ENXIO) {
 				if (usalp->errstr)
-					js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 						"Cannot open '%s'", devname);
 				return (-1);
 			}
@@ -463,7 +463,7 @@ usalo_uopen(SCSI *usalp, char *device)
 		have_volmgt = volmgt_running();
 
 	if (usalp->overbose) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"Warning: Using USCSI interface.\n");
 	}
 #ifndef	SEEK_HOLE
@@ -473,7 +473,7 @@ usalo_uopen(SCSI *usalp, char *device)
 	 * seems to be the best guess.
 	 */
 	if (usalp->overbose > 0 && have_volmgt) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 		"Warning: Volume management is running, medialess managed drives are invisible.\n");
 	}
 #endif
@@ -481,7 +481,7 @@ usalo_uopen(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr) {
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 					busno, tgt, tlun);
 		}
@@ -491,7 +491,7 @@ usalo_uopen(SCSI *usalp, char *device)
 		usalp->local = malloc(sizeof (struct usal_local));
 		if (usalp->local == NULL) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "No memory for usal_local");
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "No memory for usal_local");
 			return (0);
 		}
 
@@ -515,13 +515,13 @@ uscsiscan:
 		if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN)
 			return (-1);
 
-		js_snprintf(devname, sizeof (devname), "/dev/rdsk/c%dt%dd%ds2",
+		snprintf(devname, sizeof (devname), "/dev/rdsk/c%dt%dd%ds2",
 			busno, tgt, tlun);
 		f = open(devname, O_RDONLY | O_NDELAY);
 		if (f < 0 && geterrno() == EBUSY)
 			f = usalo_volopen(usalp, devname);
 		if (f < 0) {
-			js_snprintf(usalp->errstr,
+			snprintf(usalp->errstr,
 				    SCSI_ERRSTR_SIZE,
 				"Cannot open '%s'", devname);
 			return (0);
@@ -533,7 +533,7 @@ uscsiscan:
 		for (b = 0; b < MAX_SCG; b++) {
 			for (t = 0; t < MAX_TGT; t++) {
 				for (l = 0; l < MAX_LUN; l++) {
-					js_snprintf(devname, sizeof (devname),
+					snprintf(devname, sizeof (devname),
 						"/dev/rdsk/c%dt%dd%ds2",
 						b, t, l);
 					f = open(devname, O_RDONLY | O_NDELAY);
@@ -551,7 +551,7 @@ uscsiscan:
 						    errno != ENXIO &&
 						    errno != ENODEV) {
 						if (usalp->errstr)
-							js_snprintf(usalp->errstr,
+							snprintf(usalp->errstr,
 							    SCSI_ERRSTR_SIZE,
 							    "Cannot open '%s'", devname);
 					}
@@ -582,7 +582,7 @@ openbydev:
 		if (f < 0)
 			f = usalo_volopen(usalp, device);
 		if (f < 0) {
-			js_snprintf(usalp->errstr,
+			snprintf(usalp->errstr,
 				    SCSI_ERRSTR_SIZE,
 				"Cannot open '%s'", device);
 			return (0);
@@ -632,7 +632,7 @@ usalo_volopen(SCSI *usalp, char *devname)
 	usalp->debug++;
 #endif
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_volopen(%s)\n", devname);
 	}
 
@@ -645,7 +645,7 @@ usalo_volopen(SCSI *usalp, char *devname)
 	if (symdev)
 		name = volmgt_symname(symdev);
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"volmgt_symdev(%s)=%s -> %s\n", devname, symdev, name);
 	}
 
@@ -660,7 +660,7 @@ usalo_volopen(SCSI *usalp, char *devname)
 			symdev = volmgt_symdev(name);
 	}
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"volmgt_symdev(%s)=%s -> %s\n", devname, symdev, name);
 	}
 
@@ -672,7 +672,7 @@ usalo_volopen(SCSI *usalp, char *devname)
 	if (name)
 		mname = media_findname(name);
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"symdev %s name %s mname %s\n", symdev, name, mname);
 	}
 
@@ -680,7 +680,7 @@ usalo_volopen(SCSI *usalp, char *devname)
 	 * Das scheint nur mit dem normierten /dev/rdsk/ *s2 Namen zu gehen.
 	 */
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"volmgt_inuse(%s) %d\n", symdev, volmgt_inuse(symdev));
 	}
 	if (mname)
@@ -728,7 +728,7 @@ usalo_openmedia(SCSI *usalp, char *mname)
 			/*
 			 * First check partition '2', the whole disk.
 			 */
-			js_snprintf(name, sizeof (name), "%s/s2", mname);
+			snprintf(name, sizeof (name), "%s/s2", mname);
 			f = open(name, O_RDONLY | O_NDELAY);
 			if (f >= 0)
 				return (f);
@@ -738,7 +738,7 @@ usalo_openmedia(SCSI *usalp, char *mname)
 			for (i = 0; i < 16; i++) {
 				if (i == 2)
 					continue;
-				js_snprintf(name, sizeof (name),
+				snprintf(name, sizeof (name),
 							"%s/s%d", mname, i);
 				if (stat(name, &sb) >= 0)
 					break;
@@ -790,23 +790,23 @@ usalo_ucinfo(int f, struct dk_cinfo *cp, int debug)
 	if (debug <= 0)
 		return (0);
 
-	js_fprintf(stderr, "cname:		'%s'\n", cp->dki_cname);
-	js_fprintf(stderr, "ctype:		0x%04hX %hd\n", cp->dki_ctype, cp->dki_ctype);
-	js_fprintf(stderr, "cflags:		0x%04hX\n", cp->dki_flags);
-	js_fprintf(stderr, "cnum:		%hd\n", cp->dki_cnum);
+	fprintf(stderr, "cname:		'%s'\n", cp->dki_cname);
+	fprintf(stderr, "ctype:		0x%04hX %hd\n", cp->dki_ctype, cp->dki_ctype);
+	fprintf(stderr, "cflags:		0x%04hX\n", cp->dki_flags);
+	fprintf(stderr, "cnum:		%hd\n", cp->dki_cnum);
 #ifdef	__EVER__
-	js_fprintf(stderr, "addr:		%d\n", cp->dki_addr);
-	js_fprintf(stderr, "space:		%d\n", cp->dki_space);
-	js_fprintf(stderr, "prio:		%d\n", cp->dki_prio);
-	js_fprintf(stderr, "vec:		%d\n", cp->dki_vec);
+	fprintf(stderr, "addr:		%d\n", cp->dki_addr);
+	fprintf(stderr, "space:		%d\n", cp->dki_space);
+	fprintf(stderr, "prio:		%d\n", cp->dki_prio);
+	fprintf(stderr, "vec:		%d\n", cp->dki_vec);
 #endif
-	js_fprintf(stderr, "dname:		'%s'\n", cp->dki_dname);
-	js_fprintf(stderr, "unit:		%d\n", cp->dki_unit);
-	js_fprintf(stderr, "slave:		%d %04o Tgt: %d Lun: %d\n",
+	fprintf(stderr, "dname:		'%s'\n", cp->dki_dname);
+	fprintf(stderr, "unit:		%d\n", cp->dki_unit);
+	fprintf(stderr, "slave:		%d %04o Tgt: %d Lun: %d\n",
 				cp->dki_slave, cp->dki_slave,
 				TARGET(cp->dki_slave), LUN(cp->dki_slave));
-	js_fprintf(stderr, "partition:	%hd\n", cp->dki_partition);
-	js_fprintf(stderr, "maxtransfer:	%d (%d)\n",
+	fprintf(stderr, "partition:	%hd\n", cp->dki_partition);
+	fprintf(stderr, "maxtransfer:	%d (%d)\n",
 				cp->dki_maxtransfer,
 				cp->dki_maxtransfer * DEV_BSIZE);
 	return (0);
@@ -917,7 +917,7 @@ usalo_openide()
 
 	for (b = 0; b < 5; b++) {
 		for (t = 0; t < 2; t++) {
-			js_snprintf(buf, sizeof (buf),
+			snprintf(buf, sizeof (buf),
 				"/dev/rdsk/c%dd%dp0", b, t);
 			if ((f = open(buf, O_RDONLY | O_NDELAY)) >= 0)
 				goto out;
@@ -974,7 +974,7 @@ usalo_uisatapi(SCSI *usalp)
 	if (ioctl(usalp->fd, DKIOCINFO, &ci) < 0)
 		return (-1);
 
-	js_snprintf(devname, sizeof (devname), "/dev/rdsk/c%dt%dd%ds2",
+	snprintf(devname, sizeof (devname), "/dev/rdsk/c%dt%dd%ds2",
 		usal_scsibus(usalp), usal_target(usalp), usal_lun(usalp));
 
 	symlinkname[0] = '\0';
@@ -1055,32 +1055,32 @@ again:
 		seteuid(cureuid);
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "ret: %d errno: %d (%s)\n", ret, errno, errmsgstr(errno));
-		js_fprintf((FILE *)usalp->errfile, "uscsi_flags:     0x%x\n", req.uscsi_flags);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_status:    0x%x\n", req.uscsi_status);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_timeout:   %d\n", req.uscsi_timeout);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_bufaddr:   0x%lx\n", (long)req.uscsi_bufaddr);
+		fprintf((FILE *)usalp->errfile, "ret: %d errno: %d (%s)\n", ret, errno, errmsgstr(errno));
+		fprintf((FILE *)usalp->errfile, "uscsi_flags:     0x%x\n", req.uscsi_flags);
+		fprintf((FILE *)usalp->errfile, "uscsi_status:    0x%x\n", req.uscsi_status);
+		fprintf((FILE *)usalp->errfile, "uscsi_timeout:   %d\n", req.uscsi_timeout);
+		fprintf((FILE *)usalp->errfile, "uscsi_bufaddr:   0x%lx\n", (long)req.uscsi_bufaddr);
 								/*
 								 * Cast auf int OK solange sp->size
 								 * auch ein int bleibt.
 								 */
-		js_fprintf((FILE *)usalp->errfile, "uscsi_buflen:    %d\n", (int)req.uscsi_buflen);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_resid:     %d\n", (int)req.uscsi_resid);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_rqlen:     %d\n", req.uscsi_rqlen);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_rqstatus:  0x%x\n", req.uscsi_rqstatus);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_rqresid:   %d\n", req.uscsi_rqresid);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_rqbuf ptr: 0x%lx\n", (long)req.uscsi_rqbuf);
-		js_fprintf((FILE *)usalp->errfile, "uscsi_rqbuf:     ");
+		fprintf((FILE *)usalp->errfile, "uscsi_buflen:    %d\n", (int)req.uscsi_buflen);
+		fprintf((FILE *)usalp->errfile, "uscsi_resid:     %d\n", (int)req.uscsi_resid);
+		fprintf((FILE *)usalp->errfile, "uscsi_rqlen:     %d\n", req.uscsi_rqlen);
+		fprintf((FILE *)usalp->errfile, "uscsi_rqstatus:  0x%x\n", req.uscsi_rqstatus);
+		fprintf((FILE *)usalp->errfile, "uscsi_rqresid:   %d\n", req.uscsi_rqresid);
+		fprintf((FILE *)usalp->errfile, "uscsi_rqbuf ptr: 0x%lx\n", (long)req.uscsi_rqbuf);
+		fprintf((FILE *)usalp->errfile, "uscsi_rqbuf:     ");
 		if (req.uscsi_rqbuf != NULL && req.uscsi_rqlen > req.uscsi_rqresid) {
 			int	i;
 			int	len = req.uscsi_rqlen - req.uscsi_rqresid;
 
 			for (i = 0; i < len; i++) {
-				js_fprintf((FILE *)usalp->errfile, "0x%02X ", ((char *)req.uscsi_rqbuf)[i]);
+				fprintf((FILE *)usalp->errfile, "0x%02X ", ((char *)req.uscsi_rqbuf)[i]);
 			}
-			js_fprintf((FILE *)usalp->errfile, "\n");
+			fprintf((FILE *)usalp->errfile, "\n");
 		} else {
-			js_fprintf((FILE *)usalp->errfile, "<data not available>\n");
+			fprintf((FILE *)usalp->errfile, "<data not available>\n");
 		}
 	}
 	if (ret < 0) {
@@ -1090,7 +1090,7 @@ again:
 		 */
 		if (sp->ux_errno == ENOTTY && usalo_uisatapi(usalp) == TRUE) {
 			if (usalp->debug > 0) {
-				js_fprintf((FILE *)usalp->errfile,
+				fprintf((FILE *)usalp->errfile,
 					"ENOTTY atapi: %d\n", usalo_uisatapi(usalp));
 			}
 			sp->error = SCG_FATAL;

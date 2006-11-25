@@ -212,7 +212,7 @@ extern	char		**environ;
 
 	if (stat(PRIM_HBA, &stbuf) < 0) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Can not stat() primary hba (%s)",
 				PRIM_HBA);
 		return (-1);
@@ -220,7 +220,7 @@ extern	char		**environ;
 
 	if (!S_ISCHR(stbuf.st_mode)) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Primary hba (%s) not a character device",
 				PRIM_HBA);
 		return (-1);
@@ -243,7 +243,7 @@ extern	char		**environ;
 	environ = 0;
 	if ((cmd = xpopen(SCSI_CFG, "r")) == NULL) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Error popen() for \"%s\"",
 				SCSI_CFG);
 		environ = evsave;
@@ -278,7 +278,7 @@ extern	char		**environ;
 		strncpy(ident, &lines[pos], len);
 
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"SDI -> %d:%d,%d,%d: %-7s : %s\n",
 				hba, bus, tgt, lun, class, ident);
 		}
@@ -340,11 +340,11 @@ extern	char		**environ;
 		strcpy(sdidevs[usal][tgt][lun].type, class);
 		strcpy(sdidevs[usal][tgt][lun].vend, ident);
 
-		js_snprintf(sdidevs[usal][tgt][lun].devn,
+		snprintf(sdidevs[usal][tgt][lun].devn,
 				sizeof (sdidevs[usal][tgt][lun].devn),
 				DEV_NAME, usal, tgt, lun);
 #endif
-		js_snprintf(devnm, sizeof (devnm),
+		snprintf(devnm, sizeof (devnm),
 				DEV_NAME, usal, tgt, lun);
 
 		minor = SDI_MINOR(hba, tgt, lun, bus);
@@ -356,7 +356,7 @@ extern	char		**environ;
 
 		if (usalp->debug > 0) {
 
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 			"h = %d; b = %d, s = %d, t = %d, l = %d, a = %d, ma = %d, mi = %2d, dev = '%s', id = '%s'\n",
 			hba, bus, usal, tgt, lun,
 			(sdidevs[usal][tgt][lun].flags & SDI_ATAPI) != 0,
@@ -371,7 +371,7 @@ extern	char		**environ;
 
 	if (xpclose(cmd) == -1) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Error pclose() for \"%s\"",
 				SCSI_CFG);
 		return (-1);
@@ -395,11 +395,11 @@ extern	char		**environ;
 
 				/* Make pass-through interface device node */
 
-				js_snprintf(devnm,
+				snprintf(devnm,
 					sizeof (devnm),
 					DEV_NAME, s, t, l);
 
-				js_snprintf(dname, sizeof (dname),
+				snprintf(dname, sizeof (dname),
 					"%s/%s", DEV_DIR, devnm);
 
 				ptdev = sdidevs[s][t][l].node;
@@ -410,13 +410,13 @@ extern	char		**environ;
 
 						if (mknod(dname, S_IFCHR | 0700, ptdev) < 0) {
 							if (usalp->errstr)
-								js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+								snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 									"mknod() error for \"%s\"", dname);
 							return (-1);
 						}
 					} else {
 						if (usalp->errstr)
-							js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+							snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 								"mknod() error for \"%s\"", dname);
 						return (-1);
 					}
@@ -433,7 +433,7 @@ extern	char		**environ;
 						fd = sdidevs[s][t][l].fd;
 					} else {
 						if (usalp->errstr)
-							js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+							snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 								"can not open pass-through %s", dname);
 						return (-1);
 					}
@@ -451,7 +451,7 @@ extern	char		**environ;
 
 				if (usalp->debug > 0) {
 
-					js_fprintf((FILE *)usalp->errfile,
+					fprintf((FILE *)usalp->errfile,
 						"s = %d, t = %d, l = %d, dev = %s, fd = %d\n",
 						s, t, l,
 						devnm,
@@ -477,7 +477,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -514,7 +514,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (*device != '\0') {		/* we don't allow old dev usage */
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			"Open by 'devname' no longer supported on this OS");
 		return (-1);
 	} else {			/* this is the new stuff	 */
@@ -574,7 +574,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = (void *) valloc((size_t)(amt));
@@ -640,7 +640,7 @@ usalo_initiator_id(SCSI *usalp)
 		for (l = 0; l < MAX_LUN; l++)
 			if ((sdidevs[busno][t][l].flags & SDI_INITIATOR) != 0) {
 				if (usalp->debug > 0) {
-					js_fprintf((FILE *)usalp->errfile,
+					fprintf((FILE *)usalp->errfile,
 						"usalo_initiator_id: id = %d\n", t);
 				}
 				return (t);

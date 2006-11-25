@@ -97,7 +97,7 @@ void clone_toc(track_t *trackp)
 	if (len > (sizeof (filename)-5)) {
 		len = sizeof (filename)-5;
 	}
-	js_snprintf(filename, sizeof (filename), "%.*s.toc", len, trackp[1].filename);
+	snprintf(filename, sizeof (filename), "%.*s.toc", len, trackp[1].filename);
 
 	f = open(filename, O_RDONLY|O_BINARY);
 	if (f < 0)

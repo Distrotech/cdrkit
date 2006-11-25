@@ -123,7 +123,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -132,7 +132,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -197,7 +197,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = malloc((size_t)(amt));
@@ -301,7 +301,7 @@ usalo_send(SCSI *usalp)
 	default:
 		sp->error = SCG_FATAL;
 		sp->ux_errno = EINVAL;
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"Unsupported sp->cdb_len: %u. Fatal error in usalo_send, exiting...\n", sp->cdb_len);
 		return (-1);
 	}
@@ -354,7 +354,7 @@ usalo_send(SCSI *usalp)
 
 	if (Srb.Status == SS_PENDING) {	/* Check if we got a timeout*/
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 					"Timeout....\n");
 		}
 			sp->error = SCG_TIMEOUT;
@@ -367,7 +367,7 @@ usalo_send(SCSI *usalp)
 	if (Srb.Status != SS_COMP) {
 
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"Error in usalo_send: Srb.Status is 0x%x\n", Srb.Status);
 		}
 
@@ -425,7 +425,7 @@ usalo_send(SCSI *usalp)
 		sp->u_scb.cmd_scb[0] = Srb.Type.ExecSCSICmd.TargStat;
 
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"Mapped to: error %d errno: %d\n", sp->error, sp->ux_errno);
 		}
 		return (1);
@@ -477,14 +477,14 @@ SCSIMgrOpen(SCSI *usalp)
 		/* Allocate real mode callback */
 		_callback_info.pm_offset = (unsigned long)&SCSIMgrCallBack;
 		if (_go32_dpmi_allocate_real_mode_callback_retf(&_callback_info, &_callback_regs) == -1) {
-			js_fprintf((FILE *)usalp->errfile, "Cannot allocate callback address!\n");
+			fprintf((FILE *)usalp->errfile, "Cannot allocate callback address!\n");
 			SCSIMgrEntry = 0;
 		}
 	}
 
 	/* SCSIMgr entry point founded? */
 	if (!SCSIMgrEntry) {
-		js_fprintf((FILE *)usalp->errfile, "Cannot open ASPI manager! Try to get one from http://bootcd.narod.ru/\n");
+		fprintf((FILE *)usalp->errfile, "Cannot open ASPI manager! Try to get one from http://bootcd.narod.ru/\n");
 		return (FALSE);
 	}
 
@@ -494,11 +494,11 @@ SCSIMgrOpen(SCSI *usalp)
 	SCSIMgrSendSRB(&Srb, 10);
 
 	if (usalp->debug) {
-		js_fprintf((FILE *)usalp->errfile, "Status : %ld\n", Srb.Status);
-		js_fprintf((FILE *)usalp->errfile, "hacount: %d\n", Srb.Type.HAInquiry.Count);
-		js_fprintf((FILE *)usalp->errfile, "SCSI id: %d\n", Srb.Type.HAInquiry.SCSI_ID);
-		js_fprintf((FILE *)usalp->errfile, "Manager: '%.16s'\n", Srb.Type.HAInquiry.ManagerId);
-		js_fprintf((FILE *)usalp->errfile, "Identif: '%.16s'\n", Srb.Type.HAInquiry.Identifier);
+		fprintf((FILE *)usalp->errfile, "Status : %ld\n", Srb.Status);
+		fprintf((FILE *)usalp->errfile, "hacount: %d\n", Srb.Type.HAInquiry.Count);
+		fprintf((FILE *)usalp->errfile, "SCSI id: %d\n", Srb.Type.HAInquiry.SCSI_ID);
+		fprintf((FILE *)usalp->errfile, "Manager: '%.16s'\n", Srb.Type.HAInquiry.ManagerId);
+		fprintf((FILE *)usalp->errfile, "Identif: '%.16s'\n", Srb.Type.HAInquiry.Identifier);
 		usal_prbytes("Unique:", Srb.Type.HAInquiry.Unique, 16);
 	}
 

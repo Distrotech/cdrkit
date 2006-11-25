@@ -145,7 +145,7 @@ usalo_open(SCSI *usalp, char *device)
 	int driveidx = 1, idx = 1;
 
 	if (device == NULL) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 		"Please specify a device name (e.g. IOCompactDiscServices/0)");
 		goto out;
 	}
@@ -166,7 +166,7 @@ usalo_open(SCSI *usalp, char *device)
 	ioReturnValue = IOMasterPort(bootstrap_port, &masterPort);
 
 	if (ioReturnValue != kIOReturnSuccess) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Couldn't get a master IOKit port. Error %d",
 			    ioReturnValue);
 		goto out;
@@ -174,7 +174,7 @@ usalo_open(SCSI *usalp, char *device)
 
 	dict = IOServiceMatching(realdevice);
 	if (dict == NULL) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Couldn't create dictionary for searching");
 		goto out;
 	}
@@ -185,7 +185,7 @@ usalo_open(SCSI *usalp, char *device)
 
 	if (scsiObjectIterator == NULL ||
 	    (ioReturnValue != kIOReturnSuccess)) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "No matching device %s found.", device);
 		goto out;
 	}
@@ -203,7 +203,7 @@ usalo_open(SCSI *usalp, char *device)
 	}
 
 	if (scsiDevice == NULL) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "No matching device found. Iterator failed.");
 		goto out;
 	}
@@ -221,7 +221,7 @@ usalo_open(SCSI *usalp, char *device)
 				(LPVOID)&mmcDeviceInterface);
 
 	if (plugInResult != KERN_SUCCESS) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Unable to get MMC Interface: 0x%lX",
 			    (long)plugInResult);
 
@@ -232,7 +232,7 @@ usalo_open(SCSI *usalp, char *device)
 		(*mmcDeviceInterface)->GetSCSITaskDeviceInterface(mmcDeviceInterface);
 
 	if (scsiTaskDeviceInterface == NULL) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Failed to get taskDeviceInterface");
 		goto out;
 	}
@@ -245,7 +245,7 @@ try_generic:
 					kIOCFPlugInInterfaceID,
 					&plugInInterface, &score);
 	if (ioReturnValue != kIOReturnSuccess) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Unable to get plugin Interface: %x",
 			    ioReturnValue);
 		goto out;
@@ -256,7 +256,7 @@ try_generic:
 					(LPVOID)&scsiTaskDeviceInterface);
 
 	if (plugInResult != KERN_SUCCESS) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Unable to get generic Interface: 0x%lX",
 			    (long)plugInResult);
 
@@ -268,7 +268,7 @@ init:
 		(*scsiTaskDeviceInterface)->ObtainExclusiveAccess(scsiTaskDeviceInterface);
 
 	if (ioReturnValue != kIOReturnSuccess) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Unable to get exclusive access to device");
 		goto out;
 	}
@@ -357,7 +357,7 @@ usalo_maxdma(SCSI *usalp, long amt)
 	if (ioctl(usallocal(usalp)->usalfile, SGIOCMAXDMA, &m) >= 0) {
 		maxdma = m;
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"maxdma: %d\n", maxdma);
 		}
 	}
@@ -369,7 +369,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = malloc((size_t)(amt));
@@ -445,7 +445,7 @@ usalo_send(SCSI *usalp)
 
 	cmd = (*sc)->CreateSCSITask(sc);
 	if (cmd == NULL) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Failed to create SCSI task");
 		ret = -1;
 
@@ -462,7 +462,7 @@ usalo_send(SCSI *usalp)
 						sp->cdb.cmd_cdb, sp->cdb_len);
 
 	if (ioReturnValue != kIOReturnSuccess) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "SetCommandDescriptorBlock failed with status %x",
 			    ioReturnValue);
 		ret = -1;
@@ -474,7 +474,7 @@ usalo_send(SCSI *usalp)
 				kSCSIDataTransfer_FromTargetToInitiator :
 				kSCSIDataTransfer_FromInitiatorToTarget);
 	if (ioReturnValue != kIOReturnSuccess) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "SetScatterGatherEntries failed with status %x",
 			    ioReturnValue);
 		ret = -1;
@@ -483,7 +483,7 @@ usalo_send(SCSI *usalp)
 
 	ioReturnValue = (*cmd)->SetTimeoutDuration(cmd, sp->timeout * 1000);
 	if (ioReturnValue != kIOReturnSuccess) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "SetTimeoutDuration failed with status %x",
 			    ioReturnValue);
 		ret = -1;
@@ -501,7 +501,7 @@ usalo_send(SCSI *usalp)
 	sp->ux_errno = geterrno();
 
 	if (ioReturnValue != kIOReturnSuccess) {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			    "Command execution failed with status %x",
 			    ioReturnValue);
 		sp->error = SCG_RETRYABLE;

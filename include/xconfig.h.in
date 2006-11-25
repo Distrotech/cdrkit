@@ -155,15 +155,11 @@
 #define HAVE_LSTAT 1		/* lstat() is present in libc */
 #define HAVE_READLINK 1		/* readlink() is present in libc */
 #define HAVE_RENAME 1		/* rename() is present in libc */
-#define HAVE_ECVT 1		/* ecvt() is present in libc */
-#define HAVE_FCVT 1		/* fcvt() is present in libc */
-#define HAVE_GCVT 1		/* gcvt() is present in libc */
 
-/* isinf() is present in libc */
-#cmakedefine HAVE_ISINF
-#define HAVE_ISNAN 1		/* isnan() is present in libc OR LIBM , linker test elsewhere */
-#define HAVE_RAND 1		/* rand() is present in libc */
-#define HAVE_DRAND48 1		/* drand48() is present in libc */
+#cmakedefine HAVE_RAND 
+		/* rand() is present in libc */
+#cmakedefine HAVE_DRAND48
+  /* drand48() is present in libc */
 #define HAVE_SETPRIORITY 1		/* setpriority() is present in libc */
 #define HAVE_NICE 1		/* nice() is present in libc */
 #define HAVE_UNAME 1		/* uname() is present in libc */

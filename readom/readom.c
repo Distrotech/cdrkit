@@ -913,7 +913,7 @@ read_ftoc(SCSI *usalp, parm_t *parmp, BOOL do_sectype)
 		if (len > (sizeof (filename)-5)) {
 			len = sizeof (filename)-5;
 		}
-		js_snprintf(filename, sizeof (filename), "%.*s.toc", len, parmp->name);
+		snprintf(filename, sizeof (filename), "%.*s.toc", len, parmp->name);
 	}
 
 	tp = (struct tocheader *)xb;

@@ -115,14 +115,14 @@ usalo_open(SCSI *usalp, char *device)
 			return (0);
 	}
 	if (device == NULL || *device == '\0') {
-		js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "Must give device name");
+		snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "Must give device name");
 		return (0);
 	}
 
 	scsi_$acquire(device, strlen(device), &usallocal(usalp)->handle, &status);
 	if (status.all) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "Cannot open '%s', status %08x", device, status.all);
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE, "Cannot open '%s', status %08x", device, status.all);
 		return (0);
 	}
 	/*

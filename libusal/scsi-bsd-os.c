@@ -131,7 +131,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -155,7 +155,7 @@ usalo_open(SCSI *usalp, char *device)
 
 	if (busno >= 0 && tgt >= 0 && tlun >= 0) {
 
-		js_snprintf(devname, sizeof (devname),
+		snprintf(devname, sizeof (devname),
 					"/dev/su%d-%d-%d", busno, tgt, tlun);
 		f = open(devname, O_RDWR|O_NONBLOCK);
 		if (f < 0) {
@@ -167,7 +167,7 @@ usalo_open(SCSI *usalp, char *device)
 	} else for (b = 0; b < MAX_SCG; b++) {
 		for (t = 0; t < MAX_TGT; t++) {
 			for (l = 0; l < MAX_LUN; l++) {
-				js_snprintf(devname, sizeof (devname),
+				snprintf(devname, sizeof (devname),
 						"/dev/su%d-%d-%d", b, t, l);
 				f = open(devname, O_RDWR|O_NONBLOCK);
 /*				fprintf(stderr, "open (%s) = %d\n", devname, f);*/
@@ -177,7 +177,7 @@ usalo_open(SCSI *usalp, char *device)
 					    errno != ENXIO &&
 					    errno != ENODEV) {
 						if (usalp->errstr)
-							js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+							snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 								"Cannot open '%s'",
 								devname);
 						return (0);
@@ -200,7 +200,7 @@ openbydev:
 		f = open(device, O_RDWR|O_NONBLOCK);
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'",
 					device);
 			return (0);
@@ -263,7 +263,7 @@ usal_setup(SCSI *usalp, int f, int busno, int tgt, int tlun)
 	Lun	= tlun;
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"Bus: %d Target: %d Lun: %d\n", Bus, Target, Lun);
 	}
 
@@ -298,7 +298,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = malloc((size_t)(amt));
@@ -376,7 +376,7 @@ usalo_send(SCSI *usalp)
 	scsi_user_cdb_t	suc;
 	int		ret = 0;
 
-/*	js_fprintf((FILE *)usalp->errfile, "f: %d\n", f);*/
+/*	fprintf((FILE *)usalp->errfile, "f: %d\n", f);*/
 	if (usalp->fd < 0) {
 		sp->error = SCG_FATAL;
 		return (0);

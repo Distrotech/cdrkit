@@ -373,7 +373,7 @@ extern	char		**environ;
 	environ = 0;
 	if ((cmd = popen(SCSI_CFG, "r")) == NULL) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Error popen() for \"%s\"",
 				SCSI_CFG);
 		environ = evsave;
@@ -384,7 +384,7 @@ extern	char		**environ;
 	if (fgets(lines, MAXLINE, cmd) == NULL) {
 		errno = EIO;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Error reading popen() for \"%s\"",
 				SCSI_CFG);
 		return (-1);
@@ -392,14 +392,14 @@ extern	char		**environ;
 		nlm = atoi(lines);
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
-		js_fprintf((FILE *)usalp->errfile, "mscsi lines = %d\n", nlm);
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "mscsi lines = %d\n", nlm);
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
 	}
 
 	if (pclose(cmd) == -1) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Error pclose() for \"%s\"",
 				SCSI_CFG);
 		return (-1);
@@ -423,14 +423,14 @@ extern	char		**environ;
 		/* the order the lines will be received in will determine */
 		/* the device name we can use to open the device	  */
 
-		js_snprintf(sconf, sizeof (sconf),
+		snprintf(sconf, sizeof (sconf),
 			SCSI_DEV, l + 1); /* enumeration starts with 1 */
 
 		evsave = environ;
 		environ = 0;
 		if ((cmd = popen(sconf, "r")) == NULL) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Error popen() for \"%s\"",
 					sconf);
 			environ = evsave;
@@ -443,7 +443,7 @@ extern	char		**environ;
 
 		if (pclose(cmd) == -1) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Error pclose() for \"%s\"",
 					sconf);
 			return (-1);
@@ -457,27 +457,27 @@ extern	char		**environ;
 					&cmtbl[l].lun);
 
 		if (strstr(cmtbl[l].typ, T_DISK) != NULL) {
-			js_snprintf(cmtbl[l].dev,  sizeof (cmtbl[l].dev),
+			snprintf(cmtbl[l].dev,  sizeof (cmtbl[l].dev),
 					DEV_SDSK, ++nSdsk);
 		}
 
 		if (strstr(cmtbl[l].typ, T_CDROM) != NULL) {
-			js_snprintf(cmtbl[l].dev,  sizeof (cmtbl[l].dev),
+			snprintf(cmtbl[l].dev,  sizeof (cmtbl[l].dev),
 					DEV_SROM, ++nSrom);
 		}
 
 		if (strstr(cmtbl[l].typ, T_TAPE) != NULL) {
-			js_snprintf(cmtbl[l].dev, sizeof (cmtbl[l].dev),
+			snprintf(cmtbl[l].dev, sizeof (cmtbl[l].dev),
 					DEV_STP, ++nStp);
 		}
 
 		if (strstr(cmtbl[l].typ, T_FLOPPY) != NULL) {
-			js_snprintf(cmtbl[l].dev, sizeof (cmtbl[l].dev),
+			snprintf(cmtbl[l].dev, sizeof (cmtbl[l].dev),
 					DEV_SFLP, ++nSflp);
 		}
 
 		if (usalp->debug > 0) {
-			js_fprintf((FILE *)usalp->errfile,
+			fprintf((FILE *)usalp->errfile,
 				"%-4s = %5s(%d,%d,%d,%d) -> %s\n",
 				cmtbl[l].typ,
 				cmtbl[l].drv,
@@ -491,12 +491,12 @@ extern	char		**environ;
 	}
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
-		js_fprintf((FILE *)usalp->errfile, "%2d DISK  \n", nSdsk + 1);
-		js_fprintf((FILE *)usalp->errfile, "%2d CD-ROM\n", nSrom + 1);
-		js_fprintf((FILE *)usalp->errfile, "%2d TAPE  \n", nStp  + 1);
-		js_fprintf((FILE *)usalp->errfile, "%2d FLOPPY\n", nSflp + 1);
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "%2d DISK  \n", nSdsk + 1);
+		fprintf((FILE *)usalp->errfile, "%2d CD-ROM\n", nSrom + 1);
+		fprintf((FILE *)usalp->errfile, "%2d TAPE  \n", nStp  + 1);
+		fprintf((FILE *)usalp->errfile, "%2d FLOPPY\n", nSflp + 1);
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
 	}
 
 	/* ok, now let's sort this array of scsi devices	*/
@@ -505,7 +505,7 @@ extern	char		**environ;
 
 	if (usalp->debug > 0) {
 		for (l = 0; l < nlm; l++)
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"%-4s = %5s(%d,%d,%d,%d) -> %s\n",
 			cmtbl[l].typ,
 			cmtbl[l].drv,
@@ -514,7 +514,7 @@ extern	char		**environ;
 			cmtbl[l].tgt,
 			cmtbl[l].lun,
 			cmtbl[l].dev);
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
 	}
 
 	/* find root disk controller to make it usal 0		*/
@@ -543,7 +543,7 @@ extern	char		**environ;
 	}
 
 	if (!(ide_rootdisk) && (usalp->debug > 0)) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"root = %5s(%d,%d,%d,%d) -> %s\n",
 			cmtbl[t].drv,
 			cmtbl[t].hba,
@@ -551,7 +551,7 @@ extern	char		**environ;
 			cmtbl[t].tgt,
 			cmtbl[t].lun,
 			cmtbl[t].dev);
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
 	}
 
 	/* calculate usal from drv, hba and bus 			*/
@@ -629,7 +629,7 @@ extern	char		**environ;
 				if ((fd = open(dname, (O_RDONLY | O_NONBLOCK))) < 0) {
 					sdidevs[s][t][l].valid = 0;
 					if (usalp->debug > 0) {
-						js_fprintf((FILE *)usalp->errfile,
+						fprintf((FILE *)usalp->errfile,
 							"%5s(%d,%d,%d,%d) -> %s open() failed: errno = %d (%s)\n",
 							cmtbl[mscsi].drv,
 							cmtbl[mscsi].hba,
@@ -644,7 +644,7 @@ extern	char		**environ;
 				}
 
 				if (usalp->debug > 0) {
-					js_fprintf((FILE *)usalp->errfile,
+					fprintf((FILE *)usalp->errfile,
 						"%d,%d,%d => %5s(%d,%d,%d,%d) -> %d : %s \n",
 						s, t, l,
 						cmtbl[mscsi].drv,
@@ -665,9 +665,9 @@ extern	char		**environ;
 	}
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
-		js_fprintf((FILE *)usalp->errfile, "nopen = %d devices   \n", nopen);
-		js_fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
+		fprintf((FILE *)usalp->errfile, "nopen = %d devices   \n", nopen);
+		fprintf((FILE *)usalp->errfile, "-------------------- \n");
 	}
 
 	return (nopen);
@@ -687,7 +687,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -709,7 +709,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (*device != '\0') {		/* we don't allow old dev usage */
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 			"Open by 'devname' no longer supported on this OS");
 		return (-1);
 	}
@@ -759,7 +759,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = valloc((size_t)(amt));
@@ -912,12 +912,12 @@ usalo_send(SCSI *usalp)
 
 		if (scsiusercmd) {	/* Use SCSIUSERCMD ioctl() */
 			if (usalp->debug > 1) {
-				js_fprintf((FILE *)usalp->errfile, "calling SCSIUSERCMD ioctl()\n");
+				fprintf((FILE *)usalp->errfile, "calling SCSIUSERCMD ioctl()\n");
 			}
 
 			if ((ioctlStatus = ioctl(usalp->fd, SCSIUSERCMD, &(scsi_cmd.cmd))) < 0) {
 				if (usalp->debug > 1) {
-					js_fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD ioctl()\n");
+					fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD ioctl()\n");
 				}
 				if (errno == EINTR)
 					continue;
@@ -932,7 +932,7 @@ usalo_send(SCSI *usalp)
 			}
 
 			if (usalp->debug > 1) {
-				js_fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD ioctl()\n");
+				fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD ioctl()\n");
 			}
 			cp_sco2usal(&scsi_cmd, sp);
 			sp->ux_errno = errno;
@@ -963,20 +963,20 @@ usalo_send(SCSI *usalp)
 
 			if (usalp->debug > 0) {
 				if (errno != 0)
-					js_fprintf((FILE *)usalp->errfile, "ux_errno: %d (%s) \n", sp->ux_errno, strerror(sp->ux_errno));
+					fprintf((FILE *)usalp->errfile, "ux_errno: %d (%s) \n", sp->ux_errno, strerror(sp->ux_errno));
 				if (sp->u_scb.cmd_scb[0] != 0)
-					js_fprintf((FILE *)usalp->errfile, "tgt_stat: %d \n", sp->u_scb.cmd_scb[0]);
+					fprintf((FILE *)usalp->errfile, "tgt_stat: %d \n", sp->u_scb.cmd_scb[0]);
 			}
 			break;
 
 		} else {		/* Use SCSIUSERCMD2 ioctl() */
 			if (usalp->debug > 1) {
-				js_fprintf((FILE *)usalp->errfile, "calling SCSIUSERCMD2 ioctl()\n");
+				fprintf((FILE *)usalp->errfile, "calling SCSIUSERCMD2 ioctl()\n");
 			}
 
 			if ((ioctlStatus = ioctl(usalp->fd, SCSIUSERCMD2, &scsi_cmd)) < 0) {
 				if (usalp->debug > 1) {
-					js_fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD2 ioctl()\n");
+					fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD2 ioctl()\n");
 				}
 				if (errno == EINTR)
 					continue;
@@ -990,7 +990,7 @@ usalo_send(SCSI *usalp)
 				return (0);
 			}
 			if (usalp->debug > 1) {
-				js_fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD2 ioctl()\n");
+				fprintf((FILE *)usalp->errfile, "returning from SCSIUSERCMD2 ioctl()\n");
 			}
 
 			cp_sco2usal(&scsi_cmd, sp);
@@ -1004,9 +1004,9 @@ usalo_send(SCSI *usalp)
 
 			if (usalp->debug > 0) {
 				if (errno != 0)
-					js_fprintf((FILE *)usalp->errfile, "ux_errno: %d (%s) \n", sp->ux_errno, strerror(sp->ux_errno));
+					fprintf((FILE *)usalp->errfile, "ux_errno: %d (%s) \n", sp->ux_errno, strerror(sp->ux_errno));
 				if (sp->u_scb.cmd_scb[0] != 0)
-					js_fprintf((FILE *)usalp->errfile, "tgt_stat: %d \n", sp->u_scb.cmd_scb[0]);
+					fprintf((FILE *)usalp->errfile, "tgt_stat: %d \n", sp->u_scb.cmd_scb[0]);
 			}
 			break;
 

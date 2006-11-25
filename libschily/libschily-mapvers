@@ -92,7 +92,7 @@ global:
 	handlecond;
 	js_fprintf;
 	js_printf;
-	js_snprintf;
+	snprintf;
 	js_sprintf;
 	movebytes;
 	ofindline;

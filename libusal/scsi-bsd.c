@@ -149,7 +149,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -173,7 +173,7 @@ usalo_open(SCSI *usalp, char *device)
 
 	if (busno >= 0 && tgt >= 0 && tlun >= 0) {
 
-		js_snprintf(devname, sizeof (devname),
+		snprintf(devname, sizeof (devname),
 				"/dev/su%d-%d-%d", busno, tgt, tlun);
 		f = open(devname, O_RDWR);
 		if (f < 0) {
@@ -185,7 +185,7 @@ usalo_open(SCSI *usalp, char *device)
 	} else for (b = 0; b < MAX_SCG; b++) {
 		for (t = 0; t < MAX_TGT; t++) {
 			for (l = 0; l < MAX_LUN; l++) {
-				js_snprintf(devname, sizeof (devname),
+				snprintf(devname, sizeof (devname),
 							"/dev/su%d-%d-%d", b, t, l);
 				f = open(devname, O_RDWR);
 /*				fprintf(stderr, "open (%s) = %d\n", devname, f);*/
@@ -195,7 +195,7 @@ usalo_open(SCSI *usalp, char *device)
 					    errno != ENXIO &&
 					    errno != ENODEV) {
 						if (usalp->errstr)
-							js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+							snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 								"Cannot open '%s'",
 								devname);
 						return (0);
@@ -220,7 +220,7 @@ openbydev:
 		f = open(device, O_RDWR);
 		if (f < 0) {
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Cannot open '%s'",
 					device);
 			return (0);
@@ -293,7 +293,7 @@ usal_setup(SCSI *usalp, int f, int busno, int tgt, int tlun)
 	Lun	= SADDR_LUN(saddr);
 
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"Bus: %d Target: %d Lun: %d\n", Bus, Target, Lun);
 	}
 
@@ -328,7 +328,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = valloc((size_t)(amt));
@@ -422,7 +422,7 @@ usalo_send(SCSI *usalp)
 	register long	*lp2;
 	int		ret = 0;
 
-/*	js_fprintf((FILE *)usalp->errfile, "fd: %d\n", usalp->fd);*/
+/*	fprintf((FILE *)usalp->errfile, "fd: %d\n", usalp->fd);*/
 	if (usalp->fd < 0) {
 		sp->error = SCG_FATAL;
 		return (0);
@@ -605,7 +605,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -639,7 +639,7 @@ usalo_open(SCSI *usalp, char *device)
 
 	if ((fd = open(XPT_DEVICE, O_RDWR)) < 0) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open of %s failed", XPT_DEVICE);
 		return (-1);
 	}
@@ -659,7 +659,7 @@ usalo_open(SCSI *usalp, char *device)
 	ccb.cdm.matches = (struct dev_match_result *)malloc(bufsize);
 	if (ccb.cdm.matches == NULL) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Couldn't malloc match buffer");
 		close(fd);
 		return (-1);
@@ -676,7 +676,7 @@ usalo_open(SCSI *usalp, char *device)
 		sizeof (struct dev_match_pattern));
 	if (ccb.cdm.patterns == NULL) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Couldn't malloc pattern buffer");
 		close(fd);
 		free(ccb.cdm.matches);
@@ -684,13 +684,13 @@ usalo_open(SCSI *usalp, char *device)
 	}
 	ccb.cdm.patterns[0].type = DEV_MATCH_PERIPH;
 	match_pat = &ccb.cdm.patterns[0].pattern.periph_pattern;
-	js_snprintf(match_pat->periph_name, sizeof (match_pat->periph_name),
+	snprintf(match_pat->periph_name, sizeof (match_pat->periph_name),
 								"pass");
 	match_pat->flags = PERIPH_MATCH_NAME;
 
 	if (ioctl(fd, CAMIOCOMMAND, &ccb) == -1) {
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"CAMIOCOMMAND ioctl failed");
 		close(fd);
 		free(ccb.cdm.matches);
@@ -703,7 +703,7 @@ usalo_open(SCSI *usalp, char *device)
 	    (ccb.cdm.status != CAM_DEV_MATCH_MORE))) {
 /*		errmsgno(EX_BAD, "Got CAM error 0x%X, CDM error %d.\n",*/
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Got CAM error 0x%X, CDM error %d",
 			ccb.ccb_h.status, ccb.cdm.status);
 		close(fd);
@@ -726,7 +726,7 @@ usalo_open(SCSI *usalp, char *device)
 		if (ccb.cdm.matches[unit].type != DEV_MATCH_PERIPH) {
 /*			errmsgno(EX_BAD, "Kernel error! got periph match type %d!!\n",*/
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Kernel error! got periph match type %d!!",
 					ccb.cdm.matches[unit].type);
 			free(ccb.cdm.matches);
@@ -734,7 +734,7 @@ usalo_open(SCSI *usalp, char *device)
 		}
 		periph_result = &ccb.cdm.matches[unit].result.periph_result;
 
-		js_snprintf(name, sizeof (name),
+		snprintf(name, sizeof (name),
 				"/dev/%s%d", periph_result->periph_name,
 			periph_result->unit_number);
 
@@ -758,7 +758,7 @@ usalo_open(SCSI *usalp, char *device)
 			errmsgno(EX_BAD, "%s\n", cam_errbuf);
 #endif
 			if (usalp->errstr)
-				js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 					"Error opening /dev/%s%d Cam error '%s'",
 					periph_result->periph_name,
 					periph_result->unit_number,
@@ -802,7 +802,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = valloc((size_t)(amt));
@@ -889,7 +889,7 @@ usalo_send(SCSI *usalp)
 
 	if (usalp->fd < 0) {
 #if 0
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"attempt to reference invalid unit %d\n", usalp->fd);
 #endif
 		sp->error = SCG_FATAL;

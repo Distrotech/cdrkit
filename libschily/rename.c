@@ -96,7 +96,7 @@ rename(old, new)
 			return (0);		/* old == new we are done */
 	}
 
-	strplen = js_snprintf(strpid, sizeof (strpid), ".%lld",
+	strplen = snprintf(strpid, sizeof (strpid), ".%lld",
 							(Llong)getpid());
 
 	if (strlen(new) <= (MAXNAME-strplen) ||
@@ -106,7 +106,7 @@ rename(old, new)
 		 */
 		strncpy(nname, new, MAXNAME-strplen);
 		nname[MAXNAME-strplen] = '\0';
-		js_snprintf(bakname, sizeof (bakname), "%s%s", nname, strpid);
+		snprintf(bakname, sizeof (bakname), "%s%s", nname, strpid);
 		unlink(bakname);
 		if (link(new, bakname) >= 0)
 			savpresent = TRUE;

@@ -76,7 +76,6 @@ static	char sccsid[] =
 static	void	checkuser(void);
 static	char	*getpeer(void);
 static	BOOL	checktarget(void);
-static	BOOL	strmatch(char *str, char *pat);
 static	void	dorscsi(void);
 static	void	scsiversion(void);
 static	void	openscsi(void);
@@ -115,13 +114,13 @@ static	char	*peername;
 static	char	*debug_name;
 static	FILE	*debug_file;
 
-#define	DEBUG(fmt)		if (debug_file) js_fprintf(debug_file, fmt)
-#define	DEBUG1(fmt,a)		if (debug_file) js_fprintf(debug_file, fmt, a)
-#define	DEBUG2(fmt,a1,a2)	if (debug_file) js_fprintf(debug_file, fmt, a1, a2)
-#define	DEBUG3(fmt,a1,a2,a3)	if (debug_file) js_fprintf(debug_file, fmt, a1, a2, a3)
-#define	DEBUG4(fmt,a1,a2,a3,a4)	if (debug_file) js_fprintf(debug_file, fmt, a1, a2, a3, a4)
-#define	DEBUG5(fmt,a1,a2,a3,a4,a5)	if (debug_file) js_fprintf(debug_file, fmt, a1, a2, a3, a4, a5)
-#define	DEBUG6(fmt,a1,a2,a3,a4,a5,a6)	if (debug_file) js_fprintf(debug_file, fmt, a1, a2, a3, a4, a5, a6)
+#define	DEBUG(fmt)		if (debug_file) fprintf(debug_file, fmt)
+#define	DEBUG1(fmt,a)		if (debug_file) fprintf(debug_file, fmt, a)
+#define	DEBUG2(fmt,a1,a2)	if (debug_file) fprintf(debug_file, fmt, a1, a2)
+#define	DEBUG3(fmt,a1,a2,a3)	if (debug_file) fprintf(debug_file, fmt, a1, a2, a3)
+#define	DEBUG4(fmt,a1,a2,a3,a4)	if (debug_file) fprintf(debug_file, fmt, a1, a2, a3, a4)
+#define	DEBUG5(fmt,a1,a2,a3,a4,a5)	if (debug_file) fprintf(debug_file, fmt, a1, a2, a3, a4, a5)
+#define	DEBUG6(fmt,a1,a2,a3,a4,a5,a6)	if (debug_file) fprintf(debug_file, fmt, a1, a2, a3, a4, a5, a6)
 #endif	/* USE_REMOTE */
 
 int
@@ -151,9 +150,9 @@ main(int argc, char *argv[])
 	 * don't contribute work and don't give support, they are causing extra
 	 * work for me and this way slow down the development.
 	 */
-	if (cfg_open("/etc/rscsi.conf") < 0) {
+	if (cfg_open("/etc/netscsid.conf") < 0) {
 		rscsierror(geterrno(), errmsgstr(geterrno()),
-			"Remote configuration error: Cannot open /etc/rscsi.conf");
+			"Remote configuration error: Cannot open /etc/netscsid.conf");
 /*		rscsirespond(-1, geterrno());*/
 		exit(EX_BAD);
 	}
@@ -227,7 +226,7 @@ checkuser()
 
 	cfg_restart();
 	while ((uname = cfg_get_next("USER")) != NULL) {
-		if (strmatch(username, uname))
+		if (0==strcmp(username, uname))
 			return;
 	}
 notfound:
@@ -315,9 +314,9 @@ static	char		buffer[NI_MAXHOST];
 		return ("CANNOT_MAP_ADDRESS");
 #else	/* HAVE_GETNAMEINFO */
 #ifdef	HAVE_INET_NTOA
-		(void) js_snprintf(buffer, sizeof(buffer), "%s", inet_ntoa(s->sin_addr));
+		(void) snprintf(buffer, sizeof(buffer), "%s", inet_ntoa(s->sin_addr));
 #else
-		(void) js_snprintf(buffer, sizeof(buffer), "%x", s->sin_addr.s_addr);
+		(void) snprintf(buffer, sizeof(buffer), "%x", s->sin_addr.s_addr);
 #endif
 		DEBUG1("rscsid: peername %s\n", buffer);
 		he = gethostbyaddr((char *)&s->sin_addr.s_addr, 4, AF_INET);
@@ -353,7 +352,7 @@ checktarget()
 			*p++ = '\0';
 		else
 			continue;
-		if (!strmatch(username, user))
+		if (0!=strcmp(username, user))
 			continue;
 
 		while (*p == '\t')
@@ -363,7 +362,7 @@ checktarget()
 			*p++ = '\0';
 		else
 			continue;
-		if (!strmatch(peername, host))
+		if (0!=strcmp(peername, host))
 			continue;
 
 		p = astoi(p, &bus);
@@ -389,42 +388,6 @@ checktarget()
 			continue;
 		return (TRUE);
 	}
-	return (FALSE);
-}
-
-static BOOL
-strmatch(char *str, char *pat)
-{
-	int	*aux;
-	int	*state;
-	int	alt;
-	int	plen;
-	char	*p;
-
-	plen = strlen(pat);
-	aux = malloc(plen*sizeof(int));
-	state = malloc((plen+1)*sizeof(int));
-	if (aux == NULL || state == NULL) {
-		if (aux) free(aux);
-		if (state) free(state);
-		return (FALSE);
-	}
-
-	if ((alt = patcompile((const unsigned char *)pat, plen, aux)) == 0) {
-		/* Bad pattern */
-		free(aux);
-		free(state);
-		return (FALSE);
-	}
-
-	p = (char *)patmatch((const unsigned char *)pat, aux,
-							(const unsigned char *)str, 0,
-							strlen(str), alt, state);
-	free(aux);
-	free(state);
-
-	if (p != NULL && *p == '\0')
-		return (TRUE);
 	return (FALSE);
 }
 
@@ -551,7 +514,7 @@ openscsi()
 		usal_target(scsi_ptr),
 		usal_lun(scsi_ptr));
 
-	ret = js_snprintf(rbuf, sizeof(rbuf), "A0\n%d\n%d\n%d\n%d\n",
+	ret = snprintf(rbuf, sizeof(rbuf), "A0\n%d\n%d\n%d\n%d\n",
 		usal_scsibus(scsi_ptr),
 		0,
 		usal_target(scsi_ptr),
@@ -824,7 +787,7 @@ sendcmd()
 		*(Uchar *)&scmd->scb,
 		scmd->sense_count);
 
-	ret = js_snprintf(rbuf, sizeof(rbuf), "A%d\n%d\n%d\n%d\n%d\n",
+	ret = snprintf(rbuf, sizeof(rbuf), "A%d\n%d\n%d\n%d\n%d\n",
 		n,
 		scmd->error,
 		scmd->ux_errno,
@@ -984,7 +947,7 @@ rscsireply(int ret)
 	char	rbuf[CMD_SIZE];
 
 	DEBUG1("rscsid:>A %d\n", ret);
-	(void) js_snprintf(rbuf, sizeof(rbuf), "A%d\n", ret);
+	(void) snprintf(rbuf, sizeof(rbuf), "A%d\n", ret);
 	(void) _nixwrite(STDOUT_FILENO, rbuf, strlen(rbuf));
 }
 
@@ -999,7 +962,7 @@ rscsierror(int err, char *str, char *xstr)
 		xlen = strlen(xstr) + 1;
 
 	DEBUG3("rscsid:>E %d (%s) [%s]\n", err, str, xstr?xstr:"");
-	n = js_snprintf(rbuf, sizeof(rbuf), "E%d\n%s\n%d\n", err, str, xlen);
+	n = snprintf(rbuf, sizeof(rbuf), "E%d\n%s\n%d\n", err, str, xlen);
 
 	if (xlen > 0 && ((xlen + n) <= sizeof(rbuf))) {
 		movebytes(xstr, &rbuf[n], xlen);

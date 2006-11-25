@@ -213,7 +213,7 @@ _comerr(exflg, err, msg, args)
 	} else {
 		errnam = errmsgstr(err);
 		if (errnam == NULL) {
-			(void) js_snprintf(errbuf, sizeof (errbuf),
+			(void) snprintf(errbuf, sizeof (errbuf),
 						"Error %d", err);
 			errnam = errbuf;
 		}

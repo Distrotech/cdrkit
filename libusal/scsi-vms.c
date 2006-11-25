@@ -220,7 +220,7 @@ usalo_open(SCSI *usalp, char *device)
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Illegal value for busno, target or lun '%d,%d,%d'",
 				busno, tgt, tlun);
 		return (-1);
@@ -229,7 +229,7 @@ usalo_open(SCSI *usalp, char *device)
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 		errno = EINVAL;
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
 	}
@@ -239,7 +239,7 @@ usalo_open(SCSI *usalp, char *device)
 		 * but for now it is not possible.
 		 */
 		if (usalp->errstr)
-			js_snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Unable to scan on VMS");
 		return (0);
 	}
@@ -264,13 +264,13 @@ usalo_open(SCSI *usalp, char *device)
 	buschar1 = vmschar1[range];			/* get 2nd device char*/
 	buschar2 = vmschar2[range_offset];		/* get controller char*/
 
-	js_snprintf(devname, sizeof (devname), "%c%c%c%d0%d:",
+	snprintf(devname, sizeof (devname), "%c%c%c%d0%d:",
 					buschar, buschar1, buschar2,
 					tgt, tlun);
 	strcpy(gk_device, devname);
 	status = sys$assign(&gk_device_desc, &gk_chan, 0, 0);
 	if (!(status & 1)) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 			"Unable to access scsi-device \"%s\"\n", &gk_device[0]);
 		return (-1);
 	}
@@ -349,7 +349,7 @@ static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
 	if (usalp->debug > 0) {
-		js_fprintf((FILE *)usalp->errfile,
+		fprintf((FILE *)usalp->errfile,
 				"usalo_getbuf: %ld bytes\n", amt);
 	}
 	usalp->bufbase = malloc((size_t)(amt));	/* XXX JS XXX valloc() ??? */
@@ -407,30 +407,30 @@ do_usal_cmd(SCSI *usalp, struct usal_cmd *sp)
 	gk_desc.SCSI$L_RES_5 = 0;	/* Reserved */
 	gk_desc.SCSI$L_RES_6 = 0;	/* Reserved */
 	if (usalp->debug > 0) {
-		js_fprintf(fp, "***********************************************************\n");
-		js_fprintf(fp, "SCSI VMS-I/O parameters\n");
-		js_fprintf(fp, "OPCODE: %d", gk_desc.SCSI$L_OPCODE);
-		js_fprintf(fp, " FLAGS: %d\n", gk_desc.SCSI$L_FLAGS);
-		js_fprintf(fp, "CMD:");
+		fprintf(fp, "***********************************************************\n");
+		fprintf(fp, "SCSI VMS-I/O parameters\n");
+		fprintf(fp, "OPCODE: %d", gk_desc.SCSI$L_OPCODE);
+		fprintf(fp, " FLAGS: %d\n", gk_desc.SCSI$L_FLAGS);
+		fprintf(fp, "CMD:");
 		for (i = 0; i < gk_desc.SCSI$L_CMD_LEN; i++) {
-			js_fprintf(fp, "%x ", sp->cdb.cmd_cdb[i]);
+			fprintf(fp, "%x ", sp->cdb.cmd_cdb[i]);
 		}
-		js_fprintf(fp, "\n");
-		js_fprintf(fp, "DATA_LEN: %d\n", gk_desc.SCSI$L_DATA_LEN);
-		js_fprintf(fp, "PH_CH_TMOUT: %d", gk_desc.SCSI$L_PH_CH_TMOUT);
-		js_fprintf(fp, " DISCON_TMOUT: %d\n", gk_desc.SCSI$L_DISCON_TMOUT);
+		fprintf(fp, "\n");
+		fprintf(fp, "DATA_LEN: %d\n", gk_desc.SCSI$L_DATA_LEN);
+		fprintf(fp, "PH_CH_TMOUT: %d", gk_desc.SCSI$L_PH_CH_TMOUT);
+		fprintf(fp, " DISCON_TMOUT: %d\n", gk_desc.SCSI$L_DISCON_TMOUT);
 	}
 	status = sys$qiow(GK_EFN, gk_chan, IO$_DIAGNOSE, &gk_iosb, 0, 0,
 			&gk_desc, sizeof (gk_desc), 0, 0, 0, 0);
 
 
 	if (usalp->debug > 0) {
-		js_fprintf(fp, "qiow-status: %i\n", status);
-		js_fprintf(fp, "VMS status code %i\n", gk_iosb.SCSI$W_VMS_STAT);
-		js_fprintf(fp, "Actual #bytes transferred %i\n", gk_iosb.SCSI$L_IOSB_TFR_CNT);
-		js_fprintf(fp, "SCSI device status %i\n", gk_iosb.SCSI$B_IOSB_STS);
+		fprintf(fp, "qiow-status: %i\n", status);
+		fprintf(fp, "VMS status code %i\n", gk_iosb.SCSI$W_VMS_STAT);
+		fprintf(fp, "Actual #bytes transferred %i\n", gk_iosb.SCSI$L_IOSB_TFR_CNT);
+		fprintf(fp, "SCSI device status %i\n", gk_iosb.SCSI$B_IOSB_STS);
 		if (gk_iosb.SCSI$L_IOSB_TFR_CNT != gk_desc.SCSI$L_DATA_LEN) {
-			js_fprintf(fp, "#bytes transferred != DATA_LEN\n");
+			fprintf(fp, "#bytes transferred != DATA_LEN\n");
 		}
 	}
 
@@ -458,10 +458,10 @@ do_usal_cmd(SCSI *usalp, struct usal_cmd *sp)
 	if (gk_iosb.SCSI$W_VMS_STAT == SS$_NORMAL && scsi_sts == 0) {
 		sp->error = SCG_NO_ERROR;
 		if (usalp->debug > 0) {
-			js_fprintf(fp, "scsi_sts == 0\n");
-			js_fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS == 0\n");
-			js_fprintf(fp, "sp->error %i\n", sp->error);
-			js_fprintf(fp, "sp->resid %i\n", sp->resid);
+			fprintf(fp, "scsi_sts == 0\n");
+			fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS == 0\n");
+			fprintf(fp, "sp->error %i\n", sp->error);
+			fprintf(fp, "sp->resid %i\n", sp->resid);
 		}
 		return (0);
 	}
@@ -471,30 +471,30 @@ do_usal_cmd(SCSI *usalp, struct usal_cmd *sp)
 	if (severity == 4) {
 		sp->error = SCG_FATAL;
 		if (usalp->debug > 0) {
-			js_fprintf(fp, "scsi_sts & 2\n");
-			js_fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS & 2\n");
-			js_fprintf(fp, "gk_iosb.SCSI$W_VMS_STAT & 0x7 == SS$_FATAL\n");
-			js_fprintf(fp, "sp->error %i\n", sp->error);
+			fprintf(fp, "scsi_sts & 2\n");
+			fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS & 2\n");
+			fprintf(fp, "gk_iosb.SCSI$W_VMS_STAT & 0x7 == SS$_FATAL\n");
+			fprintf(fp, "sp->error %i\n", sp->error);
 		}
 		return (0);
 	}
 	if (gk_iosb.SCSI$W_VMS_STAT == SS$_TIMEOUT) {
 		sp->error = SCG_TIMEOUT;
 		if (usalp->debug > 0) {
-			js_fprintf(fp, "scsi_sts & 2\n");
-			js_fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS & 2\n");
-			js_fprintf(fp, "gk_iosb.SCSI$W_VMS_STAT == SS$_TIMEOUT\n");
-			js_fprintf(fp, "sp->error %i\n", sp->error);
+			fprintf(fp, "scsi_sts & 2\n");
+			fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS & 2\n");
+			fprintf(fp, "gk_iosb.SCSI$W_VMS_STAT == SS$_TIMEOUT\n");
+			fprintf(fp, "sp->error %i\n", sp->error);
 		}
 		return (0);
 	}
 	sp->error = SCG_RETRYABLE;
 	sp->u_scb.cmd_scb[0] = scsi_sts;
 	if (usalp->debug > 0) {
-		js_fprintf(fp, "scsi_sts & 2\n");
-		js_fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS & 2\n");
-		js_fprintf(fp, "gk_iosb.SCSI$W_VMS_STAT != 0\n");
-		js_fprintf(fp, "sp->error %i\n", sp->error);
+		fprintf(fp, "scsi_sts & 2\n");
+		fprintf(fp, "gk_iosb.SCSI$B_IOSB_STS & 2\n");
+		fprintf(fp, "gk_iosb.SCSI$W_VMS_STAT != 0\n");
+		fprintf(fp, "sp->error %i\n", sp->error);
 	}
 	return (0);
 }
