@@ -329,7 +329,7 @@ static int write_info_file(char *fname_baseval, unsigned int track,
   } else {
     strncpy(datetime, "unknown", sizeof(datetime));
   }
-  fprintf(info_fp, "#created by cdda2wav %s %s\n#\n", VERSION
+  fprintf(info_fp, "#created by icedax %s %s\n#\n", VERSION
 	  , datetime
 	  );
   fprintf(info_fp,
@@ -459,7 +459,7 @@ static void CloseAll()
 #endif
 #else
 # ifdef DEBUG_CLEANUP
-	fprintf(stderr, "Cdda2wav single process terminating, \n");
+	fprintf(stderr, "icedax single process terminating, \n");
 # endif
 #endif
 
@@ -690,7 +690,7 @@ static int get_offset(myringbuff *p)
 static void usage()
 {
   fputs(
-"usage: cdda2wav [OPTIONS ...] [trackfilenames ...]\n\
+"usage: icedax [OPTIONS ...] [trackfilenames ...]\n\
 OPTIONS:\n\
         [-c chans] [-s] [-m] [-b bits] [-r rate] [-a divider] [-S speed] [-x]\n\
         [-t track[+endtrack]] [-i index] [-o offset] [-d duration] [-F] [-G]\n\
@@ -2161,7 +2161,7 @@ int main(int argc, char *argv[])
 
 			) < 0) {
 		errmsgno(EX_BAD, "Bad Option: %s.\n", cav[0]);
-		fputs ("use 'cdda2wav -help' to get more information.\n", stderr);
+		fputs ("use 'icedax -help' to get more information.\n", stderr);
 		exit (SYNTAX_ERROR);
 	}
 	if (getfiles(&cac, &cav, opts) == 0)
@@ -2595,7 +2595,7 @@ Rate   Divider      Rate   Divider      Rate   Divider      Rate   Divider\n\
   }
 
   if ( global.verbose != 0 ) {
-    fputs( "#Cdda2wav version ", stderr );
+    fputs( "#icedax version ", stderr );
     fputs( VERSION, stderr );
 #if defined USE_POSIX_PRIORITY_SCHEDULING || defined HAVE_SYS_PRIOCNTL_H
     fputs( ", real time sched.", stderr );

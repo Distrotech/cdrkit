@@ -6,7 +6,7 @@
 
 # specify the sampling program and its options
 # do not specify the track option here!
-CDDA2WAV=${CDDA2WAV:-cdda2wav}
+CDDA2WAV=${CDDA2WAV:-icedax}
 CDDA2WAV_OPTS=${CDDA2WAV_OPTS:-'-H -P0 -q'}
 
 # for normal use, comment out the next line
@@ -55,7 +55,7 @@ if [ -z "$LIST" ] ; then
    echo Looking for available tracks...
    # could use list_audio_tracks instead but that would need an extra filter as
    # well, and this way we do not depend on that symlink
-   LIST="$( cdda2wav -J -vtoc -H 2>&1 | sed -e 's/^[^\ ].*//; s/\.([^)]*)/ /g;s/,//g;')"
+   LIST="$( $CDDA2WAV -J -vtoc -H 2>&1 | sed -e 's/^[^\ ].*//; s/\.([^)]*)/ /g;s/,//g;')"
    if [ -z "$LIST" ] ; then
       echo "ERROR: No valid audio tracks detected"
       exit 1

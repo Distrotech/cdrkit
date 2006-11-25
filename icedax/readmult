@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# Script to read more than 1 song with cdda2wav
+# Script to read more than 1 song with icedax
 # Each file gets an individual name from the command line
 #
 # based on a perl script from Matthias Schniedermeyer
@@ -12,7 +12,7 @@
 #              a file named lovesong.wav for track 3, and
 #              a file named medley.wav for track 5.
 #
-CDDA2WAV=cdda2wav
+CDDA2WAV=icedax
 CDDA2WAVOPTS="-P0"
 
 if [ $(( $# % 2 )) -eq 0 ]; then
@@ -20,7 +20,7 @@ if [ $(( $# % 2 )) -eq 0 ]; then
     $CDDA2WAV $CDDA2WAVOPTS -Owav -t $1 $PREFIX$2".wav"
     RES=$?
     if [ $RES -ne 0 ]; then
-      echo "cdda2wav error, return value "$RES". Aborted." >&2
+      echo "$CDDA2WAV error, return value "$RES". Aborted." >&2
       break
     fi
     shift 2

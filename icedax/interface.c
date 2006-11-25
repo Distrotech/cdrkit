@@ -624,7 +624,7 @@ static int OpenCdRom(char *pdev_name)
 		int	err = geterrno();
 
 		errmsgno(err, "%s%sCannot open SCSI driver.\n", errstr, errstr[0]?". ":"");
-		errmsgno(EX_BAD, "For possible targets try 'cdda2wav -scanbus'.%s\n",
+		errmsgno(EX_BAD, "For possible targets try 'wodim -scanbus'.%s\n",
 					geteuid() ? " Make sure you are root.":"");
 		priv_off();
         	dontneedgroup();
@@ -638,7 +638,7 @@ static int OpenCdRom(char *pdev_name)
 	        fprintf(stderr, "Probably you did not define your SCSI device.\n");
 	        fprintf(stderr, "Set the CDDA_DEVICE environment variable or use the -D option.\n");
 	        fprintf(stderr, "You can also define the default device in the Makefile.\n");
-		fprintf(stderr, "For possible transport specifiers try 'cdda2wav dev=help'.\n");
+		fprintf(stderr, "For possible transport specifiers try 'wodim dev=help'.\n");
 	        exit(SYNTAX_ERROR);
 	}
 	usal_settimeout(usalp, 300);

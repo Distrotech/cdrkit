@@ -18,7 +18,7 @@
 #           track 3 with a pitch of 140%, and
 #           track 5 with a pitch of 50%.
 #
-CDDA2WAV=cdda2wav
+CDDA2WAV=icedax
 #CDDA2WAVOPTS="-qeNP0 -n75"
 CDDA2WAVOPTS="-qeNP0 -n40"
 
@@ -28,7 +28,7 @@ if [ $(( $# % 2 )) -eq 0 ]; then
     $CDDA2WAV $CDDA2WAVOPTS -t $1 -p $2
     RES=$?
     if [ $RES -ne 0 ]; then
-      echo "cdda2wav error, return value "$RES". Aborted." >&2
+      echo "$CDDA2WAV error, return value "$RES". Aborted." >&2
       break
     fi
     shift 2
