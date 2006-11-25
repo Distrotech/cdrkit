@@ -2127,7 +2127,8 @@ write_leadin_mmc(SCSI *usalp, cdr_t *dp, track_t *trackp)
 			startsec = dp->cdr_dstat->ds_first_leadin;
 			printf("SAO startsec: %ld\n", startsec);
 		} else if (startsec <= 0 && startsec != -150) {
-			errmsgno(EX_BAD, "WARNING: Drive returns wrong startsec (%ld) using -150\n",
+			if(lverbose>2)
+				fprintf(stderr, "WARNING: Drive returns wrong startsec (%ld) using -150\n",
 					startsec);
 			startsec = -150;
 		}
