@@ -63,7 +63,7 @@
 #define CD_DEVICE "/dev/cdrom"
 #define FILENAME "audio"
 #define UNDERSAMPLING 1
-#define VERSION "2.01.01a08+debburn"
+#define VERSION CDRKIT_VERSION
 #define BITS_P_S 16
 #define CHANNELS 2
 #define AUDIOTYPE "wav"

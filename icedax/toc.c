@@ -749,9 +749,7 @@ static void emit_cddb_form(char *fname_baseval)
   fprintf( cddb_form, "#\n# Disc length: %lu seconds\n#\n", 
            (150 + Get_StartSector(CDROM_LEADOUT)) / 75);
   fprintf( cddb_form, "# Revision: %u\n", global.cddb_revision );
-  fprintf( cddb_form, "# Submitted via: cdda2wav ");
-  fprintf( cddb_form, VERSION);
-  fprintf( cddb_form, "\n" );
+  fprintf( cddb_form, "# Submitted via: icedax " VERSION "\n" );
 
   fprintf( cddb_form, "DISCID=%08lx\n", (unsigned long)global.cddb_id);
 
@@ -1278,7 +1276,7 @@ request_titles()
 	}
 
 	writen(sock_fd, hostname, strlen(hostname));
-	writen(sock_fd, " cdda2wav ", 10);
+	writen(sock_fd, " icedax ", 10);
 	writen(sock_fd, VERSION, strlen(VERSION));
 	writen(sock_fd, "\n", 1);
 
