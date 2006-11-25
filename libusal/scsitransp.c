@@ -66,8 +66,8 @@ static	char sccsid[] =
  *	Choose your name instead of "schily" and make clear that the version
  *	string is related to a modified source.
  */
-static	char	_usal_version[]		= "0.8ubuntu1+debburn1";	/* The global libusal version	*/
-static	char	_usal_auth_ubuntu[]	= "debburn project";	/* The author for this module	*/
+static	char	_usal_version[]		= CDRKIT_VERSION;	/* The global libusal version	*/
+static	char	_usal_auth_cdrkit[]	= "Cdrkit maintainers";	/* The author for this module	*/
 
 #define	DEFTIMEOUT	20	/* Default timeout for SCSI command transport */
 
@@ -150,7 +150,7 @@ usal_version(SCSI *usalp, int what)
 		 * return "schily" for the SCG_AUTHOR request.
 		 */
 		case SCG_AUTHOR:
-			return (_usal_auth_ubuntu);
+			return (_usal_auth_cdrkit);
 		case SCG_SCCS_ID:
 			return (sccsid);
 		default:
