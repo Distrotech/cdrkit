@@ -1,10 +1,9 @@
 SOON:
-  - check documentation, debian/* documentation, FAQ, etc.pp.
   - fix DVD-RW support (DVD+RW works, though, DVD-RW blanking works too)
-  - fix dirsplit -S, looses files
 
 LATER:
 
+ - check documentation, debian/* documentation, FAQ, etc.pp.
  - fix nread() callers, see toc.c:835
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
  - proper getnameinfo/inet_ntoa checks, see include/CMakeLists.txt
