@@ -11,7 +11,7 @@ cdrkit (1.1.x) UNRELEASED; urgency=low
   * consistent version display
   * cleanup of libschily, removed unused or easily replaceable parts (assumed
     having a modern POSIX compliant environment). Renamed to librols
-    (RestsOfLibSchily).
+    (RemainsOfLibSchily).
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in
