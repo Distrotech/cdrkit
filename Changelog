@@ -1,8 +1,8 @@
-cdrkit (1.1.x) UNRELEASED; urgency=low
+cdrkit (1.1.x) UNRELEASED; urgency=medium
 
   [ Eduard Bloch ]
-  * replacement of libdeflt and config parser rewrite; more user-friendly,
-    flexibel, tolerant now
+  * replacement of libdeflt, config parser rewrite; more user-friendly,
+    more flexible/tolerant now
   * config overhaul, much more dynamic checks, including fixes for SunOS
     environment. Also fixed confusing double-checks for some of the variables
     in cdda2wav.c
@@ -12,6 +12,8 @@ cdrkit (1.1.x) UNRELEASED; urgency=low
   * cleanup of libschily, removed unused or easily replaceable parts (assumed
     having a modern POSIX compliant environment). Renamed to librols
     (RemainsOfLibSchily).
+  * reenabled selection of the DVD driver, accidentaly disabled in 1.0, when
+    beeing in non-verbose mode
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in

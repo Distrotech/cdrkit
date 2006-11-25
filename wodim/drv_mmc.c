@@ -734,10 +734,10 @@ identify_mmc(SCSI *usalp, cdr_t *dp, struct scsi_inquiry *ip)
 		fprintf(stderr, "identify_dvd: is_dvd: %d\n", is_dvd);
 #endif
 	}
-	if (is_dvd && lverbose>2) {
- 	        errmsgno(EX_BAD, 
-                 "Found DVD media: using cdr_mdvd.\n");  
-                 dp = &cdr_mdvd; 
+	if (is_dvd) {
+     if(lverbose>2) 
+        fprintf(stderr, "Found DVD media: using cdr_mdvd.\n");  
+     dp = &cdr_mdvd; 
 	}
 	dp->profile = profile;
 	dp->is_dvd = is_dvd;
