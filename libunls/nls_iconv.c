@@ -41,9 +41,8 @@ static	char sccsid[] =
  * Jungshik Shin (jshin@mailaps.org) 04-Feb-2002
  */
 
-#include <mconfig.h>
-
 #ifdef USE_ICONV
+#include <mconfig.h>
 #include <stdio.h>
 #include <stdxlib.h>
 #include <strdefs.h>
