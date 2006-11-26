@@ -5,14 +5,17 @@ include(../include/AddSchilyBits.cmake)
 
 AUX_SOURCE_DIRECTORY(. CDRECORD_SRCS)
 
-FIND_FILE(CAPTEST "sys/capability.h")
-if(CAPTEST)
-	LIST(APPEND EXTRA_LIBS cap)
-endif(CAPTEST)
+INCLUDE(CheckIncludeFiles)
 
-if(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
-   MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
-endif(CMAKE_SYSTEM_NAME MATCHES "Linux" AND NOT CAPTEST)
+#force libcap usage on Linux
+CHECK_INCLUDE_FILES("sys/capability.h" HAVE_SYS_CAPABILITY_H)
+IF(HAVE_SYS_CAPABILITY_H)
+	LIST(APPEND EXTRA_LIBS cap)
+ELSE(HAVE_SYS_CAPABILITY_H)
+   IF(CMAKE_SYSTEM_NAME MATCHES "Linux")
+      MESSAGE(FATAL_ERROR "Error: found a Linux system but no libcap header. Install libcap-dev.")
+   ENDIF(CMAKE_SYSTEM_NAME MATCHES "Linux")
+ENDIF(HAVE_SYS_CAPABILITY_H)
 
 LINK_DIRECTORIES(../librols ../libusal ../libdeflt ../libedc)
 
