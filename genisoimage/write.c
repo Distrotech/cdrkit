@@ -484,11 +484,13 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 			if (geterrno() == 0) {
 #ifdef	USE_LIBSCHILY
          comerrno(EX_BAD,
-               "File '%s' did shrink.\n",
+               "File '%s' did shrink.\n"
+               "Files must not be changed while genisoimage runs!\n",
                filename);
 #else
          fprintf(stderr,
-               "File '%s' did shrink.\n",
+               "File '%s' did shrink.\n"
+               "Files must not be changed while genisoimage runs!\n",
                filename);
 				exit(EX_BAD);
 #endif

@@ -8,6 +8,8 @@ CMake framework. Therefore, the requirements to build this package are:
    package in your Linux distribution)
  - make (an implmentation supported by cmake, eg. GNU make, smake, ...)
  - working GCC compiler environment
+ - maybe additional requirements for your operating system, see
+   doc/plattforms/... and FAQ
 
 COMPILATION:
 
