@@ -110,6 +110,14 @@
 		/* if we have arpa/inet.h (missing on BeOS) */
 				/* BeOS has inet_ntoa() in <netdb.h> */
 
+#cmakedefine HAVE_ICONV_H
+  /* iconv() available on this system */
+
+/* Force iconv usage where possible */
+#ifdef HAVE_ICONV_H
+#define USE_ICONV
+#endif
+
 /*
  * Convert to SCHILY name
  */
