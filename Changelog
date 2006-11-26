@@ -15,6 +15,13 @@ cdrkit (1.1.x) UNRELEASED; urgency=medium
   * reenabled selection of the DVD driver, accidentaly disabled in 1.0, when
     beeing in non-verbose mode
   * made dirsplit work with file symlinks
+  * incorporated some OpenSUSE patches:
+    + cdrkit-HZ.patch (with initialized value, *sic*)
+    + cdrkit-dvd-fix.patch (return code tracking)
+    + cdrkit-gcc-workaround.patch
+    + cdrkit-mkisofs-fail-on-large-file.patch (don't just skip them)
+    + cdrkit-mkisofs-grow-check.patch (tolerate grown files)
+    + cdrkit-perms.patch (not breaking on missing device files)
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in

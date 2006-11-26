@@ -1569,14 +1569,14 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 		errno = EFBIG;
 #endif
 #ifdef	USE_LIBSCHILY
-		errmsg("File %s is too large - ignoring\n",
+		comerr("File %s is too large - ignoring\n",
 			whole_path);
 #else
 		fprintf(stderr,
 			"File %s is too large (errno = %d) - ignoring\n",
 			whole_path, errno);
 #endif
-		return (0);
+    exit(1);
 	}
 	/*
 	 * Add this so that we can detect directory loops with hard links.

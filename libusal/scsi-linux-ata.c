@@ -343,7 +343,7 @@ scan_internal(SCSI *usalp, int *nopen)
 	}
 	if (!DEVFS) {
 		/* for /dev/sr0 - /dev/sr? */
-		for (i = 0; ; i++) {
+		for (i = 0; i<16 ; i++) {
 			sprintf(device, "/dev/sr%i", i);
 			if ((f = open(device, O_RDONLY | O_NONBLOCK)) < 0) {
 				if (errno != ENOENT && errno != ENXIO && errno != ENODEV && errno != EACCES) {
@@ -353,9 +353,7 @@ scan_internal(SCSI *usalp, int *nopen)
 						device, f, errno);
 					}
 					return (-2);
-				} else if (errno == ENOENT || errno == ENODEV) {
-					break;
-				}
+        }
 			} else {
 				if (sg_amapdev(usalp, f, device, &schilly_bus, &target, &lun)) {
 					(++(*nopen));
@@ -376,9 +374,7 @@ scan_internal(SCSI *usalp, int *nopen)
 						device, f, errno);
 					}
 					return (-2);
-				} else if (errno == ENOENT || errno == ENODEV) {
-					break;
-				}
+        }
 			} else {
 				/* ugly hack, make better, when you can. Alex */
 				if (0 > ioctl(f, CDROM_DRIVE_STATUS, CDSL_CURRENT)) {

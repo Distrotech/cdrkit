@@ -2679,23 +2679,24 @@ fixate_mmc(SCSI *usalp, cdr_t *dp, track_t *trackp)
 static int 
 fixate_mdvd(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
+	int ret;
       /*set a really BIG timeout and call fixate_mmc
 	 The BIG timeout is needed in case there was a very short rzone to write at the 
 	 beginning of the disk, because lead-out needs to be at some distance.
       */
-	if(usalp->verbose)
+	if(debug)
 		printf("fixate_mdvd\n");
       usal_settimeout(usalp, 1000);
       if(is_packet(trackp) || dp->profile == 0x1B){
 	  scsi_close_tr_session(usalp, CL_TYPE_SESSION, 0, FALSE);
       }
-      fixate_mmc(usalp, dp, trackp);
+      ret=fixate_mmc(usalp, dp, trackp);
       if (dp->profile == 0x2B) {
 	  scsi_close_tr_session(usalp, CL_TYPE_OPEN_SESSION, 0, FALSE);
 	  scsi_close_tr_session(usalp, CL_TYPE_FINALISE_MINRAD, 0, FALSE);
       }
       usal_settimeout(usalp, 200);
-      
+      return ret;
 }
 
 char	*blank_types[] = {

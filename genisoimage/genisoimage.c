@@ -1248,8 +1248,7 @@ get_pnames(int argc, char **argv, int opt, char *pname, int pnsize, FILE *fp)
 
 extern char	*cdrecord_data;
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
 	struct directory_entry de;
 
@@ -1286,6 +1285,8 @@ main(int argc, char *argv[])
 	char		*root_info = 0;
 #endif	/* APPLE_HYB */
 
+  if(argc && strstr(argv[0], "mkisofs")) /* lame cheater detected */
+     argv[0]="genisoimage";
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
@@ -3751,6 +3752,7 @@ e_malloc(size_t size)
 	 * Filling all allocated data with zeroes will help
 	 * to avoid core dumps.
 	 */
-	memset(pt, 0, size);
+  if (size > 0) /* a workaround for gcc bug gcc.gnu.org/PR25639 */
+     memset(pt, 0, size);
 	return (pt);
 }

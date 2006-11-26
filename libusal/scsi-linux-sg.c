@@ -1132,6 +1132,11 @@ usalo_reset(SCSI *usalp, int what)
 static void
 sg_settimeout(int f, int tmo)
 {
+#ifndef HZ
+	static int HZ=0;
+	if (!HZ)
+		HZ = sysconf(_SC_CLK_TCK);
+#endif
 	tmo *= HZ;
 	if (tmo)
 		tmo += HZ/2;

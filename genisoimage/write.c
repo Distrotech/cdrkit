@@ -475,7 +475,7 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 		memset(buffer, 0, use);
 		seterrno(0);
 		amt = fread(buffer, 1, use, infile);
-		if (amt < use && amt != remain) {
+		if (amt < use && amt < remain) {
 			/*
 			 * Note that genisoimage is not star and no 100% archiver.
 			 * We only detect file growth if the new size does not
@@ -483,17 +483,13 @@ static	char		buffer[SECTOR_SIZE * NSECT];
 			 */
 			if (geterrno() == 0) {
 #ifdef	USE_LIBSCHILY
-				comerrno(EX_BAD,
-					"File '%s' did %s.\n",
-						filename,
-						amt < remain ?
-						"shrink":"grow");
+         comerrno(EX_BAD,
+               "File '%s' did shrink.\n",
+               filename);
 #else
-				fprintf(stderr,
-					"File '%s' did %s.\n",
-						filename,
-						amt < remain ?
-						"shrink":"grow");
+         fprintf(stderr,
+               "File '%s' did shrink.\n",
+               filename);
 				exit(EX_BAD);
 #endif
 			}
