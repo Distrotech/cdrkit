@@ -2683,7 +2683,8 @@ fixate_mdvd(SCSI *usalp, cdr_t *dp, track_t *trackp)
 	 The BIG timeout is needed in case there was a very short rzone to write at the 
 	 beginning of the disk, because lead-out needs to be at some distance.
       */
-      printf("fixate_mdvd\n");
+	if(usalp->verbose)
+		printf("fixate_mdvd\n");
       usal_settimeout(usalp, 1000);
       if(is_packet(trackp) || dp->profile == 0x1B){
 	  scsi_close_tr_session(usalp, CL_TYPE_SESSION, 0, FALSE);

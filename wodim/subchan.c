@@ -138,7 +138,7 @@ do_leadin(track_t *trackp)
 	m.msf_sec = from_bcd(m.msf_sec);		/* convert to BCD */
 	m.msf_frame = 0;
 	filltpoint(_subq[0], ctrl|0x01, 0xA0, &m);
-	if (lverbose > 1)
+	if (lverbose > 2)
 		usal_prbytes("", _subq[0], 12);
 
 	/*
@@ -151,7 +151,7 @@ do_leadin(track_t *trackp)
 	m.msf_sec = 0;
 	m.msf_frame = 0;
 	filltpoint(_subq[1], ctrl|0x01, 0xA1, &m);
-	if (lverbose > 1)
+	if (lverbose > 2)
 		usal_prbytes("", _subq[1], 12);
 
 	/*
@@ -162,7 +162,7 @@ do_leadin(track_t *trackp)
 	if (is_copy(&trackp[tracks]))
 		ctrl |= TM_ALLOW_COPY << 4;
 	filltpoint(_subq[2], ctrl|0x01, 0xA2, &m);
-	if (lverbose > 1)
+	if (lverbose > 2)
 		usal_prbytes("", _subq[2], 12);
 
 	/*
@@ -174,7 +174,7 @@ do_leadin(track_t *trackp)
 		if (is_copy(&trackp[i]))
 			ctrl |= TM_ALLOW_COPY << 4;
 		filltpoint(_subq[i-1+3], ctrl|0x01, to_bcd(trackp[i].trackno), &m);	/* track n */
-		if (lverbose > 1)
+		if (lverbose > 2)
 			usal_prbytes("", _subq[i-1+3], 12);
 	}
 	return (0);
