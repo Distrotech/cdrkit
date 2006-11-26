@@ -2,9 +2,13 @@ Cdrkit can be built on AIX 5 using the following instructions. Note that the
 SCSI transport has not been tested yet because of missing hardware.
 
  - install cmake either from source or from binaries downloadable on cmake.org.
-   Make sure the cmake is in your PATH.
+   Make sure the cmake is in your PATH and it can find its modules.
  - GCC compiler (available on gcc.org) is recommended, however the native xlc
    compiler should work as well.
+ - if you installed a local version of GNU libiconv and ld is confused and
+   spews linking errors related to .libiconv, you may force its linking with
+   cmake -DCMAKE_EXE_LINKER_FLAGS="-L/usr/X11R6/lib -L/usr/lib /usr/local/lib/libiconv.a" build
+   However, this is a dirty workaround.
 
 Follow instructions from the INSTALL file.
 

@@ -50,7 +50,7 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize,
 	else if(NULL!=(t=getenv("CDR_DEVICE")))
 		devcand=t;
 	else if(NULL!=(t=cfg_get("CDR_DEVICE")))
-		devcand=strdup(t); // needs to use it as a key later, same stat. memory
+		devcand=strdup(t); /* needs to use it as a key later, same stat. memory */
 
 	if(devcand && NULL != (t=cfg_get(devcand))) {
 		/* extract them now, may be used later */
@@ -60,7 +60,7 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize,
 	if(p_dev_name) {
 		if(wc>0)
 			*p_dev_name = strdup(loc);
-		else if(devcand) // small mem. leak possible, does not matter, checks for that would require more code size than we loose
+		else if(devcand) /* small mem. leak possible, does not matter, checks for that would require more code size than we loose */
 			*p_dev_name=strdup(devcand);
 	}
 	if(p_speed) { /* sth. to write back */

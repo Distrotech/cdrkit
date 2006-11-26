@@ -215,6 +215,11 @@ usalo_maxdma(SCSI *usalp, long amt)
 static void *
 usalo_getbuf(SCSI *usalp, long amt)
 {
+/* assume having a modern AIX here */
+#ifdef HAVE_ALLOCA_H
+    usalp->bufbase = (void *)valloc((size_t)amt);
+    return (usalp->bufbase);
+#else
 	void	*ret;
 	int	pagesize;
 
@@ -236,6 +241,7 @@ usalo_getbuf(SCSI *usalp, long amt)
 		return (ret);
 	ret = palign(ret, pagesize);
 	return (ret);
+#endif
 }
 
 static void

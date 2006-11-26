@@ -110,6 +110,8 @@
 		/* if we have arpa/inet.h (missing on BeOS) */
 				/* BeOS has inet_ntoa() in <netdb.h> */
 
+#cmakedefine HAVE_ICONV_H
+
 /*
  * Convert to SCHILY name
  */
@@ -278,7 +280,8 @@
  * Misc CC / LD related stuff
  */
 
-#define HAVE_DYN_ARRAYS 1		/* If the compiler allows dynamic sized arrays */
+// #warning FIXME, add a test
+#define HAVE_DYN_ARRAYS 1	*/	/* If the compiler allows dynamic sized arrays */
 
 #define HOST_SYSTEM "@CMAKE_SYSTEM_NAME@"
 #cmakedefine CDRKIT_VERSION "@CDRKIT_VERSION@"

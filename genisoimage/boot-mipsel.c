@@ -82,7 +82,11 @@ static  char   *boot_file_name = NULL;
 struct extent {
     uint32_t count;
     uint32_t start;
-} __attribute__((packed));
+}
+#ifdef __GNUC__
+__attribute__((packed))
+#endif
+   ;
 
 struct dec_bootblock {
     int8_t pad[8];
@@ -91,7 +95,11 @@ struct dec_bootblock {
     int32_t loadAddr;       /* Load below kernel */
     int32_t execAddr;       /* And exec there */
     struct extent bootmap[MAX_MAPS];
-} __attribute__((packed));
+}
+#ifdef __GNUC__
+__attribute__((packed))
+#endif
+   ;
 
 static void swap_in_elf32_ehdr(Elf32_Ehdr *ehdr)
 {

@@ -1,8 +1,27 @@
 
-all: build/Makefile
+CMAKETWEAKS:=@true
+
 ifneq ($(CFLAGS),)
-	cmake build -DCMAKE_C_FLAGS="$(CFLAGS)"
+CMAKETWEAKS.= && cmake build -DCMAKE_C_FLAGS="$(CFLAGS)"
 endif
+
+
+ifneq ($(LDFLAGS),)
+CMAKETWEAKS.= && cmake build -DCMAKE_EXE_LINKER_FLAGS="$(LDFLAGS)" -DCMAKE_MODULE_LINKER_FLAGS="$(LDFLAGS)" -DCMAKE_SHARED_LINKER_FLAGS="$(LDFLAGS)"
+endif
+
+ifneq ($(LDLAGS),)
+CMAKETWEAKS.= && cmake build -DCMAKE_C_FLAGS="$(CFLAGS)"
+endif
+
+ifneq ($(PREFIX),)
+install: build/Makefile
+CMAKETWEAKS.= && cmake build  -DCMAKE_INSTALL_PREFIX="$(PREFIX)"
+endif
+
+
+all: build/Makefile
+	$(CMAKETWEAKS)
 	$(MAKE) -C build $(MAKE_FLAGS) all
 
 DISTNAME=cdrkit-$(shell cat VERSION)
@@ -41,7 +60,5 @@ release:
 
 %::
 	$(MAKE) build/Makefile
-ifneq ($(CFLAGS),)
-	cmake build -DCMAKE_C_FLAGS="$(CFLAGS)"
-endif
+	$(CMAKETWEAKS)
 	$(MAKE) -C build $(MAKE_FLAGS) $@

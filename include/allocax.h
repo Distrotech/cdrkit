@@ -48,7 +48,7 @@
 #		include <malloc.h>
 #		define alloca _alloca
 #	else
-#		if HAVE_ALLOCA_H
+#		ifdef HAVE_ALLOCA_H
 #			include <alloca.h>
 #		else
 #			ifdef _AIX

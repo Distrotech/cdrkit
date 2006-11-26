@@ -1559,6 +1559,7 @@ static char *ascii2html(unsigned char *inp)
 	static size_t buflen = 256;
 	static char *outline = 0;
 	size_t pos = 0;
+    size_t l=0;
 
 	/* init */
 	if(!outline) {
@@ -1595,7 +1596,7 @@ static char *ascii2html(unsigned char *inp)
 		};
 
 		/* Resize buffer */
-		const size_t l = strlen(insert);
+		l = strlen(insert);
 		while(pos + l + 1 >= buflen) {
 			outline = realloc(outline, buflen *= 2);
 			if(outline == 0) {

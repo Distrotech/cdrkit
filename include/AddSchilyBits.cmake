@@ -3,5 +3,7 @@ IF(NOT CHECKED_rols)
 
    LIST(APPEND EXTRA_LIBS "rols")
 
+# not the proper place but ok, because it is linked from everywhere
+
 ENDIF(NOT CHECKED_rols)
 
