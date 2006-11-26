@@ -1,11 +1,8 @@
-SOON:
-  - fix DVD-RW support (DVD+RW works, though, DVD-RW blanking works too)
 
-LATER:
-
- - check documentation, debian/* documentation, FAQ, etc.pp.
+ - disable boot-mipsel with non-GCC?
  - fix nread() callers, see toc.c:835
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
+ - check documentation, debian/* documentation, FAQ, etc.pp.
  - proper getnameinfo/inet_ntoa checks, see include/CMakeLists.txt
  - check notes in help output, drop advisories, notes about future plans...
  - find out why spawn.c breaks in WAIT_H while the WAIT_UNION check works quite well on sys/wait.h. See include/CMakeLists.txt comments.
