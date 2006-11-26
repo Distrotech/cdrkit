@@ -5,11 +5,12 @@ SCSI transport has not been tested yet because of missing hardware.
    Make sure the cmake is in your PATH and it can find its modules.
  - GCC compiler (available on gcc.org) is recommended, however the native xlc
    compiler should work as well.
- - if you installed a local version of GNU libiconv and ld is confused and
-   spews linking errors related to .libiconv, you may force its linking with
-   cmake -DCMAKE_EXE_LINKER_FLAGS="-L/usr/X11R6/lib -L/usr/lib /usr/local/lib/libiconv.a" build
-   However, this is a dirty workaround.
 
 Follow instructions from the INSTALL file.
 
- -- Eduard Bloch -- Wed, 27 Sep 2006 01:47:46 +0200
+If you installed a local version of GNU libiconv and ld is confused and spews
+linking errors related to .libiconv, check the linker paths with 
+"cmake -LA build | grep lib". Probably your local path is not listed there and
+you may need to set LDFLAGS make variable. See INSTALL file for details.
+
+ -- Eduard Bloch -- Sun, 26 Nov 2006 23:06:25 +0100
