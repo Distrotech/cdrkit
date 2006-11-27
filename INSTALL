@@ -6,7 +6,7 @@ CMake framework. Therefore, the requirements to build this package are:
 
  - cmake 2.4.3 or newer (available from http://www.cmake.org or maybe as a
    package in your Linux distribution)
- - make (an implmentation supported by cmake, eg. GNU make, smake, ...)
+ - GNU make
  - working GCC compiler environment
  - maybe additional requirements for your operating system, see
    doc/plattforms/... and FAQ.
