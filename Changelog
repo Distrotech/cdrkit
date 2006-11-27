@@ -3,14 +3,15 @@ cdrkit (1.1.x) UNRELEASED; urgency=medium
   [ Eduard Bloch ]
   * replacement of libdeflt, config parser rewrite; more user-friendly,
     more flexible/tolerant now
-  * config overhaul, much more dynamic checks, including fixes for SunOS
-    environment. Also fixed confusing double-checks for some of the variables
-    in cdda2wav.c
+  * config overhaul, much more dynamic checks, including fixes for SunOS and
+    AIX environment, including proper libiconv detection, and processing of
+    LDFLAGS provided by user. Also fixed confusing double-checks for some of
+    the variables in cdda2wav.c.
   * mass renaming of applications and libraries, see FAQ
   * dirsplit -S fix, oversized have been possible before
   * consistent version display
-  * cleanup of libschily, removed unused or easily replaceable parts (assumed
-    having a modern POSIX compliant environment). Renamed to librols
+  * cleanup of libschily, removed unused/superfluous parts (assumed having a
+    modern POSIX compliant environment). Renamed to librols
     (RemainsOfLibSchily).
   * reenabled selection of the DVD driver, accidentaly disabled in 1.0, when
     beeing in non-verbose mode
