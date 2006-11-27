@@ -101,6 +101,14 @@ SET(TESTSRC "
 int main(int a, char **b) { iconv_t foo = iconv_open(b[0], b[0]); return(0); }
 ")
 CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBICONV)
+IF(NOT USE_LIBICONV)
+   FIND_FILE(ICONV_H_LOCATION "iconv.h")
+   IF(NOT "${ICONV_H_LOCATION}" EQUAL "/usr/include/iconv.h")
+      MESSAGE("WARNING: iconv.h found in non-standard location (${ICONV_H_LOCATION}) but")
+      MESSAGE("GNU libiconv is not available. See INSTALL for details. Sleeping 10 seconds.")
+      EXECUTE_PROCESS(COMMAND "sleep" "10")
+   ENDIF(NOT "${ICONV_H_LOCATION}" EQUAL "/usr/include/iconv.h")
+ENDIF(NOT USE_LIBICONV)
 
 SET(CMAKE_REQUIRED_LIBRARIES )
 SET(TESTSRC " 
