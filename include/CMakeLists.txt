@@ -94,6 +94,14 @@ CHECK_INCLUDE_FILES("iconv.h" HAVE_ICONV_H)
 
 INCLUDE(CheckCSourceCompiles)
 
+SET(CMAKE_REQUIRED_LIBRARIES iconv)
+#SET(CMAKE_REQUIRED_FLAGS iconv)
+SET(TESTSRC " 
+#include <iconv.h>
+int main(int a, char **b) { iconv_t foo = iconv_open(b[0], b[0]); return(0); }
+")
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBICONV)
+
 SET(CMAKE_REQUIRED_LIBRARIES )
 SET(TESTSRC " 
 #include <stdlib.h>
