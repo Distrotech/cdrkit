@@ -1,5 +1,6 @@
-usr/bin/mkisofs usr/bin/mkhybrid
-usr/share/man/man8/isoinfo.8 usr/share/man/man8/isodump.8
-usr/share/man/man8/isoinfo.8 usr/share/man/man8/isovfy.8
-usr/share/man/man8/isoinfo.8 usr/share/man/man8/devdump.8
-usr/share/man/man8/mkisofs.8 usr/share/man/man8/mkhybrid.8
+usr/bin/genisoimage usr/bin/mkisofs
+usr/bin/genisoimage usr/bin/mkhybrid
+usr/share/man/man8/genisoimage.8.gz usr/share/man/man8/mkisofs.8.gz
+usr/share/man/man8/genisoimage.8.gz usr/share/man/man8/mkhybrid.8.gz
+usr/share/doc/genisoimage usr/share/doc/mkisofs
+

@@ -15,8 +15,8 @@ endif
 
 i=$(shell pwd)/debian/tmp/usr
 b=$(shell pwd)/debian/build
-iso=mkisofs
-cdd=cdda2wav
+iso=genisoimage
+cdd=icedax
 cdr=wodim
 ziso_VERSION = $(shell cat 3rd-party/zisofs_tools/version)
 source_VERSION= $(shell dpkg-parsechangelog | sed -ne '/^Version:/s/^V.*://p')
@@ -60,18 +60,15 @@ build/install-debstamp:
 	make install PREFIX=$(i)
 
 	install -m 755 3rd-party/zisofs_tools/mkzftree $(i)/bin/
-	install -m 755 cdda2wav/cdda2ogg $(i)/bin/
-	install -m 755 cdda2wav/cdda2mp3 $(i)/bin/
-	install -m 755 cdda2wav/readmult $(i)/bin/
-	install -m 755 cdda2wav/pitchplay $(i)/bin/
+	install -m 755 icedax/cdda2ogg $(i)/bin/
+	install -m 755 icedax/cdda2mp3 $(i)/bin/
+	install -m 755 icedax/readmult $(i)/bin/
+	install -m 755 icedax/pitchplay $(i)/bin/
 	touch build/install-debstamp
 
-binary-indep: build install cdrkit-doc cdrecord
+binary-indep: build install cdrkit-doc cdrecord cdda2wav mkisofs
 
-binary-arch: build install \
-	wodim \
-	mkisofs \
-	cdda2wav
+binary-arch: build install wodim icedax genisoimage
 
 #
 # wodim
@@ -80,15 +77,15 @@ binary-arch: build install \
 wodim: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
-	cp -a cdrecord/wodim.dfl $(b)/$@/etc/default/wodim
-	cp -a rscsi/rscsi.dfl $(b)/$@/etc/default/rscsi
+	cp -a wodim/wodim.dfl $(b)/$@/etc/wodim.conf
+	cp -a netscsid/netscsid.dfl $(b)/$@/etc/netscsid.conf
 #	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/wodim/presubj
 	dh_link              -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@
 	dh_installchangelogs -p$@ -P$(b)/$@ Changelog
 	dh_install			 -p$@ -P$(b)/$@
 	dh_strip             -p$@ -P$(b)/$@
-	dh_installexamples   -p$@ -P$(b)/$@ rscsi/rscsi.dfl cdrecord/wodim.dfl
+	dh_installexamples   -p$@ -P$(b)/$@ netscsid/netscsid.dfl wodim/wodim.dfl
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
 	dh_installdeb        -p$@ -P$(b)/$@
@@ -117,10 +114,45 @@ cdrecord: install
 	dh_builddeb          -p$@ -P$(b)/$@
 
 #
-# mkisofs
+# cdda2wav dummy one
+#
+
+cdda2wav: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_link              -p$@ -P$(b)/$@ 
+	dh_install			 -p$@ -P$(b)/$@
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+
+#
+# mkisofs dummy one
 #
 
 mkisofs: install
+	@echo "--- Building: $@"
+	dh_installdirs 		 -p$@ -P$(b)/$@ 
+	dh_link              -p$@ -P$(b)/$@ 
+	dh_install			 -p$@ -P$(b)/$@
+	dh_compress          -p$@ -P$(b)/$@
+	dh_fixperms          -p$@ -P$(b)/$@
+	dh_installdeb        -p$@ -P$(b)/$@
+	dh_gencontrol        -p$@ -P$(b)/$@
+	dh_makeshlibs        -p$@ -P$(b)/$@ -V
+	dh_md5sums           -p$@ -P$(b)/$@
+	dh_builddeb          -p$@ -P$(b)/$@
+
+#
+# genisoimage
+#
+
+genisoimage: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@
@@ -142,16 +174,16 @@ mkisofs: install
 
 
 #
-# cdda2wav
+# icedax
 #
 
-cdda2wav: install
+icedax: install
 	@echo "--- Building: $@"
 	dh_installdirs 		 -p$@ -P$(b)/$@ 
 	dh_installdocs       -p$@ -P$(b)/$@ 
 	dh_installchangelogs -p$@ -P$(b)/$@ 
 	dh_install           -p$@ -P$(b)/$@
-#	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/cdda2wav/presubj
+#	cp debian/reportbug.presubj $(b)/$@/usr/share/bug/icedax/presubj
 	dh_strip             -p$@ -P$(b)/$@
 	chmod 755 $(b)/$@/usr/bin/cdda2*
 	dh_link              -p$@ -P$(b)/$@

@@ -1,24 +1,9 @@
-IF(NOT CHECKED_SCHILY)
-   INCLUDE(CheckCSourceCompiles)
-   SET(CHECKED_SCHILY 1)
-   LIST(APPEND EXTRA_LIBS "schily")
+IF(NOT CHECKED_rols)
+   SET(CHECKED_rols 1)
 
-   SET(TESTSRC " 
-   #include <math.h>
-   int main() { return isnan(1); }
-   ")
+   LIST(APPEND EXTRA_LIBS "rols")
 
-   SET(CMAKE_REQUIRED_LIBRARIES )
-   CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_LIBC_ISNAN)
+# not the proper place but ok, because it is linked from everywhere
 
-   IF(NOT HAVE_LIBC_ISNAN)
-      SET(CMAKE_REQUIRED_LIBRARIES m)
-      LIST(APPEND EXTRA_LIBS m)
-      CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_LIBM_ISNAN)
-      IF(NOT HAVE_LIBM_ISNAN)
-         MESSAGE(FATAL_ERROR "isnan function not found anywhere on ${CMAKE_SYSTEM_NAME}")
-      ENDIF(NOT HAVE_LIBM_ISNAN)
-   ENDIF(NOT HAVE_LIBC_ISNAN)
-
-ENDIF(NOT CHECKED_SCHILY)
+ENDIF(NOT CHECKED_rols)
 

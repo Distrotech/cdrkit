@@ -1,29 +1,62 @@
-cdrkit (1.0pre5+cleanup) UNRELEASED; urgency=low
+cdrkit (1.1.x) UNRELEASED; urgency=medium
 
   [ Eduard Bloch ]
-  * replacement of libdeflt and config parser rewrite; more user-friendly,
-    flexibel, tolerant now
+  * replacement of libdeflt, config parser rewrite; more user-friendly,
+    more flexible/tolerant now
+  * config overhaul, much more dynamic checks, including fixes for SunOS and
+    AIX environment, including proper libiconv detection, and processing of
+    LDFLAGS provided by user. Also fixed confusing double-checks for some of
+    the variables in cdda2wav.c.
+  * mass renaming of applications and libraries, see FAQ
+  * dirsplit -S fix, oversized have been possible before
+  * consistent version display
+  * cleanup of libschily, removed unused/superfluous parts (assumed having a
+    modern POSIX compliant environment). Renamed to librols
+    (RemainsOfLibSchily).
+  * reenabled selection of the DVD driver, accidentaly disabled in 1.0, when
+    beeing in non-verbose mode
+  * made dirsplit work with file symlinks
+  * incorporated some OpenSUSE patches:
+    + cdrkit-HZ.patch (with initialized value, *sic*)
+    + cdrkit-dvd-fix.patch (return code tracking)
+    + cdrkit-gcc-workaround.patch
+    + cdrkit-mkisofs-fail-on-large-file.patch (don't just skip them)
+    + cdrkit-mkisofs-grow-check.patch (tolerate grown files)
+    + cdrkit-perms.patch (not breaking on missing device files)
 
   [ Christian Fromme ]
   * big cleanup, phase I, getting rid from Cstyle function definitions in
     applications
 
+  [ Lorenz Minder ]
+  * user output junk filter in icedax/toc.c
+  * flexible ascii conversion buffer
+
  -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
 
+cdrkit (1.0) RELEASED; urgency=low
 
+  [ Eduard Bloch ]
+  * mapping of ATAPI: -> ATA: method on linux-2.6 and some code beautification
+  * added a atexit handler to stop the FIFO process more reliably, since
+    Schilling's constructs seem to terminate the application on too many
+    places
+  * print Burnfree state/preparation messages only with high verbosity
 
+  [ Dennis Vshivkov ]
+  * sorted display of files when needed
 
+  [ Joerg Jaspert]
+  * Remove all the printing of useless messages. This is based on GPLed
+    code, so we follow the letter of the GPL as it is interpreted by 99%
+    of the world, including its authors. Especially as Joerg was never able
+    to give us any clear explanation what other license he may think
+    cdrtools had, despite us asking multiple times. So we have no other
+    choice than to take whats written down, and thats GPL.
 
+ -- Joerg Jaspert <joerg@debian.org>  Mon, 20 Nov 2006 19:25:10 +0100
 
-
-
-
-
-
-
-
-
-cdrkit (1.0pre5) UNRELEASED; urgency=low
+cdrkit (1.0pre5) RELEASED; urgency=low
 
   [ Eduard Bloch ]
   * added better check for capability.h and FATAL_ERROR if it's missing on Linux
@@ -42,6 +75,9 @@ cdrkit (1.0pre5) UNRELEASED; urgency=low
     old workaround(s) for ATA now for SCSI too
   * renamed error function to schily_error because it started to wreak random
     havoc after harmless header moving (conflict with incompatible GNU version)
+  * restored scsi-remote.c compilation, moved to libscg sources, used instead
+    of rdummy.c
+  * added optional omiting of DMA speed tests
 
   [ Vladimir Nadvornik ]
   * enabled CLONE feature in wodim's config
@@ -139,7 +175,7 @@ cdrkit (1.0pre1) RELEASED; urgency=low
       plattforms, though.
   * removed most of the anti-linux2.6  program messages (unless being
     in verbose mode). (closes: #377145)
-  * changed default config file location to /etc/default/wodim
+  * changed default config file location to /etc/wodim.conf
   * added more meaningful error message on -dvd-video failure (closes: #324586)
   * minor cdda2mp3/cdda2ogg scripts fixes suggested by Fabian Pietsch, plus
     fixes for unreliable encoder detection (closes: #283794, #344443) plus

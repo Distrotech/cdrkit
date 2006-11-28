@@ -59,11 +59,11 @@ memset
 qsort
 
 /*--------------------------------------------------------------------------*/
-scgp = scg_open();
-bufsize = scg_bufsize(scgp, CDR_BUF_SIZE);
+usalp = usal_open();
+bufsize = usal_bufsize(usalp, CDR_BUF_SIZE);
 nsecs = bufsize / SEC_SIZE;
 
-cdp = paranoia_init(scgp, nsecs);
+cdp = paranoia_init(usalp, nsecs);
 # paranoia_modeset(cdp, mode);
 # paranoia_overlapset(cdp, overlap);
 

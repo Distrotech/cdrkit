@@ -1,0 +1,2 @@
+usr/bin/genisoimage usr/bin/mkisofs
+usr/share/man/man8/mkisofs.8 usr/share/man/man8/genisoimage.8

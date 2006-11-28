@@ -1,10 +1,3 @@
 PROJECT (cdrkit)
-SUBDIRS(cdda2wav cdrecord libdeflt libedc libhfs_iso libparanoia librscg libscg libschily libunls mkisofs readcd rscsi 3rd-party/dirsplit include)
+SUBDIRS(include genisoimage wodim libdeflt libedc libhfs_iso libparanoia icedax libusal librols libunls readom netscsid 3rd-party/dirsplit)
 
-SET(BINS_SET cdrecord/wodim readcd/readcd)
-FOREACH(app ${BINS_SET})
-   install(PROGRAMS ${CMAKE_BINARY_DIR}/${app} DESTINATION bin)
-ENDFOREACH(app ${BINS_SET})
-FOREACH(app ${SCRIPTS_SET})
-   install(PROGRAMS ${CMAKE_SOURCE_DIR}/${app} DESTINATION bin)
-ENDFOREACH(app ${BINS_SET})

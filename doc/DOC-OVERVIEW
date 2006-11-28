@@ -25,8 +25,8 @@ mkisofs : documentation for work with the mkisofs, a
         ISO9660 filesystem creator. See mkisofs/README for
         details.
 
-cdda2wav : contains documentation for the CD audio
-           extraction utility cdda2wav. See cdda2wav/README for
+icedax : contains documentation for the CD audio
+           extraction utility icedax. See icedax/README for
            details.
 
 plattforms : contains notes about portability to different
