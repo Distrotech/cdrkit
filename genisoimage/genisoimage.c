@@ -2480,9 +2480,8 @@ parse_input_files:
 		fprintf(stderr, "Warning: ISO-9660 filenames longer than %d may cause buffer overflows in the OS.\n",
 			LEN_ISONAME);
 	if (use_Joliet && !use_RockRidge) {
-		fprintf(stderr, "Warning: creating filesystem with (nonstandard) Joliet extensions\n");
-		fprintf(stderr, "         but without (standard) Rock Ridge extensions.\n");
-		fprintf(stderr, "         It is highly recommended to add Rock Ridge\n");
+		fprintf(stderr, "Warning: creating filesystem with Joliet extensions but without Rock Ridge\n"
+                    "         extensions. It is highly recommended to add Rock Ridge.\n");
 	}
 	if (transparent_compression) {
 		fprintf(stderr, "Warning: using transparent compression. This is a nonstandard Rock Ridge\n");
