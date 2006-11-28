@@ -1,8 +1,9 @@
 cdrkit (9:1.1.1-1) unstable; urgency=low
 
   * Development snapshot
+    + wodim.dfl updates (closes: #398357)
   * epoch increased to work around buggy packages installed by harddisk
-    installtion from old Knoppix versions
+    installtion from old Knoppix versions (closes: #396599, #399995)
 
  -- Eduard Bloch <blade@debian.org>  Mon, 20 Nov 2006 23:40:19 +0100
 
