@@ -100,7 +100,7 @@ SET(TESTSRC "
 #include <iconv.h>
 int main(int a, char **b) { iconv_t foo = iconv_open(b[0], b[0]); return(0); }
 ")
-#CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBICONV)
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBICONV)
 #IF(NOT USE_LIBICONV)
 #   FIND_FILE(ICONV_H_LOCATION "iconv.h")
 #   IF(NOT "${ICONV_H_LOCATION}" EQUAL "/usr/include/iconv.h")

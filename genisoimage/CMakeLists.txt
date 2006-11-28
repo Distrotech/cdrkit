@@ -25,7 +25,7 @@ ENDIF(HAVE_ICONV_H)
 
 ADD_DEFINITIONS(-DUSE_LARGEFILES -DABORT_DEEP_ISO_ONLY -DAPPLE_HYB -DUDF -DDVD_VIDEO -DSORTING -DHAVE_CONFIG_H -DUSE_LIBSCHILY -DUSE_SCG -DJIGDO_TEMPLATE)
 
-SET(MKISOFS_MOST_SRCS apple.c boot.c   desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c  getopt.c getopt1.c hash.c ifo_read.c joliet.c mac_label.c match.c  multi.c name.c rock.c scsi.c  stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
+SET(MKISOFS_MOST_SRCS apple.c boot.c   desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c  hash.c ifo_read.c joliet.c mac_label.c match.c  multi.c name.c rock.c scsi.c  stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
 	boot-mipsel.c endian.c  )
 
 #SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES )
