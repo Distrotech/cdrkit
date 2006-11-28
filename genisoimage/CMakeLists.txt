@@ -3,7 +3,7 @@ PROJECT (MKISOFS)
 INCLUDE(../include/AddScgBits.cmake)
 INCLUDE(../include/AddSchilyBits.cmake)
 
-INCLUDE_DIRECTORIES(../include ../libhfs_iso ../wodim ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../wodim ../libhfs_iso ${CMAKE_BINARY_DIR})
 
 INCLUDE(CheckIncludeFiles)
 CHECK_INCLUDE_FILES("magic.h" USE_MAGIC)
@@ -25,18 +25,18 @@ ENDIF(HAVE_ICONV_H)
 
 ADD_DEFINITIONS(-DUSE_LARGEFILES -DABORT_DEEP_ISO_ONLY -DAPPLE_HYB -DUDF -DDVD_VIDEO -DSORTING -DHAVE_CONFIG_H -DUSE_LIBSCHILY -DUSE_SCG -DJIGDO_TEMPLATE)
 
-SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c getnum.c getopt.c getopt1.c hash.c ifo_read.c joliet.c mac_label.c match.c modes.c multi.c name.c rock.c scsi.c scsi_cdr.c stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
+SET(MKISOFS_MOST_SRCS apple.c boot.c   desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c  getopt.c getopt1.c hash.c ifo_read.c joliet.c mac_label.c match.c  multi.c name.c rock.c scsi.c  stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
 	boot-mipsel.c endian.c  )
 
 #SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES )
-LINK_DIRECTORIES(../libhfs_iso ../librols ../libusal ../libunls ../libdeflt)
+LINK_DIRECTORIES(../libhfs_iso ../librols ../libusal ../libunls ../libdeflt ../libwost)
 
 ADD_EXECUTABLE (genisoimage genisoimage.c ${MKISOFS_MOST_SRCS})
-TARGET_LINK_LIBRARIES(genisoimage hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(genisoimage wost hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
 
 # common lib set and genisoimage source parts for the rest
-LINK_LIBRARIES(${EXTRA_LIBS} deflt unls ${EXTRA_LIBICONV} )
-SET(MI_COMMON scsi.c scsi_cdr.c cd_misc.c modes.c defaults.c getnum.c)
+LINK_LIBRARIES(${EXTRA_LIBS} wost deflt unls ${EXTRA_LIBICONV} )
+SET(MI_COMMON scsi.c )
 ADD_EXECUTABLE(devdump diag/dump.c  ${MI_COMMON})
 ADD_EXECUTABLE(isodebug	diag/isodebug.c   ${MI_COMMON})
 ADD_EXECUTABLE(isodump	diag/isodump.c    ${MI_COMMON})
