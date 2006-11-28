@@ -2568,9 +2568,7 @@ parse_input_files:
 #ifdef USE_ICONV
         fprintf(stderr, "\nAdditional input charsets are available for Joliet through the iconv support."
                 "\nRun \"iconv -l\" to display them. Iconv charsets cannot be used with HFS, Apple"
-                "\nextension, ISO9660 version 2 or Rock Ridge.\n"
-                "\nIMPORTANT: never report problems with charset support directly"
-                "\nto Joerg Schilling! Report them to debburn-devel@lists.alioth.debian.org.\n");
+                "\nextension, ISO9660 version 2 or Rock Ridge.\n");
 #endif
 		exit(1);
 	}
