@@ -9,7 +9,7 @@ Standards-Version: 3.7.2
 Package: wodim
 Architecture: any
 Depends: ${shlibs:Depends}
-Recommends: mkisofs
+Recommends: genisoimage
 Replaces: cdrtools-doc (<< 5:1.0~pre1-1), cdrecord (<< 5:1.0~pre1-1)
 Suggests: cdrkit-doc
 Conflicts: cdrecord (<< 5:1.0~pre1-1)
@@ -22,23 +22,6 @@ Description: command line CD/DVD writing tool
  Please install cdrkit-doc if you want most of the documentation and
  README files.
 
-Package: cdrecord
-Architecture: all
-Depends: wodim (>= 5:1.0~pre1-1), debconf | debconf-2.0
-Description: Dummy package for transition to wodim
- This is a dummy package to ease the transition to wodim, the fork
- of cdrecord. Please use wodim instead of cdrecord.
- It provides a cdrecord symlink to wodim for compatibility purposes.
-
-Package: mkisofs
-Architecture: all
-Depends: ${shlibs:Depends}
-Depends: genisoimage (>= 9:1.0)
-Description: Dummy package for transition to genisoimage
- This is a dummy package to ease the transition to genisoimage, the fork
- of mkisofs. Please use genisoimage instead of mkisofs.
- It provides a mkisofs symlink to genisoimage for compatibility purposes.
-
 Package: genisoimage
 Architecture: any
 Depends: ${shlibs:Depends}
@@ -46,9 +29,9 @@ Suggests: wodim, cdrkit-doc
 Replaces: mkisofs (<< 9:1.0)
 Conflicts: mkhybrid, mkisofs (<< 9:1.0)
 Description: Creates ISO-9660 CD-ROM filesystem images
- mkisofs is a pre-mastering program for creating ISO-9660 CD-ROM 
+ genisoimage is a pre-mastering program for creating ISO-9660 CD-ROM 
  filesystem images, which can then be written to a CD-ROM (or DVD-ROM) using
- the wodim program. mkisofs now includes support for making bootable 
+ the wodim program. genisoimage includes support for making bootable
  "El Torito" CD-ROMs, as well as CD-ROMs with support for the
  Macintosh HFS filesystem.
  .
@@ -66,7 +49,7 @@ Section: sound
 Replaces: cdda2wav (<< 9:1.0)
 Conflicts: cdda2wav (<< 9:1.0)
 Description: Creates WAV files from audio CDs
- cdda2wav lets you digitally copy audio tracks from a CD-ROM, avoiding
+ icedax lets you digitally copy audio tracks from a CD-ROM, avoiding
  the distortion that is introduced when recording via a sound card. Data 
  can be dumped into raw (cdr), wav or sun format sound files. Options control
  the recording format (stereo/mono; 8/16 bits; sampling rate, etc).
@@ -74,21 +57,38 @@ Description: Creates WAV files from audio CDs
  Please install cdrkit-doc if you want most of the documentation and
  Readme-files.
 
-Package: cdda2wav
-Architecture: all
-Depends: icedax
-Section: sound
-Description: Dummy transition package
- This is a dummy package to ease the transition to icedax, the fork
- of cdda2wav. Please use icedax instead of cdda2wav.
- It provides a cdda2wav symlink to icedax for compatibility purposes.
-
 Package: cdrkit-doc
 Architecture: all
 Section: doc
 Replaces: cdrtools-doc
 Conflicts: cdrtools-doc
-Suggests: wodim, mkisofs, cdda2wav
+Suggests: wodim, genisoimage, icedax
 Description: Documentation for the cdrkit package-suite
  This is the documentation for the cdrkit package-suite, namely
  wodim, genisoimage and icedax.
+
+
+Package: cdrecord
+Architecture: all
+Depends: wodim (>= 5:1.0~pre1-1), debconf | debconf-2.0
+Description: Dummy transition package for wodim
+ This is a dummy package to ease the transition to wodim, the fork of
+ cdrecord.  It provides a cdrecord symlink to wodim for compatibility
+ purposes.  Please use wodim instead of cdrecord.
+
+Package: mkisofs
+Architecture: all
+Depends: genisoimage
+Description: Dummy transition package for genisoimage
+ This is a dummy package to ease the transition to genisoimage, the
+ fork of mkisofs.  It provides a mkisofs symlink to genisoimage for
+ compatibility purposes.  Please use genisoimage instead of mkisofs.
+
+Package: cdda2wav
+Architecture: all
+Depends: icedax
+Section: sound
+Description: Dummy transition package for icedax
+ This is a dummy package to ease the transition to icedax, the fork of
+ cdda2wav.  It provides a cdda2wav symlink to icedax for compatibility
+ purposes.  Please use icedax instead of cdda2wav.
