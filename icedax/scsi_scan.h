@@ -1,1 +1,0 @@
-../wodim/scsi_scan.h
