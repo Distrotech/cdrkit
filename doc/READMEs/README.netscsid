@@ -25,22 +25,35 @@ There are three possible ways to control access to the remote users:
 
 To enable remote SCSI via the login shell method you should do the following:
 
-	-	Add an entry to /etc/passwd in the form:
-
-		netscsid:x:1999:1000:Tape:/export/home/netscsid:/usr/sbin/netscsid
-
-		(modify this according to your OS). And don't forget to
-		modify /etc/shadow the way it needs to be on your OS.
-
-	-	Create a  home directory for this user and add a .rhosts file
-		to allow access to all users you like.
-
-	-	Install netscsid suid root into /usr/sbin
+  -	Install netscsid into /usr/sbin. It can be set suid-root if neccessary, see
+    security section below.
 
 	-	Install a file /etc/netscsid.conf and define access rights.
 		Without this file, netscsid will not work at all.
-
 		The template for this file is: netscsid/netscsid.dfl
+ 
+ - For the special user method, create a user account. This can be done with a
+   frontend like adduser or useradd, if available. The user should have /usr/sbin/netscsid as the login shell.
+   If there is no frontend tool, try this:
+
+   +	Add an entry to /etc/passwd in the form:
+
+      netscsid:x:1999:1000:Tape:/home/netscsid:/usr/sbin/netscsid
+
+      (modify this according to your OS). And don't forget to
+      modify /etc/shadow the way it needs to be on your OS.
+
+   +	Create the home directory for this user, adapt the user/group ownership
+      on this directory.
+  
+  - if you use SSH as the login shell (via appropriate RSH environment variable
+    or a symlink to "rsh" which is the case for many Linux distribution),
+    consult the ssh documentation for details.
+    Note that SSH requires sufficiently powered client/server systems to
+    encrypt/decrypt data in realtime.
+
+  - if you use traditional rsh, add a .rhosts file to this directory to allow
+    access to all users you like (see rsh documentation)
 
 NETSCSID Security:
 
@@ -63,7 +76,8 @@ NETSCSID Security:
 NETSCSID Security hints:
 
 -	Do not generally allow other users to see your boot disk via NETSCSID.
-	All people who see this disk may edit your passwd file.
+  All people who see this disk may edit your passwd file. This especially
+  applies to suid-root usage. For non-suid-root, check the access permissions.
 
 -	If you are in doubt, only export CD-ROM drives, scanners and similar
 	devices that are not directly security sensitive.
