@@ -1278,6 +1278,7 @@ int main(int argc, char *argv[])
 	int		warn_violate = 0;
 	int		have_cmd_line_pathspec = 0;
 	int		rationalize_all = 0;
+  int mkisofs_call=0;
 
 #ifdef APPLE_HYB
 	char		*afpfile = "";	/* mapping file for TYPE/CREATOR */
@@ -1285,8 +1286,10 @@ int main(int argc, char *argv[])
 	char		*root_info = 0;
 #endif	/* APPLE_HYB */
 
-  if(argc && strstr(argv[0], "mkisofs")) /* lame cheater detected */
+  if(argc && strstr(argv[0], "mkisofs")) { /* lame cheater detected */
      argv[0]="genisoimage";
+     mkisofs_call=1;
+  }
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
@@ -2155,6 +2158,9 @@ int main(int argc, char *argv[])
 			usage(0);
 			break;
 		case OPTION_PVERSION:
+      if(mkisofs_call)
+         printf("mkisofs 2.01 is not what you see here. This line is only a fake for too clever\n"
+               "GUIs and other frontend applications. In fact, this program is:\n");
 			printf("%s (%s)\n", version_string, HOST_SYSTEM);
 			exit(0);
 			break;
