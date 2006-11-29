@@ -569,7 +569,7 @@ rscsigetconn(usalp, host)
 	rscsipeer = host;
 
 	if ((rscsi = getenv("RSCSI")) == NULL)
-		rscsi = "/opt/schily/sbin/rscsi";
+		rscsi = "/usr/sbin/netscsid";
 	rsh = getenv("RSH");
 
 #ifdef	USE_RCMD_RSH
