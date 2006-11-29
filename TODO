@@ -1,4 +1,6 @@
 
+ - check the REMOTE method, especially with real device names and ssh.
+   Something is going wrong.
  - disable boot-mipsel with non-GCC?
  - fix nread() callers, see toc.c:835
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
