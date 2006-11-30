@@ -2,6 +2,7 @@ PROJECT (netscsid)
 INCLUDE_DIRECTORIES(../include ../wodim ${CMAKE_BINARY_DIR} )
 INCLUDE(../include/AddScgBits.cmake)
 INCLUDE(../include/AddSchilyBits.cmake)
+INCLUDE(../include/AddNetworkBits.cmake)
 
 LINK_DIRECTORIES(../librols ../libusal ../libdeflt)
 ADD_EXECUTABLE (netscsid netscsid.c)

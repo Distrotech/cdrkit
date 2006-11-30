@@ -2,6 +2,7 @@ PROJECT (icedax)
 INCLUDE_DIRECTORIES(../include ../wodim ${CMAKE_BINARY_DIR})
 include(../include/AddScgBits.cmake)
 include(../include/AddSchilyBits.cmake)
+include(../include/AddNetworkBits.cmake)
 
 FIND_FILE (HAVE_SYS_SOUNDCARD_H sys/soundcard.h)
 IF(HAVE_SYS_SOUNDCARD_H)
