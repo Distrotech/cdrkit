@@ -1,6 +1,13 @@
 
  - check the REMOTE method, especially with real device names and ssh.
    Something is going wrong.
+   OR
+   Stop supporting it, add a warning to libusal (scsi-remote.c or so) to not
+   use it, add an appropriate comment to a BUGS file
+ - try again with FIND_LIBRARY(iconv_open,libiconv),
+   FIND_LIBRARY(iconv_open,c), FIND_LIBRARY(gethostbyname,xnet),
+   FIND_LIBRARY(gethostbyname,nls), FIND_LIBRARY(gethostbyname,c) (in that order?!)
+   Shall work on AIX or BSD and on Cygwin
  - disable boot-mipsel with non-GCC?
  - fix nread() callers, see toc.c:835
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
