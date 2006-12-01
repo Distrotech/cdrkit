@@ -112,7 +112,7 @@ IF(NOT USE_LIBICONV)
    message("ERROR: no library providing iconv found")
 ENDIF(NOT USE_LIBICONV)
 ENDIF(NOT USE_LIBC_ICONV)
-
+SET(CMAKE_REQUIRED_INCLUDES )
 
 
 

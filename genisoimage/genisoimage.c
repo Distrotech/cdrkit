@@ -1278,7 +1278,7 @@ int main(int argc, char *argv[])
 	int		warn_violate = 0;
 	int		have_cmd_line_pathspec = 0;
 	int		rationalize_all = 0;
-  int mkisofs_call=0;
+  char  *mkisofs_call = 0; /* use as pointer and boolean */
 
 #ifdef APPLE_HYB
 	char		*afpfile = "";	/* mapping file for TYPE/CREATOR */
@@ -1286,10 +1286,10 @@ int main(int argc, char *argv[])
 	char		*root_info = 0;
 #endif	/* APPLE_HYB */
 
-  if(argc && strstr(argv[0], "mkisofs")) { /* lame cheater detected */
+  /* abusing arg */
+  mkisofs_call=strstr(argv[0], "mkisofs");
+  if(mkisofs_call && '\0' == mkisofs_call[7]) /* lame cheater detected */
      argv[0]="genisoimage";
-     mkisofs_call=1;
-  }
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */
@@ -3338,6 +3338,7 @@ if (check_session == 0)
 	 */
 	goof += sort_tree(root);
 
+#error hier warne wie "Note: multiple source directories have been specified and merged to the root filesystem. Check your program arguments. genisoimage is not tar."
 	if (goof) {
 #ifdef	USE_LIBSCHILY
 		comerrno(EX_BAD, "ISO9660/Rock Ridge tree sort failed.\n");
