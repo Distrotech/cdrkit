@@ -3338,7 +3338,7 @@ if (check_session == 0)
 	 */
 	goof += sort_tree(root);
 
-#error hier warne wie "Note: multiple source directories have been specified and merged to the root filesystem. Check your program arguments. genisoimage is not tar."
+/* error hier warne wie "Note: multiple source directories have been specified and merged to the root filesystem. Check your program arguments. genisoimage is not tar." */
 	if (goof) {
 #ifdef	USE_LIBSCHILY
 		comerrno(EX_BAD, "ISO9660/Rock Ridge tree sort failed.\n");
