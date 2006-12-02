@@ -1,16 +1,14 @@
-
 ifneq ($(CFLAGS),)
 CMAKETWEAKS += cmake build -DCMAKE_C_FLAGS="$(CFLAGS)" || exit 1; 
 endif
-
 
 ifneq ($(LDFLAGS),)
 CMAKETWEAKS += cmake -DCMAKE_EXE_LINKER_FLAGS:STRING="$(LDFLAGS)" -DCMAKE_MODULE_LINKER_FLAGS:STRING="$(LDFLAGS)" -DCMAKE_SHARED_LINKER_FLAGS:STRING="$(LDFLAGS)" build || exit 1; 
 endif
 
-ifneq ($(PREFIX),)
-CMAKETWEAKS += cmake build  -DCMAKE_INSTALL_PREFIX="$(PREFIX)" || exit 1 ; 
-endif
+#ifneq ($(PREFIX),)
+#CMAKETWEAKS += cmake build  -DCMAKE_INSTALL_PREFIX="$(PREFIX)" || exit 1 ; 
+#endif
 
 
 all: build/Makefile
@@ -50,3 +48,14 @@ release:
 	$(MAKE) build/Makefile
 	$(CMAKETWEAKS)
 	$(MAKE) -C build $(MAKE_FLAGS) $@
+
+# needs to be explicite, for PHONY and install (AKA INSTALL) file on cygwin
+install: build/Makefile
+ifneq ($(PREFIX),)
+	cmake build -DCMAKE_INSTALL_PREFIX="$(PREFIX)"
+endif
+	$(MAKE) -C build $(MAKE_FLAGS) $@
+
+.PHONY: install
+
+
