@@ -1,4 +1,4 @@
-cdrkit (1.1.x) UNRELEASED; urgency=medium
+cdrkit (1.1.0) RELEASED; urgency=medium
 
   [ Eduard Bloch ]
   * replacement of libdeflt, config parser rewrite; more user-friendly,
@@ -32,7 +32,7 @@ cdrkit (1.1.x) UNRELEASED; urgency=medium
   * user output junk filter in icedax/toc.c
   * flexible ascii conversion buffer
 
- -- Eduard Bloch <blade@debian.org>  Wed,  6 Sep 2006 22:05:30 +0200
+ -- Eduard Bloch <blade@debian.org>  Sat, 02 Dec 2006 18:43:14 +0100
 
 cdrkit (1.0) RELEASED; urgency=low
 
