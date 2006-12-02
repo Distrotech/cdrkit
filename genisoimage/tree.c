@@ -645,14 +645,11 @@ got_valid_name:
 
 	status = sort_directory(&this_dir->contents, (reloc_dir == this_dir));
 	if (status > 0) {
-#ifdef	USE_LIBSCHILY
-		comerrno(EX_BAD, "Unable to sort directory %s\n",
-			this_dir->whole_name);
-#else
-		fprintf(stderr, "Unable to sort directory %s\n",
-			this_dir->whole_name);
-		exit(1);
-#endif
+     fprintf(stderr, "Unable to sort directory %s\n",
+           this_dir->whole_name);
+     if(merge_warn_msg)
+        fprintf(stderr, merge_warn_msg);
+     exit(1);
 	}
 	/*
 	 * If we are filling out a TRANS.TBL, generate the entries that will

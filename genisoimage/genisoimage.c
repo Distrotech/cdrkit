@@ -284,6 +284,8 @@ struct rcopts rcopt[] = {
 	{NULL, NULL}
 };
 
+char		*merge_warn_msg=0; /* use as pointer and boolean */
+
 /*
  * In case it isn't obvious, the option handling code was ripped off
  * from GNU-ld.
@@ -1278,7 +1280,7 @@ int main(int argc, char *argv[])
 	int		warn_violate = 0;
 	int		have_cmd_line_pathspec = 0;
 	int		rationalize_all = 0;
-  char  *mkisofs_call = 0; /* use as pointer and boolean */
+	char		*mkisofs_call = 0; /* use as pointer and boolean */
 
 #ifdef APPLE_HYB
 	char		*afpfile = "";	/* mapping file for TYPE/CREATOR */
@@ -2486,8 +2488,9 @@ parse_input_files:
 		fprintf(stderr, "Warning: ISO-9660 filenames longer than %d may cause buffer overflows in the OS.\n",
 			LEN_ISONAME);
 	if (use_Joliet && !use_RockRidge) {
-		fprintf(stderr, "Warning: creating filesystem with Joliet extensions but without Rock Ridge\n"
-                    "         extensions. It is highly recommended to add Rock Ridge.\n");
+		fprintf(stderr,
+                      "Warning: creating filesystem with Joliet extensions but without Rock Ridge\n"
+                      "         extensions. It is highly recommended to add Rock Ridge.\n");
 	}
 	if (transparent_compression) {
 		fprintf(stderr, "Warning: using transparent compression. This is a nonstandard Rock Ridge\n");
@@ -3044,6 +3047,10 @@ parse_input_files:
 		set_root_info(root_info);
 #endif /* APPLE_HYB */
 
+	if(optind < argc-1)
+		merge_warn_msg="NOTE: multiple source directories have been specified and merged into the root\n"
+			"of the filesystem. Check your program arguments. genisoimage is not tar.\n";
+
 	/*
 	 * Scan the actual directory (and any we find below it) for files to
 	 * write out to the output image.  Note - we take multiple source
@@ -3338,14 +3345,11 @@ if (check_session == 0)
 	 */
 	goof += sort_tree(root);
 
-/* error hier warne wie "Note: multiple source directories have been specified and merged to the root filesystem. Check your program arguments. genisoimage is not tar." */
 	if (goof) {
-#ifdef	USE_LIBSCHILY
-		comerrno(EX_BAD, "ISO9660/Rock Ridge tree sort failed.\n");
-#else
 		fprintf(stderr, "ISO9660/Rock Ridge tree sort failed.\n");
+		if(merge_warn_msg)
+			fprintf(stderr, merge_warn_msg);
 		exit(1);
-#endif
 	}
 #ifdef UDF
 	if (use_Joliet || use_udf) {
@@ -3355,12 +3359,10 @@ if (check_session == 0)
 		goof += joliet_sort_tree(root);
 	}
 	if (goof) {
-#ifdef	USE_LIBSCHILY
-		comerrno(EX_BAD, "Joliet tree sort failed. The -joliet-long switch may help you.\n");
-#else
 		fprintf(stderr, "Joliet tree sort failed. The -joliet-long switch may help you.\n");
+		if(merge_warn_msg)
+			fprintf(stderr, merge_warn_msg);
 		exit(1);
-#endif
 	}
 	/*
 	 * Fix a couple of things in the root directory so that everything is

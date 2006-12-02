@@ -797,3 +797,8 @@ extern void	*e_malloc(size_t);
 #ifndef	offsetof
 #define	offsetof(TYPE, MEMBER)	((size_t) &((TYPE *)0)->MEMBER)
 #endif
+
+/*
+ * EB: various shared stuff
+ */
+extern char		*merge_warn_msg;
