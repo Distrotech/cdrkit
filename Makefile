@@ -10,19 +10,13 @@ endif
 #CMAKETWEAKS += cmake build  -DCMAKE_INSTALL_PREFIX="$(PREFIX)" || exit 1 ; 
 #endif
 
-
-all: build/Makefile
-	$(CMAKETWEAKS)
-	$(MAKE) -C build $(MAKE_FLAGS) all
+default_target: all
 
 DISTNAME=cdrkit-$(shell cat VERSION)
 
 build/Makefile:
 	@-mkdir build 2>/dev/null
 	cd build && cmake ..
-ifneq ($(CFLAGS),)
-	cmake build -DCMAKE_C_FLAGS="$(CFLAGS)"
-endif
 
 cmakepurge:
 	rm -rf install_manifest.txt progress.make CMakeFiles CMakeCache.txt cmake_install.cmake 
@@ -45,7 +39,7 @@ release:
 	test -e /etc/debian_version && ln -f ../$(DISTNAME).tar.gz ../cdrkit_$(shell cat VERSION | sed -e "s,pre,~pre,").orig.tar.gz || true
 
 %::
-	$(MAKE) build/Makefile
+	$(MAKE) $(MAKE_FLAGS) build/Makefile
 	$(CMAKETWEAKS)
 	$(MAKE) -C build $(MAKE_FLAGS) $@
 
