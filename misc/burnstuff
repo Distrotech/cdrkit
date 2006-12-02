@@ -1,0 +1,22 @@
+#!/bin/sh
+# (C) Eduard Bloch, License: BSD, 3-clause
+# very simple script to burn files on-the-fly in SAO mode;
+# either from a certain directory, or from a list with graft-points
+# ISO name is generated from the basename of the list/directory
+
+set -e
+set -x
+
+if echo "$1" | grep -q .list$ ; then
+   name=${1%.list}
+   set -- -D -graft-points -path-list "$1"
+else
+   name="$1"
+fi
+
+MOPTS=${MOPTS:-" -joliet-long -r -q -f -V $name "}
+COPTS=${COPTS:-" fs=64m gracetime=5 -v -sao speed=16 -eject -multi -v -force - "}
+
+SIZE=$(mkisofs $MOPTS -print-size "$@")s
+
+mkisofs $MOPTS "$@" | wodim tsize=$SIZE $COPTS
