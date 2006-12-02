@@ -1206,7 +1206,7 @@ scan_directory_tree(struct directory *this_dir, char *path,
 			path, this_dir->depth, RR_relocation_depth);
 		if (!did_hint) {
 			did_hint = TRUE;
-			errmsgno(EX_BAD, "To incude the complete directory tree,\n");
+			errmsgno(EX_BAD, "To include the complete directory tree,\n");
 			errmsgno(EX_BAD, "use Rock Ridge extensions via -R or -r,\n");
 			errmsgno(EX_BAD, "or allow deep ISO9660 directory nesting via -D.\n");
 		}
