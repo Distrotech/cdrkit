@@ -1,3 +1,0 @@
-CFILES=		scsitransp.c scsihack.c scsiopen.c usalsettarget.c \
-		scsierrs.c usaltimes.c scsihelp.c \
-		rdummy.c
