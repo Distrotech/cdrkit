@@ -9,7 +9,6 @@ CMAKETWEAKS += cmake -DCMAKE_EXE_LINKER_FLAGS:STRING="$(LDFLAGS)" -DCMAKE_MODULE
 endif
 
 ifneq ($(PREFIX),)
-install: build/Makefile
 CMAKETWEAKS += cmake build  -DCMAKE_INSTALL_PREFIX="$(PREFIX)" || exit 1 ; 
 endif
 
@@ -35,11 +34,6 @@ cmakepurge:
 
 clean:
 	rm -rf build
-
-ifneq ($(PREFIX),)
-install: build/Makefile
-	cd build && cmake .. -DCMAKE_INSTALL_PREFIX="$(PREFIX)" && $(MAKE) $(MAKE_FLAGS) install
-endif
 
 release:
 #	if test "$(shell svn status | grep -v -i make)" ; then echo Uncommited files found. Run \"svn status\" to display them. ; exit 1 ; fi
