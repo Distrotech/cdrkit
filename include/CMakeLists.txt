@@ -161,6 +161,13 @@ if (mlockall(MCL_CURRENT|MCL_FUTURE) < 0)
    }
 ")
 CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_MLOCKALL)
+SET(TESTSRC "
+int main(int argc, char **argv) {
+   int a[argc];
+   return 0;
+}
+")
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_DYN_ARRAYS)
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 
