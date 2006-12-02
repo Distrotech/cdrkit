@@ -18,9 +18,15 @@ SET(CMAKE_REQUIRED_LIBRARIES )
 CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBC_SOCKET)
 
 IF(NOT USE_LIBC_SOCKET)
+
    LIST(APPEND EXTRA_LIBS socket)
-   #MESSAGE("Using libsocket for socket functions")
-   # enough testing. If it breaks, then it breaks, end of story
+
+   SET(CMAKE_REQUIRED_LIBRARIES socket)
+   CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBSOCKET)
+   IF(NOT USE_LIBSOCKET)
+      MESSAGE(FATAL_ERROR "No working socket(...) found in libc or libsocket")
+   ENDIF(NOT USE_LIBSOCKET)
+
 ENDIF(NOT USE_LIBC_SOCKET)
 
 SET(TESTSRC "
@@ -41,8 +47,13 @@ IF(NOT USE_LIBC_NLS)
    IF(USE_LIBNLS)
       LIST(APPEND EXTRA_LIBS nls)
    ELSE(USE_LIBNLS)
-      #      SET(CMAKE_REQUIRED_LIBRARIES xnet) # no more testing, enough
-      LIST(APPEND EXTRA_LIBS xnet)
+      SET(CMAKE_REQUIRED_LIBRARIES xnet)
+      CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBXNET)
+      IF(NOT USE_LIBXNET)
+         MESSAGE(FATAL_ERROR "Error: Could not find a system library providing gethostbyname.")
+      ELSE(NOT USE_LIBXNET)
+         LIST(APPEND EXTRA_LIBS xnet)
+      ENDIF(NOT USE_LIBXNET)
    ENDIF(USE_LIBNLS)
 ENDIF(NOT USE_LIBC_NLS)
 SET(CMAKE_REQUIRED_LIBRARIES )
