@@ -96,18 +96,15 @@ INCLUDE(CheckCSourceCompiles)
 INCLUDE(CheckFunctionExists)
 
 #SET(CMAKE_REQUIRED_LIBRARIES iconv)
-#SET(CMAKE_REQUIRED_FLAGS iconv)
 SET(TESTSRC " 
 #include <iconv.h>
 int main(int a, char **b) { iconv_t foo = iconv_open(b[0], b[0]); return(0); }
 ")
 
-SET(CMAKE_REQUIRED_LIBRARIES)
-SET(CMAKE_REQUIRED_INCLUDES "iconv.h")
-CHECK_FUNCTION_EXISTS("iconv_open" USE_LIBC_ICONV)
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBC_ICONV)
 IF(NOT USE_LIBC_ICONV)
 SET(CMAKE_REQUIRED_LIBRARIES iconv)
-CHECK_FUNCTION_EXISTS(iconv_open USE_LIBICONV)
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" USE_LIBICONV)
 IF(NOT USE_LIBICONV)
    message("ERROR: no library providing iconv found")
 ENDIF(NOT USE_LIBICONV)
