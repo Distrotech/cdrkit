@@ -23,7 +23,6 @@ MATH(EXPR PTRLESS ${SIZE_PTR}-1)
 CONFIGURE_FILE( align.h.in align.h)
 #SET_SOURCE_FILES_PROPERTIES(align.h PROPERTIES GENERATED 1)
 
-
 TRY_COMPILE(VA_LIST_IS_ARRAY ${CMAKE_BINARY_DIR}  ${CMAKE_CURRENT_SOURCE_DIR}/test_VA_LIST_IS_ARRAY.c)
 # invert the result, has the condition IFF compiler fails. There must be a simple way to say a=!b... but how?
 IF(VA_LIST_IS_ARRAY) 
@@ -32,27 +31,15 @@ else(VA_LIST_IS_ARRAY)
    SET(VA_LIST_IS_ARRAY TRUE)
 endif(VA_LIST_IS_ARRAY)
 
-TRY_COMPILE(HAVE_MLOCKALL ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_HAVE_MLOCKALL.c)
 
 INCLUDE(TestBigEndian)
 TEST_BIG_ENDIAN(WORDS_BIGENDIAN)
 
 TRY_RUN(BITFIELDS_HTOL TEST_DUMMY ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_BITFIELDS_HTOL.c)
 
-FIND_FILE(HAVE_WAIT_H "wait.h")
-FIND_FILE(HAVE_SYS_WAIT_H "sys/wait.h")
-TRY_COMPILE(HAVE_UNION_WAIT ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_UNION_WAIT.c )
-# disabled, though the alternative works on cygwin and both headers are present
-# there.
-#IF(NOT HAVE_UNION_WAIT)
-#	TRY_COMPILE(HAVE_UNION_WAIT ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/test_SYS_UNION_WAIT.c )
-#MESSAGE("syswait: ${HAVE_UNION_WAIT}")
-#ENDIF(NOT HAVE_UNION_WAIT)
-
 INCLUDE(CheckIncludeFiles)
 
 #SET(CMAKE_REQUIRED_INCLUDES "/usr/include;/usr/local/include")
-
 CHECK_INCLUDE_FILES("stdarg.h" HAVE_STDARG_H)
 CHECK_INCLUDE_FILES("stdlib.h" HAVE_STDLIB_H)
 CHECK_INCLUDE_FILES("string.h" HAVE_STRING_H)
@@ -155,6 +142,25 @@ return 0;
 ")
 CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_INET_NTOA)
 
+SET(TESTSRC "
+#include <sys/types.h>
+#include <wait.h>
+int main() {
+union wait w;
+return 0; 
+}
+")
+# FIXME: try the same with #include <sys/wait.h>... may work, if yes, integrate properly
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_UNION_WAIT)
+SET(TESTSRC "
+#include <sys/types.h>
+#include <sys/mman.h>
+int main() {
+if (mlockall(MCL_CURRENT|MCL_FUTURE) < 0)  
+   return(0);
+   }
+")
+CHECK_C_SOURCE_COMPILES("${TESTSRC}" HAVE_MLOCKALL)
 
 CONFIGURE_FILE( xconfig.h.in xconfig.h)
 

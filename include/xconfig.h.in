@@ -230,13 +230,12 @@
 /*
  * Byteorder/Bitorder
  */
-#define	HAVE_C_BIGENDIAN	/* Flag that WORDS_BIGENDIAN test was done */
 /* If using network byte order             */
 #cmakedefine WORDS_BIGENDIAN
 /* If high bits come first in structures   */
 #cmakedefine BITFIELDS_HTOL
-/* Flag that BITFIELDS_HTOL test was done  */
-#define	HAVE_C_BITFIELDS	
+#define	HAVE_C_BIGENDIAN	/* Flag that WORDS_BIGENDIAN test was done */
+#define	HAVE_C_BITFIELDS	/* Flag that BITFIELDS_HTOL test was done  */
 
 /*
  * Types/Keywords
@@ -279,9 +278,8 @@
 /*
  * Misc CC / LD related stuff
  */
-
-// #warning FIXME, add a test
-#define HAVE_DYN_ARRAYS 1	*/	/* If the compiler allows dynamic sized arrays */
+/* If the compiler allows dynamic sized arrays */
+#cmakedefine HAVE_DYN_ARRAYS	
 
 #define HOST_SYSTEM "@CMAKE_SYSTEM_NAME@"
 #cmakedefine CDRKIT_VERSION "@CDRKIT_VERSION@"
