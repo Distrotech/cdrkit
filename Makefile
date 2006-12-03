@@ -10,10 +10,6 @@ ifneq ($(PREFIX),)
 CMAKETWEAKS += cmake build -DCMAKE_INSTALL_PREFIX="$(PREFIX)" || exit 1; 
 endif
 
-#ifneq ($(PREFIX),)
-#CMAKETWEAKS += cmake build  -DCMAKE_INSTALL_PREFIX="$(PREFIX)" || exit 1 ; 
-#endif
-
 default_target: all
 
 DISTNAME=cdrkit-$(shell cat VERSION)
@@ -42,16 +38,20 @@ release:
 	rm -rf tmp
 	test -e /etc/debian_version && ln -f ../$(DISTNAME).tar.gz ../cdrkit_$(shell cat VERSION | sed -e "s,pre,~pre,").orig.tar.gz || true
 
-%::
-	$(MAKE) $(MAKE_FLAGS) build/Makefile
-	$(CMAKETWEAKS)
-	$(MAKE) -C build $(MAKE_FLAGS) $@
+#%::
+#	$(MAKE) $(MAKE_FLAGS) build/Makefile
+#	$(CMAKETWEAKS)
+#	$(MAKE) -C build $(MAKE_FLAGS) $@
 
 # needs to be explicite, for PHONY and install (AKA INSTALL) file on cygwin
 install: build/Makefile
 	$(CMAKETWEAKS)
 	$(MAKE) -C build $(MAKE_FLAGS) $@
 
-.PHONY: install
+all: build/Makefile
+	$(CMAKETWEAKS)
+	$(MAKE) -C build $(MAKE_FLAGS) $@
+
+.PHONY: install all
 
 
