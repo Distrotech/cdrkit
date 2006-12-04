@@ -1,6 +1,8 @@
 cdrkit (9:1.1.0-2) unstable; urgency=low
 
-  * 
+  * new ...
+    + more verbose abort message if track is specified with some maintainance
+    command (closes: #369677)
 
  -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:18 +0100
 

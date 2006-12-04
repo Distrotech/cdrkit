@@ -3731,8 +3731,10 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 	}
 	if (*flagsp & (F_LOAD|F_DLCK|F_SETDROPTS|F_MSINFO|F_TOC|F_PRATIP|F_FIX|F_VERSION|F_CHECKDRIVE|F_PRCAP|F_INQUIRY|F_SCANBUS|F_RESET|F_ABORT)) {
 		if (tracks != 0) {
-			errmsgno(EX_BAD, "No tracks allowed with this option\n");
-			susage(EX_BAD);
+       printf(stderr,
+             "No tracks allowed with -load, -lock, -setdropts, -msinfo, -toc, -atip, -fix,\n"
+             "-version, -checkdrive, -prcap, -inq, -scanbus, -reset and -abort options.\n" );
+       exit(EXIT_FAILURE);
 		}
 		return ispacket;
 	}

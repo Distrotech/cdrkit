@@ -1,6 +1,7 @@
 cdrkit (1.1.1) UNRELEASED; urgency=low
 
-  * 
+  * more verbose abort message if track is specified with some maintainance
+    command (#369677)
 
  -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:33 +0100
 
