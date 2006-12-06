@@ -10,7 +10,7 @@ CFLAGS = -g
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
 CFLAGS += -O0
 else
-CMAKEFLAGS += -O2
+CFLAGS += -O2
 endif
 
 i=$(shell pwd)/debian/tmp/usr
