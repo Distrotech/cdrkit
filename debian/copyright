@@ -62,5 +62,11 @@ Copyright:
   *   02110-1301 USA; either version 2 of the License, or (at your option) any
   *   later version; incorporated herein by reference.
 
+* geteltorito
+  Author: Rainer Krienke
+  Email:  krienke@uni-koblenz.de
+  License: GPL
+  Version: 0.3
+
 The complete text of the GNU General Public License version 2 is
 available in /usr/share/common-licenses/GPL on a Debian system.

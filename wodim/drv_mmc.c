@@ -2690,12 +2690,13 @@ fixate_mdvd(SCSI *usalp, cdr_t *dp, track_t *trackp)
       if(is_packet(trackp) || dp->profile == 0x1B){
 	  scsi_close_tr_session(usalp, CL_TYPE_SESSION, 0, FALSE);
       }
-      ret=fixate_mmc(usalp, dp, trackp);
+      ret = fixate_mmc(usalp, dp, trackp);
       if (dp->profile == 0x2B) {
 	  scsi_close_tr_session(usalp, CL_TYPE_OPEN_SESSION, 0, FALSE);
 	  scsi_close_tr_session(usalp, CL_TYPE_FINALISE_MINRAD, 0, FALSE);
       }
       usal_settimeout(usalp, 200);
+
       return ret;
 }
 
@@ -2756,12 +2757,14 @@ extern	char	*buf;
 	char	addr[12];
 	struct disk_info *dip;
 
-	printf("format_mdvd\n");
+	if (debug || lverbose > 2)
+		printf("format_mdvd\n");
 	mmc_check(usalp, NULL, NULL, NULL, NULL, NULL, &dvdwr);
 	if (!dvdwr)
 		return (format_dummy(usalp, dp, formattype));
 
-	printf("format_mdvd: drive is a dvd burner.\n");
+	if (debug || lverbose > 2)
+		printf("format_mdvd: drive is a dvd burner.\n");
 	profile = get_curprofile(usalp);
 	if (profile != 0x1A) {
 		printf("Error: only support DVD+RW formating, ignoring.\n");
@@ -2770,11 +2773,11 @@ extern	char	*buf;
 	printf("format_mdvd: media is a DVD+RW.\n");
 	dip = (struct disk_info *)buf;
 	if (get_diskinfo(usalp, dip) < 0)
-		return ret;
+		return -1;
 	
 	if (dip->disk_status & 3 && formattype != FORCE_FORMAT) {
 		printf("Error: disk already formated, ignoring.\n");
-	        return ret;
+	        return -1;
         }
 	addr[0] = 0;           /* "Reserved" */
 	addr[1] = 2;           /* "IMMED" flag */
