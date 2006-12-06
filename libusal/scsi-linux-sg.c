@@ -411,7 +411,7 @@ scanopen:
 				 */
 				if (usalp->errstr)
 					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open %s", devname);
+							"Cannot open '%s'", devname);
 				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
 					if (usalp->errstr)
 						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
@@ -424,7 +424,7 @@ scanopen:
 				if (ioctl(f, SG_GET_TIMEOUT, &iparm) < 0) {
 					if (usalp->errstr)
 						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-								"SCSI unsupported with %s", devname);
+								"SCSI unsupported with '%s'", devname);
 					close(f);
 					continue;
 				}
@@ -452,7 +452,7 @@ scanopen:
 			 */
 			if (usalp->errstr)
 				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '/dev/sg*'");
+							"Cannot open '%s'", devname);
 			if(errno == EACCES || errno==EPERM)
 				continue;
 			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
@@ -483,7 +483,7 @@ scanopen:
 			 */
 			if (usalp->errstr)
 				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '/dev/sg*'");
+							"Cannot open '%s'", devname);
 			if(errno == EACCES || errno==EPERM)
 				continue;
 			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
