@@ -399,50 +399,41 @@ usalo_open(SCSI *usalp, char *device)
 		goto openbydev;
 
 scanopen:
-	/*
-	 * Note that it makes no sense to scan less than all /dev/hd* devices
-	 * as even /dev/hda may be a device that talks SCSI (e.g. a ATAPI
-	 * notebook disk or a CD/DVD writer). The CD/DVD writer case may
-	 * look silly but there may be users that did boot from a SCSI hdd
-	 * and connected 4 CD/DVD writers to both IDE cables in the PC.
-	 */
-/*	if (use_ata) for (i = 0; i <= 25; i++) { */
-/* If a device was specified with ATA:x,y,z try to open this device instead of
- * uselessly opening all of them until we reach the specified one */
-	if (use_ata) for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
-		snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
-					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
-		if (f < 0) {
-			/*
-			 * Set up error string but let us clear it later
-			 * if at least one open succeeded.
-			 */
-			if (usalp->errstr)
-				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '/dev/hd*'");
-			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
+	if (use_ata) {
+		for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
+			snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
+			/* O_NONBLOCK is dangerous */
+			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
+			if (f < 0) {
+				/*
+				 * Set up error string but let us clear it later
+				 * if at least one open succeeded.
+				 */
 				if (usalp->errstr)
 					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '%s'", devname);
-				/* return (0); */
-            continue;
-			}
-		} else {
-			int	iparm;
+							"Cannot open %s", devname);
+				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
+					if (usalp->errstr)
+						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+								"Cannot open '%s'", devname);
+					continue;
+				}
+			} else {
+				int	iparm;
 
-			if (ioctl(f, SG_GET_TIMEOUT, &iparm) < 0) {
-				if (usalp->errstr)
-					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"SCSI unsupported with '/dev/hd*'");
-				close(f);
-				continue;
+				if (ioctl(f, SG_GET_TIMEOUT, &iparm) < 0) {
+					if (usalp->errstr)
+						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+								"SCSI unsupported with %s", devname);
+					close(f);
+					continue;
+				}
+				sg_clearnblock(f);	/* Be very proper about this */
+				if (sg_setup(usalp, f, busno, tgt, tlun, i))
+					return (++nopen);
+				if (busno < 0 && tgt < 0 && tlun < 0)
+					nopen++;
 			}
-			sg_clearnblock(f);	/* Be very proper about this */
-			if (sg_setup(usalp, f, busno, tgt, tlun, i))
-				return (++nopen);
-			if (busno < 0 && tgt < 0 && tlun < 0)
-				nopen++;
 		}
 	}
 	if (use_ata && nopen == 0)

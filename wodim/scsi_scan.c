@@ -69,9 +69,7 @@ print_product(FILE *f, struct  scsi_inquiry *ip)
 	usal_fprintdev(f, ip);
 }
 
-int
-select_target(SCSI *usalp, FILE *f)
-{
+int select_target(SCSI *usalp, FILE *f) {
 	int	initiator;
 #ifdef	FMT
 	int	cscsibus = usal_scsibus(usalp);
