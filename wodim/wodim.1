@@ -1196,7 +1196,14 @@ CD/DVD-Recorder on a system. If some device types are invisible, try using
 .B dev=ATA:
 or similar option to give a hint about the device typ you are looking for.
 The numbers printed out as labels are computed by: 
-.B "bus * 100 + target
+.B "bus * 100 + target.
+On plattforms and device systems without persistent SCSI number management the
+results are not reliable. Use the .B \-\-devices option instead.
+.TP
+.B \-\-devices
+Look for useable devices using the system specific functions, eg. probing with
+usual device nodes in /dev/*, and display the detections using symbolic device
+names in OS specific syntax.
 .TP
 .B \-reset
 Try to reset the SCSI bus where the CD recorder is located. This works not
