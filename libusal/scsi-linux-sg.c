@@ -109,7 +109,7 @@ static	char __sccsid[] =
 #include <linux/cdrom.h>
 
 #if	defined(CDROM_PACKET_SIZE) && defined(CDROM_SEND_PACKET)
-#define	USE_ATA
+#define	USE_OLD_ATAPI
 #endif
 
 /*
@@ -165,7 +165,7 @@ static	char	_usal_trans_version[] = "scsi-linux-sg.c-1.86";	/* The version for t
 #define	MAX_TGT		16
 #define	MAX_LUN		8
 
-#ifdef	USE_ATA
+#ifdef	USE_OLD_ATAPI
 /*
  * # of virtual buses (schilly_host number)
  */
@@ -189,7 +189,7 @@ struct usal_local {
 	long	xbufsize;
 	char	*xbuf;
 	char	*SCSIbuf;
-#ifdef	USE_ATA
+#ifdef	USE_OLD_ATAPI
 	ata_buscookies	bc[MAX_SCHILLY_HOSTS];
 #endif
 };
@@ -219,7 +219,7 @@ struct usal_local {
 #if	defined(USE_PG) && !defined(USE_PG_ONLY)
 #include "scsi-linux-pg.c"
 #endif
-#ifdef	USE_ATA
+#ifdef	USE_OLD_ATAPI
 #include "scsi-linux-ata.c"
 #endif
 
@@ -322,7 +322,7 @@ usalo_help(SCSI *usalp, FILE *f)
 #ifdef	USE_PG
 	pg_help(usalp, f);
 #endif
-#ifdef	USE_ATA
+#ifdef	USE_OLD_ATAPI
 	usalo_ahelp(usalp, f);
 #endif
 	__usal_help(f, "ATA", "ATA Packet specific SCSI transport using sg interface",
@@ -345,6 +345,7 @@ usalo_open(SCSI *usalp, char *device)
 	char		devname[64];
 		BOOL	use_ata = FALSE;
 
+
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
@@ -354,7 +355,7 @@ usalo_open(SCSI *usalp, char *device)
 		return (-1);
 	}
 	if (device != NULL && *device != '\0') {
-#ifdef	USE_ATA
+#ifdef	USE_OLD_ATAPI
 		if (strncmp(device, "ATAPI", 5) == 0) {
 			usalp->ops = &ata_ops;
 			return (SCGO_OPEN(usalp, device));
@@ -435,75 +436,81 @@ scanopen:
 					nopen++;
 			}
 		}
+
+		if(nopen==0)
+			return(0);
 	}
-	if (use_ata && nopen == 0)
-		return (0);
 	if (nopen > 0 && usalp->errstr)
 		usalp->errstr[0] = '\0';
 
-	if (nopen == 0) for (i = 0; i < 32; i++) {
-		snprintf(devname, sizeof (devname), "/dev/sg%d", i);
-					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
-		if (f < 0) {
-			/*
-			 * Set up error string but let us clear it later
-			 * if at least one open succeeded.
-			 */
-			if (usalp->errstr)
-				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '%s'", devname);
-			if(errno == EACCES || errno==EPERM)
-				continue;
-			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
+	if (nopen == 0) {
+		for (i = 0; i < 32; i++) {
+			snprintf(devname, sizeof (devname), "/dev/sg%d", i);
+			/* O_NONBLOCK is dangerous */
+			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
+			if (f < 0) {
+				/*
+				 * Set up error string but let us clear it later
+				 * if at least one open succeeded.
+				 */
 				if (usalp->errstr)
 					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '%s'", devname);
-				return (0);
+				if(errno == EACCES || errno==EPERM)
+					continue;
+				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
+					if (usalp->errstr)
+						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+								"Cannot open '%s'", devname);
+					return (0);
+				}
+			} else {
+				sg_clearnblock(f);	/* Be very proper about this */
+				if (sg_setup(usalp, f, busno, tgt, tlun, -1))
+					return (++nopen);
+				if (busno < 0 && tgt < 0 && tlun < 0)
+					nopen++;
 			}
-		} else {
-			sg_clearnblock(f);	/* Be very proper about this */
-			if (sg_setup(usalp, f, busno, tgt, tlun, -1))
-				return (++nopen);
-			if (busno < 0 && tgt < 0 && tlun < 0)
-				nopen++;
 		}
 	}
 	if (nopen > 0 && usalp->errstr)
 		usalp->errstr[0] = '\0';
 
-	if (nopen == 0) for (i = 0; i <= 25; i++) {
-		snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
-					/* O_NONBLOCK is dangerous */
-		f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
-		if (f < 0) {
-			/*
-			 * Set up error string but let us clear it later
-			 * if at least one open succeeded.
-			 */
-			if (usalp->errstr)
-				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '%s'", devname);
-			if(errno == EACCES || errno==EPERM)
-				continue;
-			if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
+	if (nopen == 0) {
+		for (i = 0; i <= 25; i++) {
+			snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
+			/* O_NONBLOCK is dangerous */
+			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
+			if (f < 0) {
+				/*
+				 * Set up error string but let us clear it later
+				 * if at least one open succeeded.
+				 */
 				if (usalp->errstr)
 					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 							"Cannot open '%s'", devname);
-				return (0);
+				if(errno == EACCES || errno==EPERM)
+					continue;
+				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
+					if (usalp->errstr)
+						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+								"Cannot open '%s'", devname);
+					return (0);
+				}
+			} else {
+				sg_clearnblock(f);	/* Be very proper about this */
+				if (sg_setup(usalp, f, busno, tgt, tlun, -1))
+					return (++nopen);
+				if (busno < 0 && tgt < 0 && tlun < 0)
+					nopen++;
 			}
-		} else {
-			sg_clearnblock(f);	/* Be very proper about this */
-			if (sg_setup(usalp, f, busno, tgt, tlun, -1))
-				return (++nopen);
-			if (busno < 0 && tgt < 0 && tlun < 0)
-				nopen++;
 		}
 	}
 	if (nopen > 0 && usalp->errstr)
 		usalp->errstr[0] = '\0';
 
 openbydev:
+
 	if (device != NULL && *device != '\0') {
 		b = -1;
 		if (strlen(device) == 8 && strncmp(device, "/dev/hd", 7) == 0) {
