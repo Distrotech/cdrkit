@@ -56,10 +56,10 @@ SET_TARGET_PROPERTIES(genisoimage devdump isodebug isodump isoinfo isovfy PROPER
 
 INSTALL(TARGETS genisoimage devdump isodebug isodump isoinfo isovfy DESTINATION bin)
 INSTALL(FILES 
-genisoimage.8
-diag/devdump.8
-diag/isodebug.8
-diag/isodump.8
-diag/isoinfo.8
-diag/isovfy.8
-DESTINATION share/man/man8)
+genisoimage.1
+diag/devdump.1
+diag/isodebug.1
+diag/isodump.1
+diag/isoinfo.1
+diag/isovfy.1
+DESTINATION share/man/man1)

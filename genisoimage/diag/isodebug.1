@@ -1,5 +1,6 @@
 .\" @(#)isodebug.8	1.1 06/02/08 Copyr 2006 J. Schilling
 .\" Manual page for isodebug
+.\" Modified for cdrkit distribution by E.Bloch
 .\"
 .if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
 .if t .ds o \v'-0.55m'\h'0.00n'\z.\h'0.45n'\z.\v'0.55m'\h'-0.45n'o
@@ -13,7 +14,7 @@
 .if n .ds o oe
 .if n .ds u ue
 .if n .ds s sz
-.TH ISODEBUG 1L "06/02/08" "J\*org Schilling" "Schily\'s USER COMMANDS"
+.TH ISODEBUG 1 "06/02/08" "J\*org Schilling" "Schily\'s USER COMMANDS"
 .SH NAME
 isodebug \- print genisoimage debug info from ISO-9660 image
 .SH SYNOPSIS
@@ -50,13 +51,12 @@ Filename to read ISO-9660 image from.
 .BI dev= target
 SCSI target to use as CD/DVD-Recorder.
 See
-.BR cdrecord (1)
+.BR wodim (1)
 for more information on now to use this option.
 .SH FILES
 .SH "SEE ALSO"
 .BR wodim (1),
-.BR usal (7),
-.BR genisoimage (8).
+.BR genisoimage (1).
 .SH AUTHOR
 .nf
 J\*org Schilling

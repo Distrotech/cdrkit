@@ -1,5 +1,7 @@
 .\"
 .\" @(#)isoinfo.8	1.7 04/06/01 joerg
+.\" 
+.\" Modified for cdrkit in 12/2006
 .\"
 .\" -*- nroff -*-
 .if t .ds a \v'-0.55m'\h'0.00n'\z.\h'0.40n'\z.\v'0.55m'\h'-0.40n'a
@@ -14,7 +16,7 @@
 .if n .ds o oe
 .if n .ds u ue
 .if n .ds s sz
-.TH ISOINFO 8 "04/06/01" "Version 2.0"
+.TH ISOINFO 1 "04/06/01" "Version 2.0"
 .SH NAME
 devdump, isoinfo, isovfy, isodump \- Utility programs for dumping and verifying iso9660
 images.
@@ -351,11 +353,9 @@ A second drive may be found at scsibus 1, target 6, lun 0 and uses the
 default speed and the default FIFO size.
 .RE
 .SH SEE ALSO
-.BR genisoimage (8),
+.BR genisoimage (1),
 .BR wodim (1),
 .BR readcd (1),
-.BR usal (7),
-.BR rcmd (3),
 .BR ssh (1).
 .RE
 .SH SOURCES
