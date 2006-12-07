@@ -53,20 +53,93 @@ static	char sccsid[] =
 #include "scsi_scan.h"
 #include "wodim.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <string.h>
+
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
 int	select_target(SCSI *usalp, FILE *f);
 static	int	select_unit(SCSI *usalp, FILE *f);
 
-static void
-print_product(FILE *f, struct  scsi_inquiry *ip)
-{
+static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 	fprintf(f, "'%.8s' ", ip->vendor_info);
 	fprintf(f, "'%.16s' ", ip->prod_ident);
 	fprintf(f, "'%.4s' ", ip->prod_revision);
+	fprintf(stderr, "wtf, ganze vendor_info: %s\n", ip->vendor_info);
 	if (ip->add_len < 31) {
 		fprintf(f, "NON CCS ");
 	}
 	usal_fprintdev(f, ip);
+}
+
+#define MAXDEVCOUNT (256+26+26)
+int scan_devices() {
+	struct stat statbuf;
+	char *lines[MAXDEVCOUNT];
+	char buf[256], devname[256], perms[8];
+	SCSI *usalp;
+	int i, ndevs=0;
+	BOOL have_tgt;
+
+#ifdef linux
+	for(i=0;i<MAXDEVCOUNT;i++) {
+		if(i<26)
+			snprintf(devname, sizeof (devname), "/dev/hd%c", 'a'+i);
+		else if(i<(256+26))
+			snprintf(devname, sizeof (devname), "/dev/sr%d", i-26);
+		else if(i<(256+26+26))
+			snprintf(devname, sizeof (devname), "/dev/sg%c", 'a'+i-26-256);
+		else
+			break;
+
+		if(stat(devname, &statbuf))
+			continue;
+
+		usalp = usal_open(devname, buf, sizeof (buf), 0, 0);
+		if(!usalp) continue;
+
+		usalp->silent++;
+		have_tgt = unit_ready(usalp) || usalp->scmd->error != SCG_FATAL;
+
+		strcpy(perms,"------");
+		if(statbuf.st_mode&S_IRUSR) perms[0]= 'r';
+		if(statbuf.st_mode&S_IWUSR) perms[1]= 'w';
+		if(statbuf.st_mode&S_IRGRP) perms[2]= 'r';
+		if(statbuf.st_mode&S_IWGRP) perms[3]= 'w';
+		if(statbuf.st_mode&S_IROTH) perms[4]= 'r';
+		if(statbuf.st_mode&S_IWOTH) perms[5]= 'w';
+
+		if(have_tgt) {
+			char *p;
+
+			getdev(usalp, FALSE);
+			for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
+				if(isspace(*p))
+					*p='\0';
+				else
+					break;
+			}
+			for(p=usalp->inq->prod_ident + 15 ; p >= usalp->inq->prod_ident; p--) {
+				if(isspace(*p))
+					*p='\0';
+				else
+					break;
+			}
+			snprintf(buf, sizeof(buf), "%d    dev='%s'   %s :  '%.8s'  '%.16s'\n", ndevs, devname, perms, usalp->inq->vendor_info, usalp->inq->prod_ident);
+			lines[ndevs++]=strdup(buf);
+			usal_close(usalp);
+		}
+	}
+	fprintf(stdout, "wodim: Overview of accessible drives (%d found) :\n"
+			"----------------------------------------------------------------------\n",
+			ndevs);
+	for(i=0;i<ndevs;i++)
+		fprintf(stdout, "%s", lines[i]);
+	fprintf(stdout,	"----------------------------------------------------------------------\n");
+
+#endif
+	return 0;
 }
 
 int select_target(SCSI *usalp, FILE *f) {

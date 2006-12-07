@@ -273,6 +273,9 @@ void fifo_cleanup(void) {
    kill_faio();
 }
 
+/* shared variables */
+int	scandevs = 0;
+
 int main(int argc, char *argv[])
 {
 	char	*dev = NULL;
@@ -397,6 +400,9 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+  if (scandevs)
+	  return (scan_devices(usalp, stdout, stderr));
+
   usalp = usal_open(dev, errstr, sizeof (errstr),
         debug, lverbose);
   if(!usalp && dev) {
@@ -408,15 +414,17 @@ int main(int argc, char *argv[])
      usalp = usal_open(dalt, errstr, sizeof (errstr),
            debug, lverbose);
   }
+
   if(!usalp)
   {
      errmsg("\nCannot open SCSI driver!\n"
-           "For possible targets try 'wodim -scanbus'.\n"
+           "For possible targets try 'wodim --devices' or 'wodim -scanbus'.\n"
            "For possible transport specifiers try 'wodim dev=help'.\n"
            "For IDE/ATAPI devices configuration, see the file README.ATAPI.setup from\n"
            "the wodim documentation.\n");
      exit(EX_BAD);
   }
+  
 #ifdef	HAVE_PRIV_SET
 #ifdef	PRIV_DEBUG
 	fprintf(stderr, "file_dac_read: %d\n", priv_ineffect(PRIV_FILE_DAC_READ));
@@ -3055,7 +3063,7 @@ raise_memlock()
 }
 
 char	*opts =
-"help,version,checkdrive,prcap,inq,scanbus,reset,abort,overburn,ignsize,useinfo,dev*,timeout#,driver*,driveropts*,setdropts,tsize&,padsize&,pregap&,defpregap&,speed#,load,lock,eject,dummy,msinfo,toc,atip,multi,fix,nofix,waiti,immed,debug#,d+,kdebug#,kd#,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,audio,data,mode2,xa,xa1,xa2,xamix,cdi,isosize,nopreemp,preemp,nocopy,copy,nopad,pad,swab,fs&,ts&,blank&,format,formattype&,pktsize#,packet,noclose,force,tao,dao,sao,raw,raw96r,raw96p,raw16,clone,scms,isrc*,mcn*,index*,cuefile*,textfile*,text,shorttrack,noshorttrack,gracetime#,minbuf#";
+"help,version,checkdrive,prcap,inq,devices,scanbus,reset,abort,overburn,ignsize,useinfo,dev*,timeout#,driver*,driveropts*,setdropts,tsize&,padsize&,pregap&,defpregap&,speed#,load,lock,eject,dummy,msinfo,toc,atip,multi,fix,nofix,waiti,immed,debug#,d+,kdebug#,kd#,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,audio,data,mode2,xa,xa1,xa2,xamix,cdi,isosize,nopreemp,preemp,nocopy,copy,nopad,pad,swab,fs&,ts&,blank&,format,formattype&,pktsize#,packet,noclose,force,tao,dao,sao,raw,raw96r,raw96p,raw16,clone,scms,isrc*,mcn*,index*,cuefile*,textfile*,text,shorttrack,noshorttrack,gracetime#,minbuf#";
 
 /*
  * Defines used to find whether a write mode has been specified.
@@ -3173,7 +3181,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 		 */
 		if ((ga_ret = getargs(&cac, &cav, opts,
 				&help, &version, &checkdrive, &prcap,
-				&inq, &scanbus, &reset, &doabort, &overburn, &ignsize,
+				&inq, &scandevs, &scanbus, &reset, &doabort, &overburn, &ignsize,
 				&useinfo,
 				devp, timeoutp, &driver, &driveropts, &setdropts,
 				getllnum, &tracksize,
@@ -3220,7 +3228,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 				*flagsp |= F_PRCAP;
 			if (inq)
 				*flagsp |= F_INQUIRY;
-			if (scanbus)
+			if (scanbus || scandevs) /* scandevs behaves similarly WRT in the legacy code, just the scan operation is different */
 				*flagsp |= F_SCANBUS;
 			if (reset)
 				*flagsp |= F_RESET;
@@ -3733,7 +3741,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 		if (tracks != 0) {
        fprintf(stderr,
              "No tracks allowed with -load, -lock, -setdropts, -msinfo, -toc, -atip, -fix,\n"
-             "-version, -checkdrive, -prcap, -inq, -scanbus, -reset and -abort options.\n" );
+             "-version, -checkdrive, -prcap, -inq, -scanbus, -devices, -reset and -abort options.\n" );
        exit(EXIT_FAILURE);
 		}
 		return ispacket;
