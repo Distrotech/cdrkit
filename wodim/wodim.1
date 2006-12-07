@@ -82,93 +82,59 @@ non-root users. Even if usage without root identity is possible in many cases,
 some device drivers still may fail, show unexplainable problems and generally
 the problems are harder to debug. The risk for buffer-underruns is also
 increased. See the
-.IR NOTES
+.IR "PROCESS SCHEDULING PRIORITY"
 section below for more details.
 .PP
-The alternative and kind of "portable" way is using the 
-.IR devicetype:scsi/target/lun
+There is an alternative way of specifying the device, using the traditional SCSI descriptions in form of
+.IR devicetype:bus/target/lun
 specification. However, the success of this method is not guaranteed since it
-requires an adaptation scheme for your architecture.
-.PP
-To access remote SCSI devices, you need to prepend the SCSI device name by
-a remote device indicator. The remote device indicator is either
-.BI REMOTE: user@host:
-or
-.BR
-.BI REMOTE: host:
-.br
-A valid remote SCSI device name may be:
-.BI REMOTE: user@host:
-to allow remote SCSI bus scanning or
-.BI REMOTE: user@host:1,0,0
-to access the SCSI device at 
-.I host
-connected to SCSI bus # 1,target 0 lun 0.
-
-.PP
-.B wodim
-is completely based on 
-.B SCSI
-commands but this is no problem as all CD/DVD writers
-ever made use
-.B SCSI
-commands for the communication. Even
-.B ATAPI
-drives are just
-.B SCSI
-drives that inherently use the 
-.I "ATA packet interface
-as
-.B SCSI
-command transport layer build into the IDE (ATA) transport.
-You may need to specify an alternate transport layer on the command  line
-if your OS does not implement a fully integrated kernel driver subsystem that
-allows to access any drive using
-.B SCSI
-commands via a single unique user interface.
-
-.PP
-To access SCSI devices via alternate transport layers,
-you need to prepend the SCSI device name by a transport layer indicator.
-The transport layer indicator may be something like
-.B USCSI: 
-or
-.BR ATAPI: .
-To get a list of supported transport layers for your platform, use 
-.B dev=
-.IR HELP :
-
-
-.PP
-To make 
-.B wodim
-portable to all \s-2UNIX\s0 platforms, the syntax
-.B dev=
-.IR devicename : scsibus , target , lun
-is preferred as it hides OS specific knowledge about device names from the user.
-A specific OS may not necessarily support a way to specify a real device file name nor a
-way to specify 
-.IR scsibus , target , lun .
-
-.PP
-.I Scsibus 
-0 is the default SCSI bus on the machine. Watch the boot messages for more 
-information or look into 
-.B /var/log/messages 
-for more information about the SCSI configuration of your machine.
-If you have problems to figure out what values for 
-.IR scsibus , target , lun
-should be used, try the 
+requires an adaptation scheme for your architecture, and the numbers may vary
+depending on the hardware-internal numbering or on the order of hot-plug device
+detection. If your operating system does not provide a sufficient framework for
+keeping this numbers persistent, don't rely on them. See 
 .B \-scanbus
-option of 
-.B wodim
-described below.
-
+option below for details.
+.PP
+There are emulated SCSI compatible device systems, using the SCSI protocols
+transported over various hardware/media types. The most known examples is ATAPI
+("IDE burners") or USB storage ("external USB case"). If the pseudo-SCSI b/t/l
+device address specification is used instead of the native one, you need to
+prepend the "devicetype:" description to the emulated "bus/target/lun" device
+address.
 .PP
 If a file /etc/wodim.conf exists, the parameter to the
 .B dev=
-option may also be a drive name label in said file (see FILES section).
+option may also be a drive name label in that file (see FILES section).
+.PP
+In 
+.I Track At Once 
+mode, each
+.I track
+corresponds to a single file that contains the prepared data for that track.
+If the argument is 
+.RB ` \- ',
+standard input is used for that track. 
+Only one track may be taken from 
+.IR stdin .
+In the other write modes, the direct file to track relation may not be implemented.
+In 
+.B \-clone
+mode, a single file contains all data for the whole disk.
+To allow DVD writing on platforms that do not implement large file support,
+.B wodim
+concatenates all file arguments to a single track when writing to DVD media.
 
+.SH "PROCESS SCHEDULING PRIORITY"
+.PP
+Wodim tries to get higher process priority using different methods. This is
+important because the burn process is usualy a realtime task, no long delays
+should occur while transmiting fresh data to the recorder. This is especially
+important on systems with insufficient RAM where swaping can create delays of
+many seconds.
+.PP
+A possible workaround on underpowered systems is the use of the burnfree or similar feature, allowing the recorder to resume
+.PP
+Root permissions are usualy required to get higher process scheduling priority.
 .PP
 On 
 .B SVr4 
@@ -189,24 +155,6 @@ either needs to be run as root, needs to be installed suid root or
 must be called via
 .B RBACs
 pfexec mechanism.
-.PP
-In 
-.I Track At Once 
-mode, each
-.I track
-corresponds to a single file that contains the prepared data for that track.
-If the argument is 
-.RB ` \- ',
-standard input is used for that track. 
-Only one track may be taken from 
-.IR stdin .
-In the other write modes, the direct file to track relation may not be implemented.
-In 
-.B \-clone
-mode, a single file contains all data for the whole disk.
-To allow DVD writing on platforms that do not implement large file support,
-.B wodim
-concatenates all file arguments to a single track when writing to DVD media.
 
 .SH "GENERAL OPTIONS
 .PP
@@ -365,7 +313,7 @@ This currently only works with MMC drives that support
 mode.
 Note that wodim needs to know the size of each track in advance for this mode
 (see the
-.B "mkisofs \-print-size"
+.B "genisoimage \-print-size"
 option and the 
 .I EXAMPLES
 section for more information).
@@ -385,7 +333,7 @@ Using this option defaults to
 .BR \-raw96r .
 Note that wodim needs to know the size of each track in advance for this mode
 (see the
-.B "mkisofs \-print-size"
+.B "genisoimage \-print-size"
 option and the 
 .I EXAMPLES
 section for more information).
@@ -410,7 +358,7 @@ Writing data disks in raw mode needs significantly more CPU time than other
 write modes. If your CPU is too slow, this may result in buffer underruns.
 Note that wodim needs to know the size of each track in advance for this mode
 (see the
-.B "mkisofs \-print-size"
+.B "genisoimage \-print-size"
 option and the 
 .I EXAMPLES
 section for more information).
@@ -431,7 +379,7 @@ Writing data disks in raw mode needs significantly more CPU time than other
 write modes. If your CPU is too slow, this may result in buffer underruns.
 Note that wodim needs to know the size of each track in advance for this mode
 (see the
-.B "mkisofs \-print-size"
+.B "genisoimage \-print-size"
 option and the 
 .I EXAMPLES
 section for more information).
@@ -459,7 +407,7 @@ Writing data disks in raw mode needs significantly more CPU time than other
 write modes. If your CPU is too slow, this may result in buffer underruns.
 Note that wodim needs to know the size of each track in advance for this mode
 (see the
-.B "mkisofs \-print-size"
+.B "genisoimage \-print-size"
 option and the 
 .I EXAMPLES
 section for more information).
@@ -495,7 +443,7 @@ Not all drives allow multisession CDs in SAO mode.
 .TP
 .B \-msinfo
 Retrieve multi session info in a form suitable for 
-.B "mkisofs-1.10" 
+.B "genisoimage-1.10" 
 or later.
 .sp
 This option makes only sense with a CD that contains at least
@@ -545,7 +493,7 @@ the SCSI driver. This allows
 to read it's input from a pipe even
 when writing additional sessions to a multi session disk.
 When writing another session to a multi session disk,
-.B mkisofs 
+.B genisoimage 
 needs to read the old session from the device before writing output.
 This cannot be done if
 .B wodim 
@@ -683,17 +631,17 @@ The default FIFO size is currently 4 MB.
 .sp
 The FIFO is used to increase buffering for the real time writing process.
 It allows to run a pipe from 
-.B mkisofs
+.B genisoimage
 directly into 
 .BR wodim .
 If the FIFO is active and a pipe from 
-.B mkisofs
+.B genisoimage
 into 
 .B wodim
 is used to create a CD, 
 .B wodim
 will abort prior to do any modifications on the disk if 
-.B mkisofs 
+.B genisoimage 
 dies before it starts writing.
 The recommended FIFO size is between 4 and 128\ MBytes.
 As a rule of thumb, the FIFO size should be at least equal to the size
@@ -1244,7 +1192,9 @@ Do an inquiry for the drive, print the inquiry info and exit.
 .B \-scanbus
 Scan all SCSI devices on all SCSI busses and print the inquiry
 strings. This option may be used to find SCSI address of the 
-CD/DVD-Recorder on a system.
+CD/DVD-Recorder on a system. If some device types are invisible, try using
+.B dev=ATA:
+or similar option to give a hint about the device typ you are looking for.
 The numbers printed out as labels are computed by: 
 .B "bus * 100 + target
 .TP
@@ -1311,7 +1261,7 @@ If used together with the
 option,
 .B wodim
 may be used to write audio CDs from a pipe from
-.B cdda2wav
+.B icedax
 if you call
 .B wodim
 with the
@@ -1374,7 +1324,7 @@ for the text strings.
 supports CD-Text information based on the content of the
 .B *.inf
 files created by 
-.B cdda2wav 
+.B icedax 
 and CD-Text information based on the content from a
 .B "CUE sheet
 file.
@@ -1547,7 +1497,7 @@ If this flag is present, all subsequent tracks are written in
 The file with track data should contain an 
 .BR ISO-9660 " or " "Rock Ridge
 filesystem image (see 
-.B mkisofs
+.B genisoimage
 for more details). If the track data is an
 .B ufs
 filesystem image, fragment size should be set to 2\ KB or more to allow
@@ -1637,7 +1587,7 @@ from reading the two run out blocks that are appended by each CD-recorder
 in track at once mode. These two run out blocks cannot be read and would
 cause a buffer underrun that would cause a defective copy.
 Do not use this option on files created by 
-.B mkisofs
+.B genisoimage
 and in case
 .B wodim
 reads the track data from 
@@ -1645,7 +1595,7 @@ reads the track data from
 In the first case, you would prevent 
 .B wodim 
 from writing the amount of padding that has been appended by
-.B mkisofs
+.B genisoimage
 and in the latter case, it will not work because 
 .I stdin
 is not seekable.
@@ -1658,7 +1608,7 @@ will automatically add padding for this track as if the
 .B \-pad
 option has been used but the amount of padding may be less than the padding
 written by 
-.BR  mkisofs .
+.BR  genisoimage .
 Note that if you use
 .B \-isosize
 on a track that contains Sparc boot information, the boot information will
@@ -1786,7 +1736,7 @@ the TEAC programming interface, even in Track at Once mode,
 needs to know the size of each track before starting to write the disk.
 wodim now checks this and aborts before starting to write.
 If this happens you will need to run
-.B "mkisofs -print-size
+.B "genisoimage -print-size
 before and use the output (with `s' appended) as an argument to the 
 .BR tsize =
 option of 
@@ -1810,7 +1760,7 @@ To record a pure CD-ROM at double speed, using data from the file
 .PP
 To create an image for a ISO 9660 filesystem with Rock Ridge extensions:
 .PP
-    mkisofs \-R \-o cdimage.raw /home/joerg/master/tree
+    genisoimage \-R \-o cdimage.raw /home/joerg/master/tree
 .PP
 To check the resulting file before writing to CD on Solaris:
 .PP
@@ -1830,33 +1780,33 @@ If the overall speed of the system is sufficient and the structure of
 the filesystem is not too complex, wodim will run without creating an
 image of the ISO 9660 filesystem. Simply run the pipeline:
 .PP
-    mkisofs \-R /master/tree | wodim \-v fs=6m speed=2 dev=2,0 -
+    genisoimage \-R /master/tree | wodim \-v fs=6m speed=2 dev=2,0 -
 .PP
 The recommended minimum FIFO size for running this pipeline is 4 MBytes.
 As the default FIFO size is 4 MB, the 
 .B fs=
 option needs only be present if you want to use a different FIFO size.
-If your system is loaded, you should run mkisofs in the real time class too.
+If your system is loaded, you should run genisoimage in the real time class too.
 To raise the priority of 
-.B mkisofs
+.B genisoimage
 replace the command
 .PP
-    mkisofs \-R /master/tree
+    genisoimage \-R /master/tree
 .br
 by
 .br
-    priocntl \-e \-c RT \-p 59 mkisofs \-R /master/tree
+    priocntl \-e \-c RT \-p 59 genisoimage \-R /master/tree
 .sp
 on Solaris and by
 .sp
-    nice --18 mkisofs \-R /master/tree
+    nice --18 genisoimage \-R /master/tree
 .sp
 on systems that don't have
 .B "UNIX International
 compliant real-time scheduling.
 .PP
-wodim runs at priority 59 on Solaris, you should run mkisofs
-at no more than priority 58. On other systems, you should run mkisofs
+wodim runs at priority 59 on Solaris, you should run genisoimage
+at no more than priority 58. On other systems, you should run genisoimage
 at no less than nice --18.
 .PP
 Creating a CD-ROM without file system image on disk has been tested
@@ -1889,36 +1839,36 @@ etc:
 To handle drives that need to know the size of a track before starting to write,
 first run
 .PP
-    mkisofs -R -q -print-size /master/tree
+    genisoimage -R -q -print-size /master/tree
 .PP
 and then run
 .PP
-    mkisofs -R /master/tree | wodim speed=2 dev=2,0 tsize=XXXs -
+    genisoimage -R /master/tree | wodim speed=2 dev=2,0 tsize=XXXs -
 .PP
 where 
 .I XXX
-is replaced by the output of the previous run of mkisofs.
+is replaced by the output of the previous run of genisoimage.
 .PP
 To copy an audio CD in the most accurate way, first run
 .PP
-    cdda2wav dev=2,0 \-vall cddb=0 -B \-Owav
+    icedax dev=/dev/cdrom \-vall cddb=0 -B \-Owav
 .PP
 and then run
 .PP
-    wodim dev=2,0 \-v \-dao \-useinfo \-text  *.wav
+    wodim dev=/dev/cdrw \-v \-dao \-useinfo \-text  *.wav
 .PP
 This will try to copy track indices and to read CD-Text information from disk.
 If there is no CD-Text information, 
-.B cdda2wav
+.B icedax
 will try to get the information from freedb.org instead.
 .PP
 To copy an audio CD from a pipe (without intermediate files), first run
 .PP
-    cdda2wav dev=1,0 \-vall cddb=0 \-info-only
+    icedax dev=1,0 \-vall cddb=0 \-info-only
 .PP
 and then run
 .PP
-    cdda2wav dev=1,0 \-no-infofile \-B \-Oraw \- | \\
+    icedax dev=1,0 \-no-infofile \-B \-Oraw \- | \\
 .br
     wodim dev=2,0 \-v \-dao \-audio \-useinfo \-text *.inf
 .PP
@@ -2089,10 +2039,10 @@ default speed and the default FIFO size.
 .RE
 
 .SH SEE ALSO
-.BR cdda2wav (1),
+.BR icedax (1),
 .BR readcd (1),
 .BR fbk (7),
-.BR mkisofs (8),
+.BR genisoimage (8),
 .BR rcmd (3),
 .BR ssh (1).
 
