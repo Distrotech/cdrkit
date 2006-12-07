@@ -1,3 +1,3 @@
-usr/share/man/man8/isoinfo.8 usr/share/man/man8/isodump.8
-usr/share/man/man8/isoinfo.8 usr/share/man/man8/isovfy.8
-usr/share/man/man8/isoinfo.8 usr/share/man/man8/devdump.8
+usr/share/man/man1/isoinfo.1 usr/share/man/man1/isodump.1
+usr/share/man/man1/isoinfo.1 usr/share/man/man1/isovfy.1
+usr/share/man/man1/isoinfo.1 usr/share/man/man1/devdump.1

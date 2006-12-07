@@ -1,8 +1,10 @@
-cdrkit (9:1.1.0-2) unstable; urgency=low
+cdrkit (9:1.1.1-1) unstable; urgency=low
 
-  * new ...
+  * New upstream version
     + more verbose abort message if track is specified with some maintainance
     command (closes: #369677)
+    + moved *iso* manpages to section 1 and corrected removed obsolete
+    references in wodim.1 and some other manpages.
 
  -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:18 +0100
 

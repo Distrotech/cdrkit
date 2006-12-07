@@ -1,9 +1,12 @@
 cdrkit (1.1.1) UNRELEASED; urgency=low
 
+  * added geteltorito script from Rainer Krienke
+
+  [ Eduard Bloch ]
   * more verbose abort message if track is specified with some maintainance
     command (#369677)
   * Added more DVD related fixes from SuSE's wodim-1.0pre5cvs-6.src.rpm
-  * added geteltorito
+  * --devices option for wodim
 
   [ Thomas Schmidt ]
   * workaround for older libmagic API
