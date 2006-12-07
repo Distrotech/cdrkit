@@ -64,6 +64,10 @@ static	char sccsid[] =
 #ifdef USE_MAGIC
 #include <magic.h>
 magic_t magic_state = NULL;
+#ifndef MAGIC_ERROR
+/* workaround for older ´API */
+#define MAGIC_ERROR
+#endif
 #endif /* USE_MAGIC */
 
 /* tidy up genisoimage definition ... */
