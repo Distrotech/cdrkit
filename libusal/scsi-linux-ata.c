@@ -55,7 +55,7 @@ static	char ata_sccsid[] =
  * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifdef	USE_ATA
+#ifdef	USE_OLD_ATAPI
 
 static	char	_usal_atrans_version[] = "scsi-linux-ata.c-1.7";	/* The version for ATAPI transport*/
 
@@ -1187,4 +1187,4 @@ usalo_asend(SCSI *usalp)
 	sp->resid = 0;
 	return (0);
 }
-#endif	/* USE_ATA */
+#endif	/* USE_OLD_ATAPI */
