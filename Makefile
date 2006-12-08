@@ -1,13 +1,13 @@
 ifneq ($(CFLAGS),)
-CMAKETWEAKS += cmake build -DCMAKE_C_FLAGS="$(CFLAGS)" || exit 1; 
+CMAKETWEAKS += ( cd build ; cmake .. -DCMAKE_C_FLAGS="$(CFLAGS)" ) || exit 1; 
 endif
 
 ifneq ($(LDFLAGS),)
-CMAKETWEAKS += cmake -DCMAKE_EXE_LINKER_FLAGS:STRING="$(LDFLAGS)" -DCMAKE_MODULE_LINKER_FLAGS:STRING="$(LDFLAGS)" -DCMAKE_SHARED_LINKER_FLAGS:STRING="$(LDFLAGS)" build || exit 1; 
+CMAKETWEAKS += (cd build ; cmake .. -DCMAKE_EXE_LINKER_FLAGS:STRING="$(LDFLAGS)" -DCMAKE_MODULE_LINKER_FLAGS:STRING="$(LDFLAGS)" -DCMAKE_SHARED_LINKER_FLAGS:STRING="$(LDFLAGS)" ) || exit 1; 
 endif
 
 ifneq ($(PREFIX),)
-CMAKETWEAKS += cmake build -DCMAKE_INSTALL_PREFIX="$(PREFIX)" || exit 1; 
+CMAKETWEAKS += ( cd build ;  cmake .. -DCMAKE_INSTALL_PREFIX="$(PREFIX)") || exit 1; 
 endif
 
 default_target: all
