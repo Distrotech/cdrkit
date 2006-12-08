@@ -25,7 +25,7 @@ ENDIF(HAVE_ICONV_H)
 
 ADD_DEFINITIONS(-DUSE_LARGEFILES -DABORT_DEEP_ISO_ONLY -DAPPLE_HYB -DUDF -DDVD_VIDEO -DSORTING -DHAVE_CONFIG_H -DUSE_LIBSCHILY -DUSE_SCG -DJIGDO_TEMPLATE)
 
-SET(MKISOFS_MOST_SRCS apple.c boot.c cd_misc.c defaults.c desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c getnum.c hash.c ifo_read.c joliet.c mac_label.c match.c modes.c multi.c name.c rock.c scsi.c scsi_cdr.c stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
+SET(MKISOFS_MOST_SRCS apple.c boot.c desktop.c dvd_file.c dvd_reader.c eltorito.c exclude.c files.c fnmatch.c hash.c ifo_read.c joliet.c mac_label.c match.c multi.c name.c rock.c scsi.c stream.c tree.c udf.c vms.c volume.c write.c boot-alpha.c boot-hppa.c boot-mips.c md5.c jte.c rsync.c
  	boot-mipsel.c endian.c )
   
 INCLUDE(CheckFunctionExists)
@@ -37,19 +37,18 @@ ENDIF(NOT HAVE_GETOPT_LONG)
  
 
 #SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES )
-LINK_DIRECTORIES(../libhfs_iso ../librols ../libusal ../libunls ../libdeflt)
+LINK_DIRECTORIES(../libhfs_iso ../librols ../libusal ../libunls ../libdeflt ../wodim)
 
 ADD_EXECUTABLE (genisoimage genisoimage.c ${MKISOFS_MOST_SRCS})
-TARGET_LINK_LIBRARIES(genisoimage hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(genisoimage wodimstuff hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
 
 # common lib set and genisoimage source parts for the rest
-LINK_LIBRARIES(${EXTRA_LIBS} deflt unls ${EXTRA_LIBICONV} )
-SET(MI_COMMON scsi.c scsi_cdr.c cd_misc.c modes.c defaults.c getnum.c)
-ADD_EXECUTABLE(devdump diag/dump.c  ${MI_COMMON})
-ADD_EXECUTABLE(isodebug	diag/isodebug.c   ${MI_COMMON})
-ADD_EXECUTABLE(isodump	diag/isodump.c    ${MI_COMMON})
-ADD_EXECUTABLE(isoinfo diag/isoinfo.c	 ${MI_COMMON})
-ADD_EXECUTABLE(isovfy	diag/isovfy.c	 ${MI_COMMON})
+LINK_LIBRARIES(wodimstuff ${EXTRA_LIBS} deflt unls ${EXTRA_LIBICONV} )
+ADD_EXECUTABLE(devdump diag/dump.c scsi.c)
+ADD_EXECUTABLE(isodebug	diag/isodebug.c scsi.c)
+ADD_EXECUTABLE(isodump	diag/isodump.c scsi.c)
+ADD_EXECUTABLE(isoinfo diag/isoinfo.c scsi.c)
+ADD_EXECUTABLE(isovfy	diag/isovfy.c scsi.c)
 
 
 SET_TARGET_PROPERTIES(genisoimage devdump isodebug isodump isoinfo isovfy PROPERTIES  SKIP_BUILD_RPATH TRUE)
