@@ -37,7 +37,6 @@ void
 cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, 
 					char **p_drv_opts)
 {
-	FILE *stream;
 	char *t; /* tmp */
 	int wc=0;
 	char loc[256], sSpeed[11], sFs[11], sOpts[81];
