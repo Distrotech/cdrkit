@@ -37,13 +37,13 @@ ENDIF(NOT HAVE_GETOPT_LONG)
  
 
 #SET_SOURCE_FILES_PROPERTIES(${MKISOFS_MOST_SRCS} PROPERTIES )
-LINK_DIRECTORIES(../libhfs_iso ../librols ../libusal ../libunls ../libdeflt ../wodim)
+LINK_DIRECTORIES(../libhfs_iso ../librols ../libusal ../libunls  ../wodim)
 
 ADD_EXECUTABLE (genisoimage genisoimage.c ${MKISOFS_MOST_SRCS})
-TARGET_LINK_LIBRARIES(genisoimage wodimstuff hfs_iso deflt ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
+TARGET_LINK_LIBRARIES(genisoimage wodimstuff hfs_iso  ${MAGICLIBS} c unls z ${EXTRA_LIBICONV} ${EXTRA_LIBS})
 
 # common lib set and genisoimage source parts for the rest
-LINK_LIBRARIES(wodimstuff ${EXTRA_LIBS} deflt unls ${EXTRA_LIBICONV} )
+LINK_LIBRARIES(wodimstuff ${EXTRA_LIBS}  unls ${EXTRA_LIBICONV} )
 ADD_EXECUTABLE(devdump diag/dump.c scsi.c)
 ADD_EXECUTABLE(isodebug	diag/isodebug.c scsi.c)
 ADD_EXECUTABLE(isodump	diag/isodump.c scsi.c)
