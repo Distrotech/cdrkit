@@ -115,13 +115,13 @@ int scan_devices() {
 
 			getdev(usalp, FALSE);
 			for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
-				if(isspace(*p))
+				if(isspace((unsigned char)*p))
 					*p='\0';
 				else
 					break;
 			}
 			for(p=usalp->inq->prod_ident + 15 ; p >= usalp->inq->prod_ident; p--) {
-				if(isspace(*p))
+				if(isspace((unsigned char)*p))
 					*p='\0';
 				else
 					break;
