@@ -11,10 +11,6 @@
  */
 
 /* @(#)isovfy.c	1.26 05/05/15 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)isovfy.c	1.26 05/05/15 joerg";
-#endif
 /*
  * File isovfy.c - verify consistency of iso9660 filesystem.
  *

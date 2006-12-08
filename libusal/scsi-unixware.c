@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-unixware.c	1.36 04/01/15 Copyright 1998 J. Schilling, Santa Cruz Operation */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-unixware.c	1.36 04/01/15 Copyright 1998 J. Schilling, Santa Cruz Operation";
-#endif
 /*
  *	Interface for the SCO UnixWare SCSI implementation.
  *

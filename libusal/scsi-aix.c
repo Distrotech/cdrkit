@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-aix.c	1.36 04/01/14 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-aix.c	1.36 04/01/14 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for the AIX generic SCSI implementation.
  *

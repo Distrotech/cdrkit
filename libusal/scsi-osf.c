@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-osf.c	1.26 04/01/15 Copyright 1998 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-osf.c	1.26 04/01/15 Copyright 1998 J. Schilling";
-#endif
 /*
  *	Interface for Digital UNIX (OSF/1 generic SCSI implementation (/dev/cam).
  *

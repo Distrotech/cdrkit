@@ -11,10 +11,6 @@
  */
 
 /* @(#)clone.c	1.7 04/03/02 Copyright 2001-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)clone.c	1.7 04/03/02 Copyright 2001-2004 J. Schilling";
-#endif
 /*
  *	Clone Subchannel processing
  *

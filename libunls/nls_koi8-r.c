@@ -11,10 +11,6 @@
  */
 
 /* @(#)nls_koi8-r.c	1.2 05/05/01 2000 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)nls_koi8-r.c	1.2 05/05/01 2000 J. Schilling";
-#endif
 /*
  *	Modifications to make the code portable Copyright (c) 2000 J. Schilling
  *

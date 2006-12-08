@@ -11,10 +11,6 @@
  */
 
 /* @(#)stream.c	1.3 04/03/04 Copyright 2002-2003 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)stream.c	1.3 04/03/04 Copyright 2002-2003 J. Schilling";
-#endif
 /*
  *	ISO-9660 stream (pipe) file module for genisoimage
  *

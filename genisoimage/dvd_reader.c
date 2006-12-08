@@ -11,10 +11,6 @@
  */
 
 /* @(#)dvd_reader.c	1.3 04/03/04 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)dvd_reader.c	1.3 04/03/04 joerg";
-#endif
 /*
  * Copyright (C) 2001, 2002 Billy Biggs <vektor@dumbterm.net>,
  *                          Håkan Hjort <d95hjort@dtek.chalmers.se>,

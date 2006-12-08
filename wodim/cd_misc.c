@@ -11,10 +11,6 @@
  */
 
 /* @(#)cd_misc.c	1.10 01/10/29 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)cd_misc.c	1.10 01/10/29 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Misc CD support routines
  *

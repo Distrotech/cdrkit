@@ -11,10 +11,6 @@
  */
 
 /* @(#)nls_iconv.c	1.0 02/04/20 2002 J. Schilling  */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)nls_iconv.c	1.0 02/01/20 2002 J. Schilling";
-#endif
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

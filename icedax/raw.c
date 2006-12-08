@@ -11,11 +11,6 @@
  */
 
 /* @(#)raw.c	1.4 01/10/27 Copyright 1998,1999 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)raw.c	1.4 01/10/27 Copyright 1998,1999 Heiko Eissfeldt";
-
-#endif
 #include "config.h"
 #include <unixstd.h>
 #include "sndfile.h"

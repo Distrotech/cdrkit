@@ -11,10 +11,6 @@
  */
 
 /* @(#)misc.c	1.4 04/03/02 Copyright 1998, 2001-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)misc.c	1.4 04/03/02 Copyright 1998, 2001-2004 J. Schilling";
-#endif
 /*
  *	Misc support functions
  *

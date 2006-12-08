@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-linux-ata.c	1.7 04/06/12 Copyright 2002 J. Schilling */
-#ifndef lint
-static	char ata_sccsid[] =
-	"@(#)scsi-linux-ata.c	1.7 04/06/12 Copyright 2002 J. Schilling";
-#endif
 /*
  *	Interface for Linux generic SCSI implementation (sg).
  *
@@ -56,6 +52,8 @@ static	char ata_sccsid[] =
  */
 
 #ifdef	USE_OLD_ATAPI
+
+#define ata_sccsid "obsolete ATAPI driver in cdrkit"
 
 static	char	_usal_atrans_version[] = "scsi-linux-ata.c-1.7";	/* The version for ATAPI transport*/
 

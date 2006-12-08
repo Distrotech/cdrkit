@@ -11,11 +11,6 @@
  */
 
 /* @(#)ioctl.c	1.22 06/02/19 Copyright 1998,1999,2000 Heiko Eissfeldt, Copyright 2006 J. Schilling */
-#ifndef lint
-static char     sccsid[] =
-"@(#)ioctl.c	1.22 06/02/19 Copyright 1998,1999,2000 Heiko Eissfeldt, Copyright 2006 J. Schilling";
-
-#endif
 /***
  * CopyPolicy: GNU Public License 2 applies
  * Copyright (C) 1999 Heiko Eissfeldt heiko@colossus.escape.de

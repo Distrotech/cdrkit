@@ -11,10 +11,6 @@
  */
 
 /* @(#)dump.c	1.24 05/05/15 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)dump.c	1.24 05/05/15 joerg";
-#endif
 /*
  * File dump.c - dump a file/device both in hex and in ASCII.
  *

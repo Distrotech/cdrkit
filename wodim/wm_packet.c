@@ -11,10 +11,6 @@
  */
 
 /* @(#)wm_packet.c	1.25 04/03/01 Copyright 1995, 1997, 2001-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)wm_packet.c	1.25 04/03/01 Copyright 1995, 1997, 2001-2004 J. Schilling";
-#endif
 /*
  *	CDR write method abtraction layer
  *	packet writing intercace routines

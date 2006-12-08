@@ -11,10 +11,6 @@
  */
 
 /* @(#)subchan.c	1.20 05/06/11 Copyright 2000-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)subchan.c	1.20 05/06/11 Copyright 2000-2004 J. Schilling";
-#endif
 /*
  *	Subchannel processing
  *

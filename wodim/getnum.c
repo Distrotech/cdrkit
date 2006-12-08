@@ -11,10 +11,6 @@
  */
 
 /* @(#)getnum.c	1.2 04/03/02 Copyright 1984-2002, 2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)getnum.c	1.2 04/03/02 Copyright 1984-2002, 2004 J. Schilling";
-#endif
 /*
  *	Number conversion routines to implement 'dd' like options.
  *

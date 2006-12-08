@@ -11,10 +11,6 @@
  */
 
 /* @(#)boot.c	1.13 04/02/22 Copyright 1999-2003 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)boot.c	1.13 04/02/22 Copyright 1999-2003 J. Schilling";
-#endif
 /*
  *	Support for generic boot (sector 0..16)
  *	and to boot Sun sparc and Sun x86 systems.

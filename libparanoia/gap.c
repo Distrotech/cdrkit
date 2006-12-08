@@ -11,11 +11,6 @@
  */
 
 /* @(#)gap.c	1.12 04/02/18 J. Schilling from cdparanoia-III-alpha9.8 */
-#ifndef lint
-static	char sccsid[] =
-"@(#)gap.c	1.12 04/02/18 J. Schilling from cdparanoia-III-alpha9.8";
-
-#endif
 /*
  *	Modifications to make the code portable Copyright (c) 2002 J. Schilling
  */

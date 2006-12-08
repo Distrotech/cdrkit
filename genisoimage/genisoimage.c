@@ -18,10 +18,6 @@
  * Eduard Bloch <blade@debian.org>
 */
 /* @(#)genisoimage.c	1.167 06/01/30 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)genisoimage.c	1.167 06/01/30 joerg";
-#endif
 /*
  * Program genisoimage.c - generate iso9660 filesystem  based upon directory
  * tree on hard disk.

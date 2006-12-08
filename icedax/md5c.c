@@ -11,11 +11,6 @@
  */
 
 /* @(#)md5c.c	1.3 02/05/21 Copyright 1998,1999 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)md5c.c	1.3 02/05/21 Copyright 1998,1999 Heiko Eissfeldt";
-
-#endif
 /* MD5C.C - RSA Data Security, Inc., MD5 message-digest algorithm
  */
 

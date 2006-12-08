@@ -11,10 +11,6 @@
  */
 
 /* @(#)rdummy.c	1.1 00/08/26 Copyright 2000 J. Schilling */
-#ifndef lint
-static	char _sccsid[] =
-	"@(#)rdummy.c	1.1 00/08/26 Copyright 2000 J. Schilling";
-#endif
 /*
  *	usal Library 
  *	dummy remote ops

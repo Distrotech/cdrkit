@@ -11,10 +11,6 @@
  */
 
 /* @(#)getopt.c	1.6 03/03/09 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)getopt.c	1.6 03/03/09 joerg";
-#endif
 /* Getopt for GNU.
    NOTE: getopt is now part of the C library, so if you don't know what
    "Keep this file name-space clean" means, talk to roland@gnu.ai.mit.edu

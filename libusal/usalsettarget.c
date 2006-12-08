@@ -11,10 +11,6 @@
  */
 
 /* @(#)usalsettarget.c	1.2 04/01/14 Copyright 2000 J. Schilling */
-#ifndef lint
-static	char _sccsid[] =
-	"@(#)usalsettarget.c	1.2 04/01/14 Copyright 2000 J. Schilling";
-#endif
 /*
  *	usal Library
  *	set target SCSI address

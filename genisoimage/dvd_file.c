@@ -11,10 +11,6 @@
  */
 
 /* @(#)dvd_file.c	1.3 04/03/04 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)dvd_file.c	1.3 04/03/04 joerg";
-#endif
 /*
  * DVD_VIDEO code
  *  Copyright (c) 2002 Olaf Beck - olaf_sc@yahoo.com

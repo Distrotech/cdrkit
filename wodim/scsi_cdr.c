@@ -15,10 +15,6 @@ XXX
 SIZEOF testen !!!
 */
 /* @(#)scsi_cdr.c	1.137 04/05/25 Copyright 1995-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)scsi_cdr.c	1.137 04/05/25 Copyright 1995-2004 J. Schilling";
-#endif
 /*
  *	SCSI command functions for cdrecord
  *	covering pre-MMC standard functions up to MMC-2

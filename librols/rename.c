@@ -11,10 +11,6 @@
  */
 
 /* @(#)rename.c	1.6 04/09/04 Copyright 1998-2003 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)rename.c	1.6 04/09/04 Copyright 1998-2003 J. Schilling";
-#endif
 /*
  *	rename() for old systems that don't have it.
  *

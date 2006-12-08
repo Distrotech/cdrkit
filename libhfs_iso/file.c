@@ -11,10 +11,6 @@
  */
 
 /* @(#)file.c	1.3 04/06/17 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)file.c	1.3 04/06/17 joerg";
-#endif
 /*
  * hfsutils - tools for reading and writing Macintosh HFS volumes
  * Copyright (C) 1996, 1997 Robert Leslie

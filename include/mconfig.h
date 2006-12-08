@@ -42,10 +42,9 @@
 #ifndef _MCONFIG_H
 #define	_MCONFIG_H
 
-/*
- * Tell our users that this is a Schily SING compile environment.
- */
-#define	IS_SCHILY
+/* whatever, just shut up */
+#define __sccsid "forked version from cdrkit"
+#define _sccsid "forked version from cdrkit"
 
 /*
  * This hack that is needed as long as VMS has no POSIX shell.

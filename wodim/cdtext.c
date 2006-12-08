@@ -11,10 +11,6 @@
  */
 
 /* @(#)cdtext.c	1.10 04/03/01 Copyright 1999-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)cdtext.c	1.10 04/03/01 Copyright 1999-2004 J. Schilling";
-#endif
 /*
  *	Generic CD-Text support functions
  *

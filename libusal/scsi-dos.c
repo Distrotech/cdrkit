@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-dos.c	1.11 03/12/10 Copyright 1998-2003 J. Schilling, 2003 Alex Kopylov reanimatolog@yandex.ru */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-dos.c	1.11 03/12/10 Copyright 1998-2003 J. Schilling, 2003 Alex Kopylov reanimatolog@yandex.ru";
-#endif
 /*
  *	Interface for the MS-DOS ASPI managers.
  *	You need ASPI manager installed in your config.sys:

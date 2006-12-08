@@ -11,10 +11,6 @@
  */
 
 /* @(#)nls_koi8-u.c	1.2 05/05/01 2002 J. Schilling by Andy Shevchenko */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)nls_koi8-u.c	1.2 05/05/01 2002 J. Schilling by Andy Shevchenko";
-#endif
 /*
  *	Modifications to make the code portable Copyright (c) 2000 J. Schilling
  *

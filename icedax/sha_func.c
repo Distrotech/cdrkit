@@ -11,11 +11,6 @@
  */
 
 /* @(#)sha_func.c	1.3 01/10/27 Copyright 1998,1999 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)sha_func.c	1.3 01/10/27 Copyright 1998,1999 Heiko Eissfeldt";
-
-#endif
 /*____________________________________________________________________________
 //
 //   CD Index - The Internet CD Index

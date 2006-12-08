@@ -11,10 +11,6 @@
  */
 
 /* @(#)rscsi.c	1.29 05/05/16 Copyright 1994,2000-2002 J. Schilling*/
-#ifndef lint
-static	char sccsid[] =
-	"@(#)rscsi.c	1.29 05/05/16 Copyright 1994,2000-2002 J. Schilling";
-#endif
 /*
  *	Remote SCSI server
  *

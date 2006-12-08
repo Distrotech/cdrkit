@@ -11,10 +11,6 @@
  */
 
 /* @(#)tree.c	1.82 04/06/12 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)tree.c	1.82 04/06/12 joerg";
-#endif
 /*
  * File tree.c - scan directory  tree and build memory structures for iso9660
  * filesystem

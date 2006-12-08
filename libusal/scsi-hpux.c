@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-hpux.c	1.31 04/01/15 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-hpux.c	1.31 04/01/15 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for the HP-UX generic SCSI implementation.
  *

@@ -11,10 +11,6 @@
  */
 
 /* @(#)xio.c	1.11 04/07/11 Copyright 2003-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)xio.c	1.11 04/07/11 Copyright 2003-2004 J. Schilling";
-#endif
 /*
  *	EXtended I/O functions for cdrecord
  *

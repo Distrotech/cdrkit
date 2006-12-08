@@ -11,11 +11,6 @@
  */
 
 /* @(#)files.c	1.12 04/03/04 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)files.c	1.12 04/03/04 joerg";
-
-#endif
 /*
  * File files.c - Handle ADD_FILES related stuff.
  *

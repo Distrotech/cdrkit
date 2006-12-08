@@ -11,10 +11,6 @@
  */
 
 /* @(#)wm_session.c	1.4 02/07/07 Copyright 1995, 1997 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)wm_session.c	1.4 02/07/07 Copyright 1995, 1997 J. Schilling";
-#endif
 /*
  *	CDR write method abtraction layer
  *	session at once / disk at once writing intercace routines

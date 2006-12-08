@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi_scan.c	1.19 04/04/16 Copyright 1997-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)scsi_scan.c	1.19 04/04/16 Copyright 1997-2004 J. Schilling";
-#endif
 /*
  *	Scan SCSI Bus.
  *	Stolen from sformat. Need a more general form to

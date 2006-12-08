@@ -11,10 +11,6 @@
  */
 
 /* @(#)drv_simul.c	1.48 05/05/16 Copyright 1998-2005 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)drv_simul.c	1.48 05/05/16 Copyright 1998-2005 J. Schilling";
-#endif
 /*
  *	Simulation device driver
  *

@@ -11,10 +11,6 @@
  */
 
 /* @(#)fnmatch.c	1.4 02/02/10 eric */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)fnmatch.c	1.4 02/02/10 eric";
-#endif
 /* Copyright (C) 1991, 1992, 1993 Free Software Foundation, Inc.
 
 NOTE: The canonical source of this file is maintained with the GNU C Library.

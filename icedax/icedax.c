@@ -11,11 +11,6 @@
  */
 
 /* @(#)cdda2wav.c	1.64 06/02/19 Copyright 1998-2004 Heiko Eissfeldt, Copyright 2004-2006 J. Schilling */
-#ifndef lint
-static char     sccsid[] =
-"@(#)cdda2wav.c	1.64 06/02/19 Copyright 1998-2004 Heiko Eissfeldt, Copyright 2004-2006 J. Schilling";
-
-#endif
 #undef DEBUG_BUFFER_ADDRESSES
 #undef GPROF
 #undef DEBUG_FORKED

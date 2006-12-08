@@ -11,10 +11,6 @@
  */
 
 /* @(#)volume.c	1.14 04/07/09 joerg, Copyright 1997, 1998, 1999, 2000 James Pearson */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)volume.c	1.14 04/07/09 joerg, Copyright 1997, 1998, 1999, 2000 James Pearson";
-#endif
 /*
  *      Copyright (c) 1997, 1998, 1999, 2000 James Pearson
  *

@@ -11,10 +11,6 @@
  */
 
 /* @(#)nls_base.c	1.5 05/05/01 2000 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)nls_base.c	1.5 05/05/01 2000 J. Schilling";
-#endif
 /*
  *	Modifications to make the code portable Copyright (c) 2000 J. Schilling
  *	Thanks to Georgy Salnikov <sge@nmr.nioch.nsc.ru>

@@ -11,10 +11,6 @@
  */
 
 /* @(#)pmalloc.c	1.3 04/05/15 Copyright 2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)pmalloc.c	1.3 04/05/15 Copyright 2004 J. Schilling";
-#endif
 /*
  *	Paranoia malloc() functions
  *

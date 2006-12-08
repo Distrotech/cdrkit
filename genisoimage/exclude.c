@@ -11,10 +11,6 @@
  */
 
 /* @(#)exclude.c	1.9 04/03/04 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)exclude.c	1.9 04/03/04 joerg";
-#endif
 /*
  * 9-Dec-93 R.-D. Marzusch, marzusch@odiehh.hanse.de:
  * added 'exclude' option (-x) to specify pathnames NOT to be included in

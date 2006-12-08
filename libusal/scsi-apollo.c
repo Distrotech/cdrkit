@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-apollo.c	1.5 04/01/14 Copyright 1997,2000 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-apollo.c	1.5 04/01/14 Copyright 1997,2000 J. Schilling";
-#endif
 /*
  *	Code to support Apollo Domain/OS 10.4.1
  *

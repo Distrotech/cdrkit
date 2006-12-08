@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-sun.c	1.83 05/11/20 Copyright 1988,1995,2000-2004 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-sun.c	1.83 05/11/20 Copyright 1988,1995,2000-2004 J. Schilling";
-#endif
 /*
  *	SCSI user level command transport routines for
  *	the SCSI general driver 'usal'.

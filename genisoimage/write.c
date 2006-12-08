@@ -11,10 +11,6 @@
  */
 
 /* @(#)write.c	1.88 06/02/01 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)write.c	1.88 06/02/01 joerg";
-#endif
 /*
  * Program write.c - dump memory  structures to  file for iso9660 filesystem.
  *

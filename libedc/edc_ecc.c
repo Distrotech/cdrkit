@@ -11,10 +11,6 @@
  */
 
 /* @(#)edc_ecc.c	1.21 03/04/04 Copyright 1998-2002 Heiko Eissfeldt, Joerg Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)edc_ecc.c	1.21 03/04/04 Copyright 1998-2002 Heiko Eissfeldt, Joerg Schilling";
-#endif
 
 /*
  * Copyright 1998-2002 by Heiko Eissfeldt

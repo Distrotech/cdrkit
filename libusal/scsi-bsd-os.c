@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-bsd-os.c	1.28 04/01/15 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-bsd-os.c	1.28 04/01/15 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for the BSD/OS user-land raw SCSI implementation.
  *

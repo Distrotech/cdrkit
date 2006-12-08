@@ -11,11 +11,6 @@
  */
 
 /* @(#)ringbuff.c	1.8 02/11/21 Copyright 1998,1999,2000 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)ringbuff.c	1.8 02/11/21 Copyright 1998,1999,2000 Heiko Eissfeldt";
-
-#endif
 #include "config.h"
 
 #include <stdxlib.h>

@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi_mmc.c	1.13 05/05/16 Copyright 2002-2005 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)scsi_mmc.c	1.13 05/05/16 Copyright 2002-2005 J. Schilling";
-#endif
 /*
  *	SCSI command functions for cdrecord
  *	covering MMC-3 level and above

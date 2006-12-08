@@ -11,10 +11,6 @@
  */
 
 /* @(#)isodump.c	1.27 05/05/15 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)isodump.c	1.27 05/05/15 joerg";
-#endif
 /*
  * File isodump.c - dump iso9660 directory information.
  *

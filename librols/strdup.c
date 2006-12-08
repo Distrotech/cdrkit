@@ -11,10 +11,6 @@
  */
 
 /* @(#)strdup.c	1.1 03/02/27 Copyright 2003 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)strdup.c	1.1 03/02/27 Copyright 2003 J. Schilling";
-#endif
 /*
  *	strdup() to be used if missing on libc
  *

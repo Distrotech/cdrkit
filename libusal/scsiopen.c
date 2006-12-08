@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsiopen.c	1.95 04/01/14 Copyright 1995,2000 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)scsiopen.c	1.95 04/01/14 Copyright 1995,2000 J. Schilling";
-#endif
 /*
  *	SCSI command functions for cdrecord
  *

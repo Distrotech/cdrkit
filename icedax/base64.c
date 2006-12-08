@@ -11,11 +11,6 @@
  */
 
 /* @(#)base64.c	1.4 02/04/06 Copyright 1998,1999 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)base64.c	1.4 02/04/06 Copyright 1998,1999 Heiko Eissfeldt";
-
-#endif
 /*____________________________________________________________________________
 //
 //   CD Index - The Internet CD Index

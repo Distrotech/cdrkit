@@ -11,10 +11,6 @@
  */
 
 /* @(#)wm_track.c	1.4 04/03/02 Copyright 1995, 1997, 2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)wm_track.c	1.4 04/03/02 Copyright 1995, 1997, 2004 J. Schilling";
-#endif
 /*
  *	CDR write method abtraction layer
  *	track at once writing intercace routines

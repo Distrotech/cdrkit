@@ -11,10 +11,6 @@
  */
 
 /* @(#)rock.c	1.43 05/05/01 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)rock.c	1.43 05/05/01 joerg";
-#endif
 /*
  * File rock.c - generate RRIP  records for iso9660 filesystems.
  *

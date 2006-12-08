@@ -11,11 +11,6 @@
  */
 
 /* @(#)name.c	1.28 04/03/05 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)name.c	1.28 04/03/05 joerg";
-
-#endif
 /*
  * File name.c - map full Unix file names to unique 8.3 names that
  * would be valid on DOS.

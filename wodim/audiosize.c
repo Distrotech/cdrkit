@@ -11,10 +11,6 @@
  */
 
 /* @(#)audiosize.c	1.19 04/03/01 Copyright 1998-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)audiosize.c	1.19 04/03/01 Copyright 1998-2004 J. Schilling";
-#endif
 /*
  *	Copyright (c) 1998-2004 J. Schilling
  *

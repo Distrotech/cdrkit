@@ -11,10 +11,6 @@
  */
 
 /* @(#)drv_sony.c	1.72 05/05/16 Copyright 1997-2005 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)drv_sony.c	1.72 05/05/16 Copyright 1997-2005 J. Schilling";
-#endif
 /*
  *	CDR device implementation for
  *	Sony

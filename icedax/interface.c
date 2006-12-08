@@ -11,11 +11,6 @@
  */
 
 /* @(#)interface.c	1.40 06/02/19 Copyright 1998-2002 Heiko Eissfeldt, Copyright 2006 J. Schilling */
-#ifndef lint
-static char     sccsid[] =
-"@(#)interface.c	1.40 06/02/19 Copyright 1998-2002 Heiko Eissfeldt, Copyright 2006 J. Schilling";
-
-#endif
 /***
  * CopyPolicy: GNU Public License 2 applies
  * Copyright (C) 1994-1997 Heiko Eissfeldt heiko@colossus.escape.de

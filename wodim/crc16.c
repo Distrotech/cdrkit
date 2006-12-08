@@ -11,10 +11,6 @@
  */
 
 /* @(#)crc16.c	1.6 04/03/02 Copyright 1998-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)crc16.c	1.6 04/03/02 Copyright 1998-2004 J. Schilling";
-#endif
 /*
  *	Q-subchannel CRC subroutines
  *

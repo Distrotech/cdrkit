@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsihack.c	1.44 06/01/30 Copyright 1997,2000,2001 J. Schilling */
-#ifndef lint
-static	char _sccsid[] =
-	"@(#)scsihack.c	1.44 06/01/30 Copyright 1997,2000,2001 J. Schilling";
-#endif
 /*
  *	Interface for other generic SCSI implementations.
  *	Emulate the functionality of /dev/usal? with the local

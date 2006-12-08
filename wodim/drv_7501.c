@@ -11,10 +11,6 @@
  */
 
 /* @(#)drv_7501.c	1.16 05/05/16 Copyright 2003-2005 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)drv_7501.c	1.16 05/05/16 Copyright 2003-2005 J. Schilling";
-#endif
 /*
  *	Device driver for the Masushita CW-7501
  *

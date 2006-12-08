@@ -11,10 +11,6 @@
  */
 
 /* @(#)ifo_read.c	1.5 04/03/04 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)ifo_read.c	1.5 04/03/04 joerg";
-#endif
 /*
  * Copyright (C) 2002 Olaf Beck <olaf_sc@yahoo.com>
  *		     Jörg Schilling <schilling@fokus.gmd.de>

@@ -11,11 +11,6 @@
  */
 
 /* @(#)eltorito.c	1.33 05/02/27 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)eltorito.c	1.33 05/02/27 joerg";
-
-#endif
 /*
  * Program eltorito.c - Handle El Torito specific extensions to iso9660.
  *

@@ -11,10 +11,6 @@
  */
 
 /* @(#)udf.c	1.14 04/04/15 Copyright 2001 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)udf.c	1.14 04/04/15 Copyright 2001 J. Schilling";
-#endif
 /*
  * udf.c - UDF support for genisoimage
  *

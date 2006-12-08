@@ -11,10 +11,6 @@
  */
 
 /* @(#)fifo.c	1.49 06/02/08 Copyright 1989,1997-2006 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)fifo.c	1.49 06/02/08 Copyright 1989,1997-2006 J. Schilling";
-#endif
 /*
  *	A "fifo" that uses shared memory between two processes
  *

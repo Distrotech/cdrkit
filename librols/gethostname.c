@@ -11,10 +11,6 @@
  */
 
 /* @(#)gethostname.c	1.15 03/10/04 Copyright 1995 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)gethostname.c	1.15 03/10/04 Copyright 1995 J. Schilling";
-#endif
 /*
  *	Copyright (c) 1995 J. Schilling
  */

@@ -11,10 +11,6 @@
  */
 
 /* @(#)cdr_drv.c	1.36 04/03/02 Copyright 1997-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)cdr_drv.c	1.36 04/03/02 Copyright 1997-2004 J. Schilling";
-#endif
 /*
  *	CDR device abstraction layer
  *

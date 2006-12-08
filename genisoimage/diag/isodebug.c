@@ -11,10 +11,6 @@
  */
 
 /* @(#)isodebug.c	1.10 05/05/01 Copyright 1996-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)isodebug.c	1.10 05/05/01 Copyright 1996-2004 J. Schilling";
-#endif
 /*
  *	Copyright (c) 1996-2004 J. Schilling
  */

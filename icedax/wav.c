@@ -11,11 +11,6 @@
  */
 
 /* @(#)wav.c	1.4 01/10/27 Copyright 1998,1999 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)wav.c	1.4 01/10/27 Copyright 1998,1999 Heiko Eissfeldt";
-
-#endif
 /***
  * CopyPolicy: GNU Public License 2 applies
  * Copyright (C) by Heiko Eissfeldt

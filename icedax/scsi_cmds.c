@@ -11,11 +11,6 @@
  */
 
 /* @(#)scsi_cmds.c	1.29 03/03/31 Copyright 1998-2002 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)scsi_cmds.c	1.29 03/03/31 Copyright 1998-2002 Heiko Eissfeldt";
-
-#endif
 /* file for all SCSI commands
  * FUA (Force Unit Access) bit handling copied from Monty's cdparanoia.
  */

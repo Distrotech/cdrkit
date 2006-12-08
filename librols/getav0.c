@@ -11,10 +11,6 @@
  */
 
 /* @(#)getav0.c	1.16 04/05/09 Copyright 1985, 1995-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)getav0.c	1.16 04/05/09 Copyright 1985, 1995-2004 J. Schilling";
-#endif
 /*
  *	Get arg vector by scanning the stack
  *

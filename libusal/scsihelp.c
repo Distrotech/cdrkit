@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsihelp.c	1.4 04/01/14 Copyright 2002 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)scsihelp.c	1.4 04/01/14 Copyright 2002 J. Schilling";
-#endif
 /*
  *	usal Library
  *	Help subsystem

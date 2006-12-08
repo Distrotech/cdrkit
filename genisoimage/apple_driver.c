@@ -11,10 +11,6 @@
  */
 
 /* @(#)apple_driver.c	1.6 04/03/04 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)apple_driver.c	1.6 04/03/04 joerg";
-#endif
 /*
  *	apple_driver.c: extract Mac partition label, maps and boot driver
  *

@@ -11,10 +11,6 @@
  */
 
 /* @(#)diskid.c	1.37 04/03/02 Copyright 1998-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)diskid.c	1.37 04/03/02 Copyright 1998-2004 J. Schilling";
-#endif
 /*
  *	Disk Idientification Method
  *

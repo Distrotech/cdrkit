@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-vms.c	1.33 04/01/15 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-vms.c	1.33 04/01/15 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for the VMS generic SCSI implementation.
  *

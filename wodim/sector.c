@@ -11,10 +11,6 @@
  */
 
 /* @(#)sector.c	1.13 04/03/01 Copyright 2001-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)sector.c	1.13 04/03/01 Copyright 2001-2004 J. Schilling";
-#endif
 /*
  *	Functions needed to use libedc_ecc from cdrecord
  *

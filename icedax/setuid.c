@@ -11,11 +11,6 @@
  */
 
 /* @(#)setuid.c	1.11 06/02/19 Copyright 1998,1999,2004 Heiko Eissfeldt, Copyright 2004-2006 J. Schilling */
-#ifndef lint
-static char     sccsid[] =
-"@(#)setuid.c	1.11 06/02/19 Copyright 1998,1999,2004 Heiko Eissfeldt, Copyright 2004-2006 J. Schilling";
-
-#endif
 /* Security functions by zblaxell
 
    If these functions fail, it is because there was an installation error

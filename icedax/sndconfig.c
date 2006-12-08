@@ -11,11 +11,6 @@
  */
 
 /* @(#)sndconfig.c	1.17 04/08/03 Copyright 1998-2004 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)sndconfig.c	1.17 04/08/03 Copyright 1998-2004 Heiko Eissfeldt";
-
-#endif
 /* os dependent functions */
 #include "config.h"
 #include <stdio.h>

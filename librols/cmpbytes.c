@@ -11,10 +11,6 @@
  */
 
 /* @(#)cmpbytes.c	1.15 03/06/15 Copyright 1988, 1995-2003 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)cmpbytes.c	1.15 03/06/15 Copyright 1988, 1995-2003 J. Schilling";
-#endif  /* lint */
 /*
  *	compare data
  *

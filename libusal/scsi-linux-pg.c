@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-linux-pg.c	1.43 04/01/15 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char ___sccsid[] =
-	"@(#)scsi-linux-pg.c	1.43 04/01/15 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for the Linux PARIDE implementation.
  *

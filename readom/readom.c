@@ -11,10 +11,6 @@
  */
 
 /* @(#)readcd.c	1.80 06/02/05 Copyright 1987, 1995-2006 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)readcd.c	1.80 06/02/05 Copyright 1987, 1995-2006 J. Schilling";
-#endif
 /*
  *	Skeleton for the use of the usal genearal SCSI - driver
  *

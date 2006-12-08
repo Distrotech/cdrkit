@@ -11,11 +11,6 @@
  */
 
 /* @(#)paranoia.c	1.33 04/08/17 J. Schilling from cdparanoia-III-alpha9.8 */
-#ifndef lint
-static	char sccsid[] =
-"@(#)paranoia.c	1.33 04/08/17 J. Schilling from cdparanoia-III-alpha9.8";
-
-#endif
 /*
  *	Modifications to make the code portable Copyright (c) 2002 J. Schilling
  */

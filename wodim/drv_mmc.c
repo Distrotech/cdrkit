@@ -11,10 +11,6 @@
  */
 
 /* @(#)drv_mmc.c	1.163 06/01/12 Copyright 1997-2006 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)drv_mmc.c	1.163 06/01/12 Copyright 1997-2006 J. Schilling";
-#endif
 /*
  *	CDR device implementation for
  *	SCSI-3/mmc conforming drives

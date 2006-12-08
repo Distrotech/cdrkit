@@ -11,10 +11,6 @@
  */
 
 /* @(#)movesect.c	1.3 04/03/02 Copyright 2001, 2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)movesect.c	1.3 04/03/02 Copyright 2001, 2004 J. Schilling";
-#endif
 /*
  *	Copyright (c) 2001, 2004 J. Schilling
  */

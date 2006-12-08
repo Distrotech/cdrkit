@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-qnx.c	1.3 04/01/15 Copyright 1998-2003 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-qnx.c	1.3 04/01/15 Copyright 1998-2003 J. Schilling";
-#endif
 /*
  *	Interface for QNX (Neutrino generic SCSI implementation).
  *	First version adopted from the OSF-1 version by

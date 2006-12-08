@@ -10,11 +10,6 @@
  *
  */
 
-#ifndef lint
-static char     sccsid[] =
-"@(#)semshm.c	1.13 06/02/15 Copyright 1998-2002 Heiko Eissfeldt";
-
-#endif
 #define IPCTST
 #undef IPCTST
 /* -------------------------------------------------------------------- */

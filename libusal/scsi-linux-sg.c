@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-linux-sg.c	1.86 05/11/22 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-linux-sg.c	1.86 05/11/22 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for Linux generic SCSI implementation (sg).
  *

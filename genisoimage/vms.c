@@ -11,11 +11,6 @@
  */
 
 /* @(#)vms.c	1.9 04/03/04 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)vms.c	1.9 04/03/04 joerg";
-
-#endif
 /*
  * File vms.c - assorted bletcherous hacks for VMS.
  *

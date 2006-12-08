@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-bsd.c	1.42 04/01/15 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-bsd.c	1.42 04/01/15 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for the NetBSD/FreeBSD/OpenBSD generic SCSI implementation.
  *

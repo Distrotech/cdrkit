@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-next.c	1.32 04/01/15 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-next.c	1.32 04/01/15 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Interface for the NeXT Step generic SCSI implementation.
  *

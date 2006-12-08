@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-os2.c	1.25 04/01/15 Copyright 1998 J. Schilling, C. Wohlgemuth */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-os2.c	1.25 04/01/15 Copyright 1998 J. Schilling, C. Wohlgemuth";
-#endif
 /*
  *	Interface for the OS/2 ASPI-Router ASPIROUT.SYS ((c) D. Dorau).
  *		This additional driver is a prerequisite for using cdrecord.

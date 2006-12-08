@@ -11,12 +11,6 @@
  */
 
 /* @(#)resample.c	1.15 02/11/21 Copyright 1998,1999,2000 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)resample.c	1.15 02/11/21 Copyright 1998,1999,2000 Heiko Eissfeldt";
-
-
-#endif
 /* resampling module 
  *
  * The audio data has been read. Here are the

@@ -16,10 +16,6 @@
  */
 
 /* @(#)cdrecord.c	1.310 06/02/09 Copyright 1995-2006 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)cdrecord.c	1.310 06/02/09 Copyright 1995-2006 J. Schilling";
-#endif
 /*
  *	Record data on a CD/CVD-Recorder
  *

@@ -146,9 +146,6 @@ fspawnv_nowait(in, out, err, name, argc, argv)
 	fexecv(name, in, out, err, argc, (char **)argv);
 	exit(geterrno());
 	/* NOTREACHED */
-#ifndef	lint
-	return (0);		/* keep gnu compiler happy */
-#endif
 }
 
 EXPORT int

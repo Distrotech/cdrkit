@@ -11,10 +11,6 @@
  */
 
 /* @(#)joliet.c	1.38 05/05/01 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)joliet.c	1.38 05/05/01 joerg";
-#endif
 /*
  * File joliet.c - handle Win95/WinNT long file/unicode extensions for iso9660.
  *

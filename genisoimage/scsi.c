@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi.c	1.20 05/05/01 Copyright 1997 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)scsi.c	1.20 05/05/01 Copyright 1997 J. Schilling";
-#endif
 /*
  *	Copyright (c) 1997 J. Schilling
  */

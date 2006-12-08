@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-mac-iokit.c	1.10 05/05/15 Copyright 1997,2001-2004 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-mac-iokit.c	1.10 05/05/15 Copyright 1997,2001-2004 J. Schilling";
-#endif
 /*
  *	Interface to the Darwin IOKit SCSI drivers
  *

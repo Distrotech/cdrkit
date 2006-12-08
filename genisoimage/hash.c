@@ -11,11 +11,6 @@
  */
 
 /* @(#)hash.c	1.18 04/06/18 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)hash.c	1.18 04/06/18 joerg";
-
-#endif
 /*
  * File hash.c - generate hash tables for iso9660 filesystem.
  *

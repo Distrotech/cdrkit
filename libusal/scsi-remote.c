@@ -12,10 +12,6 @@
 
 #define	USE_REMOTE
 /* @(#)scsi-remote.c	1.18 06/01/12 Copyright 1990,2000-2003 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-remote.c	1.18 06/01/12 Copyright 1990,2000-2003 J. Schilling";
-#endif
 /*
  *	Remote SCSI user level command transport routines
  *

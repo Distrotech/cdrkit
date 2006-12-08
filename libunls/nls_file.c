@@ -11,10 +11,6 @@
  */
 
 /* @(#)nls_file.c	1.3 05/05/01 2000 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)nls_file.c	1.3 05/05/01 2000 J. Schilling";
-#endif
 /*
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2

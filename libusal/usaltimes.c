@@ -11,10 +11,6 @@
  */
 
 /* @(#)usaltimes.c	1.1 00/08/25 Copyright 1995,2000 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)usaltimes.c	1.1 00/08/25 Copyright 1995,2000 J. Schilling";
-#endif
 /*
  *	SCSI user level command timing
  *

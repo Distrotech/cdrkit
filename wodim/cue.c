@@ -11,10 +11,6 @@
  */
 
 /* @(#)cue.c	1.20 04/03/02 Copyright 2001-2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)cue.c	1.20 04/03/02 Copyright 2001-2004 J. Schilling";
-#endif
 /*
  *	Cue sheet parser
  *

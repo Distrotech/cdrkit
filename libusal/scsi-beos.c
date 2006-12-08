@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-beos.c	1.23 06/02/05 Copyright 1998 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-beos.c	1.23 06/02/05 Copyright 1998 J. Schilling";
-#endif
 /*
  *	Interface for the BeOS user-land raw SCSI implementation.
  *

@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-wnt.c	1.45 04/07/19 Copyright 1998-2004 J. Schilling, A.L. Faber, J.A. Key */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-wnt.c	1.45 04/07/19 Copyright 1998-2004 J. Schilling, A.L. Faber, J.A. Key";
-#endif
 /*
  *	Interface for the Win32 ASPI library.
  *		You need wnaspi32.dll and aspi32.sys

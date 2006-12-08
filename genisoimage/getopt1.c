@@ -11,10 +11,6 @@
  */
 
 /* @(#)getopt1.c	1.1 97/11/04 eric */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)getopt1.c	1.1 97/11/04 eric";
-#endif
 /* getopt_long and getopt_long_only entry points for GNU getopt.
    Copyright (C) 1987, 88, 89, 90, 91, 92, 1993
 	Free Software Foundation, Inc.

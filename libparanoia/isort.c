@@ -11,11 +11,6 @@
  */
 
 /* @(#)isort.c	1.14 04/02/20 J. Schilling from cdparanoia-III-alpha9.8 */
-#ifndef lint
-static	char sccsid[] =
-"@(#)isort.c	1.14 04/02/20 J. Schilling from cdparanoia-III-alpha9.8";
-
-#endif
 /*
  *	Modifications to make the code portable Copyright (c) 2002 J. Schilling
  */

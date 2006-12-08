@@ -11,10 +11,6 @@
  */
 
 /* @(#)getargs.c	2.37 04/09/25 Copyright 1985, 1988, 1994-2003 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)getargs.c	2.37 04/09/25 Copyright 1985, 1988, 1994-2003 J. Schilling";
-#endif
 #define	NEW
 /*
  *	Copyright (c) 1985, 1988, 1994-2003 J. Schilling

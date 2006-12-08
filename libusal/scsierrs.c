@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsierrs.c	2.29 04/06/17 Copyright 1987-1996 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)scsierrs.c	2.29 04/06/17 Copyright 1987-1996 J. Schilling";
-#endif
 /*
  *	Error printing for scsitransp.c
  *

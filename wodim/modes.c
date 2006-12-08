@@ -11,10 +11,6 @@
  */
 
 /* @(#)modes.c	1.25 04/03/02 Copyright 1988, 1997-2001, 2004 J. Schilling */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)modes.c	1.25 04/03/02 Copyright 1988, 1997-2001, 2004 J. Schilling";
-#endif
 /*
  *	SCSI mode page handling
  *

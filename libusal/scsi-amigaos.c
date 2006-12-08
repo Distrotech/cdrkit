@@ -11,10 +11,6 @@
  */
 
 /* @(#)scsi-amigaos.c	1.6 04/01/14 Copyright 1997,2000-2003 J. Schilling */
-#ifndef lint
-static	char __sccsid[] =
-	"@(#)scsi-amigaos.c	1.6 04/01/14 Copyright 1997,2000-2003 J. Schilling";
-#endif
 /*
  *	Interface for the AmigaOS generic SCSI implementation.
  *

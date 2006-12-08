@@ -11,11 +11,6 @@
  */
 
 /* @(#)toc.c	1.57 06/02/19 Copyright 1998-2003 Heiko Eissfeldt */
-#ifndef lint
-static char     sccsid[] =
-"@(#)toc.c	1.57 06/02/19 Copyright 1998-2003 Heiko Eissfeldt";
-
-#endif
 /*
  * Copyright: GNU Public License 2 applies
  *

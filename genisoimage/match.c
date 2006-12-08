@@ -11,10 +11,6 @@
  */
 
 /* @(#)match.c	1.18 04/05/23 joerg */
-#ifndef lint
-static	char sccsid[] =
-	"@(#)match.c	1.18 04/05/23 joerg";
-#endif
 /*
  * 27-Mar-96: Jan-Piet Mens <jpm@mens.de>
  * added 'match' option (-m) to specify regular expressions NOT to be included
