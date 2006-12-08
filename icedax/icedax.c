@@ -1041,7 +1041,7 @@ int on_exitscsi(void *status);
 
 int on_exitscsi(void *status)
 {
-	exit((int)status);
+	exit((intptr_t)status);
 	return 0;
 }
 
@@ -1059,9 +1059,9 @@ static void exit_wrapper(int status)
 		SCSI *usalp = get_scsi_p();
 		if (usalp->running) {
 			usalp->cb_fun = on_exitscsi;
-			usalp->cb_arg = (void *)status;
+			usalp->cb_arg = (void *) (uintptr_t) status;
 		} else {
-			on_exitscsi((void *)status);
+			on_exitscsi((void *) (intptr_t) status);
 		} 
 	} else {
 		exit(status);
