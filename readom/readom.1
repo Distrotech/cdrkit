@@ -308,7 +308,7 @@ To read sectors from range 150 ... 10000 from a CD-ROM writing the data to the f
 To write the data from the file
 .I cdimage.raw
 (e.g. a filesystem image from 
-.BR mkisofs )
+.BR genisoimage )
 to a DVD-RAM, call:
 .PP
     readom dev=2,0 -w f=cdimage.raw
@@ -352,7 +352,7 @@ using an account that has been created with a remote SCSI server program as
 login shell.
 .SH SEE ALSO
 .BR wodim (1),
-.BR mkisofs (1),
+.BR genisoimage (1),
 .BR rcmd (3),
 .BR ssh (1).
 
