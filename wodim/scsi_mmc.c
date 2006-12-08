@@ -32,6 +32,10 @@
  * Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+/*
+Includes code from http://libburnia.pykix.org/browser/libburn/trunk/libburn/mmc.c?format=txt 
+*/
+
 /*#define	DEBUG*/
 
 #include <mconfig.h>
@@ -157,8 +161,8 @@ get_curprofile(SCSI *usalp)
 		usal_prbytes("Features: ", cbuf, amt);
 
 	if (xdebug > 0)
-		printf("feature len: %d current profile 0x%04X len %d\n",
-				flen, profile, amt);
+		printf("feature len: %d current profile 0x%04X (%s) len %d\n",
+				flen, profile, mmc_obtain_profile_name(profile), amt);
 
 	return (profile);
 }
@@ -212,8 +216,8 @@ print_profiles(SCSI *usalp)
 
 	curprofile = a_to_u_2_byte(&p[6]);
 	if (xdebug > 0)
-		printf("feature len: %d current profile 0x%04X\n",
-				flen, curprofile);
+		printf("feature len: %d current profile 0x%04X (%s)\n",
+				flen, curprofile, mmc_obtain_profile_name(curprofile));
 
 	printf("Current: 0x%04X\n", curprofile);
 
@@ -225,10 +229,10 @@ print_profiles(SCSI *usalp)
 	for (i = 0; i < n; i++) {
 		profile = a_to_u_2_byte(p);
 		if (xdebug > 0)
-			printf("Profile: 0x%04X ", profile);
+			printf("Profile: 0x%04X (%s)", profile, mmc_obtain_profile_name(profile));
 		else
 			printf("Profile: ");
-		printf("0x%04X %s\n", profile, p[2] & 1 ? "(current)":"");
+		printf("0x%04X (%s) %s\n", profile, mmc_obtain_profile_name(profile), p[2] & 1 ? "(current)":"");
 		p += 4;
 	}
 	return (curprofile);
@@ -261,8 +265,8 @@ get_proflist(SCSI *usalp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
 
 	curprofile = a_to_u_2_byte(&p[6]);
 	if (xdebug > 0)
-		printf("feature len: %d current profile 0x%04X\n",
-				flen, curprofile);
+		printf("feature len: %d current profile 0x%04X (%s)\n",
+				flen, curprofile, mmc_obtain_profile_name(curprofile));
 
 	p += 8;		/* Skip feature header	*/
 	n = p[3];	/* Additional length	*/
@@ -354,5 +358,47 @@ get_wproflist(SCSI *usalp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp)
 		*ddcdp	= ddcd;
 
 	return (curprofile);
+}
+
+
+/* ts A61201 */
+char *mmc_obtain_profile_name(int profile_number) {
+  static char *texts[0x53] = {NULL};
+  int i, max_pno = 0x53;
+  
+  if (texts[0] == NULL) {
+    for (i = 0; i<max_pno; i++)
+      texts[i] = "";
+    /* mmc5r03c.pdf , Table 89, Spelling: guessed cdrecord style */
+    texts[0x01] = "Non-removable disk";
+    texts[0x02] = "Removable disk";
+    texts[0x03] = "MO erasable";
+    texts[0x04] = "Optical write once";
+    texts[0x05] = "AS-MO";
+    texts[0x08] = "CD-ROM";
+    texts[0x09] = "CD-R";
+    texts[0x0a] = "CD-RW";
+    texts[0x10] = "DVD-ROM";
+    texts[0x11] = "DVD-R sequential recording";
+    texts[0x12] = "DVD-RAM";
+    texts[0x13] = "DVD-RW restricted overwrite";
+    texts[0x14] = "DVD-RW sequential overwrite";
+    texts[0x15] = "DVD-R/DL sequential recording";
+    texts[0x16] = "DVD-R/DL layer jump recording";
+    texts[0x1a] = "DVD+RW";
+    texts[0x1b] = "DVD+R";
+    texts[0x2a] = "DVD+RW/DL";
+    texts[0x2b] = "DVD+R/DL";
+    texts[0x40] = "BD-ROM";
+    texts[0x41] = "BD-R sequential recording";
+    texts[0x42] = "BD-R random recording";
+    texts[0x43] = "BD-RE";
+    texts[0x50] = "HD-DVD-ROM";
+    texts[0x51] = "HD-DVD-R";
+    texts[0x52] = "HD-DVD-RAM";
+  }
+  if (profile_number<0 || profile_number>=max_pno)
+    return "";
+  return texts[profile_number];
 }
 

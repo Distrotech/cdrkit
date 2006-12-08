@@ -1068,6 +1068,7 @@ extern	int	get_proflist(SCSI *usalp, BOOL *wp, BOOL *cdp, BOOL *dvdp,
 									 BOOL *dvdplusp, BOOL *ddcdp);
 extern	int	get_wproflist(SCSI *usalp, BOOL *cdp, BOOL *dvdp,
 									  BOOL *dvdplusp, BOOL *ddcdp);
+extern char *mmc_obtain_profile_name(int profile_number);
 #endif
 
 /*
