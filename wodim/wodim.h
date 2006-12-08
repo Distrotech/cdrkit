@@ -1209,5 +1209,3 @@ extern	int	parsecue(char *cuefname, track_t trackp[]);
 #ifdef	EOF	/* stdio.h has been included */
 extern	void	fparsecue(FILE *f, track_t trackp[]);
 #endif
-
-extern void cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize, char **p_drv_opts);
