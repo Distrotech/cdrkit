@@ -1381,7 +1381,7 @@ if (((unsigned)p->data) & (global.pagesize -1) != 0) {
 				 * in order to handle the remaining sectors. */
 				usalp->silent++;
 				do {
-					int retval2 = ReadCdRomSub( usalp, bufferSub, lSector+singles, 1 );
+					ReadCdRomSub( usalp, bufferSub, lSector+singles, 1 );
 					*eorecording = RealEnd( usalp, bufferSub );
 					if (*eorecording) {
 						break;
