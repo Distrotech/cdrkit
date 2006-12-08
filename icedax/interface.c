@@ -612,6 +612,11 @@ static int OpenCdRom(char *pdev_name)
 		exit(NO_ERROR);
 	}
 
+	if (global.scandevs) {
+		scan_devices();
+		exit(0);
+	}
+
 	/* device name, debug, verboseopen */
 	usalp = usal_open(pdev_name, errstr, sizeof(errstr), 0, 0);
 

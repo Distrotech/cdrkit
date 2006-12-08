@@ -130,9 +130,9 @@ int scan_devices() {
 			usal_close(usalp);
 		}
 	}
-	fprintf(stdout, "wodim: Overview of accessible drives (%d found) :\n"
+	fprintf(stdout, "%s: Overview of accessible drives (%d found) :\n"
 			"----------------------------------------------------------------------\n",
-			ndevs);
+			get_progname(), ndevs);
 	for(i=0;i<ndevs;i++)
 		fprintf(stdout, "%s", lines[i]);
 	fprintf(stdout,	"----------------------------------------------------------------------\n");

@@ -161,7 +161,7 @@ no-write,N,dump-rates,R,bulk,B,alltracks,verbose-scsi+,V+,\
 find-extremes,F,find-mono,G,no-infofile,H,\
 deemphasize,T,info-only,J,silent-scsi,Q,\
 cddbp-server*,cddbp-port*,\
-scanbus,device*,dev*,D*,auxdevice*,A*,interface*,I*,output-format*,O*,\
+scanbus,devices,device*,dev*,D*,auxdevice*,A*,interface*,I*,output-format*,O*,\
 output-endianess*,E*,cdrom-endianess*,C*,speed#,S#,\
 playback-realtime#L,p#L,md5#,M#,set-overlap#,P#,sound-device*,K*,\
 cddb#,L#,channels*,c*,bits-per-sample#,b#,rate#,r#,gui,g,\
@@ -733,6 +733,7 @@ OPTIONS:\n\
   (-g) -gui			generate special output suitable for gui frontends.\n\
   (-Q) -silent-scsi		do not print status of erreneous scsi-commands.\n\
        -scanbus			scan the SCSI bus and exit\n\
+       --devices		scan for system devices and print with native names\n\
   (-M) md5=count		calculate MD-5 checksum for blocks of 'count' bytes.\n\
   (-q) -quiet			quiet operation, no screen output.\n\
   (-p) playback-realtime=perc	play (echo) audio pitched at perc percent (50%-200%).\n\
@@ -784,6 +785,7 @@ static void init_globals()
   global.scsi_silent = 0;
   global.scsi_verbose = 0;		/* SCSI verbose level */
   global.scanbus = 0;
+  global.scandevs = 0;
   global.multiname = 0;		/* multiple file names given */
   global.sh_bits  =  0;		/* sh_bits: sample bit shift */
   global.Remainder=  0;		/* remainder */
@@ -2116,6 +2118,7 @@ int main(int argc, char *argv[])
 
 			, &global.cddbp_server, &global.cddbp_port
 			, &global.scanbus
+			, &global.scandevs
 			, &global.dev_name, &global.dev_name, &global.dev_name
 			, &global.aux_name, &global.aux_name
 			, &int_name, &int_name

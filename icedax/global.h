@@ -47,6 +47,7 @@ typedef struct global
 	int			scsi_silent;
 	int			scsi_verbose;
 	int			scanbus;
+	int			scandevs;
 	int			multiname;
 	int			sh_bits;
 	int			Remainder;
