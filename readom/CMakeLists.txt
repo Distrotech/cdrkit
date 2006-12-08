@@ -5,12 +5,12 @@ INCLUDE(../include/AddSchilyBits.cmake)
 
 AUX_SOURCE_DIRECTORY(. readom_SRCS)
 
-LINK_DIRECTORIES(../librols ../libusal ../libdeflt)
+LINK_DIRECTORIES(../librols ../libusal ../libdeflt ../wodim)
 
 ADD_DEFINITIONS(-DCLONE_WRITE)
 
 ADD_EXECUTABLE (readom ${readom_SRCS})
-TARGET_LINK_LIBRARIES(readom ${EXTRA_LIBS} deflt)
+TARGET_LINK_LIBRARIES(readom ${EXTRA_LIBS} wodimstuff deflt)
 SET_TARGET_PROPERTIES(readom PROPERTIES  SKIP_BUILD_RPATH TRUE)
 
 INSTALL(TARGETS readom DESTINATION bin)
