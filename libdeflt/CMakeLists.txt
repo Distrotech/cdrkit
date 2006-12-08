@@ -1,7 +1,0 @@
-#PROJECT (LIB)
-#INCLUDE_DIRECTORIES(../include ../libhfs_iso ${CMAKE_BINARY_DIR} ../wodim)
-#ADD_DEFINITIONS(-DHAVE_CONFIG_H)
-#
-#SET(LIB_SRCS default.c)
-#
-#ADD_LIBRARY ( STATIC ${LIB_SRCS})
