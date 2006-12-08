@@ -53,10 +53,13 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
 int	select_target(SCSI *usalp, FILE *f);
+#ifdef DEAD_CODE
 static	int	select_unit(SCSI *usalp, FILE *f);
+#endif
 
 static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 	fprintf(f, "'%.8s' ", ip->vendor_info);
@@ -229,6 +232,7 @@ int select_target(SCSI *usalp, FILE *f) {
 	return (amt);
 }
 
+#ifdef DEAD_CODE
 static int
 select_unit(SCSI *usalp, FILE *f)
 {
@@ -298,3 +302,4 @@ select_unit(SCSI *usalp, FILE *f)
 	usal_settarget(usalp, usal_scsibus(usalp), usal_target(usalp), clun);
 	return (1);
 }
+#endif
