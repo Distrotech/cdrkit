@@ -162,7 +162,8 @@ get_curprofile(SCSI *usalp)
 
 	if (xdebug > 0)
 		printf("feature len: %d current profile 0x%04X (%s) len %d\n",
-				flen, profile, mmc_obtain_profile_name(profile), amt);
+				flen, profile,
+				mmc_obtain_profile_name(profile), amt);
 
 	return (profile);
 }
@@ -217,9 +218,11 @@ print_profiles(SCSI *usalp)
 	curprofile = a_to_u_2_byte(&p[6]);
 	if (xdebug > 0)
 		printf("feature len: %d current profile 0x%04X (%s)\n",
-				flen, curprofile, mmc_obtain_profile_name(curprofile));
+				flen, curprofile,
+				mmc_obtain_profile_name(curprofile));
 
-	printf("Current: 0x%04X\n", curprofile);
+	printf("Current: 0x%04X (%s)\n", curprofile,
+			mmc_obtain_profile_name(curprofile));
 
 	p += 8;		/* Skip feature header	*/
 	n = p[3];	/* Additional length	*/
@@ -229,10 +232,13 @@ print_profiles(SCSI *usalp)
 	for (i = 0; i < n; i++) {
 		profile = a_to_u_2_byte(p);
 		if (xdebug > 0)
-			printf("Profile: 0x%04X (%s)", profile, mmc_obtain_profile_name(profile));
+			printf("Profile: 0x%04X (%s)", profile,
+					mmc_obtain_profile_name(profile));
 		else
 			printf("Profile: ");
-		printf("0x%04X (%s) %s\n", profile, mmc_obtain_profile_name(profile), p[2] & 1 ? "(current)":"");
+		printf("0x%04X (%s) %s\n", profile,
+				mmc_obtain_profile_name(profile), 
+				p[2] & 1 ? "(current)":"");
 		p += 4;
 	}
 	return (curprofile);
@@ -266,7 +272,8 @@ get_proflist(SCSI *usalp, BOOL *wp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp,
 	curprofile = a_to_u_2_byte(&p[6]);
 	if (xdebug > 0)
 		printf("feature len: %d current profile 0x%04X (%s)\n",
-				flen, curprofile, mmc_obtain_profile_name(curprofile));
+				flen, curprofile, 
+				mmc_obtain_profile_name(curprofile));
 
 	p += 8;		/* Skip feature header	*/
 	n = p[3];	/* Additional length	*/
