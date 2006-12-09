@@ -488,6 +488,10 @@ int main(int argc, char *argv[])
 		char	*vers;
 		char	*auth;
 
+
+		if(lverbose)
+       fprintf(stderr, "Wodim version: " CDRKIT_VERSION "\n");
+
 		vers = usal_version(0, SCG_VERSION);
 		auth = usal_version(0, SCG_AUTHOR);
 		if(lverbose >1 && auth && vers)
