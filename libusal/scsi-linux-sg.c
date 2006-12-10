@@ -958,12 +958,13 @@ usalo_maxdma(SCSI *usalp, long amt)
 	if(0==fstat(usallocal(usalp)->usalfile, &stbuf)) {
 		/* that's ugly, there are so many symlinks in sysfs but none from major:minor to the relevant directory */
 		static char *basedirs[] = { "/sys/block", "/sys/class/scsi_generic" };
-		int i,j;
-		char buf[256], idbuf[10];
-		int l;
-		l=snprintf(idbuf, sizeof(idbuf), "%d:%d", stbuf.st_rdev>>8, stbuf.st_rdev&0xFF);
+		int i, major, minor;
+		char *p;
+		char buf[64];
+		major=stbuf.st_rdev>>8;
+		minor=stbuf.st_rdev&0xFF;
 		if (usalp->debug > 0)
-			fprintf(stderr, "Looking for data for major:minor: %s\n", idbuf);
+			fprintf(stderr, "Looking for data for major:minor: %d:%d\n", major, minor);
 		for(i=0;i<2;i++) {
 			struct dirent *dent;
 			DIR *ddesc = opendir(basedirs[i]);
@@ -972,14 +973,17 @@ usalo_maxdma(SCSI *usalp, long amt)
 				FILE *fd;
 				if(dent->d_name[0]=='.')
 					continue;
-				snprintf(buf, 256, "%s/%s/dev", basedirs[i], dent->d_name);
+				snprintf(buf, sizeof(buf), "%s/%s/dev", basedirs[i], dent->d_name);
 				fd=fopen(buf, "r");
 				if(!fd) continue;
 				buf[0]='\0';
 				fgets(buf, sizeof(buf)-1, fd);
 				fclose(fd);
-				if(0==strncmp(idbuf, buf, l)) { /* got the right dir */
-					snprintf(buf, 256, "%s/%s/queue/max_sectors_kb", basedirs[i], dent->d_name);
+				if( atoi(buf) == major && 
+						NULL!=(p=strchr(buf, ':')) && 
+						atoi(p) == minor)
+				{ /* got the right dir */
+					snprintf(buf, sizeof(buf), "%s/%s/queue/max_hw_sectors_kb", basedirs[i], dent->d_name);
 					fd=fopen(buf, "r");
 					if(!fd) continue;
 					buf[0]='\0';
