@@ -1,7 +1,7 @@
 /*
  * endian.c
  *
- * Copyright (c) Steve McIntyre <steve@einval.com>
+ * Copyright (c) 2004-2006 Steve McIntyre <steve@einval.com>
  *
  * Simple helper routines for marshalling data
  *
