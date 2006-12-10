@@ -180,7 +180,7 @@ static	int	dminbuf = -1;	/* XXX Hack for now drive min buf fill */
 BOOL	isgui;
 static	int	didintr;
 char	*driveropts;
-static	char	*cuefilename;
+static	char	*cuefilename = NULL;
 static	uid_t	oeuid = (uid_t)-1;
 
 struct timeval	starttime;
@@ -463,11 +463,11 @@ int main(int argc, char *argv[])
 
 #ifdef __linux__
 	/* get the rawio capability */
-  if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose>2)) 
-  {
+	if (get_cap(CAP_SYS_RAWIO) && (debug || lverbose>2)) 
+	{
 		perror("Warning: Cannot gain SYS_RAWIO capability");
-    fprintf(stderr, "Possible reason: wodim not installed SUID root.\n");
-  }
+		fprintf(stderr, "Possible reason: wodim not installed SUID root.\n");
+	}
 #endif
 
 	/*
@@ -490,18 +490,18 @@ int main(int argc, char *argv[])
 
 
 		if(lverbose)
-       fprintf(stderr, "Wodim version: " CDRKIT_VERSION "\n");
+			fprintf(stderr, "Wodim version: " CDRKIT_VERSION "\n");
 
 		vers = usal_version(0, SCG_VERSION);
 		auth = usal_version(0, SCG_AUTHOR);
 		if(lverbose >1 && auth && vers)
-		  fprintf(stderr, "Using libusal version '%s-%s'.\n", auth, vers);
+			fprintf(stderr, "Using libusal version '%s-%s'.\n", auth, vers);
 
 
 		vers = usal_version(usalp, SCG_RVERSION);
 		auth = usal_version(usalp, SCG_RAUTHOR);
 		if (lverbose > 1 && vers && auth)
-		  fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
+			fprintf(stderr, "Using remote transport code version '%s-%s'\n", auth, vers);
 	}
 
 	if (lverbose && driveropts)
@@ -544,15 +544,15 @@ int main(int argc, char *argv[])
 		exit(EX_BAD);
 	}
 #ifdef	GCONF
-/*
- * Debug only
- */
-{
-extern	void	gconf(SCSI *);
+	/*
+	 * Debug only
+	 */
+	{
+		extern	void	gconf(SCSI *);
 
-if (lverbose > 2)
-	gconf(usalp);
-}
+		if (lverbose > 2)
+			gconf(usalp);
+	}
 #endif
 
 	if ((flags & F_PRCAP) != 0) {
@@ -565,19 +565,20 @@ if (lverbose > 2)
 
 	if (dp == (cdr_t *)NULL) {	/* No driver= option specified	*/
 		dp = get_cdrcmds(usalp);	/* Calls dp->cdr_identify()	*/
-	} else if (!is_unknown_dev(usalp) && dp != get_cdrcmds(usalp)) {
+	}
+	else if (!is_unknown_dev(usalp) && dp != get_cdrcmds(usalp)) {
 		errmsgno(EX_BAD, "WARNING: Trying to use other driver on known device.\n");
 	}
         is_mmc(usalp, &is_cdwr, &is_dvdwr);
-        if (ispacket) {
-	    if (is_dvdwr) {
-		track[0].flags |= TI_PACKET; 
-		/*XXX put here to only affect DVD writing, should be in gargs.
-		 * however if set in args for all mode, packet writing is then
-		 * broken for all disc as cdrecord assume that PACKET imply TAO which  
-		 * is not true at all???? */ 
-		track[0].flags &= ~TI_TAO;
-	    }
+	if (ispacket) {
+		if (is_dvdwr) {
+			track[0].flags |= TI_PACKET; 
+			/*XXX put here to only affect DVD writing, should be in gargs.
+			 * however if set in args for all mode, packet writing is then
+			 * broken for all disc as cdrecord assume that PACKET imply TAO which  
+			 * is not true at all???? */ 
+			track[0].flags &= ~TI_TAO;
+		}
 	}
 
 	if (dp == (cdr_t *)0)
@@ -618,13 +619,12 @@ if (lverbose > 2)
 	}
 
 	if ((flags & (F_MSINFO|F_TOC|F_LOAD|F_DLCK|F_EJECT)) == 0 ||
-	    tracks > 0 ||
-	    cuefilename != NULL) {
-
-
+			tracks > 0 ||
+			cuefilename != NULL)
+	{
 		if ((dp->cdr_flags & CDR_ISREADER) != 0) {
 			errmsgno(EX_BAD,
-			"Sorry, no CD/DVD-Recorder or unsupported CD/DVD-Recorder found on this target.\n");
+					"Sorry, no CD/DVD-Recorder or unsupported CD/DVD-Recorder found on this target.\n");
 		}
 
 		if (!is_mmc(usalp, &is_cdwr, &is_dvdwr))
@@ -632,7 +632,7 @@ if (lverbose > 2)
 
 		if (is_dvdwr && !set_cdrcmds("mmc_mdvd", (cdr_t **)NULL)) {
 			errmsgno(EX_BAD,
-			"Internal error, DVD driver failure. Please report to debburn-devel@lists.alioth.debian.org.\n");
+					"Internal error, DVD driver failure. Please report to debburn-devel@lists.alioth.debian.org.\n");
 		}
 		/*
 		 * Only exit if this is not the ProDVD test binary.
@@ -1038,7 +1038,7 @@ if (lverbose > 2)
 		}
 	}
 	if (tracks > 0 && (flags & F_WRITE) != 0 && dma_speed > 0) {
-		int	max_dma = (flags & F_FORCE) != 0 ? dma_speed:(dma_speed+1)*4/5;
+		int max_dma = (flags & F_FORCE) != 0 ? dma_speed:(dma_speed+1)*4/5;
 
 		if (getenv("CDR_FORCESPEED"))
 			max_dma = dma_speed;
