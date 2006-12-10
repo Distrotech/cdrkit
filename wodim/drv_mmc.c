@@ -2766,7 +2766,6 @@ extern	char	*buf;
 		printf("Error: only support DVD+RW formating, ignoring.\n");
 	        return (format_dummy(usalp, dp, formattype));
 	}
-	printf("format_mdvd: media is a DVD+RW.\n");
 	dip = (struct disk_info *)buf;
 	if (get_diskinfo(usalp, dip) < 0)
 		return -1;
