@@ -1207,51 +1207,53 @@ if (lverbose > 2)
 		/*
 		 * XXX Erst blank und dann format?
 		 * XXX Wenn ja, dann hier (flags & F_FORMAT) testen
+		 *
+		 * EB: nee, besser nicht
 		 */
 		if (!wait_unit_ready(usalp, 240) || tracks == 0) {
 			comexit(0);
 		}
-      if (flags & F_FORMAT) {
-         printf("wodim: media format asked\n");
-         /*
-          * Do not abort if OPC failes. Just give it a chance
-          * for better laser power calibration than without OPC.
-          *
-          * Ricoh drives return with a vendor unique sense code.
-          * This is most likely because they refuse to do OPC
-          * on a non blank media.
-          */
-         usalp->silent++;
-         do_opc(usalp, dp, flags);
-         usalp->silent--;
-         wait_unit_ready(usalp, 120);
-         if (gettimeofday(&starttime, (struct timezone *)0) < 0)
-            errmsg("Cannot get start time\n");
-
-         if ((*dp->cdr_format)(usalp, dp, formattype) < 0) {
-            errmsgno(EX_BAD, "Cannot format disk, aborting.\n");
-            comexit(EX_BAD);
-         }
-         if (gettimeofday(&fixtime, (struct timezone *)0) < 0)
-            errmsg("Cannot get format time\n");
-         if (lverbose)
-            prtimediff("Formatting time: ", &starttime, &fixtime);
-
-         if (!wait_unit_ready(usalp, 240) || tracks == 0) {
-            comexit(0);
-         }
-         if (gettimeofday(&starttime, (struct timezone *)0) < 0)
-            errmsg("Cannot get start time\n");
-      }
+	}
+	if (flags & F_FORMAT) {
+		printf("wodim: media format asked\n");
 		/*
-		 * Reset start time so we will not see blanking time and
-		 * writing time counted together.
-		 */
+		* Do not abort if OPC failes. Just give it a chance
+		* for better laser power calibration than without OPC.
+		*
+		* Ricoh drives return with a vendor unique sense code.
+		* This is most likely because they refuse to do OPC
+		* on a non blank media.
+		*/
+		usalp->silent++;
+		do_opc(usalp, dp, flags);
+		usalp->silent--;
+		wait_unit_ready(usalp, 120);
+		if (gettimeofday(&starttime, (struct timezone *)0) < 0)
+			errmsg("Cannot get start time\n");
+
+		if ((*dp->cdr_format)(usalp, dp, formattype) < 0) {
+			errmsgno(EX_BAD, "Cannot format disk, aborting.\n");
+			comexit(EX_BAD);
+		}
+		if (gettimeofday(&fixtime, (struct timezone *)0) < 0)
+			errmsg("Cannot get format time\n");
+		if (lverbose)
+			prtimediff("Formatting time: ", &starttime, &fixtime);
+
+		if (!wait_unit_ready(usalp, 240) || tracks == 0) {
+			comexit(0);
+		}
 		if (gettimeofday(&starttime, (struct timezone *)0) < 0)
 			errmsg("Cannot get start time\n");
 	}
+	/*
+	* Reset start time so we will not see blanking time and
+	* writing time counted together.
+	*/
+	if (gettimeofday(&starttime, (struct timezone *)0) < 0)
+		errmsg("Cannot get start time\n");
 	if (tracks == 0 && (flags & F_FIX) == 0)
-		comerrno(EX_BAD, "No tracks found.\n");
+	comerrno(EX_BAD, "No tracks found.\n");
 	/*
 	 * Get the number of the next recordable track by reading the TOC and
 	 * use the number the last current track number.
@@ -1262,13 +1264,13 @@ if (lverbose > 2)
 	}
 	usalp->silent--;
       
-   /* If it is DVD, the information in TOC is fabricated :)
-   The real information is from read disk info command*/
-   if((dp->cdr_dstat->ds_disktype&DT_DVD) && (dp->cdr_dstat->ds_trlast>0)){
-      trackno=dp->cdr_dstat->ds_trlast-1;
-	  if (lverbose > 2)
-		  printf("trackno=%d\n",trackno);
-   }
+	/* If it is DVD, the information in TOC is fabricated :)
+	   The real information is from read disk info command*/
+	if((dp->cdr_dstat->ds_disktype&DT_DVD) && (dp->cdr_dstat->ds_trlast>0)){
+		trackno=dp->cdr_dstat->ds_trlast-1;
+		if (lverbose > 2)
+			printf("trackno=%d\n",trackno);
+	}
 
 	if ((tracks + trackno) > MAX_TRACK) {
 		/*
