@@ -1,13 +1,11 @@
 /*
- * This file has been modified for the cdrkit suite.
+ * endian.c
  *
- * The behaviour and appearence of the program code below can differ to a major
- * extent from the version distributed by the original author(s).
+ * Copyright (c) Steve McIntyre <steve@einval.com>
  *
- * For details, see Changelog file distributed with the cdrkit package. If you
- * received this file from another source then ask the distributing person for
- * a log of modifications.
+ * Simple helper routines for marshalling data
  *
+ * GNU GPL v2
  */
 
 #include <mconfig.h>
