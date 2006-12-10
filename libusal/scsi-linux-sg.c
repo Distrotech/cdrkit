@@ -65,6 +65,8 @@
  */
 
 #include <linux/version.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 #ifndef LINUX_VERSION_CODE	/* Very old kernel? */
 #	define LINUX_VERSION_CODE 0
@@ -240,6 +242,8 @@ static	long	sg_raisedma(SCSI *usalp, long newmax);
 static	void	sg_settimeout(int f, int timeout);
 
 int    sg_open_excl(char *device, int mode);
+
+static BOOL get_max_secs(char *dirpath, int *outval);
 
 int
 sg_open_excl(char *device, int mode)
@@ -936,6 +940,7 @@ sg_raisedma(SCSI *usalp, long newmax)
 static long
 usalo_maxdma(SCSI *usalp, long amt)
 {
+	struct stat stbuf;
 	long maxdma = MAX_DMA_LINUX;
 
 #if defined(SG_SET_RESERVED_SIZE) && defined(SG_GET_RESERVED_SIZE)
@@ -946,6 +951,46 @@ usalo_maxdma(SCSI *usalp, long amt)
 	if (usallocal(usalp)->drvers >= 20134)
 		maxdma = sg_raisedma(usalp, amt);
 #endif
+	/*
+	 * First try the modern kernel 2.6.1x way to detect the real maximum
+	 * DMA for this specific device, then try the other methods.
+	 */
+	if(0==fstat(usallocal(usalp)->usalfile, &stbuf)) {
+		/* that's ugly, there are so many symlinks in sysfs but none from major:minor to the relevant directory */
+		static char *basedirs[] = { "/sys/block", "/sys/class/scsi_generic" };
+		int i,j;
+		char buf[256], idbuf[10];
+		int l;
+		l=snprintf(idbuf, sizeof(idbuf), "%d:%d", stbuf.st_rdev>>8, stbuf.st_rdev&0xFF);
+		if (usalp->debug > 0)
+			fprintf(stderr, "Looking for data for major:minor: %s\n", idbuf);
+		for(i=0;i<2;i++) {
+			struct dirent *dent;
+			DIR *ddesc = opendir(basedirs[i]);
+			if(!ddesc) continue;
+			while( NULL != (dent = readdir(ddesc))) { 
+				FILE *fd;
+				if(dent->d_name[0]=='.')
+					continue;
+				snprintf(buf, 256, "%s/%s/dev", basedirs[i], dent->d_name);
+				fd=fopen(buf, "r");
+				if(!fd) continue;
+				buf[0]='\0';
+				fgets(buf, sizeof(buf)-1, fd);
+				fclose(fd);
+				if(0==strncmp(idbuf, buf, l)) { /* got the right dir */
+					snprintf(buf, 256, "%s/%s/queue/max_sectors_kb", basedirs[i], dent->d_name);
+					fd=fopen(buf, "r");
+					if(!fd) continue;
+					buf[0]='\0';
+					fgets(buf, sizeof(buf)-1, fd);
+					fclose(fd);
+					return(512*atoi(buf));
+				}
+			}
+			closedir(ddesc);
+		}
+	}
 #ifdef	SG_GET_BUFSIZE
 	/*
 	 * We assume that all /dev/sg instances use the same
@@ -1632,3 +1677,4 @@ sg_rwsend(SCSI *usalp)
 		sg_settimeout(f, usalp->deftimeout);
 	return (0);
 }
+

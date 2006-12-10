@@ -1,3 +1,6 @@
+ - import libcuefile from on cuetools-1.3.1/src/lib (after generating the
+   parser with its build system), add CMakeLists.txt, drop cue.c and make wodim
+   make use of the parsed CUE data if available.
 
  - check the REMOTE method, especially with real device names and ssh.
    Something is going wrong.
