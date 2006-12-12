@@ -4,6 +4,7 @@ debian/tmp/usr/bin/isoinfo
 debian/tmp/usr/bin/isodump
 debian/tmp/usr/bin/isovfy
 debian/tmp/usr/bin/dirsplit
+debian/tmp/usr/bin/mkzftree
 debian/tmp/usr/share/man/man1/genisoimage.1
 debian/tmp/usr/share/man/man1/isoinfo.1
 debian/tmp/usr/share/man/man1/dirsplit.1

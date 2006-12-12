@@ -2,9 +2,10 @@ cdrkit (9:1.1.1-1) unstable; urgency=low
 
   * New upstream version
     + more verbose abort message if track is specified with some maintainance
-    command (closes: #369677)
+      command (closes: #369677)
     + moved *iso* manpages to section 1 and corrected removed obsolete
-    references in wodim.1 and some other manpages.
+      references in wodim.1 and some other manpages.
+  * readded mkzftree binary again (sorry... closes: #387927)
 
  -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:18 +0100
 
