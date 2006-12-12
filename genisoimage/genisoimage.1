@@ -35,10 +35,10 @@ filesystems.
 .PP
 .B genisoimage
 is capable of generating the 
-.B "System Use Sharing Protocol records (SUSP)
+.B System Use Sharing Protocol records (SUSP)
 specified
 by the 
-.B "Rock Ridge Interchange Protocol.
+.BR "Rock Ridge Interchange Protocol" .
 This is used to further describe the
 files in the ISO9660 filesystem to a Unix host, and provides information such
 as long filenames, UID/GID, POSIX permissions, symbolic links,
@@ -169,7 +169,7 @@ can be replaced with
 
 .SH OPTIONS
 .TP
-.BI \-abstract " FILE
+.BI \-abstract " FILE"
 Specifies the abstract file name.
 There is space on the disc for 37 characters of information.
 This parameter can also be set in the file
@@ -177,7 +177,7 @@ This parameter can also be set in the file
 with ABST=filename.
 If specified in both places, the command line version is used.
 .TP
-.BI \-A " application_id
+.BI \-A " application_id"
 Specifies a text string that will be written into the volume header.
 This should describe the application that will be on the disc.  There
 is space on the disc for 128 characters of information.  This parameter can
@@ -211,7 +211,7 @@ option.
 This violates the ISO9660 standard, but it happens to work on many systems.
 Use with caution.
 .TP
-.BI \-biblio " FILE
+.BI \-biblio " FILE"
 Specifies the bibliographic file name.
 There is space on the disc for 37 characters of information.
 This parameter can also be set in the file
@@ -253,23 +253,23 @@ This does not happen when the
 cannot detect hardlinks anymore and the resulting CD image may be larger
 than expected.
 .TP
-.BI \-alpha\-boot " alpha_boot_image
+.BI \-alpha\-boot " alpha_boot_image"
 Specifies the path and filename of the boot image to be used when
 making an Alpha/SRM bootable CD. The pathname must be relative to the
 source path specified to
-.B genisoimage.
+.BR genisoimage .
 .TP
-.BI \-hppa\-bootloader " hppa_bootloader_image
+.BI \-hppa\-bootloader " hppa_bootloader_image"
 Specifies the path and filename of the boot image to be used when
 making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B genisoimage.
+.BR genisoimage .
 Other options are required, at the very least a kernel file name and
 the boot command line. See the
 .B HPPA NOTES
 section below for more information.
 .TP
-.BI \-hppa\-cmdline " hppa_boot_command_line
+.BI \-hppa\-cmdline " hppa_boot_command_line"
 Specifies the command line to be passed to the hppa boot loader when
 making a bootable CD. Separate the parameters with spaces or
 commas. More options must be passed to
@@ -279,53 +279,52 @@ name. See the
 .B HPPA NOTES
 section below for more information.
 .TP
-.BI \-hppa\-kernel\-32 " hppa_kernel_32
+.BI \-hppa\-kernel\-32 " hppa_kernel_32"
 Specifies the path and filename of the 32-bit kernel image to be used
 when making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B genisoimage.
+.BR genisoimage .
 Other options are required, at the very least the boot loader file
 name and the boot command line. See the
 .B HPPA NOTES
 section below for more information.
 .TP
-.BI \-hppa\-kernel\-64 " hppa_kernel_64
+.BI \-hppa\-kernel\-64 " hppa_kernel_64"
 Specifies the path and filename of the 64-bit kernel image to be used
 when making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B genisoimage.
+.BR genisoimage .
 Other options are required, at the very least the boot loader file
 name and the boot command line. See the
 .B HPPA NOTES
 section below for more information.
 .TP
-.BI \-hppa\-ramdisk " hppa_ramdisk_image
+.BI \-hppa\-ramdisk " hppa_ramdisk_image"
 Specifies the path and filename of the ramdisk image to be used when
 making an HPPA bootable CD. The pathname must be relative to the
 source path specified to
-.B genisoimage.
-This parameter is
-.B optional.
+.BR genisoimage .
+This parameter is optional.
 Other options are required, at the very
 least a kernel file name and the boot command line. See the
 .B HPPA NOTES
 section below for more information.
 .TP
-.BI \-mips\-boot " mips_boot_image
+.BI \-mips\-boot " mips_boot_image"
 Specifies the path and filename of the boot image to be used when
 making an SGI/big-endian MIPS bootable CD. The pathname must be
 relative to the source path specified to
-.B genisoimage.
+.BR genisoimage .
 This option may be specified several times to allow the addition of
 multiple boot images, up to a maximum of 15.
 .TP
-.BI \-mipsel\-boot " mipsel_boot_image
+.BI \-mipsel\-boot " mipsel_boot_image"
 Specifies the path and filename of the boot image to be used when
 making an DEC/little-endian MIPS bootable CD. The pathname must be
 relative to the source path specified to
-.B genisoimage.
+.BR genisoimage .
 .TP
-.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e"
 Specifies a comma separated list of boot images that are needed to make
 a bootable CD for sparc systems.
 Partition 0 is used for the ISO9660 image, the first image file is mapped
@@ -357,7 +356,7 @@ For more information also see the
 section below.
 .sp
 If the special filename
-.B "..."
+.B ...
 is used, the actual and all following boot partitions are mapped to the
 previous partition. If
 .B genisoimage
@@ -367,11 +366,11 @@ all boot partitions are mapped to the partition that contains the ISO9660
 filesystem image and the generic boot image that is located in the first
 16 sectors of the disk is used for all architectures.
 .TP
-.BI \-b " eltorito_boot_image
+.BI \-b " eltorito_boot_image"
 Specifies the path and filename of the boot image to be used when making
 an "El Torito" bootable CD. The pathname must be relative to the source
 path specified to
-.B genisoimage.
+.BR genisoimage .
 This option is required to make an "El Torito" bootable CD.
 The boot image must be exactly the size of either a 1200, 1440, or a 2880
 kB floppy, and
@@ -398,9 +397,9 @@ Start with a new set of "El Torito" boot parameters.
 This allows to have more than one El Torito boot on a CD.
 A maximum of 63 El Torito boot entries may be put on a single CD.
 .TP
-.BI \-B " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+.BI \-B " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e"
 .TP
-.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e"
 Specifies a comma separated list of boot images that are needed to make
 a bootable CD for sparc systems.
 Partition 0 is used for the ISO9660 image, the first image file is mapped
@@ -432,7 +431,7 @@ For more information also see the
 section below.
 .sp
 If the special filename
-.B "..."
+.B ...
 is used, the actual and all following boot partitions are mapped to the
 previous partition. If
 .B genisoimage
@@ -442,7 +441,7 @@ all boot partitions are mapped to the partition that contains the ISO9660
 filesystem image and the generic boot image that is located in the first
 16 sectors of the disk is used for all architectures.
 .TP
-.BI \-G " generic_boot_image
+.BI \-G " generic_boot_image"
 Specifies the path and filename of the generic boot image to be used when making
 a generic bootable CD.
 The
@@ -469,11 +468,11 @@ Specifies that the created "El Torito" CD should be marked as not bootable. The
 system will provide an emulated drive for the image, but will boot off
 a standard boot device.
 .TP
-.BI \-boot\-load\-seg " segment_address
+.BI \-boot\-load\-seg " segment_address"
 Specifies the load segment address of the boot image for no-emulation
 "El Torito" CDs.
 .TP
-.BI \-boot\-load\-size " load_sectors
+.BI \-boot\-load\-size " load_sectors"
 Specifies the number of "virtual" (512-byte) sectors to load in
 no-emulation mode.  The default is to load the entire boot file.  Some
 BIOSes may have problems if this is not a multiple of 4.
@@ -484,10 +483,10 @@ will be patched in at offset 8 in the boot file.  If this option is
 given, the boot file is modified in the source filesystem, so make
 sure to make a copy if this file cannot be easily regenerated!  See
 the
-.B "EL TORITO BOOT INFO TABLE
+.B EL TORITO BOOT INFO TABLE
 section for a description of this table.
 .TP
-.BI \-C " last_sess_start,next_sess_start
+.BI \-C " last_sess_start,next_sess_start"
 This option is needed when
 .B genisoimage
 is used to create a CD Extra or the image of a second session or a 
@@ -499,7 +498,7 @@ sector number of the first sector in the last session of the disk
 that should be appended to.
 The second number is the starting sector number of the new session.
 The expected pair of numbers may be retrieved by calling
-.B "wodim \-msinfo ...
+.B wodim \-msinfo ...
 If the
 .B \-C
 option is used in conjunction with the
@@ -518,11 +517,11 @@ will create a filesystem image that is intended to be used for a second
 session on a CD Extra. This is a multi session CD that holds audio data
 in the first session and a ISO9660 filesystem in the second session.
 .TP
-.BI \-c " boot_catalog
+.BI \-c " boot_catalog"
 Specifies the path and filename of the boot catalog to be used when making
 an "El Torito" bootable CD. The pathname must be relative to the source
 path specified to
-.B genisoimage.
+.BR genisoimage .
 This option is required to make a bootable CD.
 This file will be inserted into the output tree and not created
 in the source filesystem, so be
@@ -544,7 +543,7 @@ ISO9660 file naming rules.
 It his option is not present, only names with a length > 31 are checked
 as these files are a hard violation of the ISO9660 standard.
 .TP
-.BI \-check\-session " FILE
+.BI \-check\-session " FILE"
 Check all old sessions for compliance with
 actual 
 .B genisoimage 
@@ -557,7 +556,7 @@ see description of
 .B \-M
 option.
 .TP
-.BI \-copyright " FILE
+.BI \-copyright " FILE"
 Specifies the copyright file name.
 There is space on the disc for 37 characters of information.
 This parameter can also be set in the file
@@ -579,7 +578,7 @@ If ISO9660:1999 has not been selected,
 this violates the ISO9660 standard, but it happens to work on many systems.
 Use with caution.
 .TP
-.BI \-dir\-mode " mode
+.BI \-dir\-mode " mode"
 Overrides the mode of directories used to create the image to
 .IR mode .
 Specifying this option automatically enables Rock Ridge extensions.
@@ -604,12 +603,12 @@ Follow symbolic links when generating the filesystem.  When this option is not
 in use, symbolic links will be entered using Rock Ridge if enabled, otherwise
 the file will be ignored.
 .TP
-.BI \-file\-mode " mode
+.BI \-file\-mode " mode"
 Overrides the mode of regular files used to create the image to
 .IR mode .
 Specifying this option automatically enables Rock Ridge extensions.
 .TP
-.BI \-gid " gid
+.BI \-gid " gid"
 Overrides the gid read from the source files to the value of
 .IR gid . 
 Specifying this option automatically enables Rock Ridge extensions.
@@ -626,7 +625,7 @@ if
 .I \-graft\-points
 has been specified.
 .TP
-.BI \-hide " glob
+.BI \-hide " glob"
 Hide
 .I glob
 from being seen on the ISO9660 or Rock Ridge directory.
@@ -644,12 +643,12 @@ Should be used with the
 .B \-hide\-joliet
 option. See README.hide for more details.
 .TP
-.BI \-hide\-list " file
+.BI \-hide\-list " file"
 A file containing a list of
 .I globs
 to be hidden as above.
 .TP
-.BI \-hidden " glob
+.BI \-hidden " glob"
 Add the hidden (existence) ISO9660 directory attribute for
 .IR glob .
 This attribute will prevent 
@@ -662,12 +661,12 @@ In order to match a directory name, make sure the pathname does not include
 a trailing '/' character.
 Multiple globs may be hidden.
 .TP
-.BI \-hidden\-list " file
+.BI \-hidden\-list " file"
 A file containing a list of
 .I globs
 to get the hidden attribute as above.
 .TP
-.BI \-hide\-joliet " glob
+.BI \-hide\-joliet " glob"
 Hide
 .I glob
 from being seen on the Joliet directory.
@@ -685,7 +684,7 @@ Should be used with the
 .B \-hide
 option. See README.hide for more details.
 .TP
-.BI \-hide\-joliet\-list " file
+.BI \-hide\-joliet\-list " file"
 A file containing a list of
 .I globs
 to be hidden as above.
@@ -723,10 +722,10 @@ section for more information on the
 .B RR_MOVED
 directory.
 .TP
-.BI \-input\-charset " charset
+.BI \-input\-charset " charset"
 Input charset that defines the characters used in local file names.
 To get a list of valid charset names, call
-.B "genisoimage \-input\-charset help.
+.BR "genisoimage \-input\-charset help" .
 To get a 1:1 mapping, you may use
 .B default
 as charset name. The default initial values are
@@ -735,16 +734,16 @@ on DOS based systems and
 .I iso8859-1
 on all other systems.
 See 
-.B "CHARACTER SETS
+.B CHARACTER SETS
 section below for more details.
 .TP
-.BI \-output\-charset " charset
+.BI \-output\-charset " charset"
 Output charset that defines the characters that will be used in Rock Ridge
 file names. Defaults to the input charset. See
-.B "CHARACTER SETS
+.B CHARACTER SETS
 section below for more details.
 .TP
-.BI \-iso\-level " level
+.BI \-iso\-level " level"
 Set the ISO9660 conformance level. Valid numbers are 1..3 and 4.
 .sp
 With level 1, files may only consist of one section and filenames are
@@ -800,14 +799,14 @@ Joliet specification - but appears to work. Use with caution. The number
 length of Directory Record (33), minus CD-ROM XA System Use Extension
 Information (14), divided by the UTF-16 character size (2).
 .TP
-.BI \-jcharset " charset
+.BI \-jcharset " charset"
 Same as using
 .B \-input\-charset
 .I charset
 and
 .B \-J
 options. See
-.B "CHARACTER SETS
+.B CHARACTER SETS
 section below for more details.
 .TP
 .B \-l
@@ -824,52 +823,52 @@ Outdated option reserved by POSIX.1-2001, use
 instead.
 This option will get POSIX.1-2001 semantics with genisoimage-2.02.
 .TP
-.BI \-jigdo\-jigdo " jigdo_file
+.BI \-jigdo\-jigdo " jigdo_file"
 Produce a jigdo .jigdo file as well as the .iso. See the
 .B JIGDO NOTES
 section below for more information.
 .TP
-.BI \-jigdo\-template " template_file
+.BI \-jigdo\-template " template_file"
 Produce a jigdo .template file as well as the .iso. See the
 .B JIGDO NOTES
 section below for more information.
 .TP
-.BI \-jigdo\-min\-file\-size " size
+.BI \-jigdo\-min\-file\-size " size"
 Specify the minimum size for a file to be listed in the .jigdo
 file. Default (and minimum allowed) is 1KB. See the
 .B JIGDO NOTES
 section below for more information.
 .TP
-.BI \-jigdo\-force\-md5 " path
+.BI \-jigdo\-force\-md5 " path"
 Specify a file pattern where files MUST be contained in the
 externally-suplied MD5 list as supplied by \-md5\-list. See the
 .B JIGDO NOTES
 section below for more information.
 .TP
-.BI \-jigdo\-exclude " path
+.BI \-jigdo\-exclude " path"
 Specify a file pattern where files will not be listed in the .jigdo
 file. See the
 .B JIGDO NOTES
 section below for more information.
 .TP
-.BI \-jigdo\-map " path
+.BI \-jigdo\-map " path"
 Specify a pattern mapping for the jigdo file
 (e.g. Debian=/mirror/debian). See the
 .B JIGDO NOTES
 section below for more information.
 .TP
-.BI \-md5\-list " md5_file
+.BI \-md5\-list " md5_file"
 Specify a file containing the MD5sums, sizes and pathnames of the
 files to be included in the .jigdo file. See the
 .B JIGDO NOTES
 section below for more information.
 .TP
-.BI \-log\-file " log_file
+.BI \-log\-file " log_file"
 Redirect all error, warning and informational messages to
 .I log_file
 instead of the standard error.
 .TP
-.BI \-m " glob
+.BI \-m " glob"
 Exclude
 .I glob
 from being written to CD-ROM.
@@ -899,7 +898,7 @@ option description should both be updated, they are wrong.
 Both now work identical and use filename globbing. A file is excluded if either
 the last component matches or the whole path matches.
 .TP
-.BI \-exclude\-list " file
+.BI \-exclude\-list " file"
 A file containing a list of
 .I globs
 to be exclude as above.
@@ -916,18 +915,18 @@ Although a conforming application needs to provide a buffer space of at
 least 37 characters, disks created with this option may cause a buffer
 overflow in the reading operating system. Use with extreme care.
 .TP
-.BI \-M " path
+.BI \-M " path"
 or
 .TP
-.BI \-M " device
+.BI \-M " device"
 or
 .TP
-.BI \-dev " device
+.BI \-dev " device"
 Specifies path to existing ISO9660 image to be merged. The alternate form
 takes a SCSI device specifier that uses the same syntax as the
-.B "dev=
+.B dev=
 parameter of
-.B wodim.
+.BR wodim .
 The output of 
 .B genisoimage
 will be a new session which should get written to the end of the
@@ -945,7 +944,7 @@ This violates the ISO9660 standard, but no one really uses the
 version numbers anyway.
 Use with caution.
 .TP
-.BI \-new\-dir\-mode " mode
+.BI \-new\-dir\-mode " mode"
 Mode to use when creating new directories in the filesystem image.  The default
 mode is 0555.
 .TP
@@ -1001,7 +1000,7 @@ This CE signature bug in
 .B genisoimage
 has been fixed in May 2003.
 .TP
-.BI \-o " filename
+.BI \-o " filename"
 is the name of the file to which the ISO9660 filesystem image should be
 written.  This can be a disk file, a tape drive, or it can correspond directly
 to the device name of the optical disc writer.  If not specified, stdout is
@@ -1034,7 +1033,7 @@ option has been made the default.
 Do not Pad the end by 150 sectors (300 kB) and do not make the the boot partitions
 start on a multiple of 16 sectors.
 .TP
-.BI \-path\-list " file
+.BI \-path\-list " file"
 A file containing a list of
 .I pathspec
 directories and filenames to be added to the ISO9660 filesystem. This list
@@ -1049,7 +1048,7 @@ Outdated option reserved by POSIX.1-2001, use
 instead.
 This option will get POSIX.1-2001 semantics with genisoimage-2.02.
 .TP
-.BI \-publisher " publisher_id
+.BI \-publisher " publisher_id"
 Specifies a text string that will be written into the volume header.
 This should describe the publisher of the CD-ROM, usually with a
 mailing address and phone number.  There is space on the disc for 128
@@ -1058,7 +1057,7 @@ characters of information.  This parameter can also be set in the file
 with PUBL=.
 If specified in both places, the command line version is used.
 .TP
-.BI \-p " preparer_id
+.BI \-p " preparer_id"
 Specifies a text string that will be written into the volume header.
 This should describe the preparer of the CD-ROM, usually with a mailing
 address and phone number.  There is space on the disc for 128
@@ -1071,7 +1070,7 @@ If specified in both places, the command line version is used.
 Print estimated filesystem size in multiples of the sector size (2048 bytes)
 and exit. This option is needed for
 Disk At Once mode and with some CD-R drives when piping directly into
-.B wodim.
+.BR wodim .
 In this case it is needed to know the size of the filesystem before the
 actual CD creation is done.
 The option \-print\-size allows to get this size from a "dry-run" before
@@ -1090,9 +1089,9 @@ and catch the number from
 .BR stdout .
 This may be done with:
 .sp
-.B "cdblocks=` genisoimage \-print\-size \-quiet .\|.\|. `
+.B cdblocks=` genisoimage \-print\-size \-quiet .\|.\|. `
 .sp
-.B "genisoimage .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s -"
+.B genisoimage .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s \-
 .TP
 .B \-quiet
 This makes
@@ -1133,7 +1132,7 @@ characters).
 This violates the ISO9660 standard, but it happens to work on many systems.
 Use with caution.
 .TP
-.BI \-root " dir
+.BI \-root " dir"
 Moves all files and directories into
 .I dir
 in the image. This is essentially the
@@ -1147,10 +1146,10 @@ in front of every pathspec, but is easier to use.
 may actually be several levels deep. It is
 created with the same permissions as other graft points.
 .TP
-.BI \-old-root " dir
+.BI \-old-root " dir"
 This option is necessary when writing a multisession
 image and the previous (or even older) session was written with
-.BI -root " dir.
+.BI -root " dir."
 Using a directory name not found in the previous session
 causes
 .B genisoimage
@@ -1185,7 +1184,7 @@ intentionally. Accessing several older versions of a file requires
 support by the operating system to choose which sessions are to be
 mounted.
 .TP
-.BI \-sort " sort file
+.BI \-sort " sort file"
 Sort file locations on the media. Sorting is controlled by a file that
 contains pairs of filenames and sorting offset weighting.
 If the weighting is higher, the file will be located closer to the
@@ -1203,12 +1202,12 @@ in the ISO9660 directory. It sorts the order in which the file data is
 written to the CD image - which may be useful in order to optimize the
 data layout on a CD. See README.sort for more details.
 .TP
-.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e
+.BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e"
 See
 .B \-B
 option above.
 .TP
-.BI \-sparc\-label " label
+.BI \-sparc\-label " label"
 Set the Sun disk label name for the Sun disk label that is created with the
 .B \-sparc-boot
 option.
@@ -1226,7 +1225,7 @@ work, the
 option must be specified. The resulting outout images will be named:
 .IR filename_00 , filename_01, filename_02 ...
 .TP
-.BI \-stream\-media\-size " #
+.BI \-stream\-media\-size " #"
 Select streaming operation and set the media size to # sectors.
 This allows you to pipe the output of the tar program into genisoimage
 and to create a ISO9660 filesystem without the need of an intermediate
@@ -1248,10 +1247,10 @@ The option
 creates simple ISO9660 filesystems only and may not used together with multi-session
 or hybrid filesystem options.
 .TP
-.BI \-stream\-file\-name " name
+.BI \-stream\-file\-name " name"
 Reserved for future use.
 .TP
-.BI \-sunx86\-boot " UFS-img,,,AUX1-img
+.BI \-sunx86\-boot " UFS-img,,,AUX1-img"
 Specifies a comma separated list of filesystem images that are needed to make
 a bootable CD for Solaris x86 systems.
 .sp
@@ -1279,20 +1278,20 @@ Slice 2 spans the whole CD slice 3 .\|.\|. slice 7 may be used for additional
 filesystem images that have been specified with this option.
 .sp
 A Solaris x86 boot CD uses a 1024 byte sized primary boot that uses the
-.B "El-Torito no-emulation 
+.B El-Torito no-emulation
 boot mode and a secondary generic boot that is in CD sectors 1\|.\|.15.
 For this reason, both
 .BI "-b " bootimage " -no\-emul\-boot
 and
-.BI \-G " genboot
+.BI \-G " genboot"
 must be specified.
 .TP
-.BI \-sunx86\-label " label
+.BI \-sunx86\-label " label"
 Set the SVr4 disk label name for the SVr4 disk label that is created with the
 .B \-sunx86-boot
 option.
 .TP
-.BI \-sysid " ID
+.BI \-sysid " ID"
 Specifies the system ID.
 There is space on the disc for 32 characters of information.
 This parameter can also be set in the file
@@ -1307,14 +1306,14 @@ There is also information present in the file that indicates the major and
 minor numbers for block and character devices, and each symlink has the name of
 the link file given.
 .TP
-.BI \-table\-name " TABLE_NAME
+.BI \-table\-name " TABLE_NAME"
 Alternative translation table file name (see above). Implies the
 .B \-T
 option.
 If you are creating a multi-session image you must use the same name
 as in the previous session.
 .TP
-.BI \-ucs\-level " level
+.BI \-ucs\-level " level"
 Set Unicode conformance level in the Joliet SVD. The default level is 3.
 It may be set to 1..3 using this option.
 .TP
@@ -1336,7 +1335,7 @@ in addition to the space needed for real
 .B UDF 
 data structures.
 .TP
-.BI \-uid " uid
+.BI \-uid " uid"
 Overrides the uid read from the source files to the value of
 .IR uid . 
 Specifying this option automatically enables Rock Ridge extensions.
@@ -1371,7 +1370,7 @@ These characters are though invalid often used by Microsoft systems.
 This violates the ISO9660 standard, but it happens to work on many systems.
 Use with caution.
 .TP
-.BI \-V " volid
+.BI \-V " volid"
 Specifies the volume ID (volume name or label) to be written into the
 master block. 
 There is space on the disc for 32 characters of information.
@@ -1383,7 +1382,7 @@ if you assign a volume ID, this is the name that will be used as the mount
 point used by the Solaris volume management system and the name that is
 assigned to the disc on a Microsoft Win32 or Apple Mac platform.
 .TP
-.BI \-volset " ID
+.BI \-volset " ID"
 Specifies the volset ID.
 There is space on the disc for 128 characters of information.
 This parameter can also be set in the file
@@ -1391,7 +1390,7 @@ This parameter can also be set in the file
 with VOLS=volset_id.
 If specified in both places, the command line version is used.
 .TP
-.BI \-volset\-size " #
+.BI \-volset\-size " #"
 Sets the volume set size to #.
 The volume set size is the number of CDs that are in a CD volume set.
 A volume set is a collection of one or more volumes, on which a set of
@@ -1417,7 +1416,7 @@ must be specified before
 .B \-volset\-seqno
 on each command line.
 .TP
-.BI \-volset\-seqno " #
+.BI \-volset\-seqno " #"
 Sets the volume set sequence number to #.
 The volume set sequence number is the index number of the current
 CD in a CD set.
@@ -1431,7 +1430,7 @@ on each command line.
 Verbose execution. If given twice on the command line, extra debug information
 will be printed.
 .TP
-.BI \-x " path
+.BI \-x " path"
 Exclude
 .I path
 from being written to CD-ROM.
@@ -1468,7 +1467,7 @@ On other operating systems you will need to call
 .B mkzftree
 by hand to decompress the files.
 
-.SH "HFS OPTIONS
+.SH "HFS OPTIONS"
 .TP
 .B \-hfs
 Create an ISO9660/HFS hybrid CD. This option should be used in conjunction
@@ -1493,16 +1492,16 @@ was specified. This versions of
 does not do this anymore. If you like to have Rock Ridge attributes,
 you need to specify this separately.
 .TP
-.BI \-map " mapping_file
+.BI \-map " mapping_file"
 Use the
 .I mapping_file
 to set the CREATOR and TYPE information for a file based on the
 filename's extension. A filename is 
 mapped only if it is not one of the know Apple/Unix file formats. See the
-.B "HFS CREATOR/TYPE
+.B HFS CREATOR/TYPE
 section below.
 .TP
-.BI \-magic " magic_file
+.BI \-magic " magic_file"
 The CREATOR and TYPE information is set by using a file's
 .I magic number
 (usually the first few bytes of a file). The
@@ -1511,17 +1510,17 @@ is only used if a file is not one of the known Apple/Unix file formats, or
 the filename extension has not been mapped using the
 .B \-map
 option. See the 
-.B "HFS CREATOR/TYPE
+.B HFS CREATOR/TYPE
 section below for more details.
 .TP
-.BI \-hfs\-creator " CREATOR
+.BI \-hfs\-creator " CREATOR"
 Set the default CREATOR for all files. Must be exactly 4 characters. See the
-.B "HFS CREATOR/TYPE
+.B HFS CREATOR/TYPE
 section below for more details.
 .TP
-.BI \-hfs\-type " TYPE
+.BI \-hfs\-type " TYPE"
 Set the default TYPE for all files. Must be exactly 4 characters. See the
-.B "HFS CREATOR/TYPE
+.B HFS CREATOR/TYPE
 section below for more details.
 .TP
 .B \-probe
@@ -1550,7 +1549,7 @@ Rock Ridge file names. See the
 .B HFS MACINTOSH FILE NAMES
 section below for more information.
 .TP
-.BI \-boot\-hfs\-file " driver_file
+.BI \-boot\-hfs\-file " driver_file"
 Installs the
 .I driver_file
 that
@@ -1564,13 +1563,13 @@ Generate an HFS partition table. By default, no partition table is generated,
 but some older Macintosh CD-ROM drivers need an HFS partition table on the
 CD-ROM to be able to recognize a hybrid CD-ROM.
 .TP
-.BI \-auto " AutoStart_file
+.BI \-auto " AutoStart_file"
 Make the HFS CD use the QuickTime 2.0 Autostart feature to launch an
 application or document. The given filename must be the name of a document or
 application located at the top level of the CD. The filename must be less
 than 12 characters. (Alpha).
 .TP
-.BI \-cluster\-size " size
+.BI \-cluster\-size " size"
 Set the size in bytes of the cluster or allocation units of PC Exchange
 files. Implies the
 .B \-\-exchange
@@ -1578,7 +1577,7 @@ option. See the
 .B HFS MACINTOSH FILE FORMATS
 section below.
 .TP
-.BI \-hide\-hfs " glob
+.BI \-hide\-hfs " glob"
 Hide
 .I glob
 from the HFS volume. The file or directory will still exist in the
@@ -1611,12 +1610,12 @@ options.
 In order to match a directory name, make sure the pathname does not include
 a trailing '/' character. See README.hide for more details.
 .TP
-.BI \-hide\-hfs\-list " file
+.BI \-hide\-hfs\-list " file"
 A file containing a list of
 .I globs
 to be hidden as above.
 .TP
-.BI \-hfs\-volid " hfs_volid
+.BI \-hfs\-volid " hfs_volid"
 Volume name for the HFS partition. This is the name that is
 assigned to the disc on a Macintosh and replaces the
 .I volid
@@ -1632,15 +1631,15 @@ View (view as Icons, Small Icons, etc.) are also preserved.
 This option may become set by default in the future.
 (Alpha).
 .TP
-.BI \-root\-info " file
+.BI \-root\-info " file"
 Set the location, size on screen, scroll positions, folder View etc. for the
 root folder of an HFS volume. See README.rootinfo for more information.
 (Alpha)
 .TP
-.BI \-prep\-boot " FILE
+.BI \-prep\-boot " FILE"
 PReP boot image file. Up to 4 are allowed. See README.prep_boot (Alpha)
 .TP
-.BI \-input\-hfs\-charset " charset
+.BI \-input\-hfs\-charset " charset"
 Input charset that defines the characters used in HFS file names when
 used with the
 .I \-mac\-name
@@ -1649,15 +1648,15 @@ The default charset is cp10000 (Mac Roman)
 .I cp10000
 (Mac Roman)
 See
-.B "CHARACTER SETS
+.B CHARACTER SETS
 and
-.B "HFS MACINTOSH FILE NAMES
+.B HFS MACINTOSH FILE NAMES
 sections below for more details.
 .TP
-.BI \-output\-hfs\-charset " charset
+.BI \-output\-hfs\-charset " charset"
 Output charset that defines the characters that will be used in the HFS
 file names. Defaults to the input charset. See
-.B "CHARACTER SETS
+.B CHARACTER SETS
 section below for more details.
 .TP
 .B \-hfs\-unlock
@@ -1667,10 +1666,10 @@ will create an HFS volume that is
 .IR locked .
 This option leaves the volume unlocked so that other applications (e.g.
 hfsutils) can modify the volume. See the
-.B "HFS PROBLEMS/LIMITATIONS
+.B HFS PROBLEMS/LIMITATIONS
 section below for warnings about using this option.
 .TP
-.BI \-hfs\-bless " folder_name
+.BI \-hfs\-bless " folder_name"
 "Bless" the given directory (folder). This is usually the 
 .B System Folder
 and is used in creating HFS bootable CDs. The name of the directory must
@@ -1680,7 +1679,7 @@ sees it. e.g. if the given pathspec is ./cddata and the required folder is
 called System Folder, then the whole path name is "./cddata/System Folder"
 (remember to use quotes if the name contains spaces).
 .TP
-.BI \-hfs\-parms " PARAMETERS
+.BI \-hfs\-parms " PARAMETERS"
 Override certain parameters used to create the HFS file system. Unlikely to
 be used in normal circumstances. See the libhfs_iso/hybrid.h source file for
 details.
@@ -1731,7 +1730,7 @@ Look for MacOS X AppleDouble Macintosh files
 .B \-\-osx\-hfs
 Look for MacOS X HFS Macintosh files
 
-.SH "CHARACTER SETS
+.SH "CHARACTER SETS"
 .B genisoimage
 processes file names in a POSIX compliant way as strings of 8-bit characters.
 To represent all codings for all languages, 8-bit characters are not
@@ -1758,7 +1757,7 @@ If a character is coded in
 .BR UTF-32 " or " UTF-16 "
 coded Unicode character.
 If a character is coded in
-.B "7-Bit ASCII
+.B 7-Bit ASCII
 (used in USA and other countries with limited character set)
 is maps 1:1 to a 
 .BR UTF-32 ", " UTF-16 " or " UTF-8
@@ -1861,7 +1860,7 @@ option. Defaults to the input HFS character set.
 There are a number of character sets built in to
 .IR genisoimage .
 To get a listing, use
-.B "genisoimage \-input\-charset help.
+.BR "genisoimage \-input\-charset help" .
 This list doesn't include the charset derived from the current locale,
 if genisoimage is built with iconv support.
 .PP
@@ -1903,7 +1902,7 @@ Any character that
 .B genisoimage
 can not convert will be replaced with a '_' character.
 .PP
-.SH "HFS CREATOR/TYPE
+.SH "HFS CREATOR/TYPE"
 A Macintosh file has two properties associated with it which define
 which application created the file, the
 .I CREATOR
@@ -2095,7 +2094,7 @@ file, then these values override the default CREATOR and TYPE.
 A full CREATOR/TYPE database can be found at 
 http://www.angelfire.com/il/szekely/index.html
 
-.SH "HFS MACINTOSH FILE FORMATS
+.SH "HFS MACINTOSH FILE FORMATS"
 Macintosh files have two parts called the
 .I Data
 and
@@ -2220,7 +2219,7 @@ will attempt to set the CREATOR, TYPE, date and possibly other flags from
 the finder info. Additionally, if it exists, the Macintosh filename is set
 from the finder info, otherwise the Macintosh name is based on the Unix
 filename - see the
-.B "HFS MACINTOSH FILE NAMES
+.B HFS MACINTOSH FILE NAMES
 section below.
 .PP
 When using the
@@ -2254,7 +2253,7 @@ files are packed on the disk more efficiently and it may be possible to fit
 more files on a CD - important when the total size of the source files is
 approaching 650MB.
 
-.SH "HFS MACINTOSH FILE NAMES
+.SH "HFS MACINTOSH FILE NAMES"
 Where possible, the HFS filename that is stored with an Apple/Unix file
 is used for the HFS part of the CD. However, not all the Apple/Unix
 encodings store the HFS filename with the finderinfo. In these cases,
@@ -2367,13 +2366,13 @@ will be seen as
 but
 .I abcdefghi
 will be seen as
-.I ABCDEFGHI.
+.IR ABCDEFGHI .
 i.e. with a '.' at the end - don't know if this is a Macintosh
 problem or m\&kisofs/mkhybrid problem. All filenames will be in upper case
 when viewed on a Macintosh. Of course, DOS/Win3.X machines will not be able
 to see Level 2 filenames...
 
-.SH "HFS CUSTOM VOLUME/FOLDER ICONS
+.SH "HFS CUSTOM VOLUME/FOLDER ICONS"
 To give a HFS CD a custom icon, make sure the root (top level) folder includes
 a standard Macintosh volume icon file. To give a volume a custom icon on
 a Macintosh, an icon has to be pasted over the volume's icon in the "Get Info"
@@ -2420,7 +2419,7 @@ You may want to hide the icon files from the ISO9660 and Joliet trees.
 To give a custom icon to a Joliet CD, follow the instructions found at:
 http://www.fadden.com/cdrfaq/faq03.html#[3-21]
 
-.SH "HFS BOOT DRIVER
+.SH "HFS BOOT DRIVER"
 It 
 .I may
 be possible to make the hybrid CD bootable on a Macintosh.
@@ -2455,7 +2454,7 @@ HFS partition created by
 .IP "PLEASE NOTE"
 By using a driver from an Apple CD and copying Apple software to your CD,
 you become liable to obey Apple Computer, Inc. Software License Agreements.
-.SH "EL TORITO BOOT INFORMATION TABLE
+.SH "EL TORITO BOOT INFORMATION TABLE"
 When the
 .B \-boot\-info\-table
 option is given,
@@ -2496,7 +2495,7 @@ and a boot command line (
 kernel, and the choice of which one to use will be made by the
 firmware. Optionally, a ramdisk can be used for the root filesystem
 using
-.B \-hppa\-cmdline.
+.BR \-hppa\-cmdline .
 .SH "JIGDO NOTES"
 Jigdo is a useful tool to help in the distribution of large files like CD and
 DVD images. See Richard Atterer's site for more details. Debian CDs and DVD ISO
@@ -2842,7 +2841,7 @@ mode.
 .PP
 There may be some other ones.  Please, report them to the author.
 
-.SH "HFS PROBLEMS/LIMITATIONS
+.SH "HFS PROBLEMS/LIMITATIONS"
 I have had to make several assumptions on how I expect the modified
 libhfs routines to work, however there may be situations that either
 I haven't thought of, or come across when these assumptions fail.
@@ -2910,7 +2909,7 @@ the real limit will be somewhat less than this.
 The resulting hybrid volume can be accessed on a Unix machine by using
 the hfsutils routines. However, no changes can be made to the volume as it
 is set as
-.B locked.
+.IR locked .
 The option
 .B \-hfs\-unlock
 will create an output image that is unlocked - however no changes should be
@@ -2961,12 +2960,12 @@ options.
 should be able to create HFS hybrid images over 4Gb, although this has not
 been fully tested.
 
-.SH "SEE ALSO
+.SH "SEE ALSO"
 .BR wodim (1),
 .BR mkzftree (8),
 .BR magic (5).
 
-.SH "FUTURE IMPROVEMENTS
+.SH "FUTURE IMPROVEMENTS"
 Some sort of gui interface.
 .SH AVAILABILITY
 .B m\&kisofs
@@ -2975,7 +2974,7 @@ http://alioth.debian.org/projects/debburn/. For other implementations/spinoffs
 of genisoimage, look at the homepage of the particular developers.
 .B hfsutils
 from ftp://ftp.mars.org/pub/hfs
-.SH "MAILING LISTS
+.SH "MAILING LISTS"
 If you want to actively take part on the development of m\&kisofs,
 you may join the Cdrkit developers mailing list by following the instructions on:
 .nf
