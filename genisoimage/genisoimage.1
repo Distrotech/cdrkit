@@ -16,8 +16,10 @@
 .if n .ds u ue
 .if n .ds s sz
 .TH GENISOIMAGE 1 "24 Aug 2006" "Version 2.01"
+.\" ----------------------------------------
 .SH NAME
 genisoimage \- create an hybrid ISO9660/JOLIET/HFS filesystem with optional Rock Ridge attributes.
+.\" ----------------------------------------
 .SH SYNOPSIS
 .B genisoimage
 [
@@ -28,6 +30,7 @@ genisoimage \- create an hybrid ISO9660/JOLIET/HFS filesystem with optional Rock
 .I filename
 ]
 .I pathspec [pathspec ...]
+.\" ----------------------------------------
 .SH DESCRIPTION
 .B genisoimage
 is a pre-mastering program to generate ISO9660/JOLIET/HFS hybrid
@@ -140,14 +143,13 @@ directory, and it is possible to graft files or directories onto the
 cdrom image with names different than what they have in the source filesystem.  This is
 easiest to illustrate with a couple of examples.   Let's start by assuming that a local
 file ../old.lis exists, and you wish to include it in the cdrom image.
-
-
-	foo/bar/=../old.lis
-
+.IP
+foo/bar/=../old.lis
+.PP
 will include the file old.lis in the cdrom image at /foo/bar/old.lis, while
-
-	foo/bar/xxx=../old.lis
-
+.IP
+foo/bar/xxx=../old.lis
+.PP
 will include the file old.lis in the cdrom image at /foo/bar/xxx.  The
 same sort of syntax can be used with directories as well.
 .B genisoimage
@@ -166,7 +168,7 @@ references in this man page to
 .I Unix
 can be replaced with
 .IR Win32 .
-
+.\" ----------------------------------------
 .SH OPTIONS
 .TP
 .BI \-abstract " FILE"
@@ -345,16 +347,16 @@ within each of the additional boot images must contain a primary boot
 that works for the appropriate sparc architecture. The rest of each
 of the images usually contains an ufs filesystem that is used primary
 kernel boot stage.
-.sp
+.IP
 The implemented boot method is the boot method found with SunOS 4.x and SunOS 5.x.
 However, it does not depend on SunOS internals but only on properties of
 the Open Boot prom. For this reason, it should be usable for any OS
 that boots off a sparc system.
-.sp
+.IP
 For more information also see the 
 .B NOTES
 section below.
-.sp
+.IP
 If the special filename
 .B ...
 is used, the actual and all following boot partitions are mapped to the
@@ -379,13 +381,13 @@ will use this size when creating the output ISO9660
 filesystem. It is assumed that the first 512 byte sector should be read
 from the boot image (it is essentially emulating a normal floppy drive).
 This will work, for example, if the boot image is a LILO based boot floppy.
-.sp
+.IP
 If the boot image is not an image of a floppy, you need to add one of the
 options:
 .BR \-hard\-disk\-boot " or " \-no\-emul\-boot .
 If the system should not boot off the emulated disk, use
 .BR \-no\-boot .
-.sp
+.IP
 If the
 .B \-sort
 option has not been specified, the boot images are sorted
@@ -420,16 +422,16 @@ within each of the additional boot images must contain a primary boot
 that works for the appropriate sparc architecture. The rest of each
 of the images usually contains an ufs filesystem that is used primary
 kernel boot stage.
-.sp
+.IP
 The implemented boot method is the boot method found with SunOS 4.x and SunOS 5.x.
 However, it does not depend on SunOS internals but only on properties of
 the Open Boot prom. For this reason, it should be usable for any OS
 that boots off a sparc system.
-.sp
+.IP
 For more information also see the 
 .B NOTES
 section below.
-.sp
+.IP
 If the special filename
 .B ...
 is used, the actual and all following boot partitions are mapped to the
@@ -528,7 +530,7 @@ in the source filesystem, so be
 sure the specified filename does not conflict with an existing file, as
 it will be excluded. Usually a name like "boot.catalog" is
 chosen.
-.sp
+.IP
 If the
 .B \-sort
 option has not been specified, the boot catalog sorted
@@ -745,23 +747,23 @@ section below for more details.
 .TP
 .BI \-iso\-level " level"
 Set the ISO9660 conformance level. Valid numbers are 1..3 and 4.
-.sp
+.IP
 With level 1, files may only consist of one section and filenames are
 restricted to 8.3 characters.
-.sp
+.IP
 With level 2, files may only consist of one section.
-.sp
+.IP
 With level 3, no restrictions (other than ISO-9660:1988) do apply.
-.sp
+.IP
 With all ISO9660 levels from 1..3, all filenames are restricted to upper
 case letters, numbers and the underscore (_). The maximum filename
 length is restricted to 31 characters, the directory nesting level
 is restricted to 8 and the maximum path length is limited to 255 characters.
-.sp
+.IP
 Level 4 officially does not exists but 
 .B genisoimage
 maps it to ISO-9660:1999 which is ISO9660 version 2.
-.sp
+.IP
 With level 4, an enhanced volume descriptor with version number
 and file structure version number set to 2 is emitted.
 There may be more than 8 levels of directory nesting,
@@ -773,7 +775,7 @@ file names do not have version numbers,
 .\"     originator and the recipient of the volume),
 the maximum length for files and directory is raised to 207.
 If Rock Ridge is used, the maximum ISO9660 name length is reduced to 197.
-.sp
+.IP
 When creating Version 2 images,
 .B genisoimage
 emits an enhanced volume descriptor which looks similar to a primary volume
@@ -883,13 +885,13 @@ is matched against the
 part of the directory entry.
 Multiple globs may be excluded.
 Example:
-
-genisoimage \-o rom \-m '*.o' \-m core \-m foobar
-
+.sp
+     genisoimage \-o rom \-m '*.o' \-m core \-m foobar
+.sp
 would exclude all files ending in ".o", called "core" or "foobar" to be
 copied to CD-ROM. Note that if you had a directory called "foobar" it too (and
 of course all its descendants) would be excluded.
-.sp
+.IP
 NOTE: The
 .B \-m
 and
@@ -973,7 +975,7 @@ Don't split the SL components, but begin a new Continuation Area (CE)
 instead. This may waste some space, but the SunOS 4.1.4 cdrom driver
 has a bug in reading split SL components (link_size = component_size 
 instead of link_size += component_size).
-.sp
+.IP
 Note that this option has been introduced by Eric Youngdale in 1997.
 It is questionable whether it makes sense at all.
 When it has been introduced,
@@ -989,7 +991,7 @@ Don't split the SL fields, but begin a new Continuation Area (CE)
 instead. This may waste some space, but the SunOS 4.1.4 and
 Solaris 2.5.1 cdrom driver have a bug in reading split SL fields
 (a `/' can be dropped).
-.sp
+.IP
 Note that this option has been introduced by Eric Youngdale in 1997.
 It is questionable whether it makes sense at all.
 When it has been introduced,
@@ -1016,14 +1018,14 @@ is used, then there is a padding at the end of the ISO9660 partition
 and before the beginning of the boot partitions.
 The size of this padding is chosen to make the first boot partition start
 on a sector number that is a multiple of 16.
-.sp
+.IP
 The padding is needed as many operating systems (e.g. Linux)
 implement read ahead bugs in their filesystem I/O. These bugs result in read
 errors on one or more files that are located at the end of a track. They are
 usually present when the CD is written in Track at Once mode or when
 the disk is written as mixed mode CD where an audio track follows the
 data track.
-.sp
+.IP
 To avoid problems with I/O error on the last file on the filesystem,
 the 
 .B \-pad
@@ -1089,9 +1091,9 @@ and catch the number from
 .BR stdout .
 This may be done with:
 .sp
-.B cdblocks=` genisoimage \-print\-size \-quiet .\|.\|. `
-.sp
-.B genisoimage .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s \-
+     cdblocks=` genisoimage \-print\-size \-quiet .\|.\|. `
+.br
+     genisoimage .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s \-
 .TP
 .B \-quiet
 This makes
@@ -1141,7 +1143,6 @@ same as using
 and adding
 .I dir
 in front of every pathspec, but is easier to use.
-
 .I dir
 may actually be several levels deep. It is
 created with the same permissions as other graft points.
@@ -1154,12 +1155,10 @@ Using a directory name not found in the previous session
 causes
 .B genisoimage
 to abort with an error.
-
 Without this option,
 .B genisoimage
 would not be able to find unmodified files and would
 be forced to write their data into the image once more.
-
 .B \-root
 and
 .B \-old-root
@@ -1175,7 +1174,6 @@ the second one in
 .BR backup_2 ,
 but only modified or new files need to be written
 into the second session.
-
 Without these options, new files would be added and old ones would be
 preserved. But old ones would be overwritten if the file was
 modified. Recovering the files by copying the whole directory back
@@ -1241,7 +1239,7 @@ specified media size. If
 .B \-no\-pad
 has been specified, the file size is 50 sectors less than the specified media size.
 If the file is smaller, then genisoimage will write padding. This may take a while.
-.sp
+.IP
 The option 
 .B \-stream\-media\-size
 creates simple ISO9660 filesystems only and may not used together with multi-session
@@ -1253,7 +1251,7 @@ Reserved for future use.
 .BI \-sunx86\-boot " UFS-img,,,AUX1-img"
 Specifies a comma separated list of filesystem images that are needed to make
 a bootable CD for Solaris x86 systems.
-.sp
+.IP
 Note that partition 1 is used for the ISO9660 image and that partition 2 is
 the whole disk, so partition 1 and 2 may not be used by external partition data.
 The first image file is mapped to partition 0.
@@ -1263,7 +1261,7 @@ The maximum number of supported partitions is 8 (although the Solaris x86
 partition table could support up to 16 partitions), so it is impossible
 to specify more than 6 partition images.
 This option is required to make a bootable CD for Solaris x86 systems.
-.sp
+.IP
 If the
 .B \-sunx86\-boot
 option has been specified, the first sector of the resulting image will
@@ -1276,7 +1274,7 @@ filesystem image that is used to boot the PC and slice 1 for
 the ISO9660 image.
 Slice 2 spans the whole CD slice 3 .\|.\|. slice 7 may be used for additional
 filesystem images that have been specified with this option.
-.sp
+.IP
 A Solaris x86 boot CD uses a 1024 byte sized primary boot that uses the
 .B El-Torito no-emulation
 boot mode and a secondary generic boot that is in CD sectors 1\|.\|.15.
@@ -1395,7 +1393,7 @@ Sets the volume set size to #.
 The volume set size is the number of CDs that are in a CD volume set.
 A volume set is a collection of one or more volumes, on which a set of
 files is recorded.
-.sp
+.IP
 Volume Sets are not intended to be used to create a set numbered CDs
 that are part of e.g. a Operation System installation set of CDs.
 Volume Sets are rather used to record a big directory tree that would not
@@ -1404,12 +1402,12 @@ Each volume of a Volume Set contains a description of all the directories
 and files that are recorded on the volumes where the sequence numbers
 are less than, or equal to, the assigned Volume Set Size of the current
 volume.
-.sp
+.IP
 .B genisoimage
 currently does not support a
 .B \-volset\-size
 that is larger than 1.
-.sp
+.IP
 The option
 .B \-volset\-size
 must be specified before
@@ -1439,8 +1437,8 @@ must be the complete pathname that results from concatenating the pathname
 given as command line argument and the path relative to this directory.
 Multiple paths may be excluded.
 Example: 
-
-genisoimage \-o cd \-x /local/dir1 \-x /local/dir2 /local
+.sp
+     genisoimage \-o cd \-x /local/dir1 \-x /local/dir2 /local
 .sp
 NOTE: The
 .B \-m
@@ -1466,7 +1464,7 @@ The resulting disks are only transparently readable if used on Linux.
 On other operating systems you will need to call
 .B mkzftree
 by hand to decompress the files.
-
+.\" ----------------------------------------
 .SH "HFS OPTIONS"
 .TP
 .B \-hfs
@@ -1586,9 +1584,9 @@ ISO9660 and/or Joliet directory.
 is a shell wild-card-style pattern that must match any part of the filename
 Multiple globs may be excluded.
 Example:
-
-genisoimage \-o rom \-hfs \-hide\-hfs '*.o' \-hide\-hfs foobar
-
+.sp
+     genisoimage \-o rom \-hfs \-hide\-hfs '*.o' \-hide\-hfs foobar
+.sp
 would exclude all files ending in ".o" or called "foobar" 
 from the HFS volume. Note that if you had a directory called
 "foobar" it too (and of course all its descendants) would be excluded.
@@ -1596,9 +1594,9 @@ The
 .I glob
 can also be a path name relative to the source directories given on the
 command line. Example:
-
-genisoimage \-o rom \-hfs \-hide\-hfs src/html src
-
+.sp
+     genisoimage \-o rom \-hfs \-hide\-hfs src/html src
+.sp
 would exclude just the file or directory called "html" from the "src"
 directory. Any other file or directory called "html" in the tree will
 not be excluded.
@@ -1729,7 +1727,7 @@ Look for MacOS X AppleDouble Macintosh files
 .TP
 .B \-\-osx\-hfs
 Look for MacOS X HFS Macintosh files
-
+.\" ----------------------------------------
 .SH "CHARACTER SETS"
 .B genisoimage
 processes file names in a POSIX compliant way as strings of 8-bit characters.
@@ -1821,7 +1819,6 @@ set as the staring point. The default input character sets are
 on DOS based systems and
 .I iso8859-1
 on all other systems.
-
 If the
 .I \-J
 option is given, then the Unicode equivalents of the input character set
@@ -1872,13 +1869,13 @@ character sets.
 The format of the character set files is the same as the mapping files
 available from http://www.unicode.org/Public/MAPPINGS The format of these
 files is:
-
-	Column #1 is the input byte code (in hex as 0xXX)
+.sp
+     Column #1 is the input byte code (in hex as 0xXX)
 .br
-	Column #2 is the Unicode (in hex as 0xXXXX)
+     Column #2 is the Unicode (in hex as 0xXXXX)
 .br
-	Rest of the line is ignored.
-
+     Rest of the line is ignored.
+.sp
 Any blank line, line without two (or more) columns in the above format
 or comments lines (starting with the # character) are ignored without any
 warnings. Any missing input code is mapped to Unicode character 0x0000.
@@ -1902,6 +1899,7 @@ Any character that
 .B genisoimage
 can not convert will be replaced with a '_' character.
 .PP
+.\" ----------------------------------------
 .SH "HFS CREATOR/TYPE"
 A Macintosh file has two properties associated with it which define
 which application created the file, the
@@ -2093,7 +2091,7 @@ file, then these values override the default CREATOR and TYPE.
 .PP
 A full CREATOR/TYPE database can be found at 
 http://www.angelfire.com/il/szekely/index.html
-
+.\" ----------------------------------------
 .SH "HFS MACINTOSH FILE FORMATS"
 Macintosh files have two parts called the
 .I Data
@@ -2252,7 +2250,7 @@ filenames. However, the Apple extensions do give the advantage that the
 files are packed on the disk more efficiently and it may be possible to fit 
 more files on a CD - important when the total size of the source files is
 approaching 650MB.
-
+.\" ----------------------------------------
 .SH "HFS MACINTOSH FILE NAMES"
 Where possible, the HFS filename that is stored with an Apple/Unix file
 is used for the HFS part of the CD. However, not all the Apple/Unix
@@ -2371,7 +2369,7 @@ i.e. with a '.' at the end - don't know if this is a Macintosh
 problem or m\&kisofs/mkhybrid problem. All filenames will be in upper case
 when viewed on a Macintosh. Of course, DOS/Win3.X machines will not be able
 to see Level 2 filenames...
-
+.\" ----------------------------------------
 .SH "HFS CUSTOM VOLUME/FOLDER ICONS"
 To give a HFS CD a custom icon, make sure the root (top level) folder includes
 a standard Macintosh volume icon file. To give a volume a custom icon on
@@ -2386,29 +2384,29 @@ Probably the easiest way to create a custom icon that genisoimage can use, is to
 format a blank HFS floppy disk on a Mac, paste an icon to its "Get Info"
 box. If using Linux with the HFS module installed, mount the floppy using
 something like:
-
-	mount \-t hfs /dev/fd0 /mnt/floppy
-
+.IP
+mount \-t hfs /dev/fd0 /mnt/floppy
+.PP
 The floppy will be mounted as a CAP file system by default. Then run genisoimage
 using something like:
-
-	genisoimage \-\-cap \-o output source_dir /mnt/floppy
-
+.IP
+genisoimage \-\-cap \-o output source_dir /mnt/floppy
+.PP
 If you are not using Linux, then you can use the hfsutils to copy the icon
 file from the floppy. However, care has to be taken, as the icon file
 contains a control character. e.g.
-
-	hmount /dev/fd0
+.IP
+hmount /dev/fd0
 .br
-	hdir \-a
+hdir \-a
 .br
-	hcopy \-m Icon^V^M icon_dir/icon
-
+hcopy \-m Icon^V^M icon_dir/icon
+.PP
 Where '^V^M' is control\-V followed by control\-M. Then run 
 .B genisoimage
 by using something like:
-
-	genisoimage \-\-macbin \-o output source_dir icon_dir
+.IP
+genisoimage \-\-macbin \-o output source_dir icon_dir
 .PP
 The procedure for creating/using custom folder icons is very similar - paste
 an icon to folder's "Get Info" box and transfer the resulting 'Icon\\r'
@@ -2418,7 +2416,7 @@ You may want to hide the icon files from the ISO9660 and Joliet trees.
 .PP
 To give a custom icon to a Joliet CD, follow the instructions found at:
 http://www.fadden.com/cdrfaq/faq03.html#[3-21]
-
+.\" ----------------------------------------
 .SH "HFS BOOT DRIVER"
 It 
 .I may
@@ -2454,6 +2452,7 @@ HFS partition created by
 .IP "PLEASE NOTE"
 By using a driver from an Apple CD and copying Apple software to your CD,
 you become liable to obey Apple Computer, Inc. Software License Agreements.
+.\" ----------------------------------------
 .SH "EL TORITO BOOT INFORMATION TABLE"
 When the
 .B \-boot\-info\-table
@@ -2481,10 +2480,11 @@ Offset	Name	Size	Meaning
 24	bi_reserved	40 bytes	Reserved
 .fi
 .RE
-.sp
+.IP
 The 32-bit checksum is the sum of all the 32-bit words in the boot
 file starting at byte offset 64.  All linear block addresses (LBAs)
 are given in CD sectors (normally 2048 bytes).
+.\" ----------------------------------------
 .SH "HPPA NOTES"
 To make a bootable CD for HPPA, at the very least a boot loader file (
 .B \-hppa\-bootloader
@@ -2496,6 +2496,7 @@ kernel, and the choice of which one to use will be made by the
 firmware. Optionally, a ramdisk can be used for the root filesystem
 using
 .BR \-hppa\-cmdline .
+.\" ----------------------------------------
 .SH "JIGDO NOTES"
 Jigdo is a useful tool to help in the distribution of large files like CD and
 DVD images. See Richard Atterer's site for more details. Debian CDs and DVD ISO
@@ -2513,7 +2514,7 @@ MD5sum   File size  Path
 32 chars 12 chars   to end of line
 .fi
 .RE
-.sp
+.IP
 The MD5sum should be written in jigdo's pseudo-base64 format. The file
 size should be in decimal, and the path to the file must be absolute.
 .PP
@@ -2536,6 +2537,7 @@ onto a mirror-style configuration. Specify how to map paths using the
 \-jigdo\-map option. Using "Debian=/mirror/debian" will cause all
 paths starting with "/mirror/debian" to be mapped to "Debian:<file>"
 in the output jigdo file.
+.\" ----------------------------------------
 .SH CONFIGURATION
 .B genisoimage
 looks for the
@@ -2640,7 +2642,7 @@ command line option.
 .B genisoimage
 can also be configured at compile time with defaults for many of these fields.
 See the file defaults.h.
-
+.\" ----------------------------------------
 .SH EXAMPLES
 .PP
 To create a vanilla ISO9660 filesystem image in the file 
@@ -2672,7 +2674,7 @@ ISO9660 filesystem with the tar archive call:
 .PP
 % star \-c . | genisoimage \-stream\-media\-size 333000 | \\
 .br
-wodim dev=b,t,l \-dao tsize=333000s \-
+     wodim dev=b,t,l \-dao tsize=333000s \-
 .PP
 To create a HFS hybrid CD with the Joliet and Rock Ridge extensions of
 the source directory
@@ -2742,7 +2744,7 @@ ISO9660/Rock Ridge CD.
 .PP
 There are probably all sorts of strange results possible with
 combinations of the hide options ...
-
+.\" ----------------------------------------
 .SH AUTHOR
 .PP
 .br
@@ -2771,6 +2773,7 @@ libunls code, Copyright (C) James Pearson 2000, (C) Joerg Schilling 2001-2006, (
 iconv code, Copyright (C) 2003 Jungshik Shin, (C) 2003 Jaakko Heinonen
 .PP
 See MAINTAINER section for contact information.
+.\" ----------------------------------------
 .SH NOTES
 .PP
 .B genisoimage
@@ -2807,6 +2810,7 @@ that unfortunately is not Sparc CD boot compliant.
 It is annoyingly to see that the Authors of SILO don't fix SILO but instead
 provide a completely unneeded "patch" to genisoimage that incorporates far
 more source than the fix for SILO would need.
+.\" ----------------------------------------
 .SH BUGS
 .TP
 \(bu
@@ -2817,17 +2821,15 @@ ISO9660 filesystem will have an incorrect file reference count.
 Does not check for SUSP record(s) in "." entry of the
 root directory to verify the existence of Rock Ridge
 enhancements.
-.sp
 This problem is present when reading old sessions while
 adding data in multi-session mode.
 .TP
 \(bu
 Does not properly read relocated directories in multi-session
 mode when adding data.
-.sp
 Any relocated deep directory is lost if the new session does not
 include the deep directory.
-.sp
+.IP
 Repeat by: create first session with deep directory relocation
 then add new session with a single dir that differs from the
 old deep path.
@@ -2840,7 +2842,7 @@ Does not create whole_name entry for RR_MOVED in multi-session
 mode.
 .PP
 There may be some other ones.  Please, report them to the author.
-
+.\" ----------------------------------------
 .SH "HFS PROBLEMS/LIMITATIONS"
 I have had to make several assumptions on how I expect the modified
 libhfs routines to work, however there may be situations that either
@@ -2959,14 +2961,15 @@ options.
 .B genisoimage
 should be able to create HFS hybrid images over 4Gb, although this has not
 been fully tested.
-
+.\" ----------------------------------------
 .SH "SEE ALSO"
 .BR wodim (1),
 .BR mkzftree (8),
 .BR magic (5).
-
+.\" ----------------------------------------
 .SH "FUTURE IMPROVEMENTS"
 Some sort of gui interface.
+.\" ----------------------------------------
 .SH AVAILABILITY
 .B m\&kisofs
 is available as part of the cdrkit package from
@@ -2974,6 +2977,7 @@ http://alioth.debian.org/projects/debburn/. For other implementations/spinoffs
 of genisoimage, look at the homepage of the particular developers.
 .B hfsutils
 from ftp://ftp.mars.org/pub/hfs
+.\" ----------------------------------------
 .SH "MAILING LISTS"
 If you want to actively take part on the development of m\&kisofs,
 you may join the Cdrkit developers mailing list by following the instructions on:
@@ -2990,7 +2994,7 @@ The mail address of the list is:
 .B
 debburn-devel@lists.alioth.debian.org
 .fi
-
+.\" ----------------------------------------
 .SH MAINTAINER
 .PP
 This is the Cdrkit spinoff of the original mkisofs application. Maintained by:
@@ -3014,21 +3018,18 @@ Germany
 .nf
 James Pearson (HFS MKHYBRID MAINTAINER)
 j.pearson@ge.ucl.ac.uk
-
 .PP
 If you have support questions, send them to:
 .PP
 .B
 debburn-devel@lists.alioth.debian.org
-
 .PP
 Note that Cdrkit is not affiliated to Cdrtools and vice versa.
-
+.\" ----------------------------------------
 .SH ACKNOWLEDGEMENTS
 UNIX is a registered trademark of The Open Group in the US and other countries.
-
+.\" ----------------------------------------
 .SH SOURCES
 .PP
 .br
 [1] Cdrtools 2.01.01a08 from May 2006, http://cdrecord.berlios.de
-
