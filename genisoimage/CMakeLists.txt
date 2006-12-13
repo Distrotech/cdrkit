@@ -62,3 +62,4 @@ diag/isodump.1
 diag/isoinfo.1
 diag/isovfy.1
 DESTINATION share/man/man1)
+INSTALL(FILES genisoimagerc.5 DESTINATION share/man/man5)
