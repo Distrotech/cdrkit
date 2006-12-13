@@ -94,7 +94,7 @@ assigns weightings to each filename, and if two names that are otherwise the
 same are found the name with the lower priority is renamed to have a 3 digit
 number as an extension (where the number is guaranteed to be unique).  An
 example of this would be the files foo.bar and
-foo.bar.~1~ - the file foo.bar.~1~ would be written as FOO000.BAR;1 and the file
+foo.bar.~1~ \(em the file foo.bar.~1~ would be written as FOO000.BAR;1 and the file
 foo.bar would be written as FOO.BAR;1
 .PP
 When used with various HFS options,
@@ -154,7 +154,7 @@ will include the file old.lis in the cdrom image at /foo/bar/xxx.  The
 same sort of syntax can be used with directories as well.
 .B genisoimage
 will create any directories required such that the graft
-points exist on the cdrom image - the directories do not need to
+points exist on the cdrom image \(em the directories do not need to
 appear in one of the paths.  By default, any directories that are created on 
 the fly like this will have permissions 0555 and appear to be owned by the
 person running genisoimage.  If you wish other permissions or owners of
@@ -552,7 +552,7 @@ actual
 .B genisoimage 
 ISO9660 file naming rules.
 This is a high level option that is a combination of the options:
-.BI \-M " FILE " "\-C 0,0 \-check\-oldnames
+.BI \-M " FILE " "\-C 0,0 \-check\-oldnames"
 For the parameter 
 .I FILE
 see description of
@@ -623,8 +623,8 @@ but may have other effects in future.
 .B \-graft\-points
 Allow to use graft points for filenames. If this option is used, all filenames
 are checked for graft points. The filename is divided at the first unescaped
-equal sign. All occurrences of `\\' and `=' characters must be escaped with `\\'
-if 
+equal sign. All occurrences of `\(rs' and `=' characters must be
+escaped with `\(rs' if 
 .I \-graft\-points
 has been specified.
 .TP
@@ -789,7 +789,7 @@ Generate Joliet directory records in addition to regular ISO9660 file
 names.  This is primarily useful when the discs are to be used on Windows
 machines.  The Joliet filenames are specified in Unicode and
 each path component can be up to 64 Unicode characters long.
-Note that Joliet is not a standard - CDs that use only Joliet extensions but no
+Note that Joliet is not a standard \(em CDs that use only Joliet extensions but no
 standard Rock Ridge extensions may usually only be used on Microsoft Win32
 systems. Furthermore, the fact that the filenames are limited to 64 characters
 and the fact that Joliet uses the UTF-16 coding for Unicode characters causes
@@ -797,7 +797,7 @@ interoperability problems.
 .TP
 .B \-joliet\-long
 Allow Joliet filenames to be up to 103 Unicode characters. This breaks the
-Joliet specification - but appears to work. Use with caution. The number
+Joliet specification \(em but appears to work. Use with caution. The number
 103 is derived from: the maximum Directory Record Length (254), minus the
 length of Directory Record (33), minus CD-ROM XA System Use Extension
 Information (14), divided by the UTF-16 character size (2).
@@ -1202,7 +1202,7 @@ This option does
 .B not
 sort the order of the file names that appear
 in the ISO9660 directory. It sorts the order in which the file data is
-written to the CD image - which may be useful in order to optimize the
+written to the CD image \(em which may be useful in order to optimize the
 data layout on a CD. See README.sort for more details.
 .TP
 .BI \-sparc\-boot " img_sun4,img_sun4c,img_sun4m,img_sun4d,img_sun4e"
@@ -1284,7 +1284,7 @@ A Solaris x86 boot CD uses a 1024 byte sized primary boot that uses the
 .B El-Torito no-emulation
 boot mode and a secondary generic boot that is in CD sectors 1\|.\|.15.
 For this reason, both
-.BI "-b " bootimage " -no\-emul\-boot
+.BI "-b " bootimage " \-no\-emul\-boot"
 and
 .BI \-G " genboot"
 must be specified.
@@ -1765,7 +1765,7 @@ Each 32-bit character is represented by one or more 8-bit characters.
 If a character is coded in
 .B ISO-8859-1
 (used in Central Europe and North America) is maps 1:1 to a 
-.BR UTF-32 " or " UTF-16 "
+.BR UTF-32 " or " UTF-16
 coded Unicode character.
 If a character is coded in
 .B 7-Bit ASCII
@@ -1794,7 +1794,7 @@ that each byte represents depends on the
 or
 .I codepage
 (which is the name used by Microsoft)
-used by the local operating system in use - the characters in a character
+used by the local operating system in use \(em the characters in a character
 set will reflect the region or natural language used by the user.
 .PP
 Usually character codes 0x00-0x1f are control characters, codes 0x20-0x7f
@@ -2021,7 +2021,7 @@ and
 .I TYPE
 keywords must be 4 characters long and enclosed in single quotes.
 .IP
-The comment field is enclosed in double quotes - it is ignored by
+The comment field is enclosed in double quotes \(em it is ignored by
 .BR genisoimage ,
 but is kept to be compatible with 
 .BR aufs .
@@ -2032,7 +2032,7 @@ file is almost identical to the
 .BR magic (5)
 file used by the Linux
 .BR file (1)
-command - the routines for reading and decoding the
+command \(em the routines for reading and decoding the
 .I magic
 file are based on the Linux
 .BR file (1)
@@ -2059,10 +2059,10 @@ l l l l .
 0/string/GIF8/8BIM GIFf  GIF image
 0/beshort/0xffd8/8BIM JPEG  image data
 0/string/SIT!/SIT! SIT!  StuffIt Archive
-0/string/\\037\\235/LZIV ZIVU  standard Unix compress
-0/string/\\037\\213/GNUz ZIVU  gzip compressed data
+0/string/\(rs037\(rs235/LZIV ZIVU  standard Unix compress
+0/string/\(rs037\(rs213/GNUz ZIVU  gzip compressed data
 0/string/%!/ASPS TEXT  Postscript
-0/string/\\004%!/ASPS TEXT  PC Postscript with a ^D to start
+0/string/\(rs004%!/ASPS TEXT  PC Postscript with a ^D to start
 4/string/moov/txtt MooV  QuickTime movie file (moov)
 4/string/mdat/txtt MooV  QuickTime movie file (mdat)
 .TE
@@ -2119,7 +2119,7 @@ and
 .I Resource
 fork. Either may be empty. Unix (and many other OSs) can only
 cope with files having one part (or fork). To add to this, Macintosh files
-have a number of attributes associated with them - probably the most
+have a number of attributes associated with them \(em probably the most
 important are the TYPE and CREATOR. Again Unix has no concept of these
 types of attributes.
 .PP
@@ -2205,13 +2205,13 @@ or folder stored on the NT server contains an
 .I illegal
 NT character in its name, then NT converts these characters to
 .I Private Use Unicode
-characters. The characters are: " * / < > ? \ | also a space or
+characters. The characters are: \(dq * / < > ? \(rs | also a space or
 period if it is the last character of the file name, character codes 0x01
 to 0x1f (control characters) and Apple' apple logo.
 .IP
 Unfortunately, these private Unicode characters are not
 readable by the genisoimage NT executable. Therefore any file or directory
-name containing these characters will be ignored - including the contents of
+name containing these characters will be ignored \(em including the contents of
 any such directory.
 .IP "MacOS X AppleDouble"
 When HFS/HFS+ files are copied or saved by MacOS X on to a non-HFS file
@@ -2231,21 +2231,21 @@ Only works when used on MacOS X.
 .IP
 If a file is found with a zero
 length resource fork and empty finderinfo, it is assumed not to have
-any Apple/Unix encoding - therefore a TYPE and CREATOR can be set using
+any Apple/Unix encoding \(em therefore a TYPE and CREATOR can be set using
 other methods.
 .PP
 .I genisoimage
 will attempt to set the CREATOR, TYPE, date and possibly other flags from
 the finder info. Additionally, if it exists, the Macintosh filename is set
 from the finder info, otherwise the Macintosh name is based on the Unix
-filename - see the
+filename \(em see the
 .B HFS MACINTOSH FILE NAMES
 section below.
 .PP
 When using the
 .B \-apple
 option, the TYPE and CREATOR are stored in the optional System Use or SUSP field
-in the ISO9660 Directory Record - in much the same way as the Rock Ridge
+in the ISO9660 Directory Record \(em in much the same way as the Rock Ridge
 attributes are. In fact to make life easy, the Apple extensions are added
 at the beginning of the existing Rock Ridge attributes (i.e. to get the Apple
 extensions you get the Rock Ridge extensions as well).
@@ -2270,14 +2270,14 @@ option instead of the
 option, as the latter imposes the limited ISO9660 characters allowed in
 filenames. However, the Apple extensions do give the advantage that the
 files are packed on the disk more efficiently and it may be possible to fit 
-more files on a CD - important when the total size of the source files is
+more files on a CD \(em important when the total size of the source files is
 approaching 650MB.
 .\" ----------------------------------------
 .SH "HFS MACINTOSH FILE NAMES"
 Where possible, the HFS filename that is stored with an Apple/Unix file
 is used for the HFS part of the CD. However, not all the Apple/Unix
 encodings store the HFS filename with the finderinfo. In these cases,
-the Unix filename is used - with escaped special characters. Special
+the Unix filename is used \(em with escaped special characters. Special
 characters include `/' and characters with codes over 127.
 .PP
 AUFS escapes these characters by using `:' followed by the character code
@@ -2292,7 +2292,7 @@ characters
 == two hex digits) converted to a single character code.  If
 .I xx
 are not hex digits ([0-9a-fA-F]), then they are
-left alone - although any remaining `:' is converted to `%', as `:'
+left alone \(em although any remaining `:' is converted to `%', as `:'
 is the HFS directory separator. Care must be taken, as an ordinary Unix
 file with
 .I %xx
@@ -2354,7 +2354,7 @@ Using the
 .B \-mac\-name
 option will not currently work with the
 .B \-T
-option - the Unix
+option \(em the Unix
 name will be used in the TRANS.TBL file, not the Macintosh name.
 .PP
 The character set used to convert any HFS file name to a Joliet/Rock Ridge
@@ -2385,7 +2385,7 @@ appear on the Macintosh. However, as the Macintosh ISO9660 drivers can use
 filenames, then you can use options like
 .B \-allow\-multidot
 without problems on
-a Macintosh - still take care over the names, for example
+a Macintosh \(em still take care over the names, for example
 .I this.file.name
 will be converted to
 .I THIS.FILE
@@ -2397,7 +2397,7 @@ but
 .I abcdefghi
 will be seen as
 .IR ABCDEFGHI .
-i.e. with a `.' at the end - don't know if this is a Macintosh
+i.e. with a `.' at the end \(em don't know if this is a Macintosh
 problem or m\&kisofs/mkhybrid problem. All filenames will be in upper case
 when viewed on a Macintosh. Of course, DOS/Win3.X machines will not be able
 to see Level 2 filenames...
@@ -2407,11 +2407,11 @@ To give a HFS CD a custom icon, make sure the root (top level) folder includes
 a standard Macintosh volume icon file. To give a volume a custom icon on
 a Macintosh, an icon has to be pasted over the volume's icon in the "Get Info"
 box of the volume. This creates an invisible file called
-.I Icon\\r
-(`\\r' is the carriage return character) in the root folder.
+.I Icon\(rsr
+(`\(rsr' is the carriage return character) in the root folder.
 .P
-A custom folder icon is very similar - an invisible file called
-.I Icon\\r
+A custom folder icon is very similar \(em an invisible file called
+.I Icon\(rsr
 exists in the folder itself.
 .P
 Probably the easiest way to create a custom icon that genisoimage can use, is to
@@ -2442,9 +2442,9 @@ by using something like:
 .IP
 genisoimage \-\-macbin \-o output source_dir icon_dir
 .PP
-The procedure for creating/using custom folder icons is very similar - paste
+The procedure for creating/using custom folder icons is very similar \(em paste
 an icon to folder's "Get Info" box and transfer the resulting
-.I Icon\\r
+.I Icon\(rsr
 file to the relevant directory in the genisoimage source tree.
 .PP
 You may want to hide the icon files from the ISO9660 and Joliet trees.
@@ -2475,7 +2475,7 @@ set. The boot
 block is in the first two blocks of a partition. For a non-bootable partition
 the boot block is full of zeros. Normally, when a System file is copied to
 partition on a Macintosh disk, the boot block is filled with a number of
-required settings - unfortunately I don't know the full spec for the boot
+required settings \(em unfortunately I don't know the full spec for the boot
 block, so I'm guessing that the following will work OK.
 .PP
 Therefore, the utility
@@ -2566,7 +2566,7 @@ file (e.g. if they are likely to change often), specify them using
 written into the image, specify them using \-jigdo\-force\-md5. If any
 files don't match, genisoimage will then abort. Both of these options take
 regular expressions as input. It is possible to restrict the set of
-files that will be used further based on size - use the
+files that will be used further based on size \(em use the
 \-jigdo\-min\-file\-size option.
 .PP
 Finally, the jigdo code needs to know how to map the files it is given
@@ -2715,7 +2715,7 @@ call:
 To write a tar archive directly to a CD that will later contain a simple
 ISO9660 filesystem with the tar archive call:
 .IP
-% star \-c . | genisoimage \-stream\-media\-size 333000 | \\
+% star \-c . | genisoimage \-stream\-media\-size 333000 | \(rs
 .br
      wodim dev=b,t,l \-dao tsize=333000s \-
 .PP
@@ -2750,7 +2750,7 @@ are decoded and any other files are given CREATOR and TYPE based on their
 magic number given in the file
 .IR magic :
 .IP
-% genisoimage \-o cd.iso \-apple \-magic magic \-probe \\
+% genisoimage \-o cd.iso \-apple \-magic magic \-probe \(rs
 .br
         cd_dir another_dir
 .PP
@@ -2767,18 +2767,18 @@ README.hfs     README.joliet  README.Unix    cd_dir/
 The following command puts the contents of the directory
 .I cd_dir
 on the
-CD along with the three README files - but only one will be seen from
+CD along with the three README files \(em but only one will be seen from
 each of the three filesystems:
 .IP
-% genisoimage \-o cd.iso \-hfs \-J \-r \-graft\-points \\
+% genisoimage \-o cd.iso \-hfs \-J \-r \-graft\-points \(rs
 .br
-        \-hide README.hfs \-hide README.joliet \\
+        \-hide README.hfs \-hide README.joliet \(rs
 .br
-        \-hide\-joliet README.hfs \-hide\-joliet README.Unix \\
+        \-hide\-joliet README.hfs \-hide\-joliet README.Unix \(rs
 .br
-        \-hide\-hfs README.joliet \-hide\-hfs README.Unix \\
+        \-hide\-hfs README.joliet \-hide\-hfs README.Unix \(rs
 .br
-        README=README.hfs README=README.joliet \\
+        README=README.hfs README=README.joliet \(rs
 .br
         README=README.Unix cd_dir
 .PP
@@ -2826,7 +2826,7 @@ a complete copy of an existing filesystem on a disk in the ISO9660
 filesystem.  The name genisoimage is probably a bit of a misnomer, since it
 not only creates the filesystem, but it also populates it.
 However, the appropriate tool name for a Unix tool that creates populated
-filesystems - mkproto - is not well known.
+filesystems \(em mkproto \(em is not well known.
 .PP
 .B genisoimage
 may safely be installed suid root. This may be needed to allow
@@ -2953,7 +2953,7 @@ allocation block size (the smallest amount of space a file can occupy).
 For a 650Mb CD, the allocation block is 10Kb, for a 4.7Gb DVD it will be
 about 70Kb.
 .PP
-The maximum number of files in an HFS volume is about 65500 - although
+The maximum number of files in an HFS volume is about 65500 \(em although
 the real limit will be somewhat less than this.
 .PP
 The resulting hybrid volume can be accessed on a Unix machine by using
@@ -2962,7 +2962,7 @@ is set as
 .IR locked .
 The option
 .B \-hfs\-unlock
-will create an output image that is unlocked - however no changes should be
+will create an output image that is unlocked \(em however no changes should be
 made to the contents of the volume (unless you really know what you are
 doing) as it's not a "real" HFS volume.
 .PP
@@ -2970,7 +2970,7 @@ Using the
 .B \-mac\-name
 option will not currently work with the
 .B \-T
-option - the Unix
+option \(em the Unix
 name will be used in the TRANS.TBL file, not the Macintosh name.
 .PP
 Although 
@@ -2993,7 +2993,7 @@ DOS media containing PC Exchange files should be mounted as type
 .BR vfat )
 when using Linux.
 .PP
-The SFM format is only partially supported - see
+The SFM format is only partially supported \(em see
 .B HFS MACINTOSH FILE FORMATS
 section above.
 .PP
