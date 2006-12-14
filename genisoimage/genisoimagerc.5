@@ -14,15 +14,22 @@
 genisoimagerc \- startup configuration file for genisoimage
 .SH DESCRIPTION
 .BR genisoimage (1)
-searches for a configuration file in several places.  First, if the
+searches for a configuration file in several places; it uses the first
+one it is able to open.  First, if the
+.B GENISOIMAGERC
+environment variable is set, its value is used as the filename;
+likewise for the
 .B MKISOFSRC
-environment variable is set, the value of that variable is used as the
-filename.  Otherwise,
+environment variable.  Next,
 .B genisoimage
-looks for a file named
-.I .genisoimagerc
+looks for files named
+.IR .genisoimagerc " or " .mkisofsrc ,
 first in the current working directory, then in the user's home
-directory, then in the directory where
+directory.  Next, it looks for
+.IR /etc/genisoimagerc .
+Finally, it looks for a
+.I .genisoimagerc
+in the same directory as
 .B genisoimage
 itself is stored.
 .PP

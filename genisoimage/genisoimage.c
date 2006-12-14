@@ -865,162 +865,150 @@ char *findgequal(char *s);
 static	char *escstrcpy(char *to, char *from);
 void *e_malloc(size_t size);
 
-static void
-read_rcfile(char *appname)
+static int
+read_one_rcfile(char *filename)
 {
-	FILE		*rcfile = (FILE *) NULL;
-	struct rcopts	*rco;
-	char		*pnt,
-			*pnt1;
-	char		linebuffer[256];
-	static char	rcfn[] = ".genisoimagerc";
-	char		filename[1000];
-	int		linum;
+	int linum = 0;
+	char linebuffer[256];
+	FILE *fp;
 
-	strcpy(filename, rcfn);
-	if (access(filename, R_OK) == 0)
-		rcfile = fopen(filename, "r");
-	if (!rcfile && errno != ENOENT)
+	if (!filename)
+		return 0;
+
+	fp = fopen(filename, "r");
+	if (!fp) {
+		if (errno == ENOENT)
+			return 0;
 #ifdef	USE_LIBSCHILY
 		errmsg("Cannot open '%s'.\n", filename);
 #else
 		perror(filename);
 #endif
-
-	if (!rcfile) {
-		pnt = getenv("MKISOFSRC");
-		if (pnt && strlen(pnt) <= sizeof (filename)) {
-			strcpy(filename, pnt);
-			if (access(filename, R_OK) == 0)
-				rcfile = fopen(filename, "r");
-			if (!rcfile && errno != ENOENT)
-#ifdef	USE_LIBSCHILY
-				errmsg("Cannot open '%s'.\n", filename);
-#else
-				perror(filename);
-#endif
-		}
+		return 0;
 	}
-	if (!rcfile) {
-		pnt = getenv("HOME");
-		if (pnt && strlen(pnt) + strlen(rcfn) + 2 <=
-							sizeof (filename)) {
-			strcpy(filename, pnt);
-			strcat(filename, "/");
-			strcat(filename, rcfn);
-			if (access(filename, R_OK) == 0)
-				rcfile = fopen(filename, "r");
-			if (!rcfile && errno != ENOENT)
-#ifdef	USE_LIBSCHILY
-				errmsg("Cannot open '%s'.\n", filename);
-#else
-				perror(filename);
-#endif
-		}
-	}
-	if (!rcfile && strlen(appname) + sizeof (rcfn) + 2 <=
-							sizeof (filename)) {
-		strcpy(filename, appname);
-		pnt = strrchr(filename, '/');
-		if (pnt) {
-			strcpy(pnt + 1, rcfn);
-			if (access(filename, R_OK) == 0)
-				rcfile = fopen(filename, "r");
-			if (!rcfile && errno != ENOENT)
-#ifdef	USE_LIBSCHILY
-				errmsg("Cannot open '%s'.\n", filename);
-#else
-				perror(filename);
-#endif
-		}
-	}
-	if (!rcfile)
-		return;
-	if (verbose > 0) {
+	if (verbose > 0)
 		fprintf(stderr, "Using \"%s\"\n", filename);
-	}
-	/* OK, we got it.  Now read in the lines and parse them */
-	linum = 0;
-	while (fgets(linebuffer, sizeof (linebuffer), rcfile)) {
-		char	*name;
-		char	*name_end;
+
+	while (fgets(linebuffer, sizeof(linebuffer), fp)) {
+		char *name, *p, *p1;
+		struct rcopts *rco;
 
 		++linum;
 		/* skip any leading white space */
-		pnt = linebuffer;
-		while (*pnt == ' ' || *pnt == '\t')
-			++pnt;
-		/*
-		 * If we are looking at a # character, this line is a comment.
-		 */
-		if (*pnt == '#')
+		for (p = linebuffer; *p == ' ' || *p == '\t'; p++)
+			;
+		/* Skip comments and blank lines */
+		if (!*p || *p == '\n' || *p == '\r' || *p == '#')
 			continue;
 		/*
 		 * The name should begin in the left margin.  Make sure it is
 		 * in upper case.  Stop when we see white space or a comment.
 		 */
-		name = pnt;
-		while (*pnt && (isalpha((unsigned char) *pnt) || *pnt == '_')) {
-			if (islower((unsigned char) *pnt))
-				*pnt = toupper((unsigned char) *pnt);
-			pnt++;
-		}
-		if (name == pnt) {
+		name = p;
+		while (*p && (isalpha((unsigned char) *p) || *p == '_'))
+			*p++ = toupper((unsigned char) *p);
+
+		if (name == p) {
 			fprintf(stderr, "%s:%d: name required\n", filename,
 					linum);
 			continue;
 		}
-		name_end = pnt;
+
+		p1 = p;
 		/* Skip past white space after the name */
-		while (*pnt == ' ' || *pnt == '\t')
-			pnt++;
+		while (*p == ' ' || *p == '\t')
+			p++;
 		/* silently ignore errors in the rc file. */
-		if (*pnt != '=') {
+		if (*p != '=') {
 			fprintf(stderr, "%s:%d: equals sign required after '%.*s'\n",
 						filename, linum,
-						/* XXX Should not be > int */
-						(int)(name_end-name), name);
+						(int)(p1-name), name);
 			continue;
 		}
+		*p1 = 0;
+
 		/* Skip pas the = sign, and any white space following it */
-		pnt++;	/* Skip past '=' sign */
-		while (*pnt == ' ' || *pnt == '\t')
-			pnt++;
+		p++;
+		while (*p == ' ' || *p == '\t')
+			p++;
 
-		/* now it is safe to NUL terminate the name */
+		/* Get rid of trailing newline */
+		for (p1 = p; *p1 && *p1 != '\n' && *p1 != '\r'; p1++)
+			;
+		*p1 = 0;
 
-		*name_end = 0;
-
-		/* Now get rid of trailing newline */
-
-		pnt1 = pnt;
-		while (*pnt1) {
-			if (*pnt1 == '\n') {
-				*pnt1 = 0;
-				break;
-			}
-			pnt1++;
-		}
-		/* OK, now figure out which option we have */
-		for (rco = rcopt; rco->tag; rco++) {
+		/* Figure out which option we have */
+		for (rco = rcopt; rco->tag; rco++)
 			if (strcmp(rco->tag, name) == 0) {
-				*rco->variable = strdup(pnt);
+				/* memleak if we ever do this more than once */
+				*rco->variable = strdup(p);
 				break;
 			}
-		}
-		if (rco->tag == NULL) {
-			fprintf(stderr, "%s:%d: field name \"%s\" unknown\n",
+
+		if (!rco->tag) {
+			fprintf(stderr, "%s:%d: field name '%s' unknown\n",
 				filename, linum,
 				name);
 		}
 	}
-	if (ferror(rcfile))
+	if (ferror(fp)) {
 #ifdef	USE_LIBSCHILY
 		errmsg("Read error on '%s'.\n", filename);
 #else
 		perror(filename);
 #endif
-	fclose(rcfile);
+		fclose(fp);
+		return 0;
+	}
+	fclose(fp);
+	return 1;
+}
+
+#define ETCDIR "/etc"
+#define RCFILENAME "genisoimagerc"
+#define OLD_RCFILENAME "mkisofsrc"
+
+static void
+read_rcfile(char *appname)
+{
+	char *p;
+	char filename[1000];
+
+	if (read_one_rcfile(getenv("GENISOIMAGERC")))
+		return;
+	if (read_one_rcfile(getenv("MKISOFSRC")))
+		return;
+	if (read_one_rcfile("." RCFILENAME))
+		return;
+	if (read_one_rcfile("." OLD_RCFILENAME))
+		return;
+
+	p = getenv("HOME");
+	if (p && strlen(p) + 1 + sizeof(RCFILENAME) < sizeof(filename)) {
+		strcpy(filename, p);
+		p = filename + strlen(filename);
+		*p++ = PATH_SEPARATOR;
+		strcpy(p, "." RCFILENAME);
+		if (read_one_rcfile(filename))
+			return;
+		strcpy(p, "." OLD_RCFILENAME);
+		if (read_one_rcfile(filename))
+			return;
+	}
+
+	if (read_one_rcfile(ETCDIR SPATH_SEPARATOR RCFILENAME))
+		return;
+
+	if (appname &&
+	    strlen(appname) + 1 + sizeof(RCFILENAME) < sizeof(filename)) {
+		strcpy(filename, appname);
+		p = strrchr(filename, PATH_SEPARATOR);
+		if (p) {
+			strcpy(p + 1, RCFILENAME);
+			if (read_one_rcfile(filename))
+				return;
+		}
+	}
 }
 
 char	*path_table_l = NULL;
