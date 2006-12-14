@@ -25,7 +25,7 @@ For ATAPI cdroms under Linux
 
 For parallel port cdroms under Linux
     With newer kernels icedax uses the same parallel port access
-    as does cdrecord. Please refer additionally to the cdrecord documentation.
+    as does wodim.  Please refer additionally to the wodim documentation.
     There are generally two drivers to access the cdrom through the parallel
     port: the ATAPI cd emulation (called pcd), and the SCSI device emulation
     (called pg). The pcd driver does NOT support cdda reading (kernel 2.2.12),
@@ -350,10 +350,10 @@ Currently wav, sun (au-pcm), Apple/SGI aiff/aifc, and raw formats are supported.
 
 I try to write correct wav files (little endian samples), but some
 cd-writers might swap them, which would result in sort of white noise
-instead of the original sounds. Cdda2wav has an endianness detector
+instead of the original sounds.  icedax has an endianness detector
 for these cases, but as for all automatics, it might fail on bizarre samples.
 
-Hint: Cdda2wav can be forced to use a given input endianness with the
+Hint: icedax can be forced to use a given input endianness with the
 -C option (arguments are 'little', 'big' or 'guess').
 
 The sun format is a pcm variant, and uses big endian samples.
@@ -362,7 +362,7 @@ is not supported but can be obtained from sox's conversion.
 
 The raw format is like the sun format except it has no header. I
 changed the endianness to big endian samples in order to comply
-with popular cd burning software like the cdrecord program.
+with popular cd burning software like the wodim program.
 
 The sound converter 'sox' can be used to obtain other sound formats.
 (Note however, that the current sox player and a newer sound driver do not

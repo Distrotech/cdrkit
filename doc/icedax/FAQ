@@ -6,8 +6,9 @@ Status
 
 Q: What is the copyright status of icedax?
 
-A: Cdda2wav is software copyrighted by Heiko Eissfeldt and released under the
-   General Public License from the Free Software Foundation (see file GPL).
+A: icedax is software copyrighted by Heiko Eissfeldt and others, and
+   released under the General Public License from the Free Software
+   Foundation (see file GPL).
 
 Compilation
 ===========
@@ -15,12 +16,12 @@ Compilation
 
 Q: What are the requirements to run icedax?
 
-A: All operating systems that are supported by cdrecord should also be able to
+A: All operating systems that are supported by wodim should also be able to
    run icedax. Currently DOS and Windows are not covered.
    Requirements of previous versions of icedax have been cut down for the
    sake of portability. Features like fork(), realtime scheduling, or shared
-   memory are all optional now. You need a shell, which runs autoconf, a c
-   compiler (even a K&R compiler should work) and a c library to build icedax
+   memory are all optional now. You need Cmake and its dependencies, an
+   ANSI C compiler and a C library to build icedax
    on a supported operating system. To run icedax, a SCSI transport
    implementation for the os, a cdrom or cd burner device to read from, and
    at least say 65K of memory for buffers are needed.
@@ -36,8 +37,9 @@ A: There have been changes in the generic driver by Douglas Gilbert, that are
 
 Q: Why does it not compile using standard make?
 
-A: Like cdrecord, icedax needs a sophisticated make program like Joerg
-   Schilling's smake or GNU gmake. Pure posix make functionality is not enough.
+A: Like wodim, icedax uses the cmake system, which requires a
+   sophisticated make program like GNU make.
+   Pure posix make functionality is not enough.
 
 Setting Up (for now Linux only)
 ===============================
@@ -54,7 +56,7 @@ A: Scsi emulation is preferred, since it enables icedax to use more commands
 Q: How can I use my parallel-port-connected cdrom with icedax?
 
 A: Under Linux there is a driver, that makes this device under SCSI
-   emulation available. For more information see the cdrecord documentation.
+   emulation available. For more information see the wodim documentation.
 
 
 Q: How do I check, if the current Linux kernel does support generic SCSI?
@@ -119,18 +121,18 @@ A: See the file README. There is a section about performance and what is
    influencing it.
 
 
-Q: How can I burn audio cds with icedax and cdrecord on-the-fly?
+Q: How can I burn audio cds with icedax and wodim on-the-fly?
 
 A: This has not been tested very well, so caveat emptor. It is possible to
-   use icedax and cdrecord with pipes, _but_ there are several issues.
-   1.: The cd drive may become too slow to keep cdrecords buffer happy, when
+   use icedax and wodim with pipes, _but_ there are several issues.
+   1.: The cd drive may become too slow to keep wodim's buffer happy, when
        a scratch on the audio cd is encountered, and several retries take place.
    2.: Currently there is no way to carry individual track information from
-       icedax to cdrecord. Several information bits are available very late
-       but are needed in advance from cdrecord.
+       icedax to wodim.  Several information bits are available very late
+       but are needed in advance from wodim.
    3.: Some operating systems have limitations in multiple SCSI accesses and
-       other ressources (shared memory). icedax and cdrecord may block each
-       other, or might fight over limited ressources.
+       other resources (shared memory). icedax and wodim may block each
+       other, or might fight over limited resources.
    For these reasons it is not recommended to burn on-the-fly with icedax.
 
 Frontends
@@ -201,10 +203,10 @@ Conversions
 
 Q: How do I create a file suitable for cd burning?
 
-A: If you are using cdrecord, you can produce cdr or wav files. To select
+A: If you are using wodim, you can produce cdr or wav files.  To select
    cdr files, use -Ocdr, to select wav files use -Owav (the default).
    Audio files that have been recorded with a length not a multiple of the 
-   audio sector size 2352 bytes, should be used with cdrecords -pad option.
+   audio sector size 2352 bytes, should be used with wodim's -pad option.
 
 
 Q: How do I convert a wav file into a cdr file (my other cd burning program
@@ -272,22 +274,23 @@ User support/feedback
 =====================
 
 
-Q: Cdda2wav is great. How can I support you to encourage further development?
+Q: icedax is great. How can I support you to encourage further development?
 
 A: Look into the file NEEDED. Also constructive criticism and feedback is
    appreciated.
 
 
-Q: I want to port cdrtools (cdrecord/mkisofs/icedax) to a new platform (like
+Q: I want to port cdrkit (wodim/genisoimage/icedax) to a new platform (like
    DJGPP,cygwin,os/2). How should I proceed?
 
-A: It would be convenient to have a unix like environment (like cygwin provides)   A shell, and a make program would be needed to first create smake (in order
+A: It would be convenient to have a unix like environment (like cygwin provides)
+   A shell, and a make program would be needed to first create smake (in order
    to make the makefile system working). Another critical component is autoconf.
    Once that is running, os dependent interfaces and the SCSI library should be
    adjusted. For the makefile system and the scsi library please contact Joerg
    Schilling.
 
 
-Q: Cdda2wav sucks. Are there other alternatives available?
+Q: icedax sucks. Are there other alternatives available?
 
 A: Yes, for Linux you might try 'cdparanoia' from Monty (see README file).
