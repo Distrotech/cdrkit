@@ -77,13 +77,6 @@
 #endif
 #endif
 
-#ifndef __SVR4
-extern int	optind;
-extern char	*optarg;
-
-/* extern int getopt (int __argc, char **__argv, char *__optstring); */
-#endif
-
 #include "iso9660.h"
 #include "defaults.h"
 #include <unls.h>

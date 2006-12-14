@@ -62,7 +62,13 @@
 #include <io.h>					/* for setmode() prototype */
 #endif
 
-#include "getopt.h"	/* Always include local (nonstandard) getopt.h */
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#else
+#include "getopt.h"
+extern int      optind;
+extern char     *optarg;
+#endif
 
 #ifdef VMS
 #include "vms.h"

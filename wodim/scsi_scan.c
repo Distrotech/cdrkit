@@ -65,7 +65,6 @@ static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 	fprintf(f, "'%.8s' ", ip->vendor_info);
 	fprintf(f, "'%.16s' ", ip->prod_ident);
 	fprintf(f, "'%.4s' ", ip->prod_revision);
-	fprintf(stderr, "wtf, ganze vendor_info: %s\n", ip->vendor_info);
 	if (ip->add_len < 31) {
 		fprintf(f, "NON CCS ");
 	}
