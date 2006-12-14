@@ -108,7 +108,7 @@ another, and you need a specialized tool to actually burn the disc.
 is one such tool.  The latest version of
 .B wodim
 is available from
-http://alioth.debian.org/projects/debburn/.
+.IR http://www.cdrkit.org/ .
 .PP
 .B pathspec
 is the path of the directory tree to be copied into the ISO9660 filesystem.
@@ -155,8 +155,9 @@ the intermediate directories, see
 .PP
 .B genisoimage
 will also run on Windows machines when compiled with Cygnus' cygwin
-(available from http://www.cygwin.com/). Therefore most
-references in this man page to
+(available from
+.IR http://www.cygwin.com/ ).
+Therefore most references in this man page to
 .I Unix
 can be replaced with
 .IR Win32 .
@@ -608,7 +609,7 @@ All the hidden files will still be written to the output CD image file.
 This option is usually used with
 .BR \-hide .
 See also
-.BR README.hide .
+.IR README.hide .
 This option may be used multiple times.
 .TP
 .BI \-hide\-joliet\-list " file"
@@ -618,7 +619,7 @@ Joliet tree.  See
 .TP
 .B \-hide\-joliet\-trans\-tbl
 Hide the
-.B TRANS.TBL
+.I TRANS.TBL
 files from the Joliet tree.
 These files usually don't make sense in the Joliet world as they list
 the real name and the ISO9660 name which may both be different from the
@@ -626,17 +627,17 @@ Joliet name.
 .TP
 .B \-hide\-rr\-moved
 Rename the directory
-.B RR_MOVED
+.I RR_MOVED
 to
-.B .rr_moved
+.I .rr_moved
 in the Rock Ridge tree.
 It seems to be impossible to completely hide the
-.B RR_MOVED
+.I RR_MOVED
 directory from the Rock Ridge tree.
 This option only makes the visible tree less confusing for
 people who don't know what this directory is for.
 If you need to have no
-.B RR_MOVED
+.I RR_MOVED
 directory at all, you should use
 .BR \-D .
 Note that if
@@ -975,12 +976,12 @@ wrote this information (among other information) to
 .IR stderr .
 As this turns out to be hard to parse, the number without any other information
 is now printed on 
-.B stdout
+.I stdout
 too.
 If you like to write a simple shell script, redirect
-.B stderr
+.I stderr
 and catch the number from
-.BR stdout .
+.IR stdout .
 This may be done with:
 .sp
      cdblocks=` genisoimage \-print\-size \-quiet .\|.\|. `
@@ -1013,8 +1014,11 @@ gid 0.
 When used on Win32, the execute bit is set on
 .I all
 files. This is a result of the lack of file permissions on Win32 and the
-Cygwin POSIX emulation layer.  See also \-uid, \-gid, \-dir\-mode, \-file\-mode
-and \-new\-dir\-mode.
+Cygwin POSIX emulation layer.  See also
+.BR \-uid ", " \-gid ,
+.BR \-dir\-mode ", " \-file\-mode
+and
+.BR \-new\-dir\-mode .
 .TP
 .B \-relaxed\-filenames
 Allows ISO9660 filenames to include all 7-bit ASCII characters except
@@ -1105,7 +1109,7 @@ Set the Sun disk label name for the Sun disk label that is created with
 .TP
 .B \-split\-output
 Split the output image into several files of approximately 1 GB each.
-This helps to create DVD sized ISO9660 images on operating systems without
+This helps to create DVD-sized ISO9660 images on operating systems without
 large file support.
 .B wodim
 will concatenate more than one file into a single track if writing to a DVD.
@@ -1114,7 +1118,7 @@ To make
 work,
 .BI \-o " filename"
 must be specified. The resulting outout images will be named:
-.IR filename_00 , filename_01, filename_02 ...
+.IR filename_00 ", " filename_01 ", " filename_02 ....
 .TP
 .BI \-stream\-media\-size " #"
 Select streaming operation and set the media size to # sectors.
@@ -1127,9 +1131,9 @@ tar archive file.
 If this option has been specified,
 .B genisoimage
 reads from 
-.B stdin 
+.I stdin 
 and creates a file with the name
-.BR STREAM.IMG .
+.IR STREAM.IMG .
 The maximum size of the file (with padding) is 200 sectors less than the 
 specified media size. If 
 .B \-no\-pad
@@ -1195,8 +1199,10 @@ in the
 file.
 .TP
 .B \-T
-Generate a file TRANS.TBL in each directory on the CD-ROM, which can be used
-on non-Rock Ridge capable systems to help establish the correct filenames.
+Generate a file
+.I TRANS.TBL
+in each directory on the CD-ROM, which can be used
+on non-Rock\ Ridge-capable systems to help establish the correct filenames.
 There is also information present in the file that indicates the major and
 minor numbers for block and character devices, and each symlink has the name of
 the link file given.
@@ -1212,22 +1218,14 @@ Set Unicode conformance level in the Joliet SVD. The default level is 3.
 It may be set to 1..3 using this option.
 .TP
 .B \-udf
-Include 
-.B UDF
-support in the generated filesystem image.
-.B UDF
-support is currently in alpha status and for this reason, it is not possible
-to create UDF-only images. 
-.B UDF
-data structures are currently coupled to the Joliet structures, so there are many
-pitfalls with the current implementation. There is no UID/GID support,
-there is no POSIX permission support, there is no support for symlinks.
-Note that 
-.B UDF
-wastes the space from sector ~20 to sector 256 at the beginning of the disc
-in addition to the space needed for real 
-.B UDF 
-data structures.
+Include UDF filesystem support in the generated filesystem image.  UDF
+support is currently in alpha status and for this reason, it is not
+possible to create UDF-only images.  UDF data structures are currently
+coupled to the Joliet structures, so there are many pitfalls with the
+current implementation. There is no UID/GID support, there is no POSIX
+permission support, there is no support for symlinks.  Note that UDF
+wastes the space from sector ~20 to sector 256 at the beginning of the
+disc in addition to the space needed for real UDF data structures.
 .TP
 .BI \-uid " uid"
 Overrides the uid read from the source files to the value of
@@ -1250,14 +1248,14 @@ to
 This option is the default on VMS. 
 .TP
 .B \-U
-Allows "Untranslated" filenames, completely violating the ISO9660 standards
-described above. Forces on the \-d, \-l, \-N, \-allow\-leading\-dots,
-\-relaxed\-filenames,
-\-allow\-lowercase, \-allow\-multidot and \-no\-iso\-translate
-flags. It allows more
-than one `.' character in the filename, as well as mixed-case filenames.
-This is useful on HP-UX system, where the built-in CDFS filesystem does
-not recognize ANY extensions. Use with extreme caution.
+Allows "untranslated" filenames, completely violating the ISO9660 standards
+described above.  Enables the following flags:
+.B \-d \-l \-N \-allow\-leading\-dots \-relaxed\-filenames
+.BR "\-allow\-lowercase \-allow\-multidot \-no\-iso\-translate" .
+Allows more than one `.' character in the filename, as well as
+mixed-case filenames.  This is useful on HP-UX, where the built-in
+.I cdfs
+filesystem does not recognize any extensions. Use with extreme caution.
 .TP
 .B \-no\-iso\-translate
 Do not translate the characters `#' and `~' which are invalid for ISO9660 filenames.
@@ -1330,7 +1328,9 @@ Identical to
 .IR glob .
 .TP
 .B \-z
-Generate special RRIP records for transparently compressed files.
+Generate special
+.I RRIP
+records for transparently compressed files.
 This is only of use and interest for hosts that support transparent
 decompression, such as Linux 2.4.14 or later.  You must specify
 .BR \-R " or " \-r
@@ -1409,8 +1409,7 @@ However, the only way to check for
 .I MacBinary
 and
 .I AppleSingle
-files is to open and read them. Therefore this option
-.I may
+files is to open and read them, so this option may
 increase processing time. It is better to use one or more
 .I double dash
 options given below if the Apple/Unix formats in use are known.
@@ -1456,12 +1455,11 @@ section below.
 .TP
 .BI \-hide\-hfs " glob"
 Hide
+.IR glob ,
+a shell wildcard pattern, from the HFS volume.  The file or directory
+will still exist in the ISO9660 and/or Joliet directory.
 .I glob
-from the HFS volume. The file or directory will still exist in the
-ISO9660 and/or Joliet directory.
-.I glob
-is a shell wild-card-style pattern that may match any part of the filename
-Multiple globs may be excluded.
+may match any part of the filename.  Multiple globs may be excluded.
 Example:
 .sp
      genisoimage \-o rom \-hfs \-hide\-hfs '*.o' \-hide\-hfs foobar
@@ -1487,13 +1485,14 @@ in the tree will not be excluded.  Should be used with
 .B \-hide
 and/or
 .BR \-hide\-joliet .
-In order to match a directory name, make sure the pathname does not include
-a trailing `/' character. See README.hide for more details.
+In order to match a directory name, make sure the pattern does not
+include a trailing `/' character. See
+.I README.hide
+for more details.
 .TP
 .BI \-hide\-hfs\-list " file"
-A file containing a list of
-.I globs
-to be hidden as above.
+Specify a file containing a list of wildcard patterns to be hidden as in
+.BR \-hide\-hfs .
 .TP
 .BI \-hfs\-volid " hfs_volid"
 Volume name for the HFS partition. This is the name that is
@@ -1512,11 +1511,14 @@ View (view as Icons, Small Icons, etc.) are also preserved.
 .TP
 .BI \-root\-info " file"
 Set the location, size on screen, scroll positions, folder View etc. for the
-root folder of an HFS volume. See README.rootinfo for more information.
-(Alpha)
+root folder of an HFS volume. See
+.I README.rootinfo
+for more information.  (Alpha)
 .TP
 .BI \-prep\-boot " file"
-PReP boot image file. Up to 4 are allowed. See README.prep_boot (Alpha)
+PReP boot image file. Up to 4 are allowed. See
+.I README.prep_boot
+for more information.  (Alpha)
 .TP
 .BI \-input\-hfs\-charset " charset"
 Input charset that defines the characters used in HFS filenames when
@@ -1539,31 +1541,32 @@ section below for more details.
 .B \-hfs\-unlock
 By default,
 .B genisoimage
-will create an HFS volume that is
-.IR locked .
+will create an HFS volume that is locked.
 This option leaves the volume unlocked so that other applications (e.g.
-hfsutils) can modify the volume. See the
+.BR hfsutils )
+can modify the volume. See the
 .B HFS PROBLEMS/LIMITATIONS
 section below for warnings about using this option.
 .TP
 .BI \-hfs\-bless " folder_name"
 "Bless" the given directory (folder). This is usually the 
-.B System Folder
+.I System Folder
 and is used in creating HFS bootable CDs. The name of the directory must
 be the whole path name as
 .B genisoimage
-sees it. e.g. if the given pathspec is
+sees it.  E.g., if the given pathspec is
 .I ./cddata
 and the required folder is called
-.IR System Folder ,
+.IR "System Folder" ,
 the whole path name is
-.I '/cddata/System Folder'
+.I \(dq/cddata/System Folder\(dq
 (remember to use quotes if the name contains spaces).
 .TP
 .BI \-hfs\-parms " parameters"
 Override certain parameters used to create the HFS filesystem. Unlikely to
-be used in normal circumstances. See the libhfs_iso/hybrid.h source file for
-details.
+be used in normal circumstances.  See the
+.I libhfs_iso/hybrid.h
+source file for details.
 .TP
 .B \-\-cap
 Look for AUFS CAP Macintosh files. Search for CAP Apple/Unix file formats
@@ -1606,57 +1609,46 @@ Look for Thursby Software Systems DAVE Macintosh files
 Look for Microsoft's Services for Macintosh files (NT only) (Alpha)
 .TP
 .B \-\-osx\-double
-Look for MacOS X AppleDouble Macintosh files
+Look for Mac OS X AppleDouble Macintosh files
 .TP
 .B \-\-osx\-hfs
-Look for MacOS X HFS Macintosh files
+Look for Mac OS X HFS Macintosh files
 .\" ----------------------------------------
 .SH "CHARACTER SETS"
 .B genisoimage
-processes filenames in a POSIX compliant way as strings of 8-bit characters.
+processes filenames in a POSIX-compliant way as strings of 8-bit characters.
 To represent all codings for all languages, 8-bit characters are not
-sufficient. Unicode or
-.B ISO-10646
+sufficient.  Unicode or ISO-10646
 define character codings that need at least 21 bits to represent all
 known languages. They may be represented with
-.BR UTF-32 ", " UTF-16 " or " UTF-8
-coding.
-.B UTF-32
-uses a plain 32-bit coding but seems to be uncommon. 
-.B UTF-16
-is used by Microsoft with Win32 with the disadvantage that 16-bit
-characters are not compliant with the POSIX filesystem interface.
+.IR UTF-32 ", " UTF-16 " or " UTF-8
+coding.  UTF-32 uses a plain 32-bit coding but seems to be uncommon.
+UTF-16 is used by Microsoft with Win32 with the disadvantage that
+16-bit characters are not compliant with the POSIX filesystem
+interface.
 .PP
-Modern Unix operating systems may use
-.B UTF-8
-coding for filenames.
+Modern Unix operating systems may use UTF-8 coding for filenames.
 Each 32-bit character is represented by one or more 8-bit characters.
 If a character is coded in
-.B ISO-8859-1
+.I ISO-8859-1
 (used in Central Europe and North America) is maps 1:1 to a 
-.BR UTF-32 " or " UTF-16
-coded Unicode character.
+UTF-32 or UTF-16 coded Unicode character.
 If a character is coded in
-.B 7-Bit ASCII
+.I 7-Bit ASCII
 (used in USA and other countries with limited character set)
-is maps 1:1 to a 
-.BR UTF-32 ", " UTF-16 " or " UTF-8
-coded Unicode character.
+is maps 1:1 to a UTF-32, UTF-16 or UTF-8 coded Unicode character.
 Character codes that cannot be represented as a single byte in UTF-8
 (if the value is > 0x7F) use escape sequences that map to more than
 one 8-bit character.
 .PP
-If all operating systems used
-.BR UTF-8 ,
+If all operating systems used UTF-8,
 .B genisoimage
 would not need to recode characters in filenames.
 Unfortunately, Apple uses completely nonstandard codings and Microsoft
 uses a Unicode coding that is not compatible with the POSIX filename
 interface.
 .PP
-For all
-.RB non- UTF-8 -coded
-operating systems, the actual character
+For all non-UTF-8-coded operating systems, the actual character
 that each byte represents depends on the
 .I character set
 or
@@ -1677,39 +1669,38 @@ when viewed on a machine in, say eastern Europe.
 .PP
 To make matters more complicated, different operating systems use
 different character sets for the region or language. For example, the
-character code for
-.I small e with acute accent
+character code for `\('e' (small e with acute accent)
 may be character code 0x82 on a PC, 
-code 0x8e on a Macintosh and code 0xe9 on a Unix system.
-Note while the codings used on a PC or Mac are nonstandard,
-Unicode codes this character as 0x00000000e9 which is basically the
-same value as the value used by most Unix systems.
+code 0x8e on a Macintosh, code 0xe9 on a Unix system in western Europe,
+and code 0x000e9 in Unicode.
 .PP
-As long as not all operating systems and applications will use the Unicode
-character set as the basis for filenames in a unique way, it may be
+As long as not all operating systems and applications use the same
+character set as the basis for filenames, it may be
 necessary to specify which character set your filenames use in and which
 character set the filenames should appear on the CD.
 .PP
 There are four options to specify the character sets you want to use:
-.IP \-input\-charset
+.TP
+.B \-input\-charset
 Defines the local character set you are using on your host machine.
 Any character set conversions that take place will use this character
 set as the starting point. The default input character sets are
 .I cp437
 on MS-DOS-based systems and
 .I iso8859-1
-on all other systems.
-If
+on all other systems.  If
 .B \-J
 is given, the Unicode equivalents of the input character set
 will be used in the Joliet directory.
 .B \-jcharset
 is the same as
 .BR "\-input\-charset \-J" .
-.IP \-output\-charset
+.TP
+.B \-output\-charset
 Defines the character set that will be used with for the Rock Ridge names
 on the CD.  Defaults to the input character set.
-.IP \-input\-hfs\-charset
+.TP
+.B \-input\-hfs\-charset
 Defines the HFS character set used for HFS filenames decoded from
 any of the various Apple/Unix file formats. Only useful when used with
 .BR \-mac\-name .
@@ -1718,7 +1709,8 @@ See the
 for more information. Defaults to
 .I cp10000
 (Mac Roman).
-.IP \-output\-hfs\-charset
+.TP
+.B \-output\-hfs\-charset
 Defines the HFS character set used to create HFS filenames from the input
 character set in use. In most cases this will be from the character set
 given with
@@ -1738,19 +1730,19 @@ support.
 .PP
 Additional character sets can be read from file for any of the character
 set options by giving a filename as the argument to the options. The given
-file will only be read if its name does not match one of the built in
+file will only be read if its name does not match one of the built-in
 character sets.
 .PP
 The format of the character set files is the same as the mapping files
 available from
 .IR http://www.unicode.org/Public/MAPPINGS .
-The format of these files is:
+This format is:
 .IP
 Column #1 is the input byte code (in hex as 0xXX)
 .br
 Column #2 is the Unicode (in hex as 0xXXXX)
 .br
-Rest of the line is ignored.
+The rest of the line is ignored.
 .PP
 Any blank line, line without two (or more) columns in the above format
 or comments lines (starting with the # character) are ignored without any
@@ -1772,7 +1764,7 @@ subset of the ASCII characters, so any conversion would be pointless.
 .PP
 Any character that
 .B genisoimage
-can not convert will be replaced with a `_' character.
+cannot convert will be replaced with a `_' character.
 .\" ----------------------------------------
 .SH "HFS CREATOR/TYPE"
 A Macintosh file has two properties associated with it which define
@@ -1790,14 +1782,14 @@ encoded files.
 For other files it is possible to base the CREATOR and TYPE on the
 filename's extension using a
 .I mapping
-file
-.RB (with \-map )
+file (with
+.BR \-map )
 and/or using the
 .I magic number
 (usually a
 .I signature
-in the first few bytes) of a file
-.RB (with \-magic ).
+in the first few bytes) of a file (with
+.BR \-magic ).
 If both these options are given, their order on the command
 line is significant.  If
 .B \-map
@@ -1822,7 +1814,7 @@ The format of the
 file is the same
 .I afpfile
 format as used by
-.IR aufs .
+.BR aufs .
 This file has five columns for the
 .IR extension ,
 .IR "file translation" ,
@@ -1840,11 +1832,11 @@ l l l l l .
 # Example filename mapping file
 #
 # EXTN/XLate/CREATOR/TYPE/Comment
-\&.tif/Raw/`8BIM'/`TIFF'/"Photoshop TIFF image"
-\&.hqx/Ascii/`BnHq'/`TEXT'/"BinHex file"
-\&.doc/Raw/`MSWD'/`WDBN'/"Word file"
-\&.mov/Raw/`TVOD'/`MooV'/"QuickTime Movie"
-*/Ascii/`ttxt'/`TEXT'/"Text file"
+\&.tif/Raw/'8BIM'/'TIFF'/"Photoshop TIFF image"
+\&.hqx/Ascii/'BnHq'/'TEXT'/"BinHex file"
+\&.doc/Raw/'MSWD'/'WDBN'/"Word file"
+\&.mov/Raw/'TVOD'/'MooV'/"QuickTime Movie"
+*/Ascii/'ttxt'/'TEXT'/"Text file"
 .TE
 .PP
 Where:
@@ -1886,17 +1878,12 @@ The format of the
 .I magic
 file is almost identical to the
 .BR magic (5)
-file used by the Linux
-.BR file (1)
-command \(em the routines for reading and decoding the
-.I magic
-file are based on the Linux
+file used by the
 .BR file (1)
 command.
 .PP
-This file has four tab separated columns for the 
-.I byte
-.IR offset ,
+This file has four tab-separated columns for the
+.IR "byte offset" ,
 .IR type ,
 .I test
 and
@@ -1924,14 +1911,14 @@ l l l l .
 .TE
 .PP
 The format of the file is described in
-.BR magic (4).
+.BR magic (5).
 The only difference here is that for each entry in the magic file, the
 .I message
 for the initial offset must be be 4 characters for the CREATOR followed
 by 4 characters for the TYPE \(em white space is
 optional between them. Any other characters on this line are ignored.
-Continuation lines (starting with a `>') are also ignored i.e. only the initial
-offset lines are used.
+Continuation lines (starting with a `>') are also ignored, i.e., only
+the initial offset lines are used.
 .PP
 Using
 .B \-magic
@@ -1954,37 +1941,36 @@ has been selected), the CREATOR and TYPE are taken from the values
 stored in the Apple/Unix file.
 .PP
 Other files can have their CREATOR and TYPE set from their filename
-extension
-.RB (with \-map ),
-or their magic number
-.RB (with \-magic ).
+extension (with
+.BR \-map ),
+or their magic number (with
+.BR \-magic ).
 If the default match is used in the
 .I mapping
 file, these values override the default CREATOR and TYPE.
 .PP
 A full CREATOR/TYPE database can be found at 
-http://www.angelfire.com/il/szekely/
+.IR http://www.angelfire.com/il/szekely/ .
 .\" ----------------------------------------
 .SH "HFS MACINTOSH FILE FORMATS"
 Macintosh files have two parts called the
 .I Data
 and
-.I Resource
-fork. Either may be empty. Unix (and many other OSs) can only
+.IR "Resource fork" .
+Either may be empty. Unix (and many other OSs) can only
 cope with files having one part (or fork). To add to this, Macintosh files
 have a number of attributes associated with them \(em probably the most
-important are the TYPE and CREATOR. Again Unix has no concept of these
+important are the TYPE and CREATOR.  Again, Unix has no concept of these
 types of attributes.
 .PP
-e.g. a Macintosh file may be a JPEG image where the image is stored in the
+E.g., a Macintosh file may be a JPEG image where the image is stored in the
 Data fork and a desktop thumbnail stored in the Resource fork. It is usually
 the information in the data fork that is useful across platforms.
 .PP
 Therefore to store a Macintosh file on a Unix filesystem, a way has to be
 found to cope with the two forks and the extra attributes (which are
 referred to as the
-.I finder
-.IR info ).
+.IR "Finder info" ).
 Unfortunately, it seems that every software package that stores Macintosh
 files on Unix has chosen a completely different storage method.
 .PP
@@ -1992,32 +1978,40 @@ The Apple/Unix formats that
 .B genisoimage
 (partially) supports are:
 .IP "CAP AUFS format"
-Data fork stored in a file. Resource fork in subdirectory .resource
-with same filename as data fork. Finder info
-in .finderinfo subdirectory with same filename.
+Data fork stored in a file. Resource fork in subdirectory
+.I .resource
+with same filename as data fork. Finder info in subdirectory
+.I .finderinfo
+with same filename.
 .IP "AppleDouble/Netatalk"
 Data fork stored in a file. Resource fork stored in a file with
 same name prefixed with `%'. Finder info also stored in same
 `%' file. Netatalk uses the same format, but the resource
-fork/finderinfo stored in subdirectory .AppleDouble with same
-name as data fork.
+fork/Finder info stored in subdirectory
+.I .AppleDouble
+with same filename as data fork.
 .IP AppleSingle
-Data structures similar to above, except both forks and finder
+Data structures similar to above, except both forks and Finder
 info are stored in one file.
 .IP "Helios EtherShare"
-Data fork stored in a file. Resource fork and finder info together in
-subdirectory .rsrc with same filename as data fork.
+Data fork stored in a file.  Resource fork and Finder info together in
+subdirectory
+.I .rsrc
+with same filename as data fork.
 .IP "IPT UShare"
-Very similar to the EtherShare format, but the finder info
+Like the EtherShare format, but the Finder info
 is stored slightly differently.
 .IP MacBinary
-Both forks and finder info stored in one file.
+Both forks and Finder info stored in one file.
 .IP "Apple PC Exchange"
 Used by Macintoshes to store Apple files on DOS (FAT) disks.
 Data fork stored in a file. Resource fork in subdirectory
-resource.frk (or RESOURCE.FRK). Finder info as one record
-in file finder.dat (or FINDER.DAT). Separate finder.dat for
-each data fork directory.
+.IR resource.frk " (or " RESOURCE.FRK ).
+Finder info as one record in file
+.IR finder.dat " (or " FINDER.DAT ).
+Separate
+.I finder.dat
+for each data fork directory.
 .IP
 Note: 
 .B genisoimage
@@ -2025,32 +2019,35 @@ needs to know the native FAT cluster size of the disk that the PC Exchange
 files are on (or have been copied from). This size is given by
 .BR \-cluster\-size .
 The cluster or allocation size can be found by using the DOS utility
-.BR CHKDSK .
+.BR chkdsk .
 .IP
 May not work with PC Exchange v2.2 or higher files (available with MacOS 8.1).
 DOS media containing PC Exchange files should be mounted as type
-.B msdos
+.I msdos
 (not
-.BR vfat )
+.IR vfat )
 when using Linux.
-.IP "SGI/XINET"
+.IP SGI/XINET
 Used by SGI machines when they mount HFS disks. Data fork stored
-in a file. Resource fork in subdirectory .HSResource with same
-name. Finder info as one record in file .HSancillary. Separate .HSancillary
+in a file.  Resource fork in subdirectory
+.I .HSResource
+with same filename.  Finder info as one record in file
+.IR .HSancillary ".  Separate " .HSancillary
 for each data fork directory.
 .IP "Thursby Software Systems DAVE"
 Allows Macintoshes to store Apple files on SMB servers.
 Data fork stored in a file. Resource fork in subdirectory
-resource.frk. Uses the AppleDouble format to store resource fork.
+.IR resource.frk .
+Uses the AppleDouble format to store resource fork.
 .IP "Services for Macintosh"
 Format of files stored by NT Servers on NTFS filesystems. Data fork is
 stored as
 .IR filename .
 Resource fork stored as a NTFS stream called
 .IR filename:AFP_Resource .
-The finder info is stored as a NTFS stream called
+The Finder info is stored as a NTFS stream called
 .IR filename:Afp_AfpInfo .
-These streams are normally invisible to the user.
+NTFS streams are normally invisible to the user.
 .IP
 Warning:
 .B genisoimage
@@ -2058,31 +2055,31 @@ only partially supports the SFM format. If an HFS file
 or folder stored on the NT server contains an illegal
 NT character in its name, NT converts these characters to
 .I Private Use Unicode
-characters. The characters are: \(dq * / < > ? \(rs | also a space or
+characters.  The characters are: \(dq * / < > ? \(rs | and a space or
 period if it is the last character of the filename, character codes 0x01
 to 0x1f (control characters) and Apple's apple logo.
 .IP
-Unfortunately, these private Unicode characters are not
-readable by the
+Unfortunately, these private Unicode characters are not readable by the
 .B genisoimage
 NT executable. Therefore any file or directory
 name containing these characters will be ignored \(em including the contents of
 any such directory.
-.IP "MacOS X AppleDouble"
-When HFS/HFS+ files are copied or saved by MacOS X on to a non-HFS
+.IP "Mac OS X AppleDouble"
+When HFS/HFS+ files are copied or saved by Mac OS X on to a non-HFS
 filesystem (e.g. UFS, NFS etc.), the files are stored in AppleDouble format.
 Data fork stored in a file. Resource fork stored in a file with
 same name prefixed with `._'. Finder info also stored in same `._' file.
-.IP "MacOS X HFS (Alpha)"
-Not really an Apple/Unix encoding, but actual HFS/HFS+ files on a MacOS X
+.IP "Mac OS X HFS (Alpha)"
+Not really an Apple/Unix encoding, but actual HFS/HFS+ files on a Mac\ OS\ X
 system. Data fork stored in a file. Resource fork stored in a pseudo file
 with the same name with the suffix
 .IR /rsrc .
-The finderinfo is only available via a MacOS X library call.
+The Finder info is only available via a Mac OS X library call.
 .IP
-Notes: (also see README.macosx)
+See also
+.IR README.macosx .
 .IP
-Only works when used on MacOS X.
+Only works when used on Mac OS X.
 .IP
 If a file is found with a zero
 length resource fork and empty finderinfo, it is assumed not to have
@@ -2099,10 +2096,12 @@ section below.
 .PP
 When using
 .BR \-apple ,
-the TYPE and CREATOR are stored in the optional System Use or SUSP field
+the TYPE and CREATOR are stored in the optional System Use or
+.I SUSP
+field
 in the ISO9660 Directory Record \(em in much the same way as the Rock Ridge
 attributes are. In fact to make life easy, the Apple extensions are added
-at the beginning of the existing Rock Ridge attributes (i.e. to get the Apple
+at the beginning of the existing Rock Ridge attributes (i.e., to get the Apple
 extensions you get the Rock Ridge extensions as well).
 .PP
 The Apple extensions require the resource fork to be stored as an ISO9660
@@ -2125,8 +2124,7 @@ instead of
 as the latter imposes the limited ISO9660 characters allowed in
 filenames. However, the Apple extensions do give the advantage that the
 files are packed on the disk more efficiently and it may be possible to fit 
-more files on a CD \(em important when the total size of the source files is
-approaching 650MB.
+more files on a CD.
 .\" ----------------------------------------
 .SH "HFS MACINTOSH FILENAMES"
 Where possible, the HFS filename that is stored with an Apple/Unix file
@@ -2145,7 +2143,7 @@ cannot find an HFS filename, it uses the Unix name, with any
 .IR %xx " or " :xx
 characters
 .RI ( xx
-== two hex digits) converted to a single character code.  If
+are two hex digits) converted to a single character code.  If
 .I xx
 are not hex digits ([0-9a-fA-F]), they are
 left alone \(em although any remaining `:' is converted to `%', as `:'
@@ -2173,9 +2171,8 @@ Although HFS filenames appear to support uppercase and lowercase letters,
 the filesystem is case-insensitive, i.e., the filenames
 .IR aBc " and " AbC
 are the same. If a file is found in a directory with the same HFS name,
-then
 .B genisoimage
-will attempt, where possible, to make a unique name by adding `_' characters
+will attempt to make a unique name by adding `_' characters
 to one of the filenames. 
 .PP
 If an HFS filename exists for a file,
@@ -2186,11 +2183,7 @@ Rock Ridge filenames using
 Normal Unix files without an HFS name will still use their Unix name.
 e.g.
 .PP
-If a
-.I MacBinary
-(or
-.IR "PC Exchange" )
-file is stored as 
+If a MacBinary (or PC Exchange) file is stored as
 .I someimage.gif.bin
 on the Unix filesystem, but contains a HFS file called
 .IR someimage.gif ,
@@ -2201,7 +2194,7 @@ the ISO9660 name generated will probably be
 .I SOMEIMAG.BIN
 and the Joliet/Rock Ridge would be
 .IR someimage.gif.bin .
-Although the actual data (in this case) is a GIF image. This option will use
+This option will use
 the HFS filename as the starting point and the ISO9660 name will probably be
 .I SOMEIMAG.GIF
 and the Joliet/Rock Ridge would be
@@ -2210,8 +2203,9 @@ and the Joliet/Rock Ridge would be
 .B \-mac\-name
 will not currently work with
 .B \-T
-\(em the Unix
-name will be used in the TRANS.TBL file, not the Macintosh name.
+\(em the Unix name will be used in the
+.I TRANS.TBL
+file, not the Macintosh name.
 .PP
 The character set used to convert any HFS filename to a Joliet/Rock Ridge
 filename defaults to
@@ -2219,9 +2213,17 @@ filename defaults to
 (Mac Roman).
 The character set used can be specified using
 .BR \-input\-hfs\-charset .
-Other built in HFS character sets are: cp10006 (MacGreek),
-cp10007 (MacCyrillic), cp10029 (MacLatin2), cp10079 (MacIcelandandic) and
-cp10081 (MacTurkish).
+Other built-in HFS character sets are:
+.I cp10006
+(MacGreek),
+.I cp10007
+(MacCyrillic),
+.I cp10029
+(MacLatin2),
+.I cp10079
+(MacIcelandandic) and
+.I cp10081
+(MacTurkish).
 .PP
 Note: the character codes used by HFS filenames taken from the various
 Apple/Unix formats will not be converted as they are assumed to be in the
@@ -2282,16 +2284,17 @@ to its "Get Info" box. If using Linux with the HFS module installed,
 mount the floppy:
 .IP
 mount \-t hfs /dev/fd0 /mnt/floppy
-.pp
+.PP
 The floppy will be mounted as a CAP filesystem by default.  Then run
 .B genisoimage
 using something like:
 .IP
 genisoimage \-\-cap \-o output source_dir /mnt/floppy
 .PP
-If you are not using Linux, you can use the hfsutils to copy the icon
-file from the floppy. However, care has to be taken, as the icon file
-contains a control character. e.g.
+If you are not using Linux, you can use
+.B hfsutils
+to copy the icon file from the floppy.  However, care has to be taken,
+as the icon file contains a control character.  For example:
 .IP
 hmount /dev/fd0
 .br
@@ -2314,8 +2317,8 @@ source tree.
 .PP
 You may want to hide the icon files from the ISO9660 and Joliet trees.
 .PP
-To give a custom icon to a Joliet CD, follow the instructions found at:
-http://www.cdrfaq.org/faq03.html#S3-21-1
+To give a custom icon to a Joliet CD, follow the instructions found at
+.IR http://www.cdrfaq.org/faq03.html#S3-21-1 .
 .\" ----------------------------------------
 .SH "HFS BOOT DRIVER"
 It 
@@ -2326,7 +2329,7 @@ A bootable HFS CD requires an Apple CD-ROM (or compatible) driver, a bootable
 HFS partition and the necessary System, Finder, etc. files.
 .PP
 A driver can be obtained from any other Macintosh bootable CD-ROM using the
-.I apple_driver
+.B apple_driver
 utility. This file can then be used with
 .BR \-boot\-hfs\-file .
 .PP
@@ -2340,15 +2343,16 @@ block is in the first two blocks of a partition. For a non-bootable partition
 the boot block is full of zeros. Normally, when a System file is copied to
 partition on a Macintosh disk, the boot block is filled with a number of
 required settings \(em unfortunately I don't know the full spec for the boot
-block, so I'm guessing that the following will work OK.
+block, so I'm guessing that the following will work.
 .PP
 Therefore, the utility
-.I apple_driver
+.B apple_driver
 also extracts the boot block from the
 first HFS partition it finds on the given CD-ROM and this is used for the
 HFS partition created by
 .BR genisoimage .
-.IP "PLEASE NOTE"
+.PP
+.I Please note:
 By using a driver from an Apple CD and copying Apple software to your CD,
 you become liable to obey Apple Computer, Inc. Software License Agreements.
 .\" ----------------------------------------
@@ -2387,20 +2391,21 @@ file starting at byte offset 64.  All linear block addresses (LBAs)
 are given in CD sectors (normally 2048 bytes).
 .\" ----------------------------------------
 .SH "HPPA NOTES"
-To make a bootable CD for HPPA, at the very least a boot loader file (
-.B \-hppa\-bootloader
-), a kernel image file (32- or 64-bit or both, depending on hardware)
-and a boot command line (
-.B \-hppa\-cmdline
-) must be specified. Some systems can boot either a 32- or a 64-bit
-kernel, and the choice of which one to use will be made by the
-firmware. Optionally, a ramdisk can be used for the root filesystem
-using
-.B \-hppa\-cmdline.
+To make a bootable CD for HPPA, at the very least a boot loader file
+.RB ( \-hppa\-bootloader ),
+a kernel image file (32-bit, 64-bit, or both, depending on hardware)
+and a boot command line
+.RB ( \-hppa\-cmdline )
+must be specified. Some systems can boot either a 32- or a 64-bit
+kernel, and the firmware will choose one if both are present.
+Optionally, a ramdisk can be used for the root filesystem using
+.BR \-hppa\-cmdline .
 .\" ----------------------------------------
 .SH "JIGDO NOTES"
-Jigdo is a useful tool to help in the distribution of large files like CD and
-DVD images. See Richard Atterer's site for more details. Debian CDs and DVD ISO
+Jigdo is a tool to help in the distribution of large files like CD and
+DVD images; see
+.I http://atterer.net/jigdo/
+for more details.  Debian CDs and DVD ISO
 images are published on the web in jigdo format to allow end users to download
 them more efficiently.
 .PP
@@ -2425,7 +2430,8 @@ Once you have this file, call
 with all of your normal command-line parameters. Specify the output
 filenames for the jigdo and template files using
 .BR \-jigdo\-jigdo " and " \-jigdo\-template ,
-and pass in the location of your MD5 list with the \-md5\-list option.
+and pass in the location of your MD5 list with
+.BR \-md5\-list .
 .PP
 If there are files that you do NOT want to be added into the jigdo
 file (e.g. if they are likely to change often), specify them using
@@ -2479,7 +2485,7 @@ call:
 To write a tar archive directly to a CD that will later contain a simple
 ISO9660 filesystem with the tar archive call:
 .IP
-% star \-c . | genisoimage \-stream\-media\-size 333000 | \(rs
+% tar cf \- . | genisoimage \-stream\-media\-size 333000 | \(rs
 .br
      wodim dev=b,t,l \-dao tsize=333000s \-
 .PP
@@ -2553,45 +2559,6 @@ ISO9660/Rock Ridge CD.
 There are probably all sorts of strange results possible with
 combinations of the hide options ...
 .\" ----------------------------------------
-.SH AUTHORS
-.PP
-.B genisoimage
-is a fork of the
-.B mkisofs
-utility, now maintained independently by the cdrkit project.  See the
-.B MAINTAINER
-section for details.
-.PP
-Eric Youngdale <ericy@gnu.ai.mit.edu> or <eric@andante.org> wrote the
-first versions (1993 .\|.\|. 1998) of
-.BR mkisofs .
-The copyright for old versions of
-.B mkisofs
-is held by Yggdrasil Computing, Incorporated.
-.PP
-Major additional parts were written or contributed by the following authors. Also
-see the
-.B MAINTAINER
-section below for recent information.
-.PP
-J\(:org Schilling 
-wrote the SCSI transport library and its adaptation layer to
-.B mkisofs
-and newer parts (starting from 1999) of the utility, this makes
-.B mkisofs
-.br
-Copyright (C) 1999, 2000, 2001 J\(:org Schilling.
-.PP
-HFS hybrid code, Copyright (C) James Pearson 1997, 1998, 1999, 2000, 2001
-.PP
-libhfs code, Copyright (C) 1996, 1997 Robert Leslie
-.PP
-libunls code, Copyright (C) James Pearson 2000, (C) Joerg Schilling 2001-2006, (C) Jungshik Shin 2002
-.PP
-iconv code, Copyright (C) 2003 Jungshik Shin, (C) 2003 Jaakko Heinonen
-.PP
-See MAINTAINER section for contact information.
-.\" ----------------------------------------
 .SH NOTES
 .PP
 .B genisoimage
@@ -2629,10 +2596,14 @@ include the deep directory.
 .\" then add new session with a single dir that differs from the
 .\" old deep path.
 .PP
-Does not re-use RR_MOVED when doing multisession from TRANS.TBL
+Does not re-use
+.I RR_MOVED
+when doing multisession from
+.IR TRANS.TBL .
 .PP
-Does not create whole_name entry for RR_MOVED in multisession
-mode.
+Does not create whole_name entry for
+.I RR_MOVED
+in multisession mode.
 .PP
 There may be other bugs.  Please, report them to the maintainers.
 .\" ----------------------------------------
@@ -2653,11 +2624,11 @@ the filesystem is case-insensitive, i.e., the filenames
 .IR aBc " and "AbC
 are the same. If a file is found in a directory with the same HFS name,
 .B genisoimage
-will attempt, where possible, to make a unique name by adding `_' characters
+will attempt to make a unique name by adding `_' characters
 to one of the filenames.
 .PP
 HFS file/directory names that share the first 31 characters have
-_N' (N == decimal number) substituted for the last few characters
+`_N' (a decimal number) substituted for the last few characters
 to generate unique names.
 .PP
 Care must be taken when "grafting" Apple/Unix files or directories (see
@@ -2665,7 +2636,7 @@ above for the method and syntax involved). It is not possible to use a
 new name for an Apple/Unix encoded file/directory. e.g. If a Apple/Unix
 encoded file called
 .I oldname
-is to added to the CD, you can not use the command line:
+is to added to the CD, you cannot use the command line:
 .IP
 genisoimage \-o output.raw \-hfs \-graft\-points newname=oldname cd_dir
 .PP
@@ -2698,11 +2669,11 @@ Symbolic links (as with all other non-regular files) are not added to
 the HFS directory.
 .PP
 Hybrid volumes may be larger than pure ISO9660 volumes
-containing the same data. In some cases (e.g. DVD sized volumes) the hybrid
-volume may be significantly larger. As an HFS volume gets bigger, so does the
+containing the same data. In some cases (e.g. DVD sized volumes) the
+difference can be significant. As an HFS volume gets bigger, so does the
 allocation block size (the smallest amount of space a file can occupy).
-For a 650Mb CD, the allocation block is 10Kb, for a 4.7Gb DVD it will be
-about 70Kb.
+For a 650MB CD, the allocation block is 10kB, for a 4.7GB DVD it will be
+about 70kB.
 .PP
 The maximum number of files in an HFS volume is about 65500 \(em although
 the real limit will be somewhat less than this.
@@ -2720,8 +2691,9 @@ doing) as it's not a "real" HFS volume.
 .B \-mac\-name
 will not currently work with
 .B \-T
-\(em the Unix
-name will be used in the TRANS.TBL file, not the Macintosh name.
+\(em the Unix name will be used in the
+.I TRANS.TBL
+file, not the Macintosh name.
 .PP
 Although 
 .B genisoimage
@@ -2760,78 +2732,61 @@ been fully tested.
 .BR mkzftree (8),
 .BR magic (5).
 .\" ----------------------------------------
-.SH "FUTURE IMPROVEMENTS"
-Some sort of gui interface.
-.\" ----------------------------------------
-.SH AVAILABILITY
-.B genisoimage
-is available as part of the cdrkit package from
-http://alioth.debian.org/projects/debburn/. For other implementations/spinoffs
-of
-.BR genisoimage ,
-look at the homepage of the particular developers.
-.B hfsutils
-from ftp://ftp.mars.org/pub/hfs
-.\" ----------------------------------------
-.SH "MAILING LISTS"
-If you want to actively take part on the development of
-.BR genisoimage ,
-you may join the Cdrkit developers mailing list by following the
-instructions on:
-.nf
-.sp
-http://alioth.debian.org/mail/?group_id=31006
-.sp
-.fi
-and include the word
-.I subscribe
-in the body.
-The mail address of the list is:
-.nf
-.B debburn-devel@lists.alioth.debian.org
-.fi
-.\" ----------------------------------------
-.SH MAINTAINER
-.PP
-This is the Cdrkit spinoff of the original
-.B mkisofs
-application. Cdrkit is maintained by:
-.nf
-Joerg Jaspert
-Eduard Bloch
-Steve McIntyre
-Peter Samuelson
-Christian Fromme
-Ben Hutchings
-and other contributors
-.fi
-.PP
-Cdrkit implementation of
+.SH AUTHORS
 .B genisoimage
 is derived from
 .B mkisofs
-in the Cdrtools package [1] (however now developed independently),
-having previous maintainers:
+from the
+.B cdrtools 2.01.01a08
+package from May 2006,
+.IR http://cdrecord.berlios.de/ ,
+but is now part of the
+.B cdrkit
+suite, maintained by Joerg Jaspert, Eduard Bloch, Steve McIntyre, Peter
+Samuelson, Christian Fromme, Ben Hutchings, and other contributors.
+The maintainers can be contacted at
+.IR debburn-devel@lists.alioth.debian.org ,
+or see the
+.B cdrkit
+project web site at
+.IR http://www.cdrkit.org/ .
+.PP
+Eric Youngdale wrote the first versions (1993\(en1998) of
+.BR mkisofs .
+J\(:org Schilling wrote the SCSI transport library and its
+interface, and has maintained
+.B mkisofs
+since 1999.  James Pearson wrote the HFS hybrid code, using
+.I libhfs
+by Robert Leslie.  Pearson, Schilling, Jungshik Shin and Jaakko
+Heinonen contributed to the character set conversion code.  The
+.B cdrkit
+maintainers have maintained
+.B genisoimage
+since 2006.
+.PP
 .nf
-J\(:org Schilling
-Seestr. 110
-D-13353 Berlin
-Germany
+Copyright 1993-1998 by Yggdrasil Computing, Inc.
+Copyright 1996-1997 by Robert Leslie
+Copyright 1997-2001 by James Pearson
+Copyright 1999-2006 by J\(:org Schilling
+Copyright 2002-2003 by Jungshik Shin
+Copyright 2003 by Jaakko Heinonen
+Copyright 2006 by the Cdrkit maintainers
 .fi
 .PP
-.nf
-James Pearson (mkhybrid maintainer)
-j.pearson@ge.ucl.ac.uk
-.PP
-If you have support questions, send them to
+If you want to take part in the development of
+.BR genisoimage ,
+you may join the
+.B cdrkit
+developer mailing list by following the instructions on
+.IR http://alioth.debian.org/mail/?group_id=31006 .
+The email address of the list is
 .IR debburn-devel@lists.alioth.debian.org .
+This is also the address for user support questions.  Note that
+.BR cdrkit " and " cdrtools
+are not affiliated.
 .PP
-Note that Cdrkit and Cdrtools are not affiliated.
 .\" ----------------------------------------
 .SH ACKNOWLEDGEMENTS
 UNIX is a registered trademark of The Open Group in the US and other countries.
-.\" ----------------------------------------
-.SH SOURCES
-.PP
-.br
-[1] Cdrtools 2.01.01a08 from May 2006, http://cdrecord.berlios.de
