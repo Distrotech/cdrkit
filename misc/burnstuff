@@ -5,18 +5,21 @@
 # ISO name is generated from the basename of the list/directory
 
 set -e
-set -x
 
-if echo "$1" | grep -q .list$ ; then
+case "$1" in
+  *.list)
    name=${1%.list}
    set -- -D -graft-points -path-list "$1"
-else
+   ;;
+  *)
    name="$1"
-fi
+   ;;
+esac
 
 MOPTS=${MOPTS:-" -joliet-long -r -q -f -V $name "}
 COPTS=${COPTS:-" fs=64m gracetime=5 -v -sao speed=16 -eject -multi -v -force - "}
 
-SIZE=$(mkisofs $MOPTS -print-size "$@")s
+SIZE=$(genisoimage $MOPTS -print-size "$@")s
 
-mkisofs $MOPTS "$@" | wodim tsize=$SIZE $COPTS
+echo "genisoimage $MOPTS $@ | wodim tsize=$SIZE $COPTS"
+genisoimage $MOPTS "$@" | wodim tsize=$SIZE $COPTS
