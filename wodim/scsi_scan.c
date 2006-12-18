@@ -80,6 +80,7 @@ int scan_devices() {
 	int i, ndevs=0;
 	BOOL have_tgt;
 
+    fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
 #ifdef linux
 	for(i=0;i<MAXDEVCOUNT;i++) {
 		if(i<26)
@@ -136,7 +137,11 @@ int scan_devices() {
 		fprintf(stdout, "%s", lines[i]);
 	fprintf(stdout,	"----------------------------------------------------------------------\n");
 
+	return 0;
+
 #endif
+
+    fprintf(stderr, "Native device scanning is not supported on this plattform. Please use -scanbus.\n");
 	return 0;
 }
 
