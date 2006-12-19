@@ -5,7 +5,8 @@ cdrkit (9:1.1.1-1) unstable; urgency=low
       command (closes: #369677)
     + moved *iso* manpages to section 1 and corrected removed obsolete
       references in wodim.1 and some other manpages.
-  * readded mkzftree binary again (sorry... closes: #387927)
+  * Add mkzftree binary again (sorry... closes: #387927)
+  * Add /usr/bin/readcd -> readom compatibility symlink (closes: #403536)
 
  -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:18 +0100
 
