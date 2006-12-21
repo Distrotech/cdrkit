@@ -851,22 +851,15 @@ attach_mmc(SCSI *usalp, cdr_t *dp)
 
 	check_writemodes_mmc(usalp, dp);
 
+    /* Enable Burnfree by default, it can be disabled later */
+    if ((dp->cdr_flags & CDR_BURNFREE) != 0)
+        dp->cdr_dstat->ds_cdrflags |= RF_BURNFREE;
+
 	if (driveropts != NULL) {
 		char	*p;
 
 		if (strcmp(driveropts, "help") == 0) {
 			mmc_opthelp(dp, 0);
-		}
-
-		p = hasdrvopt(driveropts, "burnfree");
-		if (p == NULL)
-			p = hasdrvopt(driveropts, "burnproof");
-		if (p != NULL && (dp->cdr_flags & CDR_BURNFREE) != 0) {
-			if (*p == '1') {
-				dp->cdr_dstat->ds_cdrflags |= RF_BURNFREE;
-			} else if (*p == '0') {
-				dp->cdr_dstat->ds_cdrflags &= ~RF_BURNFREE;
-			}
 		}
 
 		p = hasdrvopt(driveropts, "varirec");
@@ -2503,18 +2496,20 @@ open_session_mdvd(SCSI *usalp, cdr_t *dp, track_t *trackp)
 				MS_MULTI : MS_NONE;
 	mp->session_format = toc2sess[track_base(trackp)->tracktype & TOC_MASK];
 	
-	if (lverbose > 2 && dp->cdr_cdcap->BUF != 0)
-		printf("BURN-Free is %s.\n", mp->BUFE?"ON":"OFF");
+    /* Enable Burnfree by default, allow to disable. XXX Sucks, duplicated functionality. */
+    if (dp->cdr_cdcap->BUF != 0) {
+        if (lverbose > 2)
+            fprintf(stderr, 
+                    "BURN-Free is %s.\n"
+                    "Turning BURN-Free on\n",
+                    mp->BUFE?"ON":"OFF");
+        mp->BUFE = 1;
+    }
 	if (driveropts != NULL) {
-		if ((strcmp(driveropts, "burnproof") == 0 ||
-		    strcmp(driveropts, "burnfree") == 0) && dp->cdr_cdcap->BUF != 0) {
-			if(lverbose>2)
-				errmsgno(EX_BAD, "Turning BURN-Free on\n");
-			mp->BUFE = 1;
-		} else if ((strcmp(driveropts, "noburnproof") == 0 ||
-			   strcmp(driveropts, "noburnfree") == 0)) {
-			if(lverbose>2)
-				errmsgno(EX_BAD, "Turning BURN-Free off\n");
+        if ((strcmp(driveropts, "noburnproof") == 0 ||
+                    strcmp(driveropts, "noburnfree") == 0)) {
+			if(lverbose>1)
+				fprintf(stderr, "Turning BURN-Free off\n");
 			mp->BUFE = 0;
 		} else if (strcmp(driveropts, "help") == 0) {
 			mmc_opthelp(dp, 0);
@@ -2980,9 +2975,9 @@ opt2_mmc(SCSI *usalp, cdr_t *dp)
 	rp = get_justlink_ricoh(usalp, moder);
 
 	if (dp->cdr_cdcap->BUF != 0) {
-		burnfree = mp->BUFE != 0;
+		burnfree = (mp->BUFE != 0);
 	} else if ((dp->cdr_flags & CDR_BURNFREE) != 0) {
-		burnfree = rp && rp->BUEFE != 0;
+		burnfree = (rp && (rp->BUEFE != 0));
 	}
 
 	if (lverbose>2 && (dp->cdr_flags & CDR_BURNFREE) != 0)
@@ -3000,7 +2995,8 @@ opt2_mmc(SCSI *usalp, cdr_t *dp)
 	}
 	if (dp->cdr_cdcap->BUF != 0) {
 		mp->BUFE = burnfree?1:0;
-	} else if ((dp->cdr_flags & CDR_BURNFREE) != 0) {
+	} 
+    else if ((dp->cdr_flags & CDR_BURNFREE) != 0) {
 
 		if (rp)
 			rp->BUEFE = burnfree?1:0;

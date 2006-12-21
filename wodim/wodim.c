@@ -1350,11 +1350,9 @@ int main(int argc, char *argv[])
 				errmsgno(EX_BAD,
 				"The current problem looks like a buffer underrun.\n");
 				if ((dp->cdr_dstat->ds_cdrflags & RF_BURNFREE) == 0)
-					errmsgno(EX_BAD,
-				"Try to use 'driveropts=burnfree'.\n");
+					errmsgno(EX_BAD, "Try to use 'driveropts=burnfree'.\n");
 				else {
-					errmsgno(EX_BAD,
-				"It looks like 'driveropts=burnfree' does not work for this drive.\n");
+					errmsgno(EX_BAD, "It looks like 'driveropts=burnfree' does not work for this drive.\n");
 					errmsgno(EX_BAD, "Please report.\n");
 				}
 

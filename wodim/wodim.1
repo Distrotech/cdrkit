@@ -1,4 +1,4 @@
-.\" @(#)wodim.1	 06/09/10 Copyright 2006 Cdrkit maintainers
+.\" @(#)wodim.1	 06/12/18 Copyright 2006 Cdrkit maintainers
 .\" derived from:
 .\" @(#)cdrecord.1	1.106 06/02/09 Copyright 1996 J. Schilling
 .\" 
@@ -132,7 +132,8 @@ should occur while transmiting fresh data to the recorder. This is especially
 important on systems with insufficient RAM where swaping can create delays of
 many seconds.
 .PP
-A possible workaround on underpowered systems is the use of the burnfree or similar feature, allowing the recorder to resume
+A possible workaround on underpowered systems is the use of the burnfree or
+similar feature, allowing the recorder to resume.
 .PP
 Root permissions are usualy required to get higher process scheduling priority.
 .PP
@@ -1005,16 +1006,19 @@ Currently implemented driver options are:
 .TP
 .B burnfree 
 Turn the support for Buffer Underrun Free writing on.
-This only works for drives that support Buffer Underrun Free technology.
+This only works for drives that support Buffer Underrun Free technology, which
+is available on most drives manufactured in this millenium. 
 This may be called:
 .BR "Sanyo BURN-Proof" ,
 .BR "Ricoh Just-Link" ,
 .B "Yamaha Lossless-Link"
 or similar.
 .sp
-The default is to turn 
-.B BURN-Free
-off, regardless of the defaults of the drive.
+This option is deprecated and is mentioned here for documentation purposes
+only. The BURN-Free feature is enabled by default if the drive supports it.
+However, use of BURN-Free may cause decreased burning quality. Therefore it can
+be useful to disable it for certain purposes, eg. when creating a master copy
+for mass CD production.
 .TP
 .B noburnfree 
 Turn the support for Buffer Underrun Free writing off.
@@ -1890,9 +1894,7 @@ make sure that wodim is called with a large enough FIFO size (e.g.
 reduce the write speed to a value below the read speed of the source drive
 (e.g.
 .BR speed=12 ),
-and switch the burn-free
-option for the recording drive on by adding
-.BR driveropts=burnfree .
+and get a CD/DVD drive with BURN-Free feature if it is not available yet.
 .PP
 To set drive options without writing a CD (e.g. to switch a drive
 to single session mode), run
@@ -2020,7 +2022,7 @@ Any other label
 is an identifier for a specific drive on the system.
 Such an identifier may not contain the characters ',', '/', '@' or ':'.
 .sp
-Each line that follows a label contains a TAB separated list of items.
+Each line that follows a label contains a whitespace separated list of items.
 Currently, four items are recognized: the SCSI ID of the drive, the
 default speed that should be used for this drive, the default FIFO size
 that should be used for this drive and drive specific options. The values for 
@@ -2028,20 +2030,20 @@ that should be used for this drive and drive specific options. The values for
 and
 .I fifosize
 may be set to -1 to tell wodim to use the global defaults.
-The value for driveropts may be set to "" if no driveropts are used.
+The value for driveropts may be omited or set to "" if no driveropts are used.
 A typical line may look this way:
 .sp
-teac1= 0,5,0	4	8m	""
+plex760= 0,5,0	12	50m	varirec=1
 .sp
-yamaha= 1,6,0	-1	-1	burnfree
+pioneer= /dev/hdd	-1	-1
 .sp
 This tells
 .B wodim
 that a drive named
-.I teac1
-is at scsibus 0, target 5, lun 0 and should be used with speed 4 and
-a FIFO size of 8 MB.
-A second drive may be found at scsibus 1, target 6, lun 0 and uses the
+.I plex760
+is at scsibus 0, target 5, lun 0 and should be used with speed 12 and
+a FIFO size of 50 MB. It also uses some device specific parameter.
+A second drive may is accesible via the device file /dev/hdd and uses the
 default speed and the default FIFO size.
 .RE
 

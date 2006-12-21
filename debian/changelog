@@ -3,6 +3,7 @@ cdrkit (9:1.1.1-1) unstable; urgency=low
   * New upstream version
     + more verbose abort message if track is specified with some maintainance
       command (closes: #369677)
+    + BURN-Free enabled by default (closes: #403899)
     + moved *iso* manpages to section 1 and corrected removed obsolete
       references in wodim.1 and some other manpages.
   * Add mkzftree binary again (sorry... closes: #387927)

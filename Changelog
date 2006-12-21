@@ -12,6 +12,7 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
     more gcc -Wall correctness
   * reenabled -format functionality (bug in program function control flow)
   * get maximum DMA buffer size from sysfs on Linux, where possible
+  * enable BURN-Free by default where possible
 
   [ Thomas Schmidt ]
   * workaround for older libmagic API
