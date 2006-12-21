@@ -2239,6 +2239,15 @@ does not work properly and is generaly unmaintained. It is probably not
 compatible with rscsi from 
 .BR cdrtools
 either. Good bugfixes are welcome, talk to Cdrkit maintainers.
+.PP
+.B cuefile support is very limited, only one file is allowed. For volunteers,
+see TODO file in the source.
+.PP
+.B Specifying an audio file multiple times causes corruption of the second
+track (effectively no data plus minimum padding).
+.PP
+Some of the bugs may be fixed in Joerg Schilling's cdrtools. See there for
+details, URL attached below.
 
 .SH CREDITS
 .PP
