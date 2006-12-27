@@ -1635,7 +1635,8 @@ usage(int excode)
 	fprintf(stderr, "\t-lock		load and lock the disk and exit (works only with tray loader)\n");
 	fprintf(stderr, "\t-eject		eject the disk after doing the work\n");
 	fprintf(stderr, "\t-dummy		do everything with laser turned off\n");
-	fprintf(stderr, "\t-msinfo		retrieve multi-session info for mkisofs >= 1.10\n");
+	fprintf(stderr, "\t-msinfo		retrieve multi-session info for genisoimage\n");
+	fprintf(stderr, "\t-msifile=path	run -msinfo and copy output to file\n");
 	fprintf(stderr, "\t-toc		retrieve and print TOC/PMA data\n");
 	fprintf(stderr, "\t-atip		retrieve and print ATIP data\n");
 	fprintf(stderr, "\t-multi		generate a TOC that allows multi session\n");
@@ -4095,7 +4096,7 @@ print_msinfo(SCSI *usalp, cdr_t *dp)
 	if(msifile) {
 		FILE *f = fopen(msifile, "w");
 		if(f) {
-			fprintf(f, "%ld,%ld\n", off, fa);
+			fprintf(f, "%ld,%ld", off, fa);
 			fclose(f);
 		}
 		else {

@@ -253,7 +253,7 @@ sg_open_excl(char *device, int mode)
        int i;
        f = open(device, mode|O_EXCL);
        /* try to reopen locked/busy devices up to five times */
-       for (i = 0; (i < 5) && (f == -1 && errno == EBUSY); i++) {
+       for (i = 0; (i < 3) && (f == -1 && errno == EBUSY); i++) {
 	       fprintf(stderr, "Error trying to open %s exclusively (%s)... %s\n",
                device, strerror(errno), 
                (i<4)?"retrying in 1 second.":"giving up.");
