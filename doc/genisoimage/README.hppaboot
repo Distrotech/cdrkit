@@ -26,10 +26,10 @@ that should be able to find the (32- or 64-bit) kernel and boot
 normally. Whether you need a 32- or 64-bit kernel depends on your
 hardware; some will even support both.
 
-To use the hppa boot support code in mkisofs, simply specify the boot
+To use the hppa boot support code in genisoimage, simply specify the boot
 command line and file locations (relative to the CD root) as follows:
 
-mkisofs ... -hppa-cmdline    <cmdline, elements separated by spaces or commas> \ 
+genisoimage ... -hppa-cmdline <cmdline, parts separated by spaces or commas> \
             -hppa-kernel-32  <32-bit kernel> \
             -hppa-kernel-64  <64-bit kernel> \
             -hppa-bootloader <bootloader> \

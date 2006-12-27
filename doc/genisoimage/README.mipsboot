@@ -16,10 +16,10 @@ The firmware will load and execute kernels listed. (I'm not sure what
 it will do if more than one kernel is listed - it may display a boot
 menu).
 
-To use the SGI boot support code in mkisofs, simply specify the kernel
+To use the SGI boot support code in genisoimage, simply specify the kernel
 file locations (relative to the CD root) as follows:
 
-mkisofs ... -mips-boot <kernel file #1> \
+genisoimage ... -mips-boot <kernel file #1> \
             ... 
             -mips-boot <kernel file #n> \
             -o mips.iso mips-files

@@ -1,8 +1,7 @@
-Cdrkit carries a version of mkisofs.
+Cdrkit carries a fork of the mkisofs program called genisoimage.
 
-The acompanying documentation of mkisofs consists of the
-manual page mkisofs.8 and README files found in the
-following locations (shell globing used):
+The acompanying documentation consists of the manual page genisoimage.8 and
+README files found in the following locations (shell globing used):
 
 doc/:
 
@@ -12,9 +11,9 @@ README.multi: documentation and examples for creating
 README.cdplus: documentation and examples for creating
   CD-plus (aka CD-extra) disks
 
-doc/mkisofs:
+doc/genisoimage:
 
-README: release notes for older mkisofs releases
+README.releasenotes: release notes for old mkisofs releases
 
 README.*boot: documentation for various boot loader related
   extensions for different architectures
@@ -23,12 +22,5 @@ README.hfs*: hints and usage for HFS related features
 
 README.*: additional docs for special features
 
-
 Eduard Bloch -- Mon, 11 Sep 2006 23:05:29 +0200
-
-This describes the program as shipped with cdrkit, a spinoff from the
-cdrtools project. However, the cdrtools developers are no longer
-involved in the development of this spinoff and therefore shall not
-be made responsible for any problem caused by it. Do not try to get
-support for this program by contacting the original authors.
 

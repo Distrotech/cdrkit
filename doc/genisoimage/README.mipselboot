@@ -22,8 +22,8 @@ The firmware will load and execute the first stage boot loader, and
 from that point the system should be able to find the normal OS kernel
 and start up fully.
 
-To use the DEC boot support code in mkisofs, simply specify the kernel
+To use the DEC boot support code in genisoimage, simply specify the kernel
 file location (relative to the CD root) as follows:
 
-mkisofs ... -mipsel-boot <kernel file> -o mipsel.iso mipsel-files
+genisoimage ... -mipsel-boot <kernel file> -o mipsel.iso mipsel-files
 

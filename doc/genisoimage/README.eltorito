@@ -1,4 +1,3 @@
-/* @(#)README.eltorito	1.2 00/03/18 eric */
 
 What is El Torito?
 ------------------
@@ -16,7 +15,7 @@ How To Make Bootable CDs
 ------------------------
 
 For the x86 platform, many BIOS's have begun to support bootable CDs.
-The standard my patches for mkisofs is based on is called "El Torito".
+The standard my patches for genisoimage is based on is called "El Torito".
 
 The "El Torito" standard works by making the CD drive appear, through BIOS
 calls, to be a normal floppy drive. This way you simply put an floppy
@@ -49,7 +48,7 @@ disk calls, so the emulation works as designed.
 The "El Torito" specification requires a "boot catalog" to be created as 
 ll.
 This is a 2048 byte file which is of no interest except it is required.
-My patches to mkisofs will cause it to automatically create the
+My patches to genisoimage will cause it to automatically create the
 boot catalog. You must specify where the boot catalog will go in the
 iso9660 filesystem. Usually it is a good idea to put it the same place
 as the boot image, and a name like "boot.catalog" seems appropriate.
@@ -61,7 +60,7 @@ We will have the boot catalog go in the same directory with the name
 "boot.catalog". The command to create the iso9660 fs in the file
 bootcd.iso is then
 
-mkisofs -b boot/boot.img -c boot/boot.catalog -o bootcd.iso .
+genisoimage -b boot/boot.img -c boot/boot.catalog -o bootcd.iso .
 
 The -b option specifies the boot image to be used (note the path is
 relative to the root of the iso9660 disc), and the -c option is
@@ -92,7 +91,11 @@ I don't think making a CD bootable renders it unreadable by non-El Torito
 machines. The El Torito spec uses parts of the iso9660 filesystem which
 were reserved for future use, so no existing code should care what it does.
 
-Mkisofs currently stores identification records in the iso9660 filesystem
+Genisoimage currently stores identification records in the iso9660 filesystem
 saying that the system is a x86 system. The El Torito spec also allows
 one to write PowerPC or Mac id's instead. If you look at the code in write.c
 you could figure out how to change what is written.
+
+/* @(#)README.eltorito	1.2 00/03/18 eric */
+/* Edited for name change by Eduard Bloch, mkisofs -> genisoimage */
+

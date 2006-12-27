@@ -1,5 +1,6 @@
 # @(#)README.sparcboot	1.1 99/12/12 joerg
-#
+# Edited for program name change by Eduard Bloch, 2006
+
 The sparc boot feature does allow you to create your own Sun sparc boot disk.
 This will allow you to create modified Solaris install disks or to create
 installation CD's for other OS that run on sparc systems.
@@ -35,7 +36,7 @@ dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s4 of=sun4d
 dd if=/vol/dev/dsk/c0t6/sol_7_sparc_sun_srvr/s5 of=sun4e
 
 
-mkisofs -R -sparc-boot sun4,sun4c,sun4m,sun4d,sun4e -o boot.img /mnt/install
+genisoimage -R -sparc-boot sun4,sun4c,sun4m,sun4d,sun4e -o boot.img /mnt/install
 
 Will create the bootable image in boot.img.
 

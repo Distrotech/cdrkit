@@ -27,7 +27,7 @@ will not be accessible when mounted as an Joliet CD. Similarly for -hide-hfs
 etc.
 
 If you don't want a file or directory to appear on the CD at all, then use the
--exclude options, not the -hide options (mkisofs completely ignores any
+-exclude options, not the -hide options (genisoimage completely ignores any
 file/directory excluded with the -exclude options).
 
 
@@ -52,21 +52,21 @@ as many times as you want.
 The arguments to the -hide options are either the 'basename' or the 'whole
 path name' of a file. That is, if you use the option:
 
-% mkisofs -hide ABC [-other-options] CD_directory
+% genisoimage -hide ABC [-other-options] CD_directory
 
 then any file with the name ABC will be hidden. If you want to be more
-specific, then use the whole name - as seen by mkisofs e.g.:
+specific, then use the whole name - as seen by genisoimage e.g.:
 
-% mkisofs -hide CD_directory/XYZ/ABC [-other-options] CD_directory
+% genisoimage -hide CD_directory/XYZ/ABC [-other-options] CD_directory
 
 will hide just the file 'CD_directory/XYZ/ABC' - not any other file called
 'ABC' that might exist under 'CD_directory'. However, if your command line
 is like:
 
-% mkisofs -hide CD_directory/XYZ/ABC [-other-options] ./CD_directory
+% genisoimage -hide CD_directory/XYZ/ABC [-other-options] ./CD_directory
 
 Then the file 'CD_directory/XYZ/ABC' will not be hidden because as far as
-mkisofs is concerned. Its whole path is actually './CD_directory/XYZ/ABC'.
+genisoimage is concerned. Its whole path is actually './CD_directory/XYZ/ABC'.
 
 You can use wild cards in the -hide arguments.
 
@@ -98,7 +98,7 @@ COMMON/some_files
 
 We could use the command line:
 
-% mkisofs -r -J -hfs -hide MAC -hide PC -hide-joliet MAC \
+% genisoimage -r -J -hfs -hide MAC -hide PC -hide-joliet MAC \
 	-hide-joliet UNIX -hide-hfs PC -hide-hfs UNIX -o cd.iso cd_dir
 
 This will give a CD that when mounted as a Rock Ridge CD, you will only 
@@ -110,7 +110,7 @@ README.joliet and README.unix - but you wanted to have each of these
 files appear as just 'README' when mounted, then you could use the above
 command line with the following:
 
-% mkisofs -r -J -hfs -graft-points -hide MAC -hide PC -hide-joliet MAC \
+% genisoimage -r -J -hfs -graft-points -hide MAC -hide PC -hide-joliet MAC \
 	-hide-joliet UNIX -hide-hfs PC -hide-hfs UNIX \
 	-hide README.hfs -hide README.joliet -hide-joliet README.hfs \
 	-hide-joliet README.uni -hide-hfs README.joliet -hide-hfs README.unix \
@@ -143,35 +143,35 @@ It gets a bit messy using the -graft-points syntax above, so we'll assume
 each of the MAC, UNIX and PC directories contain the correct README, We'll
 also change to the 'cd_dir' directory and use the command:
 
-mkisofs -r -J -hfs -hide MAC -hide PC -hide-joliet MAC \
+genisoimage -r -J -hfs -hide MAC -hide PC -hide-joliet MAC \
 	-hide-joliet UNIX -hide-hfs PC -hide-hfs UNIX \
 	-o cd.iso MAC PC UNIX COMMON
 
 You will get errors like:
 
-mkisofs: Error: UNIX/README and MAC/README have the same Rock Ridge name
+genisoimage: Error: UNIX/README and MAC/README have the same Rock Ridge name
 ...
-mkisofs: Unable to sort directory 
+genisoimage: Unable to sort directory 
 
 This is because you can not hide "pathspecs" that are directories ("pathspecs"
 are file names given on the command line, or in a path-list file). This a 
-"feature" of mkisofs. In this case nothing is actually hidden at all.
+"feature" of genisoimage. In this case nothing is actually hidden at all.
 
 So you might think that the following may work:
 
-mkisofs -r -J -hfs -hide "MAC/*" -hide "PC/*" -hide-joliet "MAC/*" \
+genisoimage -r -J -hfs -hide "MAC/*" -hide "PC/*" -hide-joliet "MAC/*" \
 	-hide-joliet "UNIX/*" -hide-hfs "PC/*" -hide-hfs "UNIX/*" \
 	-o cd.iso MAC PC UNIX COMMON
 
 which may appear to work - but when the CD is mounted as an ISO9660/Rock Ridge
 or Joliet CD, then the directory "data" is missing.
 
-Again this is a feature of mkisofs - the directories PC/data and UNIX/data
-are mapped by mkisofs to the same output directory called "/data" - the
+Again this is a feature of genisoimage - the directories PC/data and UNIX/data
+are mapped by genisoimage to the same output directory called "/data" - the
 various "hide" flags are stored with this directory info - in this case as 
 the output directory "/data" is first hidden from the ISO9660/Rock Ridge and
 then the Joliet directory, the net result is that "/data" gets hidden from
-both directories ... the way mkisofs hides HFS directories is slightly
+both directories ... the way genisoimage hides HFS directories is slightly
 different, so in this case the directory "data" exists on the HFS volume
 and contains the correct contents.
 
@@ -187,12 +187,12 @@ find PC -type f -print > pc.list
 find UNIX -type f -print > unix.list
 find MAC -type f -print > mac.list
 
-mkisofs -r -J -hfs -hide-list pc.list -hide-list mac.list \
+genisoimage -r -J -hfs -hide-list pc.list -hide-list mac.list \
 	-hide-joliet-list unix.list -hide-joliet-list mac.list \
 	-hide-hfs-list pc.list -hide-hfs-list unix.list \
 	-o cd.iso MAC PC UNIX COMMON
 
-i.e. instead of trying to hide a directory and letting mkisofs hide its
+i.e. instead of trying to hide a directory and letting genisoimage hide its
 contents, we explicitly hide all the files in the directory, but not the
 directory and any of its sub-directories.
 
@@ -204,3 +204,5 @@ will have to be tailored to get the required result.
 James Pearson 22-Nov-2001
 
 Any comments/problems to j.pearson@ge.ucl.ac.uk
+
+Modified for cdrkit/genisoimage by Eduard Bloch, Wed, 27 Dec 2006

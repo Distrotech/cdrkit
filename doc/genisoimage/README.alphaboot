@@ -19,10 +19,10 @@ SRM will load and execute the first stage boot loader, and from that
 point the system should be able to find the normal OS kernel and start
 up fully.
 
-To use the Alpha boot support code in mkisofs, simply specify the
+To use the Alpha boot support code in genisoimage, simply specify the
 location of the first stage boot loader (relative to the CD root)
 using the -alpha-boot command line switch:
 
-mkisofs ... -alpha-boot boot/bootlx -o alpha.iso files
+genisoimage ... -alpha-boot boot/bootlx -o alpha.iso files
 
 

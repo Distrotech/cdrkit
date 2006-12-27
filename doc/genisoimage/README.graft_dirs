@@ -1,5 +1,3 @@
-# @(#)README.graft_dirs	1.1 00/01/12 joerg
-#
 This is from "Eduardo M. A. M. Mendes" <mendes@mgconecta.com.br>
 
 Creating multi-session CD's with dir=/ feature Micro Howto
@@ -37,12 +35,12 @@ Observation: Redhat installation is mounted on COL 2.3 at /mnt/redhat
 
 First image - RedHat 6.1 - /mnt/redhat/root
 
-mkisofs -D -l -r -f -m core -L -o image1.raw redhat/=/mnt/redhat/root
+genisoimage -D -l -r -f -m core -L -o image1.raw redhat/=/mnt/redhat/root
 
 This will create a redhat directory on the cd. The option -D should be
 used with care. The other options used in the above command are just 
-to demonstrate the use of mkisofs.  Please
-refer to man mkisofs if you want to know more.
+to demonstrate the use of genisoimage.  Please
+refer to man genisoimage if you want to know more.
 
 
 To see if the image is created as expected, we need to mount image1.raw using
@@ -81,14 +79,14 @@ wodim returns the following number
 This number is the format XX,YY discussed on README.multi.  XX would be used
 for testing the images as well as burning the new track.
 
-mkisofs -D -l -r -f -m core -L -C 0,135563 -M /dev/scd0 -o image2.raw  caldera/=/root
+genisoimage -D -l -r -f -m core -L -C 0,135563 -M /dev/scd0 -o image2.raw  caldera/=/root
 
 Now we need to check of image2.raw is ok. The following command creates exactly what we 
 need.  Plese note that -C option. Only the first number changes in this case. The second one
 is always zero.  In our case the first number is zero due to wodim -msinfo.  When 
 more tracks are added to the cd this number will change.
 
-mkisofs -D -l -r -f -m core -L -C 0,0 -M /dev/scd0 -o image2_test.raw  caldera/=/root
+genisoimage -D -l -r -f -m core -L -C 0,0 -M /dev/scd0 -o image2_test.raw  caldera/=/root
 
 mount -t iso9660 image2_test.raw /mnt/image -o loop
 
@@ -110,7 +108,7 @@ called root and within two sub-directories: redhat and caldera?
 
 Using the procedure described above we would do as follows:
 
-mkisofs -D -l -r -f -m core -L -o image1.raw etc/redhat/=/mnt/redhat/etc
+genisoimage -D -l -r -f -m core -L -o image1.raw etc/redhat/=/mnt/redhat/etc
 
 wodim -v -dev=0,3,0 -multi -eject image1.raw 
 
@@ -126,11 +124,11 @@ wodim returns the following number
 
 The second image can be created using
 
-mkisofs -l -r -f -m core -L -C 0,14391 -M /dev/scd0 -o image2.raw  etc/caldera/=/etc  
+genisoimage -l -r -f -m core -L -C 0,14391 -M /dev/scd0 -o image2.raw  etc/caldera/=/etc  
 
 Creating a test image2
 
-mkisofs -l -r -f -m core -L -C 0,0 -M /dev/scd0 -o image2_test.raw etc/caldera/=/etc 
+genisoimage -l -r -f -m core -L -C 0,0 -M /dev/scd0 -o image2_test.raw etc/caldera/=/etc 
 
 mount -t iso9660 image2_test.raw /mnt/image1 -o loop
 
@@ -149,5 +147,5 @@ Good luxk!!!
 Eduardo Mendes - 11/23/99
 
 Source: README.graft_dirs from cdrtools package
-Edited for cdrkit by Christian Fromme <kaner@strace.org>
+Edited for cdrkit by Christian Fromme <kaner@strace.org> and Eduard Bloch
 

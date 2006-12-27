@@ -1,5 +1,5 @@
 
-mkhybrid v1.13 has now merged with, and is a part of mkisofs v1.13
+mkhybrid v1.13 has merged with mkisofs which was forked to genisoimage later
 
 HFS hybrid code Copyright (C) James Pearson 1997, 1998, 1999, 2000
 libhfs code Copyright (C) 1996, 1997 Robert Leslie
@@ -16,11 +16,11 @@ Macs can now read Joliet CDs - see http://www.tempel.org/joliet/
 *** IMPORTANT ***
 
 The meaning of some of the HFS command line options has changed since
-version 1.12b5.2. This change is to make the way mkisofs decodes the 
+version 1.12b5.2. This change is to make the way genisoimage decodes the 
 various Apple/Unix file formats (CAP, AppleDouble, MacBinary etc.) less
 confusing and more logical. To decode one or more of the Apple/Unix files,
 then the corresponding "double dash" option must be given (i.e. --cap, 
---double, --macbin etc.) mkisofs can search for all known Apple/Unix files
+--double, --macbin etc.) genisoimage can search for all known Apple/Unix files
 by using the -probe option.
 
 The options that have changed are:
@@ -68,25 +68,25 @@ EXAMPLES
 To create a HFS hybrid CD with the Joliet and Rock Ridge extensions of
 the source directory cd_dir:
 
-% mkisofs -o cd.iso -r -J -hfs cd_dir
+% genisoimage -o cd.iso -r -J -hfs cd_dir
 
 To create a HFS hybrid CD from the source directory cd_dir that contains
 Netatalk Apple/Unix files:
 
-% mkisofs -o cd.iso --netatalk cd_dir
+% genisoimage -o cd.iso --netatalk cd_dir
 
 To create a HFS hybrid CD from the source directory cd_dir, giving all files
 CREATOR and TYPES based on just their filename extensions listed in the file 
 "mapping".:
 
-% mkisofs -o cd.iso -map mapping cd_dir
+% genisoimage -o cd.iso -map mapping cd_dir
 
 To create a CD with the 'Apple Extensions to ISO9660', from the source
 direcories cd_dir and another_dir. Files in all the known Apple/Unix format
 are decoded and any other files are given CREATOR and TYPE based on their
 magic number given in the file "magic":
 
-% mkisofs -o cd.iso -apple -magic magic -probe cd_dir another_dir
+% genisoimage -o cd.iso -apple -magic magic -probe cd_dir another_dir
 
 The following example puts different files on the CD that all have
 the name README, but have different contents when seen as a
@@ -101,7 +101,7 @@ The following command puts the contents of the directory "cd_dir" on the
 CD along with the three README files - but only one will be seen from
 each of the three filesystems:
 
-% mkisofs -o cd.iso -hfs -J -r \
+% genisoimage -o cd.iso -hfs -J -r \
         -hide README.hfs -hide README.joliet \
         -hide-joliet README.hfs -hide-joliet README.unix \
         -hide-hfs README.joliet -hide-hfs README.unix \
@@ -116,7 +116,7 @@ There are probably all sorts of stange results possible with
 combinations of the hide options ...
 
 
-Any comments, bug reports/fixes about the HFS parts of mkisofs to the
+Any comments, bug reports/fixes about the HFS parts of genisoimage to the
 address below.
 
 Please state the version, platform and command line used when submitting
@@ -141,5 +141,5 @@ submit@bugs.debian.org
 writing at least a short description into the Subject and "Package: cdrkit"
 
 Source: README.mkhybrid from cdrtools package
-Edited for cdrkit by Christian Fromme <kaner@strace.org>
+Edited for cdrkit by Christian Fromme <kaner@strace.org> and Eduard Bloch
 

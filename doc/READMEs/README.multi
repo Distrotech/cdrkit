@@ -6,10 +6,9 @@ and all previous sessions.
 
 To test (with Linux):
 
-Create a iso-9660 filesystem image with mkisofs-1.10 or later.
-mkisofs is included in the wodim release (including
-SunOS/Solaris multi-session support)
-Use the -R flag to add Rock Ridge extensions (this is important).
+ - create a iso-9660 filesystem image with genisoimage.
+ - genisoimage is included in the cdrkit release.
+ - use the -R flag to add Rock Ridge extensions (this is important).
 
 Assuming that the CD-R drive is connected to target 2 on the SCSI bus.
 
@@ -51,9 +50,6 @@ The output should be two numbers separated by a comma.
 
 The first number is (1), the second number is (2).
 
-Create the image for the next session with mkisofs-1.12 or later.
-It is included in the wodim distribution.
-
 2nd session:
 You should create a directory that contains a second directory with data in it
 for this purpose.
@@ -68,17 +64,17 @@ for this purpose.
 call:
 
 On Linux:
-mkisofs -o isoimage_2.raw -R  -C xx,yy -M /dev/cdwriter_blk_dev  first_dir
+genisoimage -o isoimage_2.raw -R  -C xx,yy -M /dev/cdwriter_blk_dev  first_dir
 
 On SunOS:
-mkisofs -o isoimage_2.raw -R  -C xx,yy -M target,lun first_dir
+genisoimage -o isoimage_2.raw -R  -C xx,yy -M target,lun first_dir
 
 Note that the name "first_dir" is not important.
 
 If you still keep the old raw image of the first session and there is only
 one previous session on the CD you may also call:
 
-mkisofs -o isoimage_2.raw -R  -C xx,yy -M isoimage.raw first_dir
+genisoimage -o isoimage_2.raw -R  -C xx,yy -M isoimage.raw first_dir
 
 
 The argument of -C is the output of wodim -msinfo
@@ -87,15 +83,17 @@ The argument of -C is the output of wodim -msinfo
 -	On SunOS, target and lun refer to the SCSI target and lun of the 
 	CD-R device with the same notation as for wodim dev=xxx,yyy .
 
+Note that you can also use the -msifile=... option of wodim to store this data
+in a reliable way. This is usefull for scripting.
 
-If you want to check, whether mkisofs make everything right, you should create 
+If you want to check, whether genisoimage make everything right, you should create 
 another image by using the following command line.
 
 On Linux:
-mkisofs -o isoimage_2.raw -R  -C xx,0 -M /dev/cdwriter_blk_dev  first_dir
+genisoimage -o isoimage_2.raw -R  -C xx,0 -M /dev/cdwriter_blk_dev  first_dir
 
 On SunOS:
-mkisofs -o isoimage_2.raw -R  -C xx,0 -M target,lun first_dir
+genisoimage -o isoimage_2.raw -R  -C xx,0 -M target,lun first_dir
 
 Where xx is the first number of the pair returned by wodim -msinfo
 
@@ -171,24 +169,25 @@ Joliet is a really bad idea in general:
 All notes above prevent you from doing reliable multi-session if the CD does
 only contain Joliet but des not contain Rock Ridge attributes.
 
-In addition, please read README.joliet in the mkisofs directory.
+In addition, please read README.joliet in the genisoimage directory.
 
 This is the answer to a commonly asked question is why can't I continue a
-multisession CD that has been started on a Microsoft system using mkisofs. 
+multisession CD that has been started on a Microsoft system using genisoimage. 
 
 
 Note: It is not possible to create a multi-session HFS CD. If you create
 a multi-session CD using any of the HFS options, then each new HFS
 session will ignore HFS files from any previous sessions. A warning will
 be printed if you attempt this. However, if you use the '-part' option to
-mkisofs for each session you create, then each session will appear as 
+genisoimage for each session you create, then each session will appear as 
 separate volumes when mounted on a Mac. In this case, it is worth using the 
 '-V' or '-hfs-volid' option to give each session a unique volume name,
 otherwise each "volume" will appear on the Desktop with the same name.
 
 
 Joerg Schilling
-Edited for cdrkit by Christian Fromme <kaner@strace.org>
+
+Edited for cdrkit by Christian Fromme <kaner@strace.org> and Eduard Bloch
 
 
 This describes the programs as shipped with cdrkit, a spinoff from the

@@ -7,12 +7,14 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
     command (#369677)
   * Added more DVD related fixes from SuSE's wodim-1.0pre5cvs-6.src.rpm
   * --devices option for wodim (modeled after cdrskin's output)
+  * -msifile=... option to store -msinfo output reliably in a dedicated file
   * clear profile names printing (using code from libburnia)
   * cleanup with unused embedded CVS revision strings from Schilling and
     more gcc -Wall correctness
   * reenabled -format functionality (bug in program function control flow)
   * get maximum DMA buffer size from sysfs on Linux, where possible
   * enable BURN-Free by default where possible
+  * genisoimage documentation updates, mkisofs name changes
 
   [ Thomas Schmidt ]
   * workaround for older libmagic API

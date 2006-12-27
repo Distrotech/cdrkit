@@ -21,9 +21,9 @@ wodim : contains README files relevant for the work with the
         wodim application (writting data) and details specific
         to its usage
 
-mkisofs : documentation for work with the mkisofs, a
-        ISO9660 filesystem creator. See mkisofs/README for
-        details.
+genisoimage : documentation for work with genisoimage program, a
+              ISO9660 filesystem creator. See genisoimage/README for
+              details.
 
 icedax : contains documentation for the CD audio
            extraction utility icedax. See icedax/README for

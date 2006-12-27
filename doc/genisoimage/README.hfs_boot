@@ -1,7 +1,7 @@
 Making HFS bootable CDs
 
 *******
-The HFS boot code in mkisofs/mkhybrid is now very out of date ...
+The HFS boot code in genisoimage/mkhybrid is now very out of date ...
 it does not support booting from IDE CDROMS, and probably won't work on
 "newer" Macs.
 
@@ -72,3 +72,5 @@ Any comments, bug reports/fixes to the address below
 
 James Pearson (j.pearson@ge.ucl.ac.uk)
 19-Jul-2000
+
+Edited for program name change by Eduard Bloch, 2006

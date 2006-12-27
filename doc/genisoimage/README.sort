@@ -9,13 +9,13 @@ This option is useful in order to optimize the data layout on a CD.
 
 To use, type something like:
 
-mkisofs -o cdimage.iso -sort sort_file [other_options] cd_dir
+genisoimage -o cdimage.iso -sort sort_file [other_options] cd_dir
 
 The file 'sort_file' contains two columns of:
 
 filename	weight
 
-where filename is the whole name of a file/directory as mkisofs will see it
+where filename is the whole name of a file/directory as genisoimage will see it
 and weight is a whole number between +/- 2147483647
 
 The files will be sorted with the highest weights first and lowest last.
@@ -44,7 +44,7 @@ for space characters to be in, or at the end of a filename.
 
 The command:
 
-mkisofs -o cdimage.iso -sort sort_file cd_dir
+genisoimage -o cdimage.iso -sort sort_file cd_dir
 
 will sort the above file data as:
 
@@ -61,9 +61,9 @@ be the normal ISO9660 sort order (i.e. alphabetical in this case).
 File C will have the default weight of 0
 
 Warning: the filenames in the sort list MUST match the whole path as seen by
-mkisofs. i.e. in the above case, if the command line was:
+genisoimage. i.e. in the above case, if the command line was:
 
-mkisofs -o cdimage.iso -sort sort_file ./cd_dir
+genisoimage -o cdimage.iso -sort sort_file ./cd_dir
 
 then the sort_file filename will have to changed as accordingly.
 

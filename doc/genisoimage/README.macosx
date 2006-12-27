@@ -1,8 +1,8 @@
-Notes on using the --osx-hfs option when running mkisofs on MacOS X
+Notes on using the --osx-hfs option when running genisoimage on MacOS X
 
-mkisofs does not use any of the MacOS APIs to access files - it uses
+genisoimage does not use any of the MacOS APIs to access files - it uses
 standard (POSIX style) library calls. Under normal circumstances, all
-mkisofs will 'see' is the data fork of files on an HFS (or HFS+) file system.
+genisoimage will 'see' is the data fork of files on an HFS (or HFS+) file system.
 
 However, Apple have provided a way for POSIX style applications to 
 access the resource fork - using the following syntax:
@@ -24,18 +24,20 @@ move away from using HFS to store finder info and resource data - for
 example, the TYPE of a file may be based on its file name extension and the
 TYPE field in the finder info empty.
 
-mkisofs knows nothing about these file name extension mappings, so if the
+genisoimage knows nothing about these file name extension mappings, so if the
 --osx-hfs option is used and the source files are on MacOS X HFS(+) volumes,
 by the fact that they are HFS files, they will get identified as 'MacOS X HFS'
 and the resulting file on the output CD image will have empty TYPE and CREATOR
 fields.
 
 Therefore, if the input finderinfo is blank and the the resource fork is
-empty, mkisofs will assume the input file is not a 'real' HFS file - which
+empty, genisoimage will assume the input file is not a 'real' HFS file - which
 means the TYPE and CREATOR may then be set using the file's magic number or
-mkisofs' file name extension mapping.
+genisoimage' file name extension mapping.
 
 The only real benefit of using the --osx-hfs option is when the source files
 are on an OS9 or earlier HFS or HFS+ volume e.g. an existing HFS CD.
 
 James Pearson 3-Jul-2002
+Edited for program name change by Eduard Bloch, 2006
+
