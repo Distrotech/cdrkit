@@ -54,16 +54,6 @@ For Solaris 8 and later you may also use the Sun lofi driver (see README.sun-lof
 		(cd /master_for_cd; star -cPM .)|(cd /mnt; star -diff -v)
 
 
-When doing this you have to know about the bugs in Linux/Solaris
-
-Mkisofs before 1.10 and Linux have a bug with timezones.
-If you are using mkisofs-1.10 and newer on Linux, you need to disable
-comparing times:
-
-(cd /master_for_cd; star -cPM .)|(cd /cdrom; star -diff -v diffopts=!times)
-
-The same is needed if you are using mkisofs pre-1.10 on Solaris
-
 Solaris has a bug with hardlinks. It generates different inode numbers
 for the hardlinks to a file. This makes it impossible for star to 
 check hard links. Use
@@ -81,5 +71,5 @@ that have been written with wodim -pad.
 Joerg Schilling
 
 Source: README.verify from cdrtools package
-Edited for cdrkit by Christian Fromme <kaner@strace.org>
+Edited for cdrkit by Christian Fromme <kaner@strace.org> and Eduard Bloch
 
