@@ -2189,22 +2189,22 @@ getdev(SCSI *usalp, BOOL print)
 
 			} else switch (usalp->dev) {
 
-			case DEV_ACB40X0:
-				strcpy(inq->vendor_info,
-					"ADAPTEC ACB-40X0        FAKE");
-				break;
-			case DEV_ACB4000:
-				strcpy(inq->vendor_info,
-					"ADAPTEC ACB-4000        FAKE");
-				break;
-			case DEV_ACB4010:
-				strcpy(inq->vendor_info,
-					"ADAPTEC ACB-4010        FAKE");
-				break;
-			case DEV_ACB4070:
-				strcpy(inq->vendor_info,
-					"ADAPTEC ACB-4070        FAKE");
-				break;
+				case DEV_ACB40X0:
+					strcpy(inq->vendor_info,
+							"ADAPTEC ACB-40X0        FAKE");
+					break;
+				case DEV_ACB4000:
+					strcpy(inq->vendor_info,
+							"ADAPTEC ACB-4000        FAKE");
+					break;
+				case DEV_ACB4010:
+					strcpy(inq->vendor_info,
+							"ADAPTEC ACB-4010        FAKE");
+					break;
+				case DEV_ACB4070:
+					strcpy(inq->vendor_info,
+							"ADAPTEC ACB-4070        FAKE");
+					break;
 			}
 		} else if (inq->add_len < 31) {
 			usalp->dev = DEV_NON_CCS_DSK;
