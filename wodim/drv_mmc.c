@@ -1938,7 +1938,7 @@ speed_select_mmc(SCSI *usalp, cdr_t *dp, int *speedp)
 
 	if (scsi_get_speed(usalp, 0, &val) >= 0) {
 		if (val > 0) {
-		        printf("Speed set to %d KB/s\n", val); 
+		        fprintf(stderr, "Speed set to %d KB/s\n", val); 
 			curspeed = val / 176;
 			*speedp = curspeed;
 		}
