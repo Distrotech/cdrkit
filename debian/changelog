@@ -7,9 +7,12 @@ cdrkit (9:1.1.1-1) unstable; urgency=low
     + uses correct CFLAGS variable (closes: #402190)
     + moved *iso* manpages to section 1, many manpage fixes 
       (closes: #404289, #402044)
-  * Add mkzftree binary again (sorry... closes: #387927)
+    + icedax.1 updates, cdda2wav specific expalanations removed
+      (closes: #401821)
+  * Add mkzftree binary again (sorry... closes: #402750)
   * Add /usr/bin/readcd -> readom compatibility symlink 
-    (closes: #403536, #403193)
+    (closes: #403536, #403193) and set conflict with older xcdroast package
+    revisions (closes: #401791)
 
  -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:18 +0100
 

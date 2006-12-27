@@ -90,9 +90,13 @@ or
 .IR directories ]
 .SH DESCRIPTION
 .B icedax
-can retrieve audio tracks from CDROM drives (see README for a list of drives) that are
+stands for InCrEdible Digital Audio eXtractor. It can retrieve audio tracks
+.RB ( CDDA )
+from CDROM drives
+that are
 capable of reading audio data digitally to the host
-.RB ( CDDA ).
+(see README for a list of drives).
+
 .SH OPTIONS
 .TP
 .BI dev= device
@@ -102,21 +106,14 @@ capable of reading audio data digitally to the host
 .BI \-device " device
 uses
 .B device
-as the source for CDDA reading.
-For example /dev/cdrom for the
-.B cooked_ioctl
-interface and Bus,ID,Lun for the 
-.B generic_scsi
-interface. The
-.B device
-has to correspond with the interface setting (see below).
-.sp
-Using the
-.B cooked_ioctl
-is not recommended as this makes
-.B icedax
-mainly depend on the audio extraction quality of the operating system
-which is usually extremely bad.
+as the source for CDDA reading. For example
+.B /dev/cdrom
+or
+.B Bus,ID,Lun.
+The device specification can also have influence on the selection of the driver interface (eg. on Linux-2.4).
+See the
+.B \-I
+option for details.
 .sp
 The setting of the environment variable
 .B CDDA_DEVICE
@@ -136,6 +133,13 @@ specifies the interface for CDROM access:
 .B generic_scsi
 or (on Linux, and FreeBSD systems)
 .BR cooked_ioctl .
+.sp
+Using the
+.B cooked_ioctl
+is not recommended as this makes
+.B icedax
+mainly depend on the audio extraction quality of the operating system
+which is usually extremely bad.
 .TP
 .BI \-c " channels  --channels"
 uses
