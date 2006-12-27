@@ -15,8 +15,6 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
   * get maximum DMA buffer size from sysfs on Linux, where possible
   * enable BURN-Free by default where possible
   * genisoimage documentation updates, mkisofs name changes
-  * changed device access max. attempt count to 3, that is enough to inform
-    the user that something is there and it is busy
 
   [ Thomas Schmidt ]
   * workaround for older libmagic API
