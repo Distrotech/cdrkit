@@ -271,6 +271,7 @@ void fifo_cleanup(void) {
 
 /* shared variables */
 int	scandevs = 0;
+char	*msifile = NULL;
 
 int main(int argc, char *argv[])
 {
@@ -3063,7 +3064,7 @@ raise_memlock()
 }
 
 char	*opts =
-"help,version,checkdrive,prcap,inq,devices,scanbus,reset,abort,overburn,ignsize,useinfo,dev*,timeout#,driver*,driveropts*,setdropts,tsize&,padsize&,pregap&,defpregap&,speed#,load,lock,eject,dummy,msinfo,toc,atip,multi,fix,nofix,waiti,immed,debug#,d+,kdebug#,kd#,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,audio,data,mode2,xa,xa1,xa2,xamix,cdi,isosize,nopreemp,preemp,nocopy,copy,nopad,pad,swab,fs&,ts&,blank&,format,formattype&,pktsize#,packet,noclose,force,tao,dao,sao,raw,raw96r,raw96p,raw16,clone,scms,isrc*,mcn*,index*,cuefile*,textfile*,text,shorttrack,noshorttrack,gracetime#,minbuf#";
+"help,version,checkdrive,prcap,inq,devices,scanbus,reset,abort,overburn,ignsize,useinfo,dev*,timeout#,driver*,driveropts*,setdropts,tsize&,padsize&,pregap&,defpregap&,speed#,load,lock,eject,dummy,msinfo,toc,atip,multi,fix,nofix,waiti,immed,debug#,d+,kdebug#,kd#,verbose+,v+,Verbose+,V+,x+,xd#,silent,s,audio,data,mode2,xa,xa1,xa2,xamix,cdi,isosize,nopreemp,preemp,nocopy,copy,nopad,pad,swab,fs&,ts&,blank&,format,formattype&,pktsize#,packet,noclose,force,tao,dao,sao,raw,raw96r,raw96p,raw16,clone,scms,isrc*,mcn*,index*,cuefile*,textfile*,text,shorttrack,noshorttrack,gracetime#,minbuf#,msifile*";
 
 /*
  * Defines used to find whether a write mode has been specified.
@@ -3211,7 +3212,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 				&scms, &isrc, &mcn, &tindex,
 				&cuefile, &textfile, &usetext,
 				&shorttrack, &noshorttrack,
-				&gracetime, &dminbuf)) < 0) {
+				&gracetime, &dminbuf, &msifile)) < 0) {
 			errmsgno(EX_BAD, "Bad Option: %s.\n", cav[0]);
 			susage(EX_BAD);
 		}
@@ -3248,6 +3249,8 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 				*flagsp |= F_DUMMY;
 			if (setdropts)
 				*flagsp |= F_SETDROPTS;
+			if(msifile)
+				msinfo++;
 			if (msinfo)
 				*flagsp |= F_MSINFO;
 			if (toc) {
@@ -4089,6 +4092,17 @@ print_msinfo(SCSI *usalp, cdr_t *dp)
 		return;
 	}
 	printf("%ld,%ld\n", off, fa);
+	if(msifile) {
+		FILE *f = fopen(msifile, "w");
+		if(f) {
+			fprintf(f, "%ld,%ld\n", off, fa);
+			fclose(f);
+		}
+		else {
+			perror("Unable to write multi session info file");
+			exit(EXIT_FAILURE);
+		}
+	}
 }
 
 static void 

@@ -444,12 +444,20 @@ Not all drives allow multisession CDs in SAO mode.
 .TP
 .B \-msinfo
 Retrieve multi session info in a form suitable for 
-.B genisoimage .
+.B genisoimage
+and print it to standard output. See
+.B msisize=
+option for another version.
 .sp
 This option makes only sense with a CD that contains at least
 one closed session and is appendable (not finally closed yet). 
 Some drives create error messages if you try to get the multi 
 session info for a disk that is not suitable for this operation.
+.TP
+.BR msifile= filename
+Like 
+.B \-msinfo
+option but also stores the multi session info in a file.
 .TP
 .B \-toc
 Retrieve and print out the table of content or PMA of a CD.
