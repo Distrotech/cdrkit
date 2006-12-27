@@ -310,12 +310,15 @@ main(int argc, char *argv[])
 	}
 	if (help)
 		usage(0);
-  if (pversion) {
-     printf("readom " CDRKIT_VERSION " (" HOST_SYSTEM ")\n"
-           "Copyright (C) 1987, 1995-2006 Joerg Schilling\n"
-           "Copyright (C) 2006 Cdrkit maintainers\n"
-           "(modified version of <censored> -- "
-           "don't bother Joerg Schilling with problems)\n");
+	if (pversion) {
+		printf("readcd %s is not what you see here. This line is only a fake for too clever\n"
+				"GUIs and other frontend applications. In fact, this program is:\n", cdr_version);
+
+		printf("readom " CDRKIT_VERSION " (" HOST_SYSTEM ")\n"
+				"Copyright (C) 1987, 1995-2006 Joerg Schilling\n"
+				"Copyright (C) 2006 Cdrkit maintainers\n"
+				"(modified version of <censored> -- "
+				"don't bother Joerg Schilling with problems)\n");
 		exit(0);
 	}
 
@@ -2021,7 +2024,7 @@ domode(SCSI *usalp, int err, int retr)
 static	void	qpto96(Uchar *sub, Uchar *subq, int dop);
 /*EXPORT	void	qpto96		__PR((Uchar *sub, Uchar *subq, int dop));*/
 /*
- * Q-Sub auf 96 Bytes bl‰hen und P-Sub addieren
+ * Q-Sub auf 96 Bytes bl√§hen und P-Sub addieren
  *
  * OUT: sub, IN: subqptr
  */
