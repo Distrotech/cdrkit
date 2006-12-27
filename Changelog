@@ -23,6 +23,10 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
   * major cleanups to genisoimage.1 manpage; split out the part about
     .genisoimagerc to a new page genisoimagerc.5.
 
+  [ Arkadiusz Miskiewicz ]
+  * Fake prefix line in the version output of readom to keep compatibility
+    with frontends
+
  -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:33 +0100
 
 cdrkit (1.1.0) RELEASED; urgency=medium

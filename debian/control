@@ -12,7 +12,7 @@ Depends: ${shlibs:Depends}
 Recommends: genisoimage
 Replaces: cdrtools-doc (<< 5:1.0~pre1-1), cdrecord (<< 5:1.0~pre1-1)
 Suggests: cdrkit-doc
-Conflicts: cdrecord (<< 5:1.0~pre1-1)
+Conflicts: cdrecord (<< 5:1.0~pre1-1), xcdroast (<< 0.98+0alpha15-11)
 Description: command line CD/DVD writing tool
  wodim allows you to create CDs or DVDs on a CD/DVD recorder.
  It supports writing data, audio, mixed, multi-session, and CD+ disc and DVD
