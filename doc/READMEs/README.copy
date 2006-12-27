@@ -20,7 +20,7 @@ For this reason, you will not be able to read such a CD correctly with 'dd'.
 
 I recommend to write all disks in Disk at Once mode if your drive
 is supported in DAO mode with wodim. In addition, you may wish to 
-add padding (see wodim / mkisofs man pages).
+add padding (see wodim / genisoimage man pages).
 
 If you want to copy such a CD directly with wodim, you may call:
 
