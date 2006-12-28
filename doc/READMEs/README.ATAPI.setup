@@ -1,7 +1,8 @@
 Howto setup an ATAPI CD-RW/DVD+-RW recorder on Debian/Ubuntu
 ============================================================
 
-(for Debian with kernel 2.4, continue reading below)
+This guide should be applicable to most kernel 2.6 using distributions of
+GNU/Linux. For installations with kernel 2.4, continue reading below.
 
 Kernel 2.6.*
 ============
@@ -32,7 +33,7 @@ In this case it still does need the suid bit - please send patches if you have
 identified the reason of that problem.
 
 Kernel 2.4.* (for 2.5/2.6, see above)
-============
+=====================================
 
 Where we start:
    Linux: Kernel 2.4.20-bf2.4 (Debian package kernel-image-2.4.20-bf2.4)
