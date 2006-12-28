@@ -1,6 +1,6 @@
 CD-Text Usage (to copy CD-Text from master CD):
 
-	cdda2wav -D 6,0 -vall -B	# To extract audio information
+	icedax -D 6,0 -vall -B	# To extract audio information
 	wodim dev=6,0 -vv -toc	# To extract CD-Text information
 
 	and then
@@ -25,10 +25,10 @@ CD-Text Usage (to copy CD-Text from master CD):
 		about CD-Text. This way even old drives like the
 		Plextor PX-R 412C will write CD-Text.
 
-	NOTE that cdda2wav will read CD-Text and fill in the 
+	NOTE that icedax will read CD-Text and fill in the 
 	CD-Text fields in the *.inf files if vou use -vall.
 
-	The new cdda2wav option cddb= allows you to tell cdda2wav to
+	The new icedax option cddb= allows you to tell icedax to
 	retrieve CDDB information from freedb.freedb.org.
 	cddb=0 means ask if ambiguous, cddb=1 means take first entry.
 	The information in this case is filled into the fields
@@ -36,9 +36,9 @@ CD-Text Usage (to copy CD-Text from master CD):
 
 Creating a CD with CD-Text based on CDDB information from freedb.freedb.org:
 
-	Tell cdda2wav to fetch data from freedb.freedb.org, call
+	Tell icedax to fetch data from freedb.freedb.org, call
 
-	cdda2wav -D 6,0 -vall -B cddb=1	# To extract audio information/fetch CDDB data
+	icedax -D 6,0 -vall -B cddb=1	# To extract audio information/fetch CDDB data
 
 	and then call
 
@@ -50,7 +50,7 @@ Creating a CD with CD-Text based on CDDB information from freedb.freedb.org:
 If you like to create your own CD-text data for a CD use the
 following method:
 
-	First extract all tracks with cdda2wav -vall (see above),
+	First extract all tracks with icedax -vall (see above),
 
 	then edit the *.inf Files and add album and song titles.
 
@@ -61,5 +61,5 @@ following method:
 	for a single string.
 
 Source: README.cdtext from cdrtools package
-Edited for cdrkit by Christian Fromme <kaner@strace.org>
+Edited for cdrkit by Christian Fromme <kaner@strace.org> and Eduard Bloch
 

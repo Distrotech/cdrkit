@@ -11,7 +11,7 @@ multi session mode and then writing a data session.
 If you like to append a filesystem to a audio CD, first extract the 
 CD by calling:
 
-	cdda2wav -B -vall
+	icedax -B -vall
 
 This first audio session may be written in TAO mode with the command
 
@@ -43,7 +43,7 @@ See my README.multi for more info on how to create multi session CD's
 
 The procedure again in short form:
 
-	cdda2wav -vall -B
+	icedax -vall -B
 
 	wodim -multi -audio audio_tracks ....
 or
