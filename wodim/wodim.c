@@ -296,6 +296,9 @@ int main(int argc, char *argv[])
 	BOOL	is_cdwr = FALSE;
 	BOOL	is_dvdwr = FALSE;
 
+	buf=strstr(argv[0], "cdrecord");
+	if(buf && '\0' == buf[8]) /* lame cheater detected */
+		argv[0]="wodim";
 
 #ifdef __EMX__
 	/* This gives wildcard expansion with Non-Posix shells with EMX */

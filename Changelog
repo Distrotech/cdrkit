@@ -15,6 +15,8 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
   * get maximum DMA buffer size from sysfs on Linux, where possible
   * enable BURN-Free by default where possible
   * genisoimage documentation updates, mkisofs name changes
+  * setting argv[0] to wodim if someone is cheating and calls it as cdrecord.
+    Avoids confusion and printing of the wrong app name in the help output.
 
   [ Thomas Schmidt ]
   * workaround for older libmagic API
