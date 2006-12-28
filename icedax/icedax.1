@@ -296,12 +296,18 @@ does not write to a file, it just gives information about the disc.
 does a cddbp album- and track title lookup based on the cddb id.
 The parameter cddb mode defines how multiple entries shall be handled.
 .TS H
-center box;
-r | l.
+allbox;
+c cw(4i)
+r l.
 Parameter	Description
-_
-0	interactive mode. The user selects the entry to use.
-1	first fit mode. The first entry is taken unconditionally.
+0	T{
+.na
+interactive mode. The user selects the entry to use.
+T}
+1	T{
+.na
+first fit mode. The first entry is taken unconditionally.
+T}
 .TE
 .TP
 .B " cddbp-server=servername"
@@ -408,17 +414,23 @@ login shell.
 .B icedax
 uses the following exit codes to indicate various degrees of success:
 .TS H
-center box;
-r | l.
+allbox;
+c cw(1i)
+r l.
 Exitcode	Description
-_
 0	no errors encountered, successful operation.
 1	usage or syntax error. icedax got inconsistent arguments.
 2	permission (un)set errors. permission changes failed.
 3	read errors on the cdrom/burner device encountered.
-4	write errors while writing one of the output files encountered.
+4	T{
+.na
+write errors while writing one of the output files encountered.
+T}
 5	errors with soundcard handling (initialization/write).
-6	errors with stat() system call on the read device (cooked ioctl).
+6	T{
+.na
+errors with stat() system call on the read device (cooked ioctl).
+T}
 7	pipe communication errors encountered (in forked mode).
 8	signal handler installation errors encountered.
 9	allocation of shared memory failed (in forked mode).
@@ -428,9 +440,15 @@ _
 13	race condition in ioctl interface handling detected.
 14	error in ioctl() operation encountered.
 15	internal error encountered. Please report back!!!
-16	error in semaphore operation encountered (install / request).
+16	T{
+.na
+error in semaphore operation encountered (install / request).
+T}
 17	could not get the scsi transfer buffer.
-18	could not create pipes for process communication (in forked mode).
+18	T{
+.na
+could not create pipes for process communication (in forked mode).
+T}
 .TE
 .SH "DISCUSSION"
 .B icedax

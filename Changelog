@@ -17,6 +17,7 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
   * genisoimage documentation updates, mkisofs name changes
   * setting argv[0] to wodim if someone is cheating and calls it as cdrecord.
     Avoids confusion and printing of the wrong app name in the help output.
+  * more table formating fixes in icedax.1
 
   [ Thomas Schmidt ]
   * workaround for older libmagic API
