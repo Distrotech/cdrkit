@@ -2,9 +2,7 @@ Ho to copy CD's and CD-R/CD-RW's
 
 Copying audio CD's:
 
-If you want to copy audio CD's, look for 'icedax'. Be sure tu use use
-at least a cdda2wav-0.95beta or later. Older releases will not read correctly
-from SCSI-3/mmc compliant drives.
+If you want to copy audio CD's, look for 'icedax'.
 
 Copying data CD's:
 
@@ -44,7 +42,7 @@ the partition info and does raw SCSI reads.
 If you like to copy audio CD's in a way that preserves as much accuracy as
 possible, use:
 
-cdda2wav -vall -D... -B
+icedax -vall -D... -B
 wodim -v dev=... -dao -useinfo *.wav
 
 This will preserve pre-gap sizes, indices ...
