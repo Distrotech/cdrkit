@@ -15,7 +15,6 @@
    OR
    Stop supporting it, add a warning to libusal (scsi-remote.c or so) to not
    use it, add an appropriate comment to a BUGS file
- - fix nread() callers, see toc.c:835
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
  - check notes in help output, drop advisories, notes about future plans...
  - find out why spawn.c breaks in WAIT_H while the WAIT_UNION check works quite well on sys/wait.h. See include/CMakeLists.txt comments.
