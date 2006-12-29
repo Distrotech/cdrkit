@@ -9,6 +9,7 @@ cdrkit (9:1.1.1-1) unstable; urgency=low
       (closes: #404289, #402044)
     + icedax.1 updates, cdda2wav specific expalanations removed
       (closes: #401821)
+    + getting maximum DMA transfer size from sysfs (closes: #377069)
   * Add mkzftree binary again (sorry... closes: #402750)
   * Add /usr/bin/readcd -> readom compatibility symlink 
     (closes: #403536, #403193) and set conflict with older xcdroast package
