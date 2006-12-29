@@ -102,7 +102,7 @@ static	BOOL	(*pfnGetASPI32Buffer)(PASPI32BUFF)		= NULL;
 static	BOOL	(*pfnFreeASPI32Buffer)(PASPI32BUFF)		= NULL;
 static	BOOL	(*pfnTranslateASPI32Address)(PDWORD, PDWORD)	= NULL;
 
-static	int	AspiLoaded			= 0;    /* ASPI or SPTI */
+static	int	DriverLoaded			= 0;    /* ASPI or SPTI */
 static	HANDLE	hAspiLib			= NULL;	/* Used for Loadlib */
 
 #define	MAX_DMA_WNT	(63L*1024L) /* ASPI-Driver  allows up to 64k ??? */
@@ -171,7 +171,7 @@ typedef struct {
 	DRIVE	drive[NUM_MAX_NTSCSI_DRIVES];
 } SPTIGLOBAL;
 
-static	int	InitSCSIPT(void);
+static	int	InitSCSIPT(SCSI *usalp);
 static	int	DeinitSCSIPT(void);
 static	void	GetDriveInformation(BYTE i, DRIVE *pDrive);
 static	BYTE	SPTIGetNumAdapters(void);
@@ -182,8 +182,8 @@ static	HANDLE	GetFileHandle(BYTE i, BOOL openshared);
 
 static	BOOL	bSCSIPTInit = FALSE;
 static	SPTIGLOBAL sptiglobal;
-static	BOOL	bUsingSCSIPT = FALSE;
-static	BOOL	bForceAccess = FALSE;
+static	BOOL	UsingSPTI = FALSE;
+static	BOOL	ForceAccess = FALSE;
 static	int	sptihamax;
 static	USHORT	sptihasortarr[NUM_MAX_NTSCSI_HA];
 
@@ -195,9 +195,7 @@ static	USHORT	sptihasortarr[NUM_MAX_NTSCSI_HA];
  * send CDB with the INQUIRY command to it -- NT will automagically fill in
  * the PathId, TargetId, and Lun for us.
  */
-static int
-InitSCSIPT(void)
-{
+static int InitSCSIPT(SCSI *usalp) {
 	BYTE	i;
 	BYTE	j;
 	char	buf[4];
@@ -211,6 +209,7 @@ InitSCSIPT(void)
 	char	InquiryBuffer[2048];
 	PSCSI_ADAPTER_BUS_INFO	ai;
 	BYTE	bus;
+	int explicite_number=-1;
 
 	if (bSCSIPTInit)
 		return (0);
@@ -263,6 +262,7 @@ InitSCSIPT(void)
 		if (TRUE) {
 #endif
 			GetDriveInformation(i, &sptiglobal.drive[i]);
+
 			if (sptiglobal.drive[i].bUsed) {
 				retVal++;
 				hasortval = (sptiglobal.drive[i].PortNumber<<8) | sptiglobal.drive[i].PathId;
@@ -278,9 +278,17 @@ InitSCSIPT(void)
 					sptihasortarr[j] = hasortval;
 					sptihamax++;
 				}
+
+				/* shortcut for device names */
+				if(uDriveType==DRIVE_CDROM && usalp->device && ('A'+i)==toupper(usalp->device[0]))
+					explicite_number=i;
 			}
 		}
 	}
+		/* looks like a workaround for diverging ASPI and SPTI hostadapter numbers,
+		   most likely an attempt to keep the world of fake numbers
+		   consistent;
+		   EB */
 	if (sptihamax > 0) {
 		for (i = NUM_FLOPPY_DRIVES; i < NUM_MAX_NTSCSI_DRIVES; i++)
 			if (sptiglobal.drive[i].bUsed)
@@ -294,9 +302,25 @@ InitSCSIPT(void)
 	sptiglobal.numAdapters = SPTIGetNumAdapters();
 
 	bSCSIPTInit = TRUE;
+	if(explicite_number>0) {
+		usal_scsibus(usalp)=sptiglobal.drive[explicite_number].ha;
+		usal_target(usalp) =sptiglobal.drive[explicite_number].tgt;
+		usal_lun(usalp)    =sptiglobal.drive[explicite_number].lun;
+		/* now unset it to avoid further confusion */
+		usalp->device[0]='\0';
+
+		#ifdef _DEBUG_SCSIPT
+		fprintf(stderr, "named SCSIPT drive type %d found as %c, choosing %d, %d, %d\n", 
+				uDriveType,
+				'A'+explicite_number, 
+				usal_scsibus(usalp), 
+				usal_target(usalp), 
+				usal_lun(usalp));
+		#endif
+	}
 
 	if (retVal > 0)
-		bUsingSCSIPT = TRUE;
+		UsingSPTI = TRUE;
 
 	return (retVal);
 }
@@ -485,8 +509,7 @@ GetFileHandle(BYTE i, BOOL openshared)
  * fills in a pDrive structure with information from a SCSI_INQUIRY
  * and obtains the ha:tgt:lun values via IOCTL_SCSI_GET_ADDRESS
  */
-static void
-GetDriveInformation(BYTE i, DRIVE *pDrive)
+static void GetDriveInformation(BYTE i, DRIVE *pDrive)
 {
 	HANDLE		fh;
 	BOOL		status;
@@ -633,7 +656,8 @@ SPTIGetDeviceIndex(BYTE ha, BYTE tgt, BYTE lun)
 	BYTE	i;
 
 #ifdef _DEBUG_SCSIPT
-	fprintf(usalp_errfile,  "SPTI: SPTIGetDeviceIndex\n");
+	fprintf(usalp_errfile,  "SPTI: SPTIGetDeviceIndex, %d, %d, %d\n", ha,
+			tgt, lun);
 #endif
 
 	for (i = NUM_FLOPPY_DRIVES; i < NUM_MAX_NTSCSI_DRIVES; i++) {
@@ -778,7 +802,7 @@ usalo_version(SCSI *usalp, int what)
 		switch (what) {
 
 		case SCG_VERSION:
-			if (bUsingSCSIPT)
+			if (UsingSPTI)
 				return (_usal_itrans_version);
 			return (_usal_trans_version);
 		/*
@@ -811,6 +835,8 @@ usalo_open(SCSI *usalp, char *device)
 	int	tgt	= usal_target(usalp);
 	int	tlun	= usal_lun(usalp);
 
+	usalp->device = NULL;
+
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
 		if (usalp->errstr)
@@ -820,44 +846,55 @@ usalo_open(SCSI *usalp, char *device)
 		return (-1);
 	}
 
-	if (device != NULL &&
-	    (strcmp(device, "SPTI") == 0 || strcmp(device, "ASPI") == 0))
+	if (device != NULL && (strcmp(device, "SPTI") == 0 || strcmp(device, "ASPI") == 0))
 		goto devok;
 
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
+/*
 		errno = EINVAL;
 		if (usalp->errstr)
 			snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
 				"Open by 'devname' not supported on this OS");
 		return (-1);
+*/
+
+		UsingSPTI = TRUE;
+		usalp->device = device;
+
+		/* not the finest solution but prevents breaking on various
+		 * places for no good reasons... */
+		usal_scsibus(usalp)=0;
+		usal_target(usalp)=0;
+		usal_lun(usalp)=0;
+		goto openbydev;
 	}
 devok:
-	if (AspiLoaded <= 0) {	/* do not change access method on open driver */
-		bForceAccess = FALSE;
+	if (DriverLoaded <= 0) {	/* do not change access method on open driver */
+		ForceAccess = FALSE;
 #ifdef PREFER_SPTI
-		bUsingSCSIPT = TRUE;
+		UsingSPTI = TRUE;
 #else
-		bUsingSCSIPT = FALSE;
+		UsingSPTI = FALSE;
 #endif
 		if (!w2k_or_newer())
-			bUsingSCSIPT = FALSE;
+			UsingSPTI = FALSE;
 
 		if (usalp->debug > 0) {
 			fprintf((FILE *)usalp->errfile,
 				"usalo_open: Prefered SCSI transport: %s\n",
-					bUsingSCSIPT ? "SPTI":"ASPI");
+					UsingSPTI ? "SPTI":"ASPI");
 		}
 		if (device != NULL && strcmp(device, "SPTI") == 0) {
-			bUsingSCSIPT = TRUE;
-			bForceAccess = TRUE;
+			UsingSPTI = TRUE;
+			ForceAccess = TRUE;
 		} else if (device != NULL && strcmp(device, "ASPI") == 0) {
-			bUsingSCSIPT = FALSE;
-			bForceAccess = TRUE;
+			UsingSPTI = FALSE;
+			ForceAccess = TRUE;
 		}
 		if (device != NULL && usalp->debug > 0) {
 			fprintf((FILE *)usalp->errfile,
 				"usalo_open: Selected SCSI transport: %s\n",
-					bUsingSCSIPT ? "SPTI":"ASPI");
+					UsingSPTI ? "SPTI":"ASPI");
 		}
 	}
 
@@ -880,6 +917,7 @@ devok:
 		return (-1);
 	}
 
+openbydev:
 	if (usalp->local == NULL) {
 		usalp->local = malloc(sizeof (struct usal_local));
 		if (usalp->local == NULL)
@@ -913,6 +951,7 @@ devok:
 static int
 usalo_close(SCSI *usalp)
 {
+	//printf("closing\n");
 	exit_func();
 	return (0);
 }
@@ -996,7 +1035,7 @@ usalo_reset(SCSI *usalp, int what)
 	SRB_BusDeviceReset	s;
 
 	if (what == SCG_RESET_NOP) {
-		if (bUsingSCSIPT)
+		if (UsingSPTI)
 			return (-1);
 		else
 			return (0);  /* Can ASPI really reset? */
@@ -1005,7 +1044,7 @@ usalo_reset(SCSI *usalp, int what)
 		errno = EINVAL;
 		return (-1);
 	}
-	if (bUsingSCSIPT) {
+	if (UsingSPTI) {
 		fprintf((FILE *)usalp->errfile,
 					"Reset SCSI device not implemented with SPTI\n");
 		return (-1);
@@ -1022,7 +1061,7 @@ usalo_reset(SCSI *usalp, int what)
 	/*
 	 * Check if ASPI library is loaded
 	 */
-	if (AspiLoaded <= 0) {
+	if (DriverLoaded <= 0) {
 		fprintf((FILE *)usalp->errfile,
 				"error in usalo_reset: ASPI driver not loaded !\n");
 		return (-1);
@@ -1252,7 +1291,7 @@ usalo_send(SCSI *usalp)
 	/*
 	 * Check if ASPI library is loaded
 	 */
-	if (AspiLoaded <= 0) {
+	if (DriverLoaded <= 0) {
 		errmsgno(EX_BAD, "error in usalo_send: ASPI driver not loaded.\n");
 		sp->error = SCG_FATAL;
 		return (0);
@@ -1302,7 +1341,7 @@ usalo_send(SCSI *usalp)
 	s->SRB_BufPointer = sp->addr;			/* pointer to data buffer	*/
 	s->SRB_CDBLen	 = sp->cdb_len;			/* SCSI command length		*/
 	s->SRB_PostProc	 = Event;			/* Post proc event		*/
-	if (bUsingSCSIPT)
+	if (UsingSPTI)
 		s->SRB_SenseLen	= SENSE_LEN_SPTI;	/* Length of sense buffer, SPTI returns SenseInfoLength */
 	else
 		s->SRB_SenseLen	= SENSE_LEN;		/* fixed length 14 for ASPI */
@@ -1334,7 +1373,7 @@ usalo_send(SCSI *usalp)
 	 */
 
 	ResetEvent(Event);			/* Clear event handle	    */
-	if (bUsingSCSIPT) {
+	if (UsingSPTI) {
 #ifdef _DEBUG_SCSIPT
 		usalp_errfile = (FILE *)usalp->errfile;
 #endif
@@ -1419,8 +1458,8 @@ open_driver(SCSI *usalp)
 	/*
 	 * Check if ASPI library is already loaded yet
 	 */
-	if (AspiLoaded > 0) {
-		AspiLoaded++;
+	if (DriverLoaded > 0) {
+		DriverLoaded++;
 		return (TRUE);
 	}
 
@@ -1431,37 +1470,37 @@ open_driver(SCSI *usalp)
 	usalp_errfile = (FILE *)usalp->errfile;
 #endif
 #ifdef	PREFER_SPTI
-	if (bUsingSCSIPT)
-		if (InitSCSIPT() > 0) AspiLoaded++;
+	if (UsingSPTI)
+		if (InitSCSIPT(usalp) > 0) DriverLoaded++;
 #endif
 #ifdef	PREFER_SPTI
-	if ((!bUsingSCSIPT || !bForceAccess) && AspiLoaded <= 0) {
+	if ((!UsingSPTI || !ForceAccess) && DriverLoaded <= 0) {
 #else
-	if (!bUsingSCSIPT || !bForceAccess) {
+	if (!UsingSPTI || !ForceAccess) {
 #endif
 		if (load_aspi(usalp)) {
-			AspiLoaded++;
-			bUsingSCSIPT = FALSE;
+			DriverLoaded++;
+			UsingSPTI = FALSE;
 		}
 	}
 
 #ifndef	PREFER_SPTI
-	if ((bUsingSCSIPT || !bForceAccess) && AspiLoaded <= 0)
-		if (InitSCSIPT() > 0)
-			AspiLoaded++;
+	if ((UsingSPTI || !ForceAccess) && DriverLoaded <= 0)
+		if (InitSCSIPT(usalp) > 0)
+			DriverLoaded++;
 #endif	/*PREFER_SPTI*/
 
-	if (AspiLoaded <= 0) {
-		if (bUsingSCSIPT) {
+	if (DriverLoaded <= 0) {
+		if (UsingSPTI) {
 			if (errno == 0)
 				errno = ENOSYS;
 		}
 		fprintf((FILE *)usalp->errfile, "Can not load %s driver! ",
-						bUsingSCSIPT ? "SPTI":"ASPI");
+						UsingSPTI ? "SPTI":"ASPI");
 		return (FALSE);
 	}
 
-	if (bUsingSCSIPT) {
+	if (UsingSPTI) {
 		if (usalp->debug > 0)
 			fprintf((FILE *)usalp->errfile, "using SPTI Transport\n");
 
@@ -1573,7 +1612,7 @@ load_aspi(SCSI *usalp)
 static BOOL
 close_driver()
 {
-	if (--AspiLoaded > 0)
+	if (--DriverLoaded > 0)
 		return (TRUE);
 	/*
 	 * If library is loaded
@@ -1616,7 +1655,7 @@ ha_inquiry(SCSI *usalp, int id, SRB_HAInquiry *ip)
 	ip->SRB_Flags	 = 0;
 	ip->SRB_Hdr_Rsvd = 0;
 
-	if (bUsingSCSIPT)
+	if (UsingSPTI)
 		Status = SPTIHandleHaInquiry(ip);
 	else
 		Status = pfnSendASPI32Command((LPSRB)ip);
@@ -1642,7 +1681,7 @@ resetSCSIBus(SCSI *usalp)
 	HANDLE			Event;
 	SRB_BusDeviceReset	s;
 
-	if (bUsingSCSIPT) {
+	if (UsingSPTI) {
 		fprintf((FILE *)usalp->errfile,
 					"Reset SCSI bus not implemented with SPTI\n");
 		return (FALSE);
@@ -1710,7 +1749,7 @@ scsiabort(SCSI *usalp, SRB_ExecSCSICmd *sp)
 	DWORD			Status = 0;
 	SRB_Abort		s;
 
-	if (bUsingSCSIPT) {
+	if (UsingSPTI) {
 		fprintf((FILE *)usalp->errfile,
 					"Abort SCSI not implemented with SPTI\n");
 		return (FALSE);
@@ -1724,7 +1763,7 @@ scsiabort(SCSI *usalp, SRB_ExecSCSICmd *sp)
 	/*
 	 * Check if ASPI library is loaded
 	 */
-	if (AspiLoaded <= 0) {
+	if (DriverLoaded <= 0) {
 		fprintf((FILE *)usalp->errfile,
 				"error in scsiabort: ASPI driver not loaded !\n");
 		return (FALSE);

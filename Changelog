@@ -6,7 +6,9 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
   * more verbose abort message if track is specified with some maintainance
     command (#369677)
   * Added more DVD related fixes from SuSE's wodim-1.0pre5cvs-6.src.rpm
-  * --devices option for wodim (modeled after cdrskin's output)
+  * --devices option for wodim (modeled after cdrskin's output), working on
+    Linux and Cygwin
+  * Open-By-Device-Letter mode on Cygwin
   * -msifile=... option to store -msinfo output reliably in a dedicated file
   * clear profile names printing (using code from libburnia)
   * cleanup with unused embedded CVS revision strings from Schilling and

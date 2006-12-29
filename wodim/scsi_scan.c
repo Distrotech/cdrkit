@@ -80,8 +80,8 @@ int scan_devices() {
 	int i, ndevs=0;
 	BOOL have_tgt;
 
-    fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
 #ifdef linux
+	fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
 	for(i=0;i<MAXDEVCOUNT;i++) {
 		if(i<26)
 			snprintf(devname, sizeof (devname), "/dev/hd%c", 'a'+i);
@@ -138,6 +138,63 @@ int scan_devices() {
 	fprintf(stdout,	"----------------------------------------------------------------------\n");
 
 	return 0;
+
+#endif
+
+#ifdef __CYGWIN32__
+	fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
+	devname[1]='\0';
+	for(i=2;i<26;i++) {
+		devname[0]='A'+i;
+		usalp = usal_open(devname, buf, sizeof (buf), 0, 0);
+		if(!usalp) continue;
+		if('\0' != usalp->device[0]) // must have been consumed by the pickup code!
+		{
+			usal_close(usalp);
+			continue;
+		}
+		usalp->silent++;
+		//usalp->verbose=3;
+		have_tgt = unit_ready(usalp) || usalp->scmd->error != SCG_FATAL;
+
+		strcpy(perms,"------");
+		if(statbuf.st_mode&S_IRUSR) perms[0]= 'r';
+		if(statbuf.st_mode&S_IWUSR) perms[1]= 'w';
+		if(statbuf.st_mode&S_IRGRP) perms[2]= 'r';
+		if(statbuf.st_mode&S_IWGRP) perms[3]= 'w';
+		if(statbuf.st_mode&S_IROTH) perms[4]= 'r';
+		if(statbuf.st_mode&S_IWOTH) perms[5]= 'w';
+
+		if(have_tgt) {
+			char *p;
+
+			getdev(usalp, FALSE);
+			for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
+				if(isspace((unsigned char)*p))
+					*p='\0';
+				else
+					break;
+			}
+			for(p=usalp->inq->prod_ident + 15 ; p >= usalp->inq->prod_ident; p--) {
+				if(isspace((unsigned char)*p))
+					*p='\0';
+				else
+					break;
+			}
+			snprintf(buf, sizeof(buf), "%d    dev='%s'   %s :  '%.8s'  '%.16s'\n", ndevs, devname, perms, usalp->inq->vendor_info, usalp->inq->prod_ident);
+			lines[ndevs++]=strdup(buf);
+			usal_close(usalp);
+		}
+	}
+	fprintf(stdout, "%s: Overview of accessible drives (%d found) :\n"
+			"----------------------------------------------------------------------\n",
+			get_progname(), ndevs);
+	for(i=0;i<ndevs;i++)
+		fprintf(stdout, "%s", lines[i]);
+	fprintf(stdout,	"----------------------------------------------------------------------\n");
+
+	return 0;
+
 
 #endif
 

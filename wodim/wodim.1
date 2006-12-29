@@ -711,10 +711,9 @@ Sets the SCSI target for the CD/DVD-Recorder, see notes above.
 A typical device specification is
 .BI dev= 6,0
 \&.
-If a filename must be provided together with the numerical target 
-specification, the filename is implementation specific.
-The correct filename in this case can be found in the system specific
-manuals of the target operating system.
+A filename or virtual device name can be passed instead of the symbolic SCSI
+numbers.  The correct device/filename in this case can be found in the system
+specific manuals of the target operating system.
 On a 
 .I FreeBSD
 system without 
@@ -725,9 +724,9 @@ A correct device specification in this case may be
 .BI dev= /dev/rcd0.ctl:@
 \&.
 .sp
-On Linux, drives connected to a parallel port adapter are mapped
-to a virtual SCSI bus. Different adapters are mapped to different
-targets on this virtual SCSI bus.
+On Linux and Windows 2000/XP, drives are accessible with their device (or
+drive) names or with the symbolic SCSI numbers (not recommended, mapping is not
+stable and could be completely removed in the future).
 .sp
 If no 
 .I dev
