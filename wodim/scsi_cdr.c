@@ -10,10 +10,6 @@
  *
  */
 
-/*
-XXX
-SIZEOF testen !!!
-*/
 /* @(#)scsi_cdr.c	1.137 04/05/25 Copyright 1995-2004 J. Schilling */
 /*
  *	SCSI command functions for cdrecord

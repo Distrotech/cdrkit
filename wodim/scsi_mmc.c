@@ -368,15 +368,15 @@ get_wproflist(SCSI *usalp, BOOL *cdp, BOOL *dvdp, BOOL *dvdplusp, BOOL *ddcdp)
 }
 
 
-/* ts A61201 */
 char *mmc_obtain_profile_name(int profile_number) {
   static char *texts[0x53] = {NULL};
+  static char *reserved="Reserved/Unknown";
   int i, max_pno = 0x53;
   
   if (texts[0] == NULL) {
     for (i = 0; i<max_pno; i++)
-      texts[i] = "";
-    /* mmc5r03c.pdf , Table 89, Spelling: guessed cdrecord style */
+      texts[i] = reserved;
+    /* mmc5r04c.pdf , Table 88, human readable profile names */
     texts[0x01] = "Non-removable disk";
     texts[0x02] = "Removable disk";
     texts[0x03] = "MO erasable";
@@ -389,7 +389,7 @@ char *mmc_obtain_profile_name(int profile_number) {
     texts[0x11] = "DVD-R sequential recording";
     texts[0x12] = "DVD-RAM";
     texts[0x13] = "DVD-RW restricted overwrite";
-    texts[0x14] = "DVD-RW sequential overwrite";
+    texts[0x14] = "DVD-RW sequential recording";
     texts[0x15] = "DVD-R/DL sequential recording";
     texts[0x16] = "DVD-R/DL layer jump recording";
     texts[0x1a] = "DVD+RW";
