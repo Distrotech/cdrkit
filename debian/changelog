@@ -1,4 +1,4 @@
-cdrkit (9:1.1.1-1) unstable; urgency=low
+cdrkit (9:1.1.1-1) unstable; urgency=medium
 
   * New upstream version
     + more verbose abort message if track is specified with some maintainance
@@ -10,12 +10,13 @@ cdrkit (9:1.1.1-1) unstable; urgency=low
     + icedax.1 updates, cdda2wav specific expalanations removed
       (closes: #401821)
     + getting maximum DMA transfer size from sysfs (closes: #377069)
+    + coexisting hppa/alpha boot code possible now (closes: #404986)
   * Add mkzftree binary again (sorry... closes: #402750)
   * Add /usr/bin/readcd -> readom compatibility symlink 
     (closes: #403536, #403193) and set conflict with older xcdroast package
     revisions (closes: #401791)
 
- -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:18 +0100
+ -- Eduard Bloch <blade@debian.org>  Sat, 30 Dec 2006 16:45:31 +0100
 
 cdrkit (9:1.1.0-1) unstable; urgency=low
 

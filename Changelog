@@ -1,4 +1,4 @@
-cdrkit (1.1.1) UNRELEASED; urgency=low
+cdrkit (1.1.1) RELEASED; urgency=low
 
   * added geteltorito script from Rainer Krienke
 
@@ -10,19 +10,22 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
     Linux and Cygwin
   * Open-By-Device-Letter mode on Cygwin
   * -msifile=... option to store -msinfo output reliably in a dedicated file
-  * clear profile names printing (using code from libburnia)
+  * clear profile names printing (using code from libburnia, thanks to Thomas
+    Schmidt)
   * cleanup with unused embedded CVS revision strings from Schilling and
     more gcc -Wall correctness
   * reenabled -format functionality (bug in program function control flow)
   * get maximum DMA buffer size from sysfs on Linux, where possible
   * enable BURN-Free by default where possible
-  * genisoimage documentation updates, mkisofs name changes
   * setting argv[0] to wodim if someone is cheating and calls it as cdrecord.
     Avoids confusion and printing of the wrong app name in the help output.
-  * more table formating fixes in icedax.1
+  * more documentation updates WRT cdda2wav->icedax renaming, more table
+    formating fixes in icedax.1
+  * genisoimage documentation updates, mkisofs name changes
 
   [ Thomas Schmidt ]
   * workaround for older libmagic API
+  * code for clear profile name mapping
 
   [ Peter Samuelson ]
   * expand where genisoimage looks for the config file - same places
@@ -30,11 +33,14 @@ cdrkit (1.1.1) UNRELEASED; urgency=low
   * major cleanups to genisoimage.1 manpage; split out the part about
     .genisoimagerc to a new page genisoimagerc.5.
 
+  [ Steve Langasek ]
+  * allow hppa and alpha boot code to coexist in one ISO image
+
   [ Arkadiusz Miskiewicz ]
   * Fake prefix line in the version output of readom to keep compatibility
     with frontends
 
- -- Eduard Bloch <blade@debian.org>  Sat,  2 Dec 2006 23:05:33 +0100
+ -- Eduard Bloch <blade@debian.org>  Sat, 30 Dec 2006 16:45:40 +0100
 
 cdrkit (1.1.0) RELEASED; urgency=medium
 

@@ -47,7 +47,11 @@
 
         int     add_boot_alpha_filename(char *filename);
 static  int     boot_alpha_write(FILE *outfile);
+static  int     boot_alpha_hppa_write(FILE *outfile);
 static  char   *boot_file_name = NULL;
+
+unsigned long long alpha_hppa_boot_sector[256]; /* One (ISO) sector */
+int boot_sector_initialized = 0;
 
 #define BOOT_STRING "Linux/Alpha aboot for ISO filesystem."
 
@@ -61,17 +65,17 @@ extern int add_boot_alpha_filename(char *filename)
 
 static int boot_alpha_write(FILE *outfile)
 {
-    unsigned long long boot_sector[256]; /* One (ISO) sector */
-    unsigned long long sum = 0;
-	struct directory_entry	*boot_file;	/* Boot file we need to search for */
+    struct directory_entry	*boot_file;	/* Boot file we need to search for */
     unsigned long length = 0;
     unsigned long extent = 0;
-    int i = 0;
 
-    memset(boot_sector, 0, sizeof(boot_sector));    
+    if (!boot_sector_initialized) {
+	memset(alpha_hppa_boot_sector, 0, sizeof(alpha_hppa_boot_sector));
+	boot_sector_initialized = 1;
+    }
 
     /* Write the text header into the boot sector */
-    strcpy((char *)boot_sector, BOOT_STRING);
+    strcpy((char *)alpha_hppa_boot_sector, BOOT_STRING);
 
     /* Find the dir entry for the boot file by walking our file list */
     boot_file = search_tree_file(root, boot_file_name);
@@ -103,22 +107,31 @@ static int boot_alpha_write(FILE *outfile)
 
     /* Now write those values into the appropriate area of the boot
        sector in LITTLE ENDIAN format. */
-    write_le64(length, (unsigned char *)(unsigned long long *)&boot_sector[60]);
-    write_le64(extent, (unsigned char *)&boot_sector[61]);
+    write_le64(length, (unsigned char *)&alpha_hppa_boot_sector[60]);
+    write_le64(extent, (unsigned char *)&alpha_hppa_boot_sector[61]);
+
+    return 0;
+}
+
+static int boot_alpha_hppa_write(FILE *outfile)
+{
+    unsigned long long sum = 0;
+    int i = 0;
 
     /* Now generate a checksum of the first 504 bytes of the boot
-       sector and place it in boot_sector[63]. Isomarkboot currently
+       sector and place it in alpha_hppa_boot_sector[63]. Isomarkboot currently
        gets this wrong and will not work on big-endian systems! */
     for (i = 0; i < 63; i++)
-        sum += read_le64((unsigned char *)&boot_sector[i]);
+        sum += read_le64((unsigned char *)&alpha_hppa_boot_sector[i]);
 
-    write_le64(sum, (unsigned char *)&boot_sector[63]);
+    write_le64(sum, (unsigned char *)&alpha_hppa_boot_sector[63]);
 
-    jtwrite(boot_sector, sizeof(boot_sector), 1, 0, FALSE);
-    xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
+    jtwrite(alpha_hppa_boot_sector, sizeof(alpha_hppa_boot_sector), 1, 0, FALSE);
+    xfwrite(alpha_hppa_boot_sector, sizeof(alpha_hppa_boot_sector), 1, outfile, 0, FALSE);
     last_extent_written++;
 
     return 0;
 }
 
-struct output_fragment alphaboot_desc = {NULL, oneblock_size, NULL, boot_alpha_write, "alpha boot block"};
+struct output_fragment alphaboot_desc = {NULL, NULL, NULL, boot_alpha_write, "alpha boot block"};
+struct output_fragment alpha_hppa_boot_desc = {NULL, oneblock_size, NULL, boot_alpha_hppa_write, "alpha/hppa boot block"};

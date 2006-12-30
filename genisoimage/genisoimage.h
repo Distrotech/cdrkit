@@ -203,6 +203,7 @@ extern struct output_fragment strdir_desc;
 extern struct output_fragment strpath_desc;
 extern struct output_fragment alphaboot_desc;
 extern struct output_fragment hppaboot_desc;
+extern struct output_fragment alpha_hppa_boot_desc;
 extern struct output_fragment mipsboot_desc;
 extern struct output_fragment mipselboot_desc;
 

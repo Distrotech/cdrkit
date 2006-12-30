@@ -53,6 +53,9 @@
 #include <schily.h>
 #include "endianconv.h"
 
+extern long long alpha_hppa_boot_sector[256];
+extern int boot_sector_initialized;
+
 int     add_boot_hppa_cmdline(char *cmdline);
 int     add_boot_hppa_kernel_32(char *filename);
 int     add_boot_hppa_kernel_64(char *filename);
@@ -129,13 +132,18 @@ static void exit_fatal(char *type, char *filename)
 
 static int boot_hppa_write(FILE *outfile)
 {
-    unsigned char boot_sector[2048]; /* One (ISO) sector */
-	struct directory_entry	*boot_file;	/* Boot file we need to search for */
+    struct directory_entry	*boot_file;	/* Boot file we need to search for */
     unsigned long length = 0;
     unsigned long extent = 0;
+    unsigned char *boot_sector = (unsigned char *) alpha_hppa_boot_sector;
     int i = 0;
 
-    memset(boot_sector, 0, sizeof(boot_sector));    
+    if (!boot_sector_initialized) {
+	memset(alpha_hppa_boot_sector, 0, sizeof(alpha_hppa_boot_sector));
+	boot_sector_initialized = 1;
+    }
+
+    printf("Address is: %p\n",alpha_hppa_boot_sector);
 
     boot_sector[0] = 0x80;  /* magic */
     boot_sector[1] = 0x00;  /* magic */
@@ -193,11 +201,7 @@ static int boot_hppa_write(FILE *outfile)
     write_be32(extent, &boot_sector[240]);
     write_be32(length, &boot_sector[244]);
 
-    jtwrite(boot_sector, sizeof(boot_sector), 1, 0, FALSE);
-    xfwrite(boot_sector, sizeof(boot_sector), 1, outfile, 0, FALSE);
-    last_extent_written++;
-
     return 0;
 }
 
-struct output_fragment hppaboot_desc = {NULL, oneblock_size, NULL, boot_hppa_write, "hppa boot block"};
+struct output_fragment hppaboot_desc = {NULL, NULL, NULL, boot_hppa_write, "hppa boot block"};

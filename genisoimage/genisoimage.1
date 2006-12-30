@@ -2576,6 +2576,11 @@ will do deep directory relocation.
 This results in a directory called
 .B RR_MOVED
 in the root directory of the CD. You cannot avoid this directory.
+.PP
+Many boot code options for different platforms are mutualy exclusive because
+the boot blocks cannot coexist, ie. different platforms share the same data
+locations in the image. See
+http://lists.debian.org/debian-cd/2006/12/msg00109.html for details.
 .\" ----------------------------------------
 .SH BUGS
 .PP

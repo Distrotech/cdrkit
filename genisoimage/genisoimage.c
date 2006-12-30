@@ -3438,6 +3438,8 @@ if (check_session == 0)
 		outputlist_insert(&alphaboot_desc);
 	if (use_hppaboot)
 		outputlist_insert(&hppaboot_desc);
+	if (use_alphaboot || use_hppaboot)
+		outputlist_insert(&alpha_hppa_boot_desc);
 	if (use_mipsboot)
 		outputlist_insert(&mipsboot_desc);
 	if (use_mipselboot)
