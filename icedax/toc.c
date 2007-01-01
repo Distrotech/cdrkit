@@ -188,7 +188,7 @@ void AnalyzeQchannel(unsigned frame)
 
 unsigned cdtracks = 0;
 
-int no_disguised_audiotracks()
+int no_disguised_audiotracks(void)
 {
 	/* we can assume no audio tracks according to toc here. */
 	/* read a data sector from the first data track */
@@ -208,7 +208,7 @@ fprintf(stderr, "Warning: wrong track types found: patching to audio...\n");
 
 
 #undef SIM_ILLLEADOUT
-int ReadToc()
+int ReadToc(void)
 {
     int retval = (*doReadToc)( get_scsi_p() );
 #if	defined SIM_ILLLEADOUT
@@ -219,7 +219,7 @@ int ReadToc()
 
 static int can_read_illleadout(void);
 
-static int can_read_illleadout()
+static int can_read_illleadout(void)
 {
 	SCSI *usalp = get_scsi_p();
 
@@ -254,9 +254,7 @@ unsigned find_an_off_sector(unsigned lSector, unsigned SectorBurstVal)
 #endif
 
 
-int handle_cdtext(void);
-
-int handle_cdtext()
+int handle_cdtext(void)
 {
 #ifdef CD_TEXT
 	if (bufferTOC[0] == 0 && bufferTOC[1] == 0) {
@@ -305,7 +303,7 @@ static unsigned session_start;
    only audio tracks in the first session and a data track
    in the last session.
  */
-static unsigned is_multisession()
+static unsigned is_multisession(void)
 {
   unsigned mult_off;
 #if defined CDROMMULTISESSION
@@ -555,7 +553,7 @@ static int cddb_sum(int n)
   return ret;
 }
 
-void calc_cddb_id()
+void calc_cddb_id(void)
 {
   UINT4 i;
   UINT4 t = 0;
@@ -573,7 +571,7 @@ void calc_cddb_id()
 
 #undef TESTCDINDEX
 #ifdef	TESTCDINDEX
-void TestGenerateId()
+void TestGenerateId(void)
 {
    SHA_INFO       sha;
    unsigned char  digest[20], *base64;
@@ -1098,7 +1096,7 @@ static int handle_userchoice(char *p, unsigned size)
  *	2	multiple fuzzy matches have been found.
  */
 int
-request_titles()
+request_titles(void)
 {
 	int		retval = 0;
 	int		sock_fd;
@@ -1495,7 +1493,7 @@ errout:
 static int IsSingleArtist(void);
 
 /* check, if there are more than one track creators */
-static int IsSingleArtist()
+static int IsSingleArtist(void)
 {
 	static struct iterator i;
 	InitIterator(&i, 1);
@@ -1731,7 +1729,7 @@ static void emit_cdindex_form(char *fname_baseval)
 }
 #endif
 
-static void dump_cdtext_info()
+static void dump_cdtext_info(void)
 {
 #ifdef CD_TEXT
   /* interpret the contents of CD Text information based on an early draft
@@ -2306,7 +2304,7 @@ static void DisplayToc_no_gui(unsigned long dw)
 	}
 }
 
-void DisplayToc()
+void DisplayToc(void)
 {
 	unsigned long dw;
 
@@ -2403,7 +2401,7 @@ static void Read_MCN_toshiba(subq_chnl **sub_ch)
 
 static void Get_Set_MCN(void);
 
-static void Get_Set_MCN()
+static void Get_Set_MCN(void)
 {
 	subq_chnl *sub_ch;
 	subq_catalog *subq_cat = NULL;
@@ -2704,7 +2702,7 @@ static void Get_Set_ISRC(unsigned tr)
 /* get and display Media Catalog Number ( one per disc )
  *  and Track International Standard Recording Codes (for each track)
  */
-void Read_MCN_ISRC()
+void Read_MCN_ISRC(void)
 {
 	if ((global.verbose & SHOW_MCN) != 0) {
 
@@ -2846,7 +2844,7 @@ static int HaveSCMS(unsigned StartSector)
 	return (copy_bits_set >= 1 && copy_bits_set < 8);
 }
 
-void Check_Toc()
+void Check_Toc(void)
 {
 	/* detect layout */
 	
@@ -3322,7 +3320,7 @@ static void Set_MCN(unsigned char *MCN_arg)
 	MCN[13] = '\0';
 }
 
-unsigned char *Get_MCN( )
+unsigned char *Get_MCN(void)
 {
 	return MCN;
 }
@@ -3401,7 +3399,7 @@ static int patch_cd_extra(unsigned track, unsigned long sector)
 	return 0;
 }
 
-static int restrict_tracks_illleadout()
+static int restrict_tracks_illleadout(void)
 {
 	struct TOC *o = &g_toc[cdtracks+1];
 	int i;
@@ -3513,9 +3511,7 @@ int Get_Tracknumber(unsigned long p_track)
 	return -1;
 }
 
-int useHiddenTrack(void);
-
-int useHiddenTrack()
+static int useHiddenTrack(void)
 {
 	return 0;
 }
@@ -3658,7 +3654,7 @@ long Get_EndSector(unsigned long p_track)
 	return -1;
 }
 
-long FirstTrack()
+long FirstTrack(void)
 {
 	static struct iterator i;
 	if (i.reset == NULL) InitIterator(&i, 1);
@@ -3670,7 +3666,7 @@ long FirstTrack()
 	return -1;
 }
 
-long FirstAudioTrack()
+long FirstAudioTrack(void)
 {
 	static struct iterator i;
 	if (i.reset == NULL) InitIterator(&i, 1);
@@ -3688,7 +3684,7 @@ long FirstAudioTrack()
 	return -1;
 }
 
-long FirstDataTrack()
+long FirstDataTrack(void)
 {
 	static struct iterator i;
 	if (i.reset == NULL) InitIterator(&i, 1);
@@ -3703,12 +3699,12 @@ long FirstDataTrack()
 	return -1;
 }
 
-long LastTrack()
+long LastTrack(void)
 {
 	return g_toc[cdtracks].bTrack;
 }
 
-long LastAudioTrack()
+long LastAudioTrack(void)
 {
 	long j = -1;
 	static struct iterator i;

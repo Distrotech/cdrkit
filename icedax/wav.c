@@ -131,7 +131,7 @@ static int _ExitSound(int audio, unsigned long nBytesDone)
 
 static unsigned long _GetHdrSize(void);
 
-static unsigned long _GetHdrSize()
+static unsigned long _GetHdrSize(void)
 {
   return sizeof( waveHdr );
 }

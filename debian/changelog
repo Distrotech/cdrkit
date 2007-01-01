@@ -1,3 +1,9 @@
+cdrkit (9:1.1.1-2) unstable; urgency=low
+
+  * 
+
+ -- Eduard Bloch <blade@debian.org>  Mon,  1 Jan 2007 17:16:14 +0100
+
 cdrkit (9:1.1.1-1) unstable; urgency=medium
 
   * New upstream version

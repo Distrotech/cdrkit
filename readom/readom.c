@@ -214,9 +214,9 @@ BOOL	do_factor;
 
 struct	scsi_format_data fmt;
 
-/*XXX*/EXPORT	BOOL cvt_cyls() { return (FALSE); }
-/*XXX*/EXPORT	BOOL cvt_bcyls() { return (FALSE); }
-/*XXX*/EXPORT	void print_defect_list() {}
+/*XXX*/EXPORT	BOOL cvt_cyls(void) { return (FALSE); }
+/*XXX*/EXPORT	BOOL cvt_bcyls(void) { return (FALSE); }
+/*XXX*/EXPORT	void print_defect_list(void) {}
 
 static void
 usage(int ret)
@@ -603,7 +603,7 @@ excdr(int excode, void *arg)
  * Return milliseconds since start time.
  */
 static int
-prstats()
+prstats(void)
 {
 	int	sec;
 	int	usec;
@@ -631,7 +631,7 @@ prstats()
  * Return milliseconds since start time, but be silent this time.
  */
 static int
-prstats_silent()
+prstats_silent(void)
 {
 	int	sec;
 	int	usec;
@@ -2180,7 +2180,7 @@ add_bad(long addr)
 }
 
 static void
-print_bad()
+print_bad(void)
 {
 	int	i;
 
