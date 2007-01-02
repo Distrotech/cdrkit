@@ -26,6 +26,10 @@ make install PREFIX=/opt/cdrkit
 
 TROUBLESHOOTING:
 
+Problem: "make install" uses the wrong target directory and appends /usr/local
+  to it.
+Solution: override the complete target path with PREFIX=... (see above)
+
 Problem: Linking error.
 Solution: Look for missing dependencies. If you installed additional libraries
 in non-system paths, they may have a conflict with the system libraries which
@@ -40,7 +44,27 @@ for headers), command:
     make clean
     make CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib
 (cleaning is important to rerun tests. Alternatively, remove build/CMakeCache*)
- 
-Problem: "make install" uses the wrong target directory and appends /usr/local
-  to it.
-Solution: override the complete target path with PREFIX=... (see above)
+
+Problem: Library not found
+Solution: Install the library and its development files. Depending on the
+system distribution they can be shipped in different packages. Install them
+all and make sure that the development files match the version of the main
+library package.
+
+Problem: Library not found during configuration though it's installed
+Solution: Install the development files, see above for details.
+
+Problem: Library not found though it's installed with dev files
+Solution: Install the development files, see above for details. If you use
+non-standard paths not known/searched by Cmake and/or your compiler, pass the
+location of the headers in CFLAGS and the libraries via LDFLAGS. See examples
+above.
+
+Problem: None of those hints helps
+Solution: Examine the following files:
+    build/CMakeFiles/CMakeFiles/CMakeOutput.log
+    build/CMakeFiles/CMakeOutput.log
+and look for failed commands. Some checks are expected to fail if the plattform
+does not provide a certain feature, others must not fail. Look the failing
+check and use THE FORCE to find related problems and solutions.
+
