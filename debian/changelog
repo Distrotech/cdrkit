@@ -1,8 +1,10 @@
 cdrkit (9:1.1.1-2) unstable; urgency=low
 
   * Updated geteltorito.pl to 0.4 with patch from manty
-  * installin geteltorito in genisoimage and documented it and other 3rd-party
+  * installing geteltorito in genisoimage and documented it and other 3rd-party
     stuff in the genisoimage package description
+  * added md5sum of gentoo's conffile version to the big list of obsolete
+    version checksums in wodim.preinst (lp: #73832)
 
  -- Eduard Bloch <blade@debian.org>  Mon,  1 Jan 2007 17:16:14 +0100
 
