@@ -3,17 +3,23 @@
 use Getopt::Std;
 
 #
+# geteltorito.pl: a bootimage extractor
 # Script that will extract the first El Torito bootimage from a
 # bootable CD image
-# R. Krienke 12/2006
+# R. Krienke 08/2001
 # krienke@uni-koblenz.de
 # License: GPL
 #
 # Get latest version from:
 # http://www.uni-koblenz.de/~krienke/ftp/noarch/geteltorito
 #
-$utilVersion="0.3"; 
+$utilVersion="0.4"; 
 #
+# Version 0.4
+#    2007/02/01
+#    A patch from Santiago Garcia <manty@debian.org> to use a virtual sector
+#    size (vSecSize) of 512 bytes, as defined on "El Torito" specs and change
+#    unpack of the sector count from n to v to get the correct sector count.
 # Version 0.3
 #    2006/02/21
 #    A patch from  Ben Collins <bcollins@ubuntu.com> to make the 
@@ -25,8 +31,11 @@ $utilVersion="0.3";
 #    Initial release
 #
 # For information on El Torito see 
-# http://www.cdpage.com/Compact_Disc_Variations/eltoritoi.html
+# http://wikipedia.org/
+# or try this link directly:
+# http://www.phoenix.com/en/Customer+Services/White+Papers-Specs/Platform+System+Software+Documents/default.htm
 
+$vSecSize=512;
 $secSize=2048;
 $ret=undef;$version=undef;$opt_h=undef;$loadSegment=undef;$systemType=undef;
 
@@ -41,9 +50,9 @@ sub getSector{
    open(FILE, $file) || die "Cannot open \"$file\" \n";
 
    seek(FILE, $secNum*$secSize, 0);
-   $count=read(FILE, $sec, $secSize*$secCount, 0) ;
-   if( $count != $secSize*$secCount ){
-   	warn "Error reading $secSize bytes from file \"$file\"\n";
+   $count=read(FILE, $sec, $vSecSize*$secCount, 0) ;
+   if( $count != $vSecSize*$secCount ){
+       warn "Error reading from file \"$file\"\n";
    }
    close(FILE);
 
@@ -136,7 +145,7 @@ print STDERR "Booting catalog starts at sector: $bootP \n";
 $validateEntry=substr($sector, 0, 32);
 
 ($header, $platform, $unUsed, $manufact, $unUsed, $five, $aa)=
-		unpack( "CCSA24SCC", $validateEntry);
+               unpack( "CCvA24vCC", $validateEntry);
 
 if( $header != 1 || $five != 0x55 || $aa != 0xaa ){
 	die "Invalid Validation Entry on image \n";
@@ -157,7 +166,7 @@ print STDERR "\n";
 $initialEntry=substr($sector, 32, 32);
 
 ($boot, $media, $loadSegment, $systemType, $unUsed, 
-	$sCount, $imgStart, $unUsed)=unpack( "CCSCCnVC", $initialEntry);
+       $sCount, $imgStart, $unUsed)=unpack( "CCvCCvVC", $initialEntry);
 
 if( $boot != 0x88 ){
 	die "Boot indicator in Initial/Default-Entry is not 0x88. CD is not bootable. \n";
@@ -170,15 +179,15 @@ if( $media == 0 ){
 }
 if( $media == 1 ){
 	print STDERR "1.2meg floppy";
-	$count=1200*1024/$secSize;  
+       $count=1200*1024/$vSecSize;  
 }
 if( $media == 2 ){
 	print STDERR "1.44meg floppy";
-	$count=1440*1024/$secSize;  
+       $count=1440*1024/$vSecSize;  
 }
 if( $media == 3 ){
 	print STDERR "2.88meg floppy";
-	$count=2880*1024/$secSize;  
+       $count=2880*1024/$vSecSize;  
 }
 if( $media == 4 ){
 	print STDERR "harddisk";
@@ -190,7 +199,7 @@ print STDERR "\n";
 # ($count==0)
 $cnt=$count==0?$sCount:$count;
 
-print STDERR "El Torito image starts at sector $imgStart and has $cnt sector(s) of $secSize Bytes\n";
+print STDERR "El Torito image starts at sector $imgStart and has $cnt sector(s) of $vSecSize Bytes\n";
 
 # We are there:
 # Now read the bootimage to stdout
