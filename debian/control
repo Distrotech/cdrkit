@@ -35,8 +35,10 @@ Description: Creates ISO-9660 CD-ROM filesystem images
  "El Torito" CD-ROMs, as well as CD-ROMs with support for the
  Macintosh HFS filesystem.
  .
- The package also includes tools needed to create compressed isofs images
- (mkzftree from zisofs_tools source).
+ The package also includes extra tools usefull for working with ISO images:
+ mkzftree (to create iso9660 with compressed contents), dirsplit (to easily
+ separate large directory contents into disks of predefined size) and
+ geteltorito (to extract the initial/default boot image from a CD if existant).
  .
  Please install cdrkit-doc if you want most of the documentation and
  Readme-files.

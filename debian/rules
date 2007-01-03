@@ -59,6 +59,7 @@ build/install-debstamp:
 	rm -rf $(b)
 	make install PREFIX=$(i)
 
+	install -m 755 3rd-party/geteltorito/geteltorito.pl $(i)/bin/geteltorito
 	install -m 755 3rd-party/zisofs_tools/mkzftree $(i)/bin/
 	install -m 755 icedax/cdda2ogg $(i)/bin/
 	install -m 755 icedax/cdda2mp3 $(i)/bin/
