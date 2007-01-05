@@ -1457,7 +1457,7 @@ gracewait(cdr_t *dp, BOOL *didgracep)
 	if (gracetime > 999)
 		gracetime = 999;
 
-   printf("Starting to write CD/DVD at speed %5.1f in %s%s %s mode for %s session.\n",
+	printf("Starting to write CD/DVD at speed %5.1f in %s%s %s mode for %s session.\n",
          (float)dp->cdr_dstat->ds_wspeed,
 		(dp->cdr_cmdflags & F_DUMMY) ? "dummy" : "real",
 		(dp->cdr_cmdflags & F_FORCE) ? " force" : "",

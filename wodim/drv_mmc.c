@@ -851,9 +851,9 @@ attach_mmc(SCSI *usalp, cdr_t *dp)
 
 	check_writemodes_mmc(usalp, dp);
 
-    /* Enable Burnfree by default, it can be disabled later */
-    if ((dp->cdr_flags & CDR_BURNFREE) != 0)
-        dp->cdr_dstat->ds_cdrflags |= RF_BURNFREE;
+	/* Enable Burnfree by default, it can be disabled later */
+	if ((dp->cdr_flags & CDR_BURNFREE) != 0)
+		dp->cdr_dstat->ds_cdrflags |= RF_BURNFREE;
 
 	if (driveropts != NULL) {
 		char	*p;
@@ -2495,25 +2495,33 @@ open_session_mdvd(SCSI *usalp, cdr_t *dp, track_t *trackp)
 	mp->multi_session = (track_base(trackp)->tracktype & TOCF_MULTI) ?
 				MS_MULTI : MS_NONE;
 	mp->session_format = toc2sess[track_base(trackp)->tracktype & TOC_MASK];
-	
-    /* Enable Burnfree by default, allow to disable. XXX Sucks, duplicated functionality. */
-    if (dp->cdr_cdcap->BUF != 0) {
-        if (lverbose > 2)
-            fprintf(stderr, 
-                    "BURN-Free is %s.\n"
-                    "Turning BURN-Free on\n",
-                    mp->BUFE?"ON":"OFF");
-        mp->BUFE = 1;
-    }
+
+	/* Enable Burnfree by default, allow to disable. XXX Sucks, duplicated functionality. */
+	if (dp->cdr_cdcap->BUF != 0) {
+		if (lverbose > 2)
+			fprintf(stderr, 
+					"BURN-Free is %s.\n"
+					"Turning BURN-Free on\n",
+					mp->BUFE?"ON":"OFF");
+		mp->BUFE = 1;
+	}
 	if (driveropts != NULL) {
-        if ((strcmp(driveropts, "noburnproof") == 0 ||
-                    strcmp(driveropts, "noburnfree") == 0)) {
+		if ((strcmp(driveropts, "noburnproof") == 0 ||
+					strcmp(driveropts, "noburnfree") == 0)) {
 			if(lverbose>1)
 				fprintf(stderr, "Turning BURN-Free off\n");
 			mp->BUFE = 0;
-		} else if (strcmp(driveropts, "help") == 0) {
+		}
+		else if ((strcmp(driveropts, "burnproof") == 0 ||
+					strcmp(driveropts, "burnfree") == 0)) {
+			/* a NOP, we enable burnfree by default */
+			if(lverbose>2)
+				fprintf(stderr, "Found burnproof/burnfree in driveropts, those options are enabled by default now.");
+		}
+		else if (strcmp(driveropts, "help") == 0) {
 			mmc_opthelp(dp, 0);
-		} else {
+		} 
+		else {
 			errmsgno(EX_BAD, "Bad driver opts '%s'.\n", driveropts);
 			mmc_opthelp(dp, EX_BAD);
 		}
