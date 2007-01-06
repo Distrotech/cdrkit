@@ -936,18 +936,38 @@ attach_mmc(SCSI *usalp, cdr_t *dp)
 static int 
 attach_mdvd(SCSI *usalp, cdr_t *dp)
 {
-        struct  cd_mode_page_2A *mp;
-	
+	struct  cd_mode_page_2A *mp;
 
-        allow_atapi(usalp, TRUE);/* Try to switch to 10 byte mode cmds */
 
-        usalp->silent++;
-        mp = mmc_cap(usalp, NULL);/* Get MMC capabilities in allocated mp */
-        usalp->silent--;
-        if (mp == NULL)
-                return (-1);    /* Pre SCSI-3/mmc drive         */
+	allow_atapi(usalp, TRUE);/* Try to switch to 10 byte mode cmds */
 
-        dp->cdr_cdcap = mp;     /* Store MMC cap pointer        */
+	usalp->silent++;
+	mp = mmc_cap(usalp, NULL);/* Get MMC capabilities in allocated mp */
+	usalp->silent--;
+	if (mp == NULL)
+		return (-1);    /* Pre SCSI-3/mmc drive         */
+
+	dp->cdr_cdcap = mp;     /* Store MMC cap pointer        */
+
+	dp->cdr_dstat->ds_dr_max_rspeed = a_to_u_2_byte(mp->max_read_speed)/1385;
+	if (dp->cdr_dstat->ds_dr_max_rspeed == 0) /* EB: does that make sense? Looks like a smellin workaround for a rare case, but it should not hurt */
+		dp->cdr_dstat->ds_dr_max_rspeed = 1385;
+	dp->cdr_dstat->ds_dr_cur_rspeed = a_to_u_2_byte(mp->cur_read_speed)/1385;
+	if (dp->cdr_dstat->ds_dr_cur_rspeed == 0) /* EB: does that make sense? Looks like a smellin workaround for a rare case, but it should not hurt */
+		dp->cdr_dstat->ds_dr_cur_rspeed = 1385;
+
+	dp->cdr_dstat->ds_dr_max_wspeed = a_to_u_2_byte(mp->max_write_speed)/1385;
+	if (mp->p_len >= 28)
+		dp->cdr_dstat->ds_dr_cur_wspeed = a_to_u_2_byte(mp->v3_cur_write_speed)/1385;
+	else
+		dp->cdr_dstat->ds_dr_cur_wspeed = a_to_u_2_byte(mp->cur_write_speed)/1385;
+
+	if (dp->cdr_speedmax > dp->cdr_dstat->ds_dr_max_wspeed)
+		dp->cdr_speedmax = dp->cdr_dstat->ds_dr_max_wspeed;
+
+	if (dp->cdr_speeddef > dp->cdr_speedmax)
+		dp->cdr_speeddef = dp->cdr_speedmax;
+
 
         if (mp->loading_type == LT_TRAY)
                 dp->cdr_flags |= CDR_TRAYLOAD;

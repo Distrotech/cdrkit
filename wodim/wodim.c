@@ -691,6 +691,7 @@ int main(int argc, char *argv[])
 	usalp->silent--;
 
 	dma_speed = get_dmaspeed(usalp, dp);
+
 	if ((debug || lverbose) && dma_speed > 0) {
 		/*
 		 * We do not yet know what medium type is in...
@@ -1007,6 +1008,7 @@ int main(int argc, char *argv[])
 
 #endif
 	}
+
 	if ((*dp->cdr_set_speed_dummy)(usalp, dp, &speed) < 0) {
 		errmsgno(EX_BAD, "Cannot set speed/dummy.\n");
 		if ((flags & F_FORCE) == 0)
@@ -1042,9 +1044,9 @@ int main(int argc, char *argv[])
 		}
 	}
 	if (tracks > 0 && (flags & F_WRITE) != 0 && dma_speed > 0) {
-		int max_dma = (flags & F_FORCE) != 0 ? dma_speed:(dma_speed+1)*4/5;
+		int max_dma = (dma_speed+1)*4/5; /* use an empirical formula to estimate available bandwith */
 
-		if (getenv("CDR_FORCESPEED"))
+        if((flags & F_FORCE) != 0 || getenv("CDR_FORCESPEED"))
 			max_dma = dma_speed;
 
 		if (speed > max_dma) {
