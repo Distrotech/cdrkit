@@ -7,6 +7,9 @@ cdrkit (1.1.2) RELEASED; urgency=low
   * stop confusion and bailing out if burnfree/burnproof options have been
     explicitely specified
 
+  [ Peter Samuelson ]
+  * Fix icedax cddb query, based on a patch from Heiko Schlenker
+	
  -- Eduard Bloch <blade@debian.org>  Mon,  1 Jan 2007 17:15:16 +0100
 
 cdrkit (1.1.1) RELEASED; urgency=low
