@@ -1280,11 +1280,10 @@ deflt_writemodes_mdvd(SCSI *usalp, BOOL reset_dummy)
 
 	mp->test_write = 0;
 	/*
-	 * This is the only place where we reset mp->test_write (-dummy)
+	 * This is the only place where we reset mp->test_write (-dummy) for DVD
 	 */
 	if (reset_dummy)
 		mp->test_write = 0;
-
 
 	/*
 	 * Set default values:
@@ -1865,8 +1864,27 @@ speed_select_mmc(SCSI *usalp, cdr_t *dp, int *speedp)
 	usal_prbytes("CD write parameter:", (Uchar *)mode, len);
 #endif
 
-
-	mp->test_write = dummy != 0;
+    if(dummy) {
+        mp->test_write = 1;
+        /* but it does not work on DVD+RW and -RAM, also bail out on other
+         * types that have not been tested yet */
+        int profile=get_curprofile(usalp);
+        switch(profile) {
+            case(0x12):
+            case(0x1a):
+            case(0x2a):
+            case(0x43):
+            case(0x52):
+                {
+                    fprintf(stderr, 
+                            "Dummy mode not possible with %s.\n",
+                            mmc_obtain_profile_name(profile) );
+                    exit(EXIT_FAILURE);
+                }
+        }
+    }
+    else
+        mp->test_write = 0;
 
 #ifdef	DEBUG
 	usal_prbytes("CD write parameter:", (Uchar *)mode, len);
