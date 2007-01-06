@@ -804,9 +804,6 @@ static void emit_cddb_form(char *fname_baseval)
 #if	defined	USE_REMOTE
 #include <pwd.h>
 
-static int readn(register int fd, register char *ptr, register int nbytes);
-static int writen(register int fd, register char *ptr, register int nbytes);
-
 static int readn(register int fd, register char *ptr, register int nbytes)
 {
 	int	nread;
@@ -826,13 +823,14 @@ static int readn(register int fd, register char *ptr, register int nbytes)
 	return nread;
 }
 
-static int writen(register int fd, register char *ptr, register int nbytes)
+static ssize_t writez(int fd, const char *ptr)
 {
-	int	nleft, nwritten;
+	size_t nleft, nbytes;
 
-	nleft = nbytes;
+	nleft = nbytes = strlen(ptr);
+
 	while (nleft > 0) {
-		nwritten = write(fd, ptr, nleft);
+		ssize_t nwritten = write(fd, ptr, nleft);
 		if (nwritten <= 0) {
 			return nwritten;	/* return error */
 		}
@@ -1209,7 +1207,7 @@ request_titles(void)
 	if (0 > gethostname(hostname, sizeof(hostname)))
 		strcpy(hostname, "unknown_host"); 
 	hostname[sizeof(hostname)-1] = '\0';
-	writen(sock_fd, "cddb hello ", 11);
+	writez(sock_fd, "cddb hello ");
 	if (pw != NULL) {
 		BOOL	space_err = FALSE;
 		BOOL	ascii_err = FALSE;
@@ -1236,11 +1234,11 @@ request_titles(void)
 			}
 			q++;
 		}
-		writen(sock_fd, pw->pw_name, strlen(pw->pw_name));
+		writez(sock_fd, pw->pw_name);
+		writez(sock_fd, " ");
 	} else {
-		writen(sock_fd, "unknown", 7);
+		writez(sock_fd, "unknown ");
 	}
-	writen(sock_fd, " ", 1);
 
 	/* change spaces to underscores */
 	{
@@ -1271,10 +1269,8 @@ request_titles(void)
 		}
 	}
 
-	writen(sock_fd, hostname, strlen(hostname));
-	writen(sock_fd, " icedax ", 10);
-	writen(sock_fd, VERSION, strlen(VERSION));
-	writen(sock_fd, "\n", 1);
+	writez(sock_fd, hostname);
+	writez(sock_fd, " icedax " VERSION "\n");
 
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 	if (readbytes < 0) {
@@ -1293,7 +1289,7 @@ request_titles(void)
 	}
 
 	/* enable new protocol variant. Weird command here, no cddb prefix ?!?! */
-	writen(sock_fd, "proto\n", 6);
+	writez(sock_fd, "proto\n");
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 	if (readbytes < 0) {
 		fprintf(stderr, "Could not read from socket\n");
@@ -1323,7 +1319,7 @@ request_titles(void)
 				if (pr_level > 5)
 					pr_level = 5;
 				sprintf(inbuff, "proto %1u\n", pr_level);
-				writen(sock_fd, inbuff, 8);
+				writez(sock_fd, inbuff);
 				readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 				if (readbytes < 0) {
 					fprintf(stderr, "Could not read from socket\n");
@@ -1379,7 +1375,7 @@ request_titles(void)
 #endif
 /*	strcpy(outbuff, "cddb query 9709210c 12 150 12010 33557 50765 65380 81467 93235 109115 124135 137732 152575 166742 2339\n"); */
 /*	strcpy(outbuff, "cddb query 03015501 1 296 344\n"); */
-	writen(sock_fd, outbuff, strlen(outbuff));
+	writez(sock_fd, outbuff);
 
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff) - 1);
 	if (readbytes < 0) {
@@ -1440,7 +1436,7 @@ request_titles(void)
 
 	/* read */
 	sprintf(inbuff, "cddb read %s %08x\n", category, disc_id);
-	writen(sock_fd, inbuff, strlen(inbuff));
+	writez(sock_fd, inbuff);
 
 	/* read status and first buffer size. */
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
@@ -1465,7 +1461,7 @@ request_titles(void)
 
 signoff:
 	/* sign-off */
-	writen(sock_fd, "quit\n", 5);
+	writez(sock_fd, "quit\n");
 	readbytes = readn(sock_fd, inbuff, sizeof(inbuff));
 	if (readbytes < 0) {
 		fprintf(stderr, "Could not read from socket\n");
