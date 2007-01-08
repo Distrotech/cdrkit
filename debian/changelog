@@ -1,5 +1,7 @@
-cdrkit (9:1.1.1-2) unstable; urgency=low
+cdrkit (9:1.1.2-1) unstable; urgency=low
 
+  * New upstream version
+    + mentions readom in wodim's manpage (closes: #405979)
   * Updated geteltorito.pl to 0.4 with patch from manty
   * installing geteltorito in genisoimage and documented it and other 3rd-party
     stuff in the genisoimage package description

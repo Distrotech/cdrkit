@@ -283,7 +283,7 @@ if the timing and load response of the system is not known.
 Tells 
 .B wodim
 to handle images created by
-.IR "readcd \-clone" .
+.IR "readom \-clone" .
 The
 .B \-clone
 may only be used in conjunction with with the
@@ -1913,12 +1913,12 @@ If you like to do this when no CD is in the drive, call
 .PP
 To copy a CD in clone mode, first read the master CD using:
 .PP
-    readcd dev=b,t,l \-clone f=somefile
+    readom dev=b,t,l \-clone f=somefile
 .PP
 or (in case the CD contains many sectors that are unreadable by intention)
 by calling:
 .PP
-    readcd dev=1,0 -clone -nocorr f=somefile
+    readom dev=1,0 -clone -nocorr f=somefile
 .PP
 will create the files
 .I somefile
@@ -2055,7 +2055,7 @@ default speed and the default FIFO size.
 
 .SH SEE ALSO
 .BR icedax (1),
-.BR readcd (1),
+.BR readom (1),
 .BR genisoimage (1),
 .BR ssh (1).
 
