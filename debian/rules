@@ -86,7 +86,7 @@ wodim: install
 	dh_installchangelogs -p$@ -P$(b)/$@ Changelog
 	dh_install			 -p$@ -P$(b)/$@
 	dh_strip             -p$@ -P$(b)/$@
-	dh_installexamples   -p$@ -P$(b)/$@ netscsid/netscsid.dfl wodim/wodim.dfl
+	dh_installexamples   -p$@ -P$(b)/$@ netscsid/netscsid.dfl wodim/wodim.dfl misc/burnstuff
 	dh_compress          -p$@ -P$(b)/$@
 	dh_fixperms          -p$@ -P$(b)/$@
 	dh_installdeb        -p$@ -P$(b)/$@

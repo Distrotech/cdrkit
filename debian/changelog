@@ -7,6 +7,7 @@ cdrkit (9:1.1.2-1) unstable; urgency=low
     stuff in the genisoimage package description
   * added md5sum of Ubuntu's conffile version to the big list of obsolete
     version checksums in wodim.preinst (lp: #73832)
+  * added the burnstuff script to the examples in wodim package
 
  -- Eduard Bloch <blade@debian.org>  Mon,  1 Jan 2007 17:16:14 +0100
 
