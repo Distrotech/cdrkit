@@ -596,11 +596,8 @@ static const struct ld_option ld_options[] =
 	'\0', NULL, "Allow ISO9660 filenames to start with '.' (violates ISO9660)", ONE_DASH},
 	{{"ldots", no_argument, NULL, OPTION_ALLOW_LEADING_DOTS},
 	'\0', NULL, "Allow ISO9660 filenames to start with '.' (violates ISO9660)", ONE_DASH},
-
-/* POSIX.1-2001 REMOVE -----> */
 	{{"allow-leading-dots", no_argument, NULL, 'L'},
-	'L', NULL, "OLD Pre-POSIX.1-2001 option - don't use -L", ONE_DASH},
-/* -----> END POSIX.1-2001 REMOVE */
+	'L', NULL, "Allow ISO9660 filenames to start with '.' (violates ISO9660)", ONE_DASH},
 
 	{{"log-file", required_argument, NULL, OPTION_LOG_FILE},
 	'\0', "LOG_FILE", "Re-direct messages to LOG_FILE", ONE_DASH},
@@ -638,10 +635,8 @@ static const struct ld_option ld_options[] =
 	'\0', NULL, "Print estimated filesystem size and exit", ONE_DASH},
 	{{"publisher", required_argument, NULL, OPTION_PUBLISHER},
 	'\0', "PUB", "Set Volume publisher", ONE_DASH},
-/* POSIX.1-2001 REMOVE -----> */
 	{{"publisher", required_argument, NULL, 'P'},
-	'P', "PUB", "OLD Pre-POSIX.1-2001 option - don't use -P", ONE_DASH},
-/* -----> END POSIX.1-2001 REMOVE */
+	'P', "PUB", "Set Volume publisher", ONE_DASH},
 	{{"quiet", no_argument, NULL, OPTION_QUIET},
 	'\0', NULL, "Run quietly", ONE_DASH},
 	{{"rational-rock", no_argument, NULL, 'r'},
@@ -778,10 +773,8 @@ static const struct ld_option ld_options[] =
 	'h', NULL, "Create ISO9660/HFS hybrid", ONE_DASH},
 	{{"map", required_argument, NULL, OPTION_MAP_FILE},
 	'\0', "MAPPING_FILE", "Map file extensions to HFS TYPE/CREATOR", ONE_DASH},
-/* POSIX.1-2001 REMOVE -----> */
 	{{"map", required_argument, NULL, 'H'},
-	'H', "MAPPING_FILE", "OLD Pre-POSIX.1-2001 option - don't use -H", ONE_DASH},
-/* -----> END POSIX.1-2001 REMOVE */
+	'H', "MAPPING_FILE", "Map file extensions to HFS TYPE/CREATOR", ONE_DASH},
 	{{"magic", required_argument, NULL, OPTION_MAGIC_FILE},
 	'\0', "FILE", "Magic file for HFS TYPE/CREATOR", ONE_DASH},
 	{{"probe", no_argument, NULL, OPTION_PROBE},
@@ -1692,13 +1685,6 @@ int main(int argc, char *argv[])
 			break;
 		case 'f':
 			follow_links++;
-#ifdef	USE_LIBSCHILY
-			errmsgno(EX_BAD,
-			"Warning: -follow-links does not always work correctly; be careful.\n");
-#else
-			fprintf(stderr,
-			"Warning: -follow-links does not always work correctly; be careful.\n");
-#endif
 			break;
 		case 'l':
 			full_iso9660_filenames++;
@@ -1710,16 +1696,8 @@ int main(int argc, char *argv[])
 			warn_violate++;
 			break;
 		case 'L':
-			errmsgno(EX_BAD, "The option '-L' is reserved by POSIX.1-2001.\n");
-			errmsgno(EX_BAD, "The option '-L' means 'follow all symbolic links'.\n");
-			errmsgno(EX_BAD, "Mkisofs-2.02 will introduce POSIX semantics for '-L'.\n");
-			errmsgno(EX_BAD, "Use -allow-leading-dots in future to get old genisoimage behavior.\n");
 			/* FALLTHRU */
 		case OPTION_ALLOW_LEADING_DOTS:
-			/*
-			 * -L Reserved by POSIX.1-2001
-			 * Meaning: Follow all symbolic links
-			 */
 			allow_leading_dots++;
 			warn_violate++;
 			break;
@@ -1772,16 +1750,8 @@ int main(int argc, char *argv[])
 			print_size++;
 			break;
 		case 'P':
-			errmsgno(EX_BAD, "The option '-P' is reserved by POSIX.1-2001.\n");
-			errmsgno(EX_BAD, "The option '-P' means 'do not follow symbolic links'.\n");
-			errmsgno(EX_BAD, "Mkisofs-2.02 will introduce POSIX semantics for '-P'.\n");
-			errmsgno(EX_BAD, "Use -publisher in future to get old genisoimage behavior.\n");
 			/* FALLTHRU */
 		case OPTION_PUBLISHER:
-			/*
-			 * -P Reserved by POSIX.1-2001
-			 * Meaning: Do not follow symbolic links
-			 */
 			publisher = optarg;
 			if (strlen(publisher) > 128) {
 #ifdef	USE_LIBSCHILY
@@ -2258,18 +2228,8 @@ int main(int argc, char *argv[])
 			}
 			break;
 		case 'H':
-			errmsgno(EX_BAD, "The option '-H' is reserved by POSIX.1-2001.\n");
-			errmsgno(EX_BAD, "The option '-H' means 'follow symbolic links on command line'.\n");
-			errmsgno(EX_BAD, "Mkisofs-2.02 will introduce POSIX semantics for '-H'.\n");
-			errmsgno(EX_BAD, "Use -map in future to get old genisoimage behavior.\n");
 			/* FALLTHRU */
 		case OPTION_MAP_FILE:
-			/*
-			 * -H Reserved by POSIX.1-2001
-			 * Meaning: Follow symbolic links on command line
-			 * Symbolic links found by tree traversal are not
-			 * followed.
-			 */
 			afpfile = optarg;
 			hfs_last = MAP_LAST;
 			break;
@@ -2470,29 +2430,33 @@ parse_input_files:
 	if (use_RockRidge && (iso9660_namelen > MAX_ISONAME_V2_RR))
 		iso9660_namelen = MAX_ISONAME_V2_RR;
 
-	if (warn_violate)
+	if (warn_violate) /* this one is enough for quiet mode, print others warnings only in more verbose modes */
 		fprintf(stderr, "Warning: creating filesystem that does not conform to ISO-9660.\n");
-	if (iso9660_level > 3)
+	if (iso9660_level > 3 && verbose>0)
 		fprintf(stderr, "Warning: Creating ISO-9660:1999 (version 2) filesystem.\n");
-	if (iso9660_namelen > LEN_ISONAME)
+	if (iso9660_namelen > LEN_ISONAME && verbose>0)
 		fprintf(stderr, "Warning: ISO-9660 filenames longer than %d may cause buffer overflows in the OS.\n",
 			LEN_ISONAME);
-	if (use_Joliet && !use_RockRidge) {
+	if (use_Joliet && !use_RockRidge && verbose>0) {
 		fprintf(stderr,
                       "Warning: creating filesystem with Joliet extensions but without Rock Ridge\n"
                       "         extensions. It is highly recommended to add Rock Ridge.\n");
 	}
-	if (transparent_compression) {
+	if (transparent_compression && verbose>0) {
 		fprintf(stderr, "Warning: using transparent compression. This is a nonstandard Rock Ridge\n");
 		fprintf(stderr, "         extension. The resulting filesystem can only be transparently\n");
 		fprintf(stderr, "         read on Linux. On other operating systems you need to call\n");
 		fprintf(stderr, "         mkzftree by hand to decompress the files.\n");
 	}
-	if (transparent_compression && !use_RockRidge) {
+	if (transparent_compression && !use_RockRidge && verbose>0) {
 		fprintf(stderr, "Warning: transparent decompression is a Linux Rock Ridge extension, but\n");
 		fprintf(stderr, "         creating filesystem without Rock Ridge attributes; files\n");
 		fprintf(stderr, "         will not be transparently decompressed.\n");
 	}
+    if(follow_links && verbose>0)
+        fprintf(stderr,
+                "Warning: -follow-links does not always work correctly; be careful.\n");
+
 	init_unls();		/* Initialize UNICODE tables */
 
 	/* initialize code tables from a file - if they exists */
