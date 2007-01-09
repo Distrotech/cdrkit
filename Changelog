@@ -7,6 +7,7 @@ cdrkit (1.1.2) RELEASED; urgency=low
   * stop confusion and bailing out if burnfree/burnproof options have been
     explicitely specified
   * extracting drive's default speed in attach_mdvd()
+  * automatic recorder device guessing code, currently Linux-only
 
   [ Peter Samuelson ]
   * Fix icedax cddb query, based on a patch from Heiko Schlenker

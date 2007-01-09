@@ -56,6 +56,7 @@
 #include <intcvt.h>
 #include <signal.h>
 #include <schily.h>
+#include <string.h>
 #include <getargs.h>
 #ifdef	HAVE_PRIV_H
 #include <priv.h>
@@ -3736,6 +3737,85 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 	if (dev != *devp && (*flagsp & F_SCANBUS) == 0)
 		*devp = dev;
 
+#ifdef __linux__
+	/* quick-and-dirty code but should do what is supposed to. Possible
+	 * replacement with libhal using code in future. */
+	if ( (!*devp || 0 == strcmp(*devp, "-1")) && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
+		struct stat statbuf;
+		char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *res=NULL;
+		long long filesize=0;
+		FILE *fh;
+
+		printf("Warning: no device specified. Use dev=/dev/... to do that.\n");
+
+		if(tracks>0) {
+			filesize=trackp[tracks].tracksize;
+			if(filesize<=0 && 0==stat(trackp[tracks].filename, &statbuf)) {
+				filesize=statbuf.st_size;
+			}
+		}
+
+		if( filesize > 360000*2048 ) {
+			type="DVD-R";
+			key="Can write DVD-R:";
+			guessdev="/dev/dvdrw";
+		}
+
+		printf("Guessing the name of a drive capable to write %s, please wait...\n", type);
+		if(0==stat(guessdev, &statbuf))
+			res=guessdev;
+		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
+			/* ok, going the hard way */
+			char *nameline=NULL;
+			static char buf[256];
+			int kn = strlen(key);
+
+			buf[255]='\0';
+
+			while(fgets(buf, sizeof(buf), fh)) {
+				if(0==strncmp(buf, "drive name:", 11)) {
+					char *t;
+					nameline=strdup(buf);
+				}
+				if(nameline && 0==strncmp(buf, key, kn)) {
+					int p=kn;
+					char *t=nameline+11; /* start at the known whitespace */
+					while(p<sizeof(buf) && buf[p]) {
+						if(buf[p]=='1' || buf[p]=='0')
+							/* move to a non-whitespace char */
+							for(;*t=='\t' || *t==' ';t++)
+								;
+						if(buf[p]=='1') {
+							res=t-5;
+							/* terminate on whitespace and stop there */
+							for(;*t;t++)
+								if(*t=='\t' || *t==' ')
+									*(t--)='\0';
+							strncpy(res, "/dev/", 5);
+							break;
+						}
+						else /* no hit, move to next whitespace */
+							for(;*t && *t!='\t' && *t!=' ';t++)
+								;
+						p++;
+					}
+				}
+
+			}
+			fclose(fh);
+		}
+
+		if(res) {
+			printf("Found %s, assuming dev=%s\n", res, res);
+			*devp=res;
+		}
+		else {
+			printf("Unable to guess the target drive. Specify manually.\n");
+		}
+	}
+#else
+	printf("Guessing of a capable drive not implemented for this plattform yet.\nUse --devices to get a list of available drives.\n");
+#endif
 	if (!*devp && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
 		errmsgno(EX_BAD, "No CD/DVD-Recorder device specified.\n");
 		susage(EX_BAD);
