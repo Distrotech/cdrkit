@@ -21,7 +21,7 @@ CDR_DEVICE=cdrom
 # 
 # The default FIFO size if, not specified elswhere.
 #
-#CDR_FIFOSIZE=16m
+CDR_FIFOSIZE=12m
 
 #
 # CDR_MAXFIFOSIZE can limit the maximum allowed FIFO size. This is useful to
@@ -42,7 +42,7 @@ CDR_DEVICE=cdrom
 #default=	USCSI:1,0,0	-1	-1	burnfree
 #sanyo=		1,4,0	-1	-1	burnfree
 #cdrom=		0,6,0	2	1m	""
-#remote=		REMOTE:rscsi@somehost:1,0,0	16	16m	burnfree
+#remote=		REMOTE:rscsi@somehost:1,0,0	16	32m	burnfree
 #
-cdrom=          /dev/cdrw      -1      -1      burnfree
+cdrom=          -1      -1      -1      burnfree
 
