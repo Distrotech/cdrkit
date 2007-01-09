@@ -1651,13 +1651,13 @@ usage(int excode)
 	fprintf(stderr, "\t-waiti		wait until input is available before opening SCSI\n");
 	fprintf(stderr, "\t-immed		Try to use the SCSI IMMED flag with certain long lasting commands\n");
 	fprintf(stderr, "\t-force		force to continue on some errors to allow blanking bad disks\n");
-	fprintf(stderr, "\t-tao		Write disk in TAO mode. This option will be replaced in the future.\n");
-	fprintf(stderr, "\t-dao		Write disk in SAO mode. This option will be replaced in the future.\n");
-	fprintf(stderr, "\t-sao		Write disk in SAO mode. This option will be replaced in the future.\n");
-	fprintf(stderr, "\t-raw		Write disk in RAW mode. This option will be replaced in the future.\n");
-	fprintf(stderr, "\t-raw96r		Write disk in RAW/RAW96R mode. This option will be replaced in the future.\n");
-	fprintf(stderr, "\t-raw96p		Write disk in RAW/RAW96P mode. This option will be replaced in the future.\n");
-	fprintf(stderr, "\t-raw16		Write disk in RAW/RAW16 mode. This option will be replaced in the future.\n");
+	fprintf(stderr, "\t-tao		Write disk in TAO mode.\n");
+	fprintf(stderr, "\t-dao		Write disk in SAO mode.\n");
+	fprintf(stderr, "\t-sao		Write disk in SAO mode.\n");
+	fprintf(stderr, "\t-raw		Write disk in RAW mode.\n");
+	fprintf(stderr, "\t-raw96r		Write disk in RAW/RAW96R mode.\n");
+	fprintf(stderr, "\t-raw96p		Write disk in RAW/RAW96P mode.\n");
+	fprintf(stderr, "\t-raw16		Write disk in RAW/RAW16 mode.\n");
 #ifdef	CLONE_WRITE
 	fprintf(stderr, "\t-clone		Write disk in clone write mode.\n");
 #endif
