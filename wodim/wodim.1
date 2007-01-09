@@ -63,15 +63,20 @@ CD-Recorder or to write DVD media on a DVD-Recorder.
 .PP
 The
 .I device
-is the device file offered by the operating system to access the recorder. On
+is the device file or label offered by the operating system to access the
+recorder with SCSI GENERIC (sg) interface. Note that some operating systems may
+provide separate device nodes for block oriented and sg access. For example, on
+older
 .I Linux
-systems it is usually 
-.IR /dev/hd...
-for IDE/ATAPI based devices and 
+systems the sg access was available trough
 .IR /dev/sg...
-for SCSI based defices. Note that sg... devices represent the access trough the
-SCSI GENERIC interface and therefore the differ from the device files generally
-used to open block devices (/dev/scd... or /dev/sr...).
+files while the block oriented access was done through associated (but not identic)
+.IR /dev/hd...
+and 
+.IR /dev/sr...
+(or 
+.IR /dev/scd...
+) files.
 .PP
 In any case, the user running 
 .B wodim
@@ -80,7 +85,7 @@ is recommended to be root or install the application as suid-root, because
 certain versions of Linux (kernel) limit the set of SCSI commands allowed for
 non-root users. Even if usage without root identity is possible in many cases,
 some device drivers still may fail, show unexplainable problems and generally
-the problems are harder to debug. The risk for buffer-underruns is also
+the problems become harder to debug. The risk for buffer-underruns is also
 increased. See the
 .IR "PROCESS SCHEDULING PRIORITY"
 section below for more details.
@@ -93,7 +98,9 @@ depending on the hardware-internal numbering or on the order of hot-plug device
 detection. If your operating system does not provide a sufficient framework for
 keeping this numbers persistent, don't rely on them. See 
 .B \-scanbus
-option below for details.
+and
+.B \-\-devices
+options below for details.
 .PP
 There are emulated SCSI compatible device systems, using the SCSI protocols
 transported over various hardware/media types. The most known examples is ATAPI
@@ -105,6 +112,13 @@ address.
 If a file /etc/wodim.conf exists, the parameter to the
 .B dev=
 option may also be a drive name label in that file (see FILES section).
+.PP
+As a special exception, the device specification can be
+.IR -1
+or just omited, which invokes automatic guessing of an appropriate device for
+the selected operation. However, this guessing is not available everywhere and
+is not reliable, it is only available for user's convinience in simple
+environments.
 .PP
 In 
 .I Track At Once 
@@ -2024,18 +2038,21 @@ Sets the maximum size of the FIFO (see also
 .BR fs= #
 option).
 .TP
-Any other label
-is an identifier for a specific drive on the system.
-Such an identifier may not contain the characters ',', '/', '@' or ':'.
+Any other keyword (label) is an identifier (symbolic name) for a specific drive
+on the system.  Such an identifier may not contain the characters ',', '/', '@'
+or ':'.
 .sp
 Each line that follows a label contains a whitespace separated list of items.
-Currently, four items are recognized: the SCSI ID of the drive, the
+Currently, four items are recognized: the drive's target specification, the
 default speed that should be used for this drive, the default FIFO size
 that should be used for this drive and drive specific options. The values for 
 .I speed
 and
 .I fifosize
 may be set to -1 to tell wodim to use the global defaults.
+.I target
+can be -1 to use the auto-guessing of the drive (see above).
+
 The value for driveropts may be omited or set to "" if no driveropts are used.
 A typical line may look this way:
 .sp
