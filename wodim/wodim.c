@@ -3737,16 +3737,14 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 	if (dev != *devp && (*flagsp & F_SCANBUS) == 0)
 		*devp = dev;
 
-#ifdef __linux__
 	/* quick-and-dirty code but should do what is supposed to. Possible
 	 * replacement with libhal using code in future. */
 	if ( (!*devp || 0 == strcmp(*devp, "-1")) && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
+#ifdef __linux__
 		struct stat statbuf;
 		char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *res=NULL;
 		long long filesize=0;
 		FILE *fh;
-
-		printf("Warning: no device specified. Use dev=/dev/... to do that.\n");
 
 		if(tracks>0) {
 			filesize=trackp[tracks].tracksize;
@@ -3761,7 +3759,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 			guessdev="/dev/dvdrw";
 		}
 
-		printf("Guessing the name of a drive capable to write %s, please wait...\n", type);
+		fprintf(stderr, "Quickly guessing the name of a drive capable to write %s, please wait...\n", type);
 		if(0==stat(guessdev, &statbuf))
 			res=guessdev;
 		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
@@ -3781,22 +3779,25 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 					int p=kn;
 					char *t=nameline+11; /* start at the known whitespace */
 					while(p<sizeof(buf) && buf[p]) {
-						if(buf[p]=='1' || buf[p]=='0')
+						if(buf[p]=='1' || buf[p]=='0') {
 							/* move to a non-whitespace char */
 							for(;*t=='\t' || *t==' ';t++)
 								;
+						}
 						if(buf[p]=='1') {
 							res=t-5;
 							/* terminate on whitespace and stop there */
-							for(;*t;t++)
+							for(;*t;t++) {
 								if(*t=='\t' || *t==' ')
 									*(t--)='\0';
+							}
 							strncpy(res, "/dev/", 5);
 							break;
 						}
-						else /* no hit, move to next whitespace */
+						else { /* no hit, move to next whitespace */
 							for(;*t && *t!='\t' && *t!=' ';t++)
 								;
+						}
 						p++;
 					}
 				}
@@ -3806,16 +3807,17 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 		}
 
 		if(res) {
-			printf("Found %s, assuming dev=%s\n", res, res);
+			fprintf(stderr, "Found %s, assuming dev=%s\n", res, res);
 			*devp=res;
 		}
 		else {
-			printf("Unable to guess the target drive. Specify manually.\n");
+			fprintf(stderr,	"Unable to guess the target drive. Please specify manually using\n"
+					"dev=... argument or other configuration methods, see wodim(1) for details.\n");
 		}
-	}
 #else
-	printf("Guessing of a capable drive not implemented for this plattform yet.\nUse --devices to get a list of available drives.\n");
+		printf("Guessing of a capable drive not implemented for this plattform yet.\nUse dev=... and --devices to get a list of available drives.\n");
 #endif
+	}
 	if (!*devp && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
 		errmsgno(EX_BAD, "No CD/DVD-Recorder device specified.\n");
 		susage(EX_BAD);
