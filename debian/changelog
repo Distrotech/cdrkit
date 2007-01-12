@@ -1,15 +1,17 @@
-cdrkit (9:1.1.2-1) unstable; urgency=low
+cdrkit (9:1.1.2-1) unstable; urgency=medium
 
   * New upstream version
     + mentions readom in wodim's manpage (closes: #405979)
-  * Updated geteltorito.pl to 0.4 with patch from manty
+    + subtle behaviour improvements like not allowing writting when -dummy is
+      specified by user but could be ignored by the drive
+  * Updated geteltorito.pl to 0.4 including patch from manty
   * installing geteltorito in genisoimage and documented it and other 3rd-party
     stuff in the genisoimage package description
   * added md5sum of Ubuntu's conffile version to the big list of obsolete
     version checksums in wodim.preinst (lp: #73832)
   * added the burnstuff script to the examples in wodim package
 
- -- Eduard Bloch <blade@debian.org>  Mon,  1 Jan 2007 17:16:14 +0100
+ -- Eduard Bloch <blade@debian.org>  Sat, 13 Jan 2007 00:45:22 +0100
 
 cdrkit (9:1.1.1-1) unstable; urgency=medium
 
