@@ -10,6 +10,11 @@
    But OTOH this is similar to what libburnia is going to make real, spare time
    is better invested there.
 
+ - wrong buffer size is displayed with MMC5 DVD recorders
+
+ - find out why such an insane WRITE command timeout is used (40 seconds).
+   Pioneer specs recommends 6...220 MILLIseconds
+
  - check the REMOTE method, especially with real device names and ssh.
    Something is going wrong.
    OR
@@ -17,13 +22,13 @@
    use it, add an appropriate comment to a BUGS file
  - check libparanoia, we may link dynamicaly with it. Quality? Portability?
  - check notes in help output, drop advisories, notes about future plans...
- - find out why spawn.c breaks in WAIT_H while the WAIT_UNION check works quite well on sys/wait.h. See include/CMakeLists.txt comments.
- - add better detection for various functions. Eg. have_mlockall on cygwin. (volunteers?)
+ - find out why spawn.c breaks in WAIT_H while the WAIT_UNION check works quite
+   well on sys/wait.h. See include/CMakeLists.txt comments.
  - wodim -audio wavefile thesamewavefile thesamewavefile fails with obscure
-   symptoms. Why?
+   symptoms. Why? See .cue file problems above for that topic.
  - make some deflt.h functions inline, use a define wrapper INLINE which is set
-   if the compiler does not support it
+   empty if the compiler does not support it
  - review the sort/uniq code in dvd_file.c, see comments there
- - implement -stream-file-name. Then close #157962
+ - implement -stream-file-name properly. Then close #157962
 
 
