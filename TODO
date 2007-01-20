@@ -12,8 +12,8 @@
 
  - wrong buffer size is displayed with MMC5 DVD recorders
 
- - find out why such an insane WRITE command timeout is used (40 seconds).
-   Pioneer specs recommends 6...220 MILLIseconds
+ - Scale the command timeout with the recommended WRITE command minimum wait
+   time? See Pioneer specs from DVR-111 for details.
 
  - check the REMOTE method, especially with real device names and ssh.
    Something is going wrong.
