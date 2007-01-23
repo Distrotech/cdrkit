@@ -110,6 +110,8 @@
 #define	USE_OLD_ATAPI
 #endif
 
+#include <glob.h>
+
 /*
  *	Warning: you may change this source, but if you do that
  *	you need to change the _usal_version and _usal_auth* string below.
@@ -937,6 +939,14 @@ sg_raisedma(SCSI *usalp, long newmax)
 }
 #endif
 
+static void freadstring(char *fn, char *out, int len) {
+	FILE *fd=fopen(fn, "r");
+	out[0]='\0';
+	if(!fd) return;
+	fgets(out, len, fd);
+	fclose(fd);
+}
+
 static long
 usalo_maxdma(SCSI *usalp, long amt)
 {
@@ -956,44 +966,33 @@ usalo_maxdma(SCSI *usalp, long amt)
 	 * DMA for this specific device, then try the other methods.
 	 */
 	if(0==fstat(usallocal(usalp)->usalfile, &stbuf)) {
-		/* that's ugly, there are so many symlinks in sysfs but none from major:minor to the relevant directory */
-		static char *basedirs[] = { "/sys/block", "/sys/class/scsi_generic" };
-		int i, major, minor;
-		char *p;
-		char buf[64];
+		/* that's ugly, there are so many symlinks in sysfs but none from
+		 * major:minor to the relevant directory */
+		long int major, minor, i;
 		major=stbuf.st_rdev>>8;
 		minor=stbuf.st_rdev&0xFF;
 		if (usalp->debug > 0)
 			fprintf(stderr, "Looking for data for major:minor: %d:%d\n", major, minor);
-		for(i=0;i<2;i++) {
-			struct dirent *dent;
-			DIR *ddesc = opendir(basedirs[i]);
-			if(!ddesc) continue;
-			while( NULL != (dent = readdir(ddesc))) { 
-				FILE *fd;
-				if(dent->d_name[0]=='.')
-					continue;
-				snprintf(buf, sizeof(buf), "%s/%s/dev", basedirs[i], dent->d_name);
-				fd=fopen(buf, "r");
-				if(!fd) continue;
-				buf[0]='\0';
-				fgets(buf, sizeof(buf)-1, fd);
-				fclose(fd);
-				if( atoi(buf) == major && 
-						NULL!=(p=strchr(buf, ':')) && 
-						atoi(p) == minor)
-				{ /* got the right dir */
-					snprintf(buf, sizeof(buf), "%s/%s/queue/max_hw_sectors_kb", basedirs[i], dent->d_name);
-					fd=fopen(buf, "r");
-					if(!fd) continue;
-					buf[0]='\0';
-					fgets(buf, sizeof(buf)-1, fd);
-					fclose(fd);
-					return(512*atoi(buf));
-				}
+		glob_t globbuf;
+		memset(&globbuf, 0, sizeof(glob_t));
+		/* *dev files contain the major:minor strings to compare */
+		glob("/sys/class/scsi_generic/*/device/block*/queue/max_sectors_kb", GLOB_DOOFFS | GLOB_NOSORT, NULL, &globbuf);
+		glob("/sys/block/*/device/block*/queue/max_sectors_kb", GLOB_DOOFFS | GLOB_NOSORT | GLOB_APPEND, NULL, &globbuf);
+		for(i=0;i<globbuf.gl_pathc; i++) {
+			FILE *fd;
+			char *cut, *ende;
+			char buf[64];
+			cut=strstr(globbuf.gl_pathv[i], "/device/")+4;
+			*cut='\0';
+			freadstring(globbuf.gl_pathv[i], buf, sizeof(buf));
+			if(strtol(buf, &ende, 10) == major && ende && atoi(ende) == minor) {
+				*cut='i';
+				freadstring(globbuf.gl_pathv[i], buf, sizeof(buf));
+				return(1024*atoi(buf));
 			}
-			closedir(ddesc);
+
 		}
+		globfree(&globbuf);
 	}
 #ifdef	SG_GET_BUFSIZE
 	/*
