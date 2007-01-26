@@ -1682,7 +1682,7 @@ usage(int excode)
 	fprintf(stderr, "\t-xamix		Subsequent tracks are CD-ROM XA mode 2 form 1/2 - 2332 bytes\n");
 	fprintf(stderr, "\t-cdi		Subsequent tracks are CDI tracks\n");
 	fprintf(stderr, "\t-isosize	Use iso9660 file system size for next data track\n");
-	fprintf(stderr, "\t-preemp		Audio tracks are mastered with 50/15 µs preemphasis\n");
+	fprintf(stderr, "\t-preemp		Audio tracks are mastered with 50/15 microseconds preemphasis\n");
 	fprintf(stderr, "\t-nopreemp	Audio tracks are mastered with no preemphasis (default)\n");
 	fprintf(stderr, "\t-copy		Audio tracks have unlimited copy permission\n");
 	fprintf(stderr, "\t-nocopy		Audio tracks may only be copied once for personal use (default)\n");
@@ -3742,7 +3742,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 	if ( (!*devp || 0 == strcmp(*devp, "-1")) && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
 #ifdef __linux__
 		struct stat statbuf;
-		char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *res=NULL;
+		char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *result=NULL;
 		long long filesize=0;
 		FILE *fh;
 
@@ -3761,7 +3761,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 
 		fprintf(stderr, "Quickly guessing the name of a drive capable to write %s, please wait...\n", type);
 		if(0==stat(guessdev, &statbuf))
-			res=guessdev;
+			result=guessdev;
 		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
 			/* ok, going the hard way */
 			char *nameline=NULL;
@@ -3771,31 +3771,29 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 			buf[255]='\0';
 
 			while(fgets(buf, sizeof(buf), fh)) {
-				if(0==strncmp(buf, "drive name:", 11)) {
-					char *t;
+				if(0==strncmp(buf, "drive name:", 11))
 					nameline=strdup(buf);
-				}
 				if(nameline && 0==strncmp(buf, key, kn)) {
 					int p=kn;
-					char *t=nameline+11; /* start at the known whitespace */
+					char *descptr=nameline+11; /* start at the known whitespace */
 					while(p<sizeof(buf) && buf[p]) {
 						if(buf[p]=='1' || buf[p]=='0') {
-							/* move to a non-whitespace char */
-							for(;*t=='\t' || *t==' ';t++)
+							/* find the beginning of the descriptor */
+							for(;isspace((Uchar) *descptr);descptr++)
 								;
 						}
 						if(buf[p]=='1') {
-							res=t-5;
-							/* terminate on whitespace and stop there */
-							for(;*t;t++) {
-								if(*t=='\t' || *t==' ')
-									*(t--)='\0';
+							result=descptr-5;
+							/* terminate on space/newline and stop there */
+							for(;*descptr;descptr++) {
+								if(isspace((Uchar) *descptr))
+									*(descptr--)='\0';
 							}
-							strncpy(res, "/dev/", 5);
+							strncpy(result, "/dev/", 5);
 							break;
 						}
-						else { /* no hit, move to next whitespace */
-							for(;*t && *t!='\t' && *t!=' ';t++)
+						else { /* no hit, move to after word ending */
+							for(; *descptr && ! isspace((Uchar) *descptr); descptr++)
 								;
 						}
 						p++;
@@ -3806,9 +3804,9 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 			fclose(fh);
 		}
 
-		if(res) {
-			fprintf(stderr, "Found %s, assuming dev=%s\n", res, res);
-			*devp=res;
+		if(result) {
+			fprintf(stderr, "Found %s, assuming dev=%s\n", result, result);
+			*devp=result;
 		}
 		else {
 			fprintf(stderr,	"Unable to guess the target drive. Please specify manually using\n"
