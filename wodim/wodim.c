@@ -3759,7 +3759,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 			guessdev="/dev/dvdrw";
 		}
 
-		fprintf(stderr, "Quickly guessing the name of a drive capable to write %s, please wait...\n", type);
+		fprintf(stderr, "INFO: no %s recorder specified. Looking for a usable drive, please wait...\n", type);
 		if(0==stat(guessdev, &statbuf))
 			result=guessdev;
 		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
@@ -3809,8 +3809,10 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 			*devp=result;
 		}
 		else {
-			fprintf(stderr,	"Unable to guess the target drive. Please specify manually using\n"
-					"dev=... argument or other configuration methods, see wodim(1) for details.\n");
+			fprintf(stderr,	"Unable to guess the target %s writer. Please specify manually using\n"
+					"dev=... argument or other configuration methods, see wodim(1) for details.\n"
+                    "Assuming dev=/dev/cdrom for now.\n", type);
+            result="/dev/cdrom";
 		}
 #else
 		printf("Guessing of a capable drive not implemented for this plattform yet.\nUse dev=... and --devices to get a list of available drives.\n");
