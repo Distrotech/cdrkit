@@ -217,13 +217,7 @@ usalo_getbuf(SCSI *usalp, long amt)
     return (usalp->bufbase);
 #else
 	void	*ret;
-	int	pagesize;
-
-#ifdef	_SC_PAGESIZE
-	pagesize = sysconf(_SC_PAGESIZE);
-#else
-	pagesize = getpagesize();
-#endif
+	int	pagesize = getpagesize();
 
 	if (usalp->debug > 0) {
 		fprintf((FILE *)usalp->errfile,

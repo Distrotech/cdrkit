@@ -32,6 +32,7 @@
 #include <mconfig.h>
 
 #ifndef	HAVE_GETPAGESIZE
+
 #include <unixstd.h>
 #include <standard.h>
 #ifdef	HAVE_SYS_PARAM_H
@@ -43,34 +44,22 @@
 #include <OS.h>		/* BeOS for B_PAGE_SIZE */
 #endif
 
-EXPORT	int	getpagesize	__PR((void));
-
-EXPORT int
-getpagesize()
+int getpagesize(void)
 {
-	register int	pagesize;
+#ifdef _SC_PAGESIZE
+	return sysconf(_SC_PAGESIZE);
+#else
+# ifdef PAGESIZE		/* Traditional UNIX page size from param.h */
+	return PAGESIZE;
+# else
 
-#ifdef	_SC_PAGESIZE
-	pagesize = sysconf(_SC_PAGESIZE);
-#else	/* ! _SC_PAGESIZE */
-
-
-#ifdef	PAGESIZE		/* Traditional UNIX page size from param.h */
-	pagesize = PAGESIZE;
-
-#else	/* ! PAGESIZE */
-
-#ifdef	B_PAGE_SIZE		/* BeOS page size from OS.h */
-	pagesize = B_PAGE_SIZE;
-
-#else	/* ! B_PAGE_SIZE */
-
-	pagesize = 512;
-#endif	/* ! B_PAGE_SIZE */
-#endif	/* ! PAGESIZE */
-#endif	/* ! _SC_PAGESIZE */
-
-	return (pagesize);
+#  ifdef B_PAGE_SIZE		/* BeOS page size from OS.h */
+	return B_PAGE_SIZE;
+#  else
+	return 512;
+#  endif
+# endif
+#endif
 }
 
 #endif	/* HAVE_GETPAGESIZE */

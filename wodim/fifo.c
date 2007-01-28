@@ -219,11 +219,7 @@ init_fifo(long fs)
 	if (fs == 0L)
 		return;
 
-#ifdef	_SC_PAGESIZE
-	pagesize = sysconf(_SC_PAGESIZE);
-#else
 	pagesize = getpagesize();
-#endif
 	buflen = roundup(fs, pagesize) + pagesize;
 	EDEBUG(("fs: %ld buflen: %ld\n", fs, buflen));
 
@@ -439,12 +435,7 @@ init_faio(track_t *trackp, int bufsize)
 	if (buflen == 0L)
 		return (FALSE);
 
-#ifdef	_SC_PAGESIZE
-	pagesize = sysconf(_SC_PAGESIZE);
-#else
 	pagesize = getpagesize();
-#endif
-
 	faio_buf_size = bufsize;
 	f = (faio_t *)buf;
 

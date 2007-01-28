@@ -1464,11 +1464,7 @@ static	int		pagesize = -1;
 	 * that cannot be passed to free().
 	 */
 	if (pagesize < 0) {
-#ifdef	_SC_PAGESIZE
-		pagesize = sysconf(_SC_PAGESIZE);
-#else
 		pagesize = getpagesize();
-#endif
 		if (pagesize < 0)
 			pagesize = 4096;	/* Just a guess */
 	}

@@ -937,11 +937,7 @@ void SetupInterface()
     global.cooked_fd = OpenCdRom ( global.dev_name );
 #endif
 
-#ifdef  _SC_PAGESIZE
-    global.pagesize = sysconf(_SC_PAGESIZE);
-#else
     global.pagesize = getpagesize();
-#endif
 
     /* request one sector for table of contents */
     bufferTOC = malloc( CD_FRAMESIZE_RAW + 96 );      /* assumes sufficient aligned addresses */
