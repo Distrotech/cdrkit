@@ -3812,7 +3812,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 			fprintf(stderr,	"Unable to guess the target %s writer. Please specify manually using\n"
 					"dev=... argument or other configuration methods, see wodim(1) for details.\n"
                     "Assuming dev=/dev/cdrom for now.\n", type);
-            result="/dev/cdrom";
+            *devp="/dev/cdrom";
 		}
 #else
 		printf("Guessing of a capable drive not implemented for this plattform yet.\nUse dev=... and --devices to get a list of available drives.\n");
