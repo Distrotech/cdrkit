@@ -3741,10 +3741,18 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 	 * replacement with libhal using code in future. */
 	if ( (!*devp || 0 == strcmp(*devp, "-1")) && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
 #ifdef __linux__
+		/*
+		 * For Linux, try these strategies, in order:
+		 * 1. stat /dev/cdrw or /dev/dvdrw, depending on size we need.
+		 * 2. Read /proc/sys/dev/cdrom/info, look for a CD-R/DVD-R.
+		 *    Will fail for kernel 2.4 or if cdrom module not loaded.
+		 * 3. stat /dev/cdrom, just assume that it can write media.
+		 */
 		struct stat statbuf;
-		char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *result=NULL;
+		char *type="CD-R", *guessdev="/dev/cdrw", *result=NULL;
 		long long filesize=0;
 		FILE *fh;
+		int need_dvdr=0;
 
 		if(tracks>0) {
 			filesize=trackp[tracks].tracksize;
@@ -3755,67 +3763,55 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 
 		if( filesize > 360000*2048 ) {
 			type="DVD-R";
-			key="Can write DVD-R:";
 			guessdev="/dev/dvdrw";
+			need_dvdr=1;
 		}
 
-		fprintf(stderr, "INFO: no %s recorder specified. Looking for a usable drive, please wait...\n", type);
+		fprintf(stderr, "INFO: no device specified, looking for %s drive...\n", type);
 		if(0==stat(guessdev, &statbuf))
 			result=guessdev;
 		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
 			/* ok, going the hard way */
-			char *nameline=NULL;
-			static char buf[256];
-			int kn = strlen(key);
+			char name[32], buf[256];
+			int writecd = -1, writedvd = -1;
 
-			buf[255]='\0';
-
+			name[0] = '\0';
 			while(fgets(buf, sizeof(buf), fh)) {
-				if(0==strncmp(buf, "drive name:", 11))
-					nameline=strdup(buf);
-				if(nameline && 0==strncmp(buf, key, kn)) {
-					int p=kn;
-					char *descptr=nameline+11; /* start at the known whitespace */
-					while(p<sizeof(buf) && buf[p]) {
-						if(buf[p]=='1' || buf[p]=='0') {
-							/* find the beginning of the descriptor */
-							for(;isspace((Uchar) *descptr);descptr++)
-								;
-						}
-						if(buf[p]=='1') {
-							result=descptr-5;
-							/* terminate on space/newline and stop there */
-							for(;*descptr;descptr++) {
-								if(isspace((Uchar) *descptr))
-									*(descptr--)='\0';
-							}
-							strncpy(result, "/dev/", 5);
-							break;
-						}
-						else { /* no hit, move to after word ending */
-							for(; *descptr && ! isspace((Uchar) *descptr); descptr++)
-								;
-						}
-						p++;
-					}
+				sscanf(buf, "drive name: %31s", name) ||
+				sscanf(buf, "Can write CD-R: %d", &writecd) ||
+				sscanf(buf, "Can write DVD-R: %d", &writedvd);
+
+				if (!name[0] || writecd < 0 || writedvd < 0)
+					continue;
+
+				if ((writecd && !need_dvdr) ||
+				    (writedvd && need_dvdr)) {
+					sprintf(buf, "/dev/%s", name);
+					result = strdup(buf);
+					break;
 				}
 
+				name[0] = '\0';
+				writecd = writedvd = -1;
 			}
 			fclose(fh);
 		}
 
 		if(result) {
-			fprintf(stderr, "Found %s, assuming dev=%s\n", result, result);
+			fprintf(stderr, "Detected %s drive: %s\n", type, result);
 			*devp=result;
 		}
+		else if (0==stat("/dev/cdrom", &statbuf)) {
+			*devp = "/dev/cdrom";
+			fprintf(stderr, "Using /dev/cdrom of unknown capabilities\n");
+		}
 		else {
-			fprintf(stderr,	"Unable to guess the target %s writer. Please specify manually using\n"
-					"dev=... argument or other configuration methods, see wodim(1) for details.\n"
-                    "Assuming dev=/dev/cdrom for now.\n", type);
-            *devp="/dev/cdrom";
+			fprintf(stderr,	"Unable to find a %s drive.  Please specify manually using the dev= argument\n"
+					"or other configuration methods, see wodim(1) for details.\n", type);
 		}
 #else
-		printf("Guessing of a capable drive not implemented for this plattform yet.\nUse dev=... and --devices to get a list of available drives.\n");
+		printf("Guessing of a capable drive not implemented for this platform yet.\n"
+		       "Use the dev= argument, or --devices to get a list of available drives.\n");
 #endif
 	}
 	if (!*devp && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
