@@ -3748,6 +3748,33 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 		 *    Will fail for kernel 2.4 or if cdrom module not loaded.
 		 * 3. stat /dev/cdrom, just assume that it can write media.
 		 */
+
+#ifdef just_example_for_procfs_file_AND_beware_of_the_TABS
+CD-ROM information, Id: cdrom.c 3.20 2003/12/17
+
+drive name:		hdc     hda
+drive speed:		40      40
+drive # of slots:       1       1
+Can close tray:         1       1
+Can open tray:          1       1
+Can lock tray:          1       1
+Can change speed:       1       1
+Can select disk:        0       0
+Can read multisession:  1       1
+Can read MCN:           1       1
+Reports media changed:  1       1
+Can play audio:         1       1
+Can write CD-R:		0       1
+Can write CD-RW:        0       1
+Can read DVD:           1       1
+Can write DVD-R:        0       1
+Can write DVD-RAM:      0       1
+Can read MRW:           0       1
+Can write MRW:          0       1
+Can write RAM:          0       1
+
+
+#endif
 		struct stat statbuf;
 		char *type="CD-R", *guessdev="/dev/cdrw", *result=NULL;
 		long long filesize=0;
