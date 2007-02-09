@@ -3777,10 +3777,9 @@ Can write RAM:          0       1
 ---
 */
 		struct stat statbuf;
-		char *type="CD-R", *guessdev="/dev/cdrw", *result=NULL;
+		char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *result=NULL;
 		long long filesize=0;
 		FILE *fh;
-		int need_dvdr=0;
 
 		if(tracks>0) {
 			filesize=trackp[tracks].tracksize;
@@ -3792,7 +3791,7 @@ Can write RAM:          0       1
 		if( filesize > 360000*2048 ) {
 			type="DVD-R";
 			guessdev="/dev/dvdrw";
-			need_dvdr=1;
+      key="Can write DVD-R:";
 		}
 
 		fprintf(stderr, "INFO: no device specified, looking for %s drive...\n", type);
