@@ -7,6 +7,10 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
     /proc/sys/dev/cdrom/info contents
   * added some missing or probably missing definitions in
     wodim/CMakeLists.txt, restoring the reading from inf files
+  * passing through the real file size to the UDF generator. Creating
+    incorrect iso9660 but having it this way is better than no LFS at all.
+  * removed md5* parts and integration from icedax, patch by
+    Vladimir Nadvornik <nadvornik@suse.cz>
 
   [ Peter Samuelson ]
   * Clean up Linux-2.6 CD/DVD-R drive detection, for simpler code and
