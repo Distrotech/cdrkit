@@ -3747,9 +3747,10 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 		 * 2. Read /proc/sys/dev/cdrom/info, look for a CD-R/DVD-R.
 		 *    Will fail for kernel 2.4 or if cdrom module not loaded.
 		 * 3. stat /dev/cdrom, just assume that it can write media.
-		 */
 
-#ifdef just_example_for_procfs_file_AND_beware_of_the_TABS
+     An example for procfs file contents, beware of the TABs
+
+---
 CD-ROM information, Id: cdrom.c 3.20 2003/12/17
 
 drive name:		hdc     hda
@@ -3773,8 +3774,8 @@ Can read MRW:           0       1
 Can write MRW:          0       1
 Can write RAM:          0       1
 
-
-#endif
+---
+*/
 		struct stat statbuf;
 		char *type="CD-R", *guessdev="/dev/cdrw", *result=NULL;
 		long long filesize=0;
@@ -3799,27 +3800,42 @@ Can write RAM:          0       1
 			result=guessdev;
 		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
 			/* ok, going the hard way */
-			char name[32], buf[256];
-			int writecd = -1, writedvd = -1;
+			char *nameline=NULL;
+			static char buf[256];
+			int kn = strlen(key);
 
-			name[0] = '\0';
+			buf[255]='\0';
+
 			while(fgets(buf, sizeof(buf), fh)) {
-				sscanf(buf, "drive name: %31s", name) ||
-				sscanf(buf, "Can write CD-R: %d", &writecd) ||
-				sscanf(buf, "Can write DVD-R: %d", &writedvd);
-
-				if (!name[0] || writecd < 0 || writedvd < 0)
-					continue;
-
-				if ((writecd && !need_dvdr) ||
-				    (writedvd && need_dvdr)) {
-					sprintf(buf, "/dev/%s", name);
-					result = strdup(buf);
-					break;
+				if(0==strncmp(buf, "drive name:", 11))
+					nameline=strdup(buf);
+				if(nameline && 0==strncmp(buf, key, kn)) {
+					int p=kn;
+					char *descptr=nameline+11; /* start at the known whitespace */
+					while(p<sizeof(buf) && buf[p]) {
+						if(buf[p]=='1' || buf[p]=='0') {
+							/* find the beginning of the descriptor */
+							for(;isspace((Uchar) *descptr);descptr++)
+								;
+						}
+						if(buf[p]=='1') {
+							result=descptr-5;
+							/* terminate on space/newline and stop there */
+							for(;*descptr;descptr++) {
+								if(isspace((Uchar) *descptr))
+									*(descptr--)='\0';
+							}
+							strncpy(result, "/dev/", 5);
+							break;
+						}
+						else { /* no hit, move to after word ending */
+							for(; *descptr && ! isspace((Uchar) *descptr); descptr++)
+								;
+						}
+						p++;
+					}
 				}
 
-				name[0] = '\0';
-				writecd = writedvd = -1;
 			}
 			fclose(fh);
 		}

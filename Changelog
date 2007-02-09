@@ -13,8 +13,7 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
     Vladimir Nadvornik <nadvornik@suse.cz>
 
   [ Peter Samuelson ]
-  * Clean up Linux-2.6 CD/DVD-R drive detection, for simpler code and
-    slightly clearer error messages.
+  * Clean up Linux-2.6 CD/DVD-R drive detection, clearer error messages.
 
  -- Eduard Bloch <blade@debian.org>  Tue, 23 Jan 2007 19:13:44 +0100
 
