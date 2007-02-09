@@ -58,6 +58,10 @@
 #include "vms.h"
 #endif
 
+#ifdef UDF
+#include "udf.h"
+#endif
+
 /*
  * Autoconf should be able to figure this one out for us and let us know
  * whether the system has memmove or not.
@@ -555,6 +559,7 @@ got_valid_name:
 		set_723(table->isorec.volume_sequence_number,
 						volume_sequence_number);
 		set_733((char *) table->isorec.size, tablesize);
+		table->realsize = tablesize;
 		table->size = tablesize;
 		table->filedir = this_dir;
 		if (jhide_trans_tbl)
@@ -884,6 +889,7 @@ attach_dot_entries(struct directory *dirnode,
 		set_723(s_entry->isorec.volume_sequence_number,
 						volume_sequence_number);
 		set_733(s_entry->isorec.size, SECTOR_SIZE);
+		s_entry->realsize = SECTOR_SIZE;
 		memset(s_entry->isorec.extent, 0, 8);
 		s_entry->filedir = dirnode->parent;
 
@@ -924,6 +930,7 @@ attach_dot_entries(struct directory *dirnode,
 		set_723(s_entry->isorec.volume_sequence_number,
 						volume_sequence_number);
 		set_733(s_entry->isorec.size, SECTOR_SIZE);
+		s_entry->realsize=SECTOR_SIZE;
 		memset(s_entry->isorec.extent, 0, 8);
 		s_entry->filedir = dirnode;
 
@@ -1545,31 +1552,17 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 #endif
 		return (0);
 	}
-#ifdef	HAVE_LARGEFILES
-	/*
-	 * XXX What happens with Apple HFS? Does it allow files >= 2 GB?
-	 */
-	if (S_ISREG(lstatbuf.st_mode) && (lstatbuf.st_size >= (off_t)0xFFFFFFFF)) {
-#else
-	/*
-	 * >= is required by the large file summit standard.
-	 */
 	if (S_ISREG(lstatbuf.st_mode) && (lstatbuf.st_size >= (off_t)0x7FFFFFFF)) {
-#endif
-#ifdef	EOVERFLOW
-		errno = EOVERFLOW;
-#else
-		errno = EFBIG;
-#endif
-#ifdef	USE_LIBSCHILY
-		comerr("File %s is too large - ignoring\n",
-			whole_path);
-#else
-		fprintf(stderr,
-			"File %s is too large (errno = %d) - ignoring\n",
-			whole_path, errno);
-#endif
-    exit(1);
+		fprintf(stderr, "File %s is larger than 2GiB.\n", whole_path);
+		if(use_udf) {
+			fprintf(stderr, "This size can only be represented in the UDF filesystem.\n"
+					"Make sure that your clients support and use it.\n"
+                                        "ISO9660, Joliet, RockRidge, HFS will display incorrect size.\n");
+		}
+		else {
+			fprintf(stderr, "-udf was not specified. There is no way do represent this file size. Aborting.\n");
+			exit(1);
+		}
 	}
 	/*
 	 * Add this so that we can detect directory loops with hard links.
@@ -1929,6 +1922,7 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 		}
 
 		set_733((char *) s_entry->isorec.size, statbuf.st_size);
+		s_entry->realsize = statbuf.st_size;
 	} else {
 		s_entry->isorec.flags[0] |= ISO_DIRECTORY;
 	}
@@ -1996,6 +1990,7 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 		statbuf.st_size = (off_t)0;
 		statbuf.st_mode &= 0777;
 		set_733((char *) s_entry->isorec.size, 0);
+		s_entry->realsize=0;
 		s_entry->size = 0;
 		s_entry->isorec.flags[0] = ISO_FILE;
 		s_entry->inode = UNCACHED_INODE;

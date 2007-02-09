@@ -50,4 +50,6 @@ extern struct output_fragment udf_padend_avdp_frag;
 
 int assign_dvd_weights(char *name, struct directory *this_dir, int val);
 
+extern int use_udf;
+
 #endif	/* _UDF_H */

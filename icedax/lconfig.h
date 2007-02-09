@@ -80,6 +80,6 @@
 #define SOUND_DEV "/dev/dsp"
 #define NSECTORS 75
 #define INFOFILES
-#define MD5_SIGNATURES
+/* #undef MD5_SIGNATURES */             /* not implemented */
 #define AUX_DEVICE "/dev/cdrom"
 

@@ -329,17 +329,10 @@ set32(udf_Uint32 *dst, unsigned src)
 }
 
 static void
-set64(udf_Uint64 *dst, unsigned src)
+set64(udf_Uint64 *dst, uint64_t src)
 {
 	set32(&dst->l, src);
-	/*
-	 * src>>32 actually does the wrong thing on x86 with at least
-	 * one compiler, because of x86's shift count masking. Since
-	 * we never pass more than 32 sig. bits to the function anyway,
-	 * and all the structures we fill in are zeroed beforehand,
-	 * just skip setting the high word.
-	 */
-	/*set32(&dst->h, src>>32);*/
+	set32(&dst->h, src>>32);
 }
 
 static int
@@ -662,7 +655,7 @@ set_file_ident_desc(unsigned char *buf, unsigned rba, char *name,
 
 static void
 set_file_entry(unsigned char *buf, unsigned rba, unsigned file_rba,
-					unsigned length, const char *iso_date, int is_directory,
+					uint64_t length, const char *iso_date, int is_directory,
 					unsigned link_count, unsigned unique_id)
 {
 	udf_short_ad	*allocation_desc;
@@ -923,7 +916,7 @@ write_udf_file_entries(struct directory *dpnt, FILE *outfile)
 					buf,
 					(last_extent_written++) - lba_udf_partition_start,
 					read_733(de->isorec.extent) - lba_udf_partition_start,
-					read_733(de->isorec.size),
+					de->realsize,
 					de->isorec.date,
 					0,	/* is_directory */
 					1,	/* link_count */

@@ -19,7 +19,7 @@ IF (WIN32)
 ENDIF (WIN32)
 
 LINK_DIRECTORIES(../librols ../libusal  ../libparanoia)
-ADD_EXECUTABLE (icedax aifc.c aiff.c base64.c icedax.c interface.c ioctl.c md5c.c raw.c resample.c ringbuff.c scsi_cmds.c semshm.c setuid.c sha_func.c sndconfig.c sun.c toc.c wav.c)
+ADD_EXECUTABLE (icedax aifc.c aiff.c base64.c icedax.c interface.c ioctl.c raw.c resample.c ringbuff.c scsi_cmds.c semshm.c setuid.c sha_func.c sndconfig.c sun.c toc.c wav.c)
 TARGET_LINK_LIBRARIES(icedax wodimstuff ${EXTRA_LIBS})
 SET_TARGET_PROPERTIES(icedax PROPERTIES  SKIP_BUILD_RPATH TRUE)
 

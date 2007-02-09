@@ -950,10 +950,10 @@ attach_mdvd(SCSI *usalp, cdr_t *dp)
 	dp->cdr_cdcap = mp;     /* Store MMC cap pointer        */
 
 	dp->cdr_dstat->ds_dr_max_rspeed = a_to_u_2_byte(mp->max_read_speed)/1385;
-	if (dp->cdr_dstat->ds_dr_max_rspeed == 0) /* EB: does that make sense? Looks like a smellin workaround for a rare case, but it should not hurt */
+	if (dp->cdr_dstat->ds_dr_max_rspeed == 0)
 		dp->cdr_dstat->ds_dr_max_rspeed = 1385;
 	dp->cdr_dstat->ds_dr_cur_rspeed = a_to_u_2_byte(mp->cur_read_speed)/1385;
-	if (dp->cdr_dstat->ds_dr_cur_rspeed == 0) /* EB: does that make sense? Looks like a smellin workaround for a rare case, but it should not hurt */
+	if (dp->cdr_dstat->ds_dr_cur_rspeed == 0)
 		dp->cdr_dstat->ds_dr_cur_rspeed = 1385;
 
 	dp->cdr_dstat->ds_dr_max_wspeed = a_to_u_2_byte(mp->max_write_speed)/1385;

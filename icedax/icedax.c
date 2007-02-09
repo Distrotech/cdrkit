@@ -2314,7 +2314,7 @@ Rate   Divider      Rate   Divider      Rate   Divider      Rate   Divider\n\
 #ifdef	MD5_SIGNATURES
 		fputs("MD5 signatures are currently broken! Sorry\n", stderr);
 #else
-		fputs("The option MD5 signatures is not configured!\n", stderr);
+		fputs("MD5 signatures are currently broken! Sorry\n", stderr);
 #endif
 	}
 	if (user_sound_device) {

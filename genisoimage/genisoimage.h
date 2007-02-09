@@ -132,6 +132,7 @@ struct directory_entry {
 #ifdef UDF
 	int		udf_file_entry_sector;	/* also used as UDF unique ID */
 #endif
+    uint64_t realsize;
 };
 
 struct file_hash {
