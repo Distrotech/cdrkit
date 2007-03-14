@@ -434,6 +434,8 @@ static void
 get_joliet_vol_desc(struct iso_primary_descriptor *jvol_desc)
 {
 	jvol_desc->type[0] = ISO_VD_SUPPLEMENTARY;
+	jvol_desc->version[0] = 1;
+	jvol_desc->file_structure_version[0] = 1;
 
 	/*
 	 * For now, always do Unicode level 3.

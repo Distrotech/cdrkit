@@ -11,6 +11,7 @@
  */
 
 /* @(#)stream.c	1.3 04/03/04 Copyright 2002-2003 J. Schilling */
+/* Parts from @(#)stream.c	1.9 07/02/17 Copyright 2002-2007 J. Schilling */
 /*
  *	ISO-9660 stream (pipe) file module for genisoimage
  *
@@ -206,14 +207,15 @@ write_str_dir(FILE *outfile)
 	set_733((char *)s_dir.extent, root->extent);
 	set_733((char *)s_dir.size, SECTOR_SIZE);
 	iso9660_date(s_dir.date, begun);
-	s_dir.flags[0] = 2;
+	s_dir.flags[0] = ISO_DIRECTORY;
 	s_dir.file_unit_size[0] = 0;
 	s_dir.interleave[0] = 0;
 	set_723((char *)s_dir.volume_sequence_number, volume_sequence_number);
 	s_dir.name_len[0] = 1;
-	s_dir.name[0] = 0;
+	s_dir.name[0] = 0;	/* "." */
 	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, 0, FALSE);
 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, outfile, 0, FALSE);
+	s_dir.name[0] = 1;	/* ".." */
 	jtwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, 0, FALSE);
 	xfwrite(&s_dir, offsetof(struct iso_directory_record, name[0]) + 1, 1, outfile, 0, FALSE);
 	memset(&s_dir, 0, sizeof (struct iso_directory_record));

@@ -11,13 +11,14 @@
  */
 
 /* @(#)hash.c	1.18 04/06/18 joerg */
+/* @(#)hash.c	1.23 06/10/04 joerg */
 /*
  * File hash.c - generate hash tables for iso9660 filesystem.
  *
  * Written by Eric Youngdale (1993).
  *
  * Copyright 1993 Yggdrasil Computing, Incorporated
- * Copyright (c) 1999,2000 J. Schilling
+ * Copyright (c) 1999,2000-2006 J. Schilling
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,11 +58,11 @@
 #include "genisoimage.h"
 #include <schily.h>
 
-#define	NR_HASH	1024
+#define	NR_HASH	(16*1024)
 
-#define	HASH_FN(DEV, INO)	((DEV + INO + (INO >> 2) + (INO << 8)) % NR_HASH)
+#define	HASH_FN(DEV, INO)	((DEV + INO  + (INO >> 8) + (INO << 16)) % NR_HASH)
 
-static struct file_hash *hash_table[NR_HASH] = {0, };
+static struct file_hash *hash_table[NR_HASH];
 
 void		add_hash(struct directory_entry *spnt);
 struct file_hash *find_hash(dev_t dev, ino_t inode);
@@ -82,23 +83,16 @@ add_hash(struct directory_entry *spnt)
 	unsigned int    hash_number;
 
 	if (spnt->size == 0 || spnt->starting_block == 0)
-		if (spnt->size != 0 || spnt->starting_block != 0) {
-#ifdef	USE_LIBSCHILY
+		if (spnt->size != 0 && spnt->starting_block == 0) {
 			comerrno(EX_BAD,
 			"Non zero-length file '%s' assigned zero extent.\n",
 							spnt->name);
-#else
-			fprintf(stderr,
-			"Non zero-length file '%s' assigned zero extent.\n",
-							spnt->name);
-			exit(1);
-#endif
 		};
 
 	if (!cache_inodes)
 		return;
-	if (spnt->dev == (dev_t) UNCACHED_DEVICE ||
-				spnt->inode == UNCACHED_INODE) {
+	if (spnt->dev == UNCACHED_DEVICE &&
+	    (spnt->inode == TABLE_INODE || spnt->inode == UNCACHED_INODE)) {
 		return;
 	}
 	hash_number = HASH_FN((unsigned int) spnt->dev,
@@ -112,6 +106,7 @@ add_hash(struct directory_entry *spnt)
 	s_hash->next = hash_table[hash_number];
 	s_hash->inode = spnt->inode;
 	s_hash->dev = spnt->dev;
+	s_hash->nlink = 0;
 	s_hash->starting_block = spnt->starting_block;
 	s_hash->size = spnt->size;
 #ifdef SORTING
@@ -128,7 +123,8 @@ find_hash(dev_t dev, ino_t inode)
 
 	if (!cache_inodes)
 		return (NULL);
-	if (dev == (dev_t) UNCACHED_DEVICE || inode == UNCACHED_INODE)
+	if (dev == UNCACHED_DEVICE &&
+	    (inode == TABLE_INODE || inode == UNCACHED_INODE))
 		return (NULL);
 
 	hash_number = HASH_FN((unsigned int) dev, (unsigned int) inode);
@@ -163,7 +159,7 @@ flush_hash()
 	}
 }
 
-static struct file_hash *directory_hash_table[NR_HASH] = {0, };
+static struct file_hash *directory_hash_table[NR_HASH];
 
 void
 add_directory_hash(dev_t dev, ino_t inode)
@@ -173,7 +169,8 @@ add_directory_hash(dev_t dev, ino_t inode)
 
 	if (!cache_inodes)
 		return;
-	if (dev == (dev_t) UNCACHED_DEVICE || inode == UNCACHED_INODE)
+	if (dev == UNCACHED_DEVICE &&
+	    (inode == TABLE_INODE || inode == UNCACHED_INODE))
 		return;
 
 	hash_number = HASH_FN((unsigned int) dev, (unsigned int) inode);
@@ -182,6 +179,7 @@ add_directory_hash(dev_t dev, ino_t inode)
 	s_hash->next = directory_hash_table[hash_number];
 	s_hash->inode = inode;
 	s_hash->dev = dev;
+	s_hash->nlink = 0;
 	directory_hash_table[hash_number] = s_hash;
 }
 
@@ -193,7 +191,8 @@ find_directory_hash(dev_t dev, ino_t inode)
 
 	if (!cache_inodes)
 		return (NULL);
-	if (dev == (dev_t) UNCACHED_DEVICE || inode == UNCACHED_INODE)
+	if (dev == UNCACHED_DEVICE &&
+	    (inode == TABLE_INODE || inode == UNCACHED_INODE))
 		return (NULL);
 
 	hash_number = HASH_FN((unsigned int) dev, (unsigned int) inode);
@@ -209,6 +208,7 @@ find_directory_hash(dev_t dev, ino_t inode)
 struct name_hash {
 	struct name_hash *next;
 	struct directory_entry *de;
+	int	sum;
 };
 
 #define	NR_NAME_HASH	(256*1024)
@@ -235,7 +235,7 @@ name_hash(const char *name)
 		if (*p == ';') {
 			break;
 		}
-		hash = (hash << 15) + (hash << 3) + (hash >> 3) + *p++;
+		hash = (hash << 15) + (hash << 3) + (hash >> 3) + (*p++ & 0xFF);
 	}
 	return (hash % NR_NAME_HASH);
 }
@@ -245,10 +245,18 @@ add_file_hash(struct directory_entry *de)
 {
 	struct name_hash	*new;
 	int			hash;
+	Uchar			*p;
+	int			sum = 0;
 
 	new = (struct name_hash *) e_malloc(sizeof (struct name_hash));
 	new->de = de;
 	new->next = NULL;
+	for (p = (Uchar *)de->isorec.name; *p; p++) {
+		if (*p == ';')
+			break;
+		sum += *p & 0xFF;
+	}
+	new->sum = sum;
 	hash = name_hash(de->isorec.name);
 
 	/* Now insert into the hash table */
@@ -262,11 +270,21 @@ find_file_hash(register char *name)
 	register char			*p1;
 	register char			*p2;
 	register struct name_hash	*nh;
+	register int			sum = 0;
 
 	if (debug > 1)
 		fprintf(stderr, "find_hash('%s')\n", name);
 
+	for (p1 = name; *p1; p1++) {
+		if (*p1 == ';')
+			break;
+		sum += *p1 & 0xFF;
+	}
+
 	for (nh = name_hash_table[name_hash(name)]; nh; nh = nh->next) {
+		if (nh->sum != sum)
+			continue;
+
 		p1 = name;
 		p2 = nh->de->isorec.name;
 		if (debug > 1)
@@ -301,7 +319,6 @@ find_file_hash(register char *name)
 				p2++;
 				continue;
 			}
-			
 		}
 
 		/*

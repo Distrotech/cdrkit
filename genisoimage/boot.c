@@ -411,7 +411,7 @@ sunboot_write(FILE *outfile)
 		}
 		close(f);
 	}
-	fprintf(stderr, "Total extents including %s boot = %d\n",
+	fprintf(stderr, "Total extents including %s boot = %u\n",
 				use_sunx86boot ? "Solaris x86":"sparc",
 				last_extent_written - session_start);
 	return (0);

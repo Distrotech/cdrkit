@@ -17,7 +17,8 @@
  *
  * Eduard Bloch <blade@debian.org>
 */
-/* @(#)genisoimage.c	1.167 06/01/30 joerg */
+/* @(#)mkisofs.c	1.167 06/01/30 joerg */
+/* Parts from @(#)mkisofs.c	1.206 07/02/26 joerg */
 /*
  * Program genisoimage.c - generate iso9660 filesystem  based upon directory
  * tree on hard disk.
@@ -205,7 +206,7 @@ int	split_SL_component = 1;	/* circumvent a bug in the SunOS driver */
 int	split_SL_field = 1;	/* circumvent a bug in the SunOS */
 char	*trans_tbl = "TRANS.TBL"; /* default name for translation table */
 int	stream_media_size = 0;	/* # of blocks on the media */
-char	*stream_filename = "STREAM.IMG;1"; /* Default stream file name */
+char	*stream_filename = NULL; /* Stream file, 0 to use default STREAM.IMG */
 
 #ifdef APPLE_HYB
 int	apple_hyb = 0;		/* create HFS hybrid flag */
@@ -1910,7 +1911,6 @@ int main(int argc, char *argv[])
 			break;
 
 		case OPTION_STREAM_FILE_NAME:
-			comerrno(EX_BAD, "-stream-file-name not yet implemented\n");
 			stream_filename = optarg;
 			break;
 
@@ -2427,6 +2427,36 @@ parse_input_files:
 	if (use_udf && !use_Joliet)
 		jlen = 255;
 
+	if (preparer) {
+		if (strlen(preparer) > 128) {
+			comerrno(EX_BAD, "Preparer string too long\n");
+		}
+	}
+	if (publisher) {
+		if (strlen(publisher) > 128) {
+			comerrno(EX_BAD,
+				"Publisher string too long\n");
+		}
+	}
+	if (stream_filename) {
+		if (strlen(stream_filename) > MAX_ISONAME)
+			comerrno(EX_BAD,
+					"stream-file-name too long (%d), max is %d.\n",
+					strlen(stream_filename), MAX_ISONAME);
+		if (strchr(stream_filename, '/'))
+			comerrno(EX_BAD, "Illegal character '/' in stream-file-name.\n");
+		iso9660_level = 4;
+	} else {
+		stream_filename = "STREAM.IMG;1";
+	}
+	if (system_id) {
+		if (strlen(system_id) > 32) {
+			comerrno(EX_BAD,
+					"System ID string too long\n");
+		}
+	}
+
+
 	if (use_RockRidge && (iso9660_namelen > MAX_ISONAME_V2_RR))
 		iso9660_namelen = MAX_ISONAME_V2_RR;
 
@@ -2605,11 +2635,11 @@ parse_input_files:
 		struct rlimit	rlp;
 
 		if (getrlimit(RLIMIT_DATA, &rlp) == -1)
-			perror("Warning: getrlimit");
+			perror("Warning: getrlimit failed");
 		else {
 			rlp.rlim_cur = 33554432;
 			if (setrlimit(RLIMIT_DATA, &rlp) == -1)
-				perror("Warning: setrlimit");
+				perror("Warning: setrlimit failed");
 		}
 	}
 #endif
@@ -3591,9 +3621,9 @@ if (check_session == 0)
 	if (print_size > 0) {
 		if (verbose > 0)
 			fprintf(stderr,
-			"Total extents scheduled to be written = %d\n",
+			"Total extents scheduled to be written = %u\n",
 			(last_extent - session_start));
-		printf("%d\n", (last_extent - session_start));
+		printf("%u\n", (last_extent - session_start));
 		exit(0);
 	}
 	/*
@@ -3621,7 +3651,7 @@ if (check_session == 0)
 					opnt->of_name, last_extent_written);
 			(*opnt->of_write) (discimage);
 			if (verbose > 1)
-				fprintf(stderr, "Done with: %-40sBlock(s)    %d\n",
+				fprintf(stderr, "Done with: %-40sBlock(s)    %u\n",
 					opnt->of_name, last_extent_written-oext);
 		}
 	}
@@ -3643,7 +3673,7 @@ if (check_session == 0)
 		fprintf(stderr, "Max brk space used %x\n",
 			(unsigned int)(((unsigned long) sbrk(0)) - mem_start));
 #endif
-		fprintf(stderr, "%d extents written (%d MB)\n",
+		fprintf(stderr, "%u extents written (%u MB)\n",
 			last_extent, last_extent >> 9);
 	}
 #ifdef VMS

@@ -11,6 +11,9 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
     incorrect iso9660 but having it this way is better than no LFS at all.
   * removed md5* parts and integration from icedax, patch by
     Vladimir Nadvornik <nadvornik@suse.cz>
+  * various small bugfixes or cosmetic fixes picked from still GPLed parts of
+    cdrtools-2.01.01a24, excluding meta changes and big tree.c and mkisofs.c
+    refactoring. Stream file name option enabled now.
 
   [ Peter Samuelson ]
   * Clean up Linux-2.6 CD/DVD-R drive detection, clearer error messages.

@@ -11,6 +11,7 @@
  */
 
 /* @(#)write.c	1.88 06/02/01 joerg */
+/* Parts from @(#)write.c	1.106 07/02/17 joerg */
 /*
  * Program write.c - dump memory  structures to  file for iso9660 filesystem.
  *
@@ -104,7 +105,7 @@ static 	void	dump_filelist	__PR((void));
 static 	int	compare_dirs(const void *rr, const void *ll);
 int	sort_directory(struct directory_entry **sort_dir, int rr);
 static 	int	root_gen(void);
-static 	BOOL	assign_file_addresses(struct directory *dpnt);
+static 	BOOL	assign_file_addresses(struct directory *dpnt, BOOL isnest);
 static 	void	free_one_directory(struct directory *dpnt);
 static 	void	free_directories(struct directory *dpnt);
 void	generate_one_directory(struct directory *dpnt, FILE *outfile);
@@ -276,6 +277,7 @@ xfwrite(void *buffer, int size, int count, FILE *file, int submode, BOOL islast)
 	while (count) {
 		int	got;
 
+		seterrno(0);
 		if (osecsize != 0)
 			got = xawrite(buffer, size, count, file, submode, islast);
 		else
@@ -1020,7 +1022,7 @@ sort_file_addresses()
 
 
 static BOOL
-assign_file_addresses(struct directory *dpnt)
+assign_file_addresses(struct directory *dpnt, BOOL isnest)
 {
 	struct directory *finddir;
 	struct directory_entry *s_entry;
@@ -1030,18 +1032,22 @@ assign_file_addresses(struct directory *dpnt)
 #ifdef DVD_VIDEO
 	char		dvd_path[PATH_MAX];
 	title_set_info_t * title_set_info = NULL;
+	char	*p;
 #endif
 	BOOL	ret = FALSE;
 
 	while (dpnt) {
 #ifdef DVD_VIDEO
-		if (dvd_video && (strstr(dpnt->whole_name, "VIDEO_TS") != 0)) {
-			int	maxlen = strlen(dpnt->whole_name)-8;
+		if (dvd_video && root == dpnt->parent &&
+		    ((p = strstr(dpnt->whole_name, "VIDEO_TS")) != 0)&&
+		    strcmp(p, "VIDEO_TS") == 0) {
 
+			int     maxlen = strlen(dpnt->whole_name)-8;
 			if (maxlen > (sizeof (dvd_path)-1))
 				maxlen = sizeof (dvd_path)-1;
 			strncpy(dvd_path, dpnt->whole_name, maxlen);
 			dvd_path[maxlen] = '\0';
+
 #ifdef DEBUG
 			fprintf(stderr, "Found 'VIDEO_TS', the path is %s \n", dvd_path);
 #endif
@@ -1067,8 +1073,7 @@ assign_file_addresses(struct directory *dpnt)
 			 * previous session on the disc.  Note that we don't
 			 * end up scheduling the thing for writing either.
 			 */
-			if (isonum_733((unsigned char *)
-						s_entry->isorec.extent) != 0) {
+			if (get_733(s_entry->isorec.extent) != 0) {
 				continue;
 			}
 			/*
@@ -1112,7 +1117,6 @@ assign_file_addresses(struct directory *dpnt)
 						break;
 					finddir = finddir->next;
 					if (!finddir) {
-#ifdef	USE_LIBSCHILY
 #ifdef	DVD_VIDEO
 						if (title_set_info != 0) {
 							DVDFreeFileSet(title_set_info);
@@ -1121,17 +1125,6 @@ assign_file_addresses(struct directory *dpnt)
 						comerrno(EX_BAD,
 							"Fatal goof - could not find dir entry for '%s'\n",
 							s_entry->name);
-#else
-						fprintf(stderr,
-							"Fatal goof - could not find dir entry for '%s'\n",
-							s_entry->name);
-#ifdef DVD_VIDEO
-						if (title_set_info != 0) {
-							DVDFreeFileSet(title_set_info);
-						}
-#endif
-						exit(1);
-#endif
 					}
 				}
 				set_733((char *) s_entry->isorec.extent,
@@ -1244,8 +1237,7 @@ assign_file_addresses(struct directory *dpnt)
 						SPATH_SEPARATOR, trans_tbl);
 				} else {
 					dwpnt->table = NULL;
-					strcpy(whole_path,
-							s_entry->whole_name);
+					strcpy(whole_path, s_entry->whole_name);
 					dwpnt->name = strdup(whole_path);
 				}
 				dwpnt->next = NULL;
@@ -1263,7 +1255,7 @@ assign_file_addresses(struct directory *dpnt)
 				}
 #endif /* DVD_VIDEO */
 				if (verbose > 2 && !do_sort) {
-					fprintf(stderr, "%8d %8d %s\n",
+					fprintf(stderr, "%8d %8u %s\n",
 						s_entry->starting_block,
 						last_extent - 1, whole_path);
 				}
@@ -1309,7 +1301,7 @@ assign_file_addresses(struct directory *dpnt)
 			set_733((char *) s_entry->isorec.extent, last_extent);
 		}
 		if (dpnt->subdir) {
-			if (assign_file_addresses(dpnt->subdir))
+			if (assign_file_addresses(dpnt->subdir, TRUE))
 				ret = TRUE;
 		}
 		dpnt = dpnt->next;
@@ -1318,9 +1310,13 @@ assign_file_addresses(struct directory *dpnt)
 	if (title_set_info != NULL) {
 		DVDFreeFileSet(title_set_info);
 	}
+	if (dvd_video && !ret && !isnest) {
+		errmsgno(EX_BAD,
+			"Could not find correct 'VIDEO_TS' directory.\n");
+	}
 #endif /* DVD_VIDEO */
 	return (ret);
-}/* assign_file_addresses(... */
+} /* assign_file_addresses(... */
 
 static void
 free_one_directory(struct directory *dpnt)
@@ -1804,7 +1800,7 @@ file_write(FILE *outfile)
 #endif	/* APPLE_HYB */
 
 			fprintf(stderr,
-				"Total extents scheduled to be written = %d\n",
+				"Total extents scheduled to be written = %u\n",
 				last_extent - session_start);
 	}
 	/* Now write all of the files that we need. */
@@ -1907,6 +1903,8 @@ pvd_write(FILE *outfile)
 	local.tm_min -= gmt.tm_min;
 	local.tm_hour -= gmt.tm_hour;
 	local.tm_yday -= gmt.tm_yday;
+	if (local.tm_yday < -2)		/* Hit new-year limit	*/
+		local.tm_yday = 1;	/* Local is GMT + 1 day	*/
 	iso_time[16] = (local.tm_min + 60 *
 				(local.tm_hour + 24 * local.tm_yday)) / 15;
 
@@ -2260,7 +2258,7 @@ file_gen()
 
 #endif	/* APPLE_HYB */
 
-	if (!assign_file_addresses(root)) {
+	if (!assign_file_addresses(root, FALSE)) {
 #ifdef DVD_VIDEO
 		if (dvd_video) {
 			comerrno(EX_BAD, "Unable to make a DVD-Video image.\n"

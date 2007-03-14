@@ -139,6 +139,7 @@ struct file_hash {
 	struct file_hash *next;
 	ino_t		inode;		/* Used in the hash table */
 	dev_t		dev;		/* Used in the hash table */
+	nlink_t		nlink;		/* Used to compute new link count */
 	unsigned int	starting_block;
 	off_t		size;
 #ifdef SORTING
