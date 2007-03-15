@@ -5,6 +5,7 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
     /dev/class/scsi_generic contents
   * Dealing with the last newline char when processing
     /proc/sys/dev/cdrom/info contents
+  * print the track size in the info message when guessing
   * added some missing or probably missing definitions in
     wodim/CMakeLists.txt, restoring the reading from inf files
   * passing through the real file size to the UDF generator. Creating

@@ -3794,7 +3794,7 @@ Can write RAM:          0       1
       key="Can write DVD-R:";
 		}
 
-		fprintf(stderr, "INFO: no device specified, looking for %s drive...\n", type);
+		fprintf(stderr, "INFO: no device specified, looking for a %s drive to store %.2f MiB...\n", type, (float)filesize/1048576.0);
 		if(0==stat(guessdev, &statbuf))
 			result=guessdev;
 		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
