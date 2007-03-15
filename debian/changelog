@@ -1,9 +1,12 @@
-cdrkit (9:1.1.3-1) unstable; urgency=low
+cdrkit (9:1.1.3-1) unstable; urgency=medium
 
-  * New upstream version with minor bugfixes
-    + dealing with newline when searching for device (closes: #408456)
+  * New upstream version with important bugfixes
+    + dealing with newline when searching for device (closes: #408456, 409005)
     + corrected picking up of the SCSI transfer size (closes: #407773)
     + restores forgotten compiler definitions on wodim (closes: #407611)
+    + LFS support in UDF (closes: #411178, #401988)
+    + transfer size extraction fix (part of #407773)
+    + default gracetime value changed in recommendations (closes: #408844)
   * Relaxed version dependency of cmake (closes: #407163)
 
  -- Eduard Bloch <blade@debian.org>  Fri, 19 Jan 2007 08:54:05 +0100
