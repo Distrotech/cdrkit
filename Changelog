@@ -18,6 +18,8 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
   * wodim.1: "you have 4 seconds to abort ..."
   * defaults.c: Correct fallback to CDR_FIFOSIZE and correct error message
     on bad input.
+  * tell the user his device is busy on Linux because it's mounted,  after
+    looking at /proc/mounts
 
   [ Peter Samuelson ]
   * Clean up Linux-2.6 CD/DVD-R drive detection, clearer error messages.

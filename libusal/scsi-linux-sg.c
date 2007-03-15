@@ -252,7 +252,7 @@ sg_open_excl(char *device, int mode)
 
 {
        int f;
-       int i;
+       int i=0;
        f = open(device, mode|O_EXCL);
        /* try to reopen locked/busy devices up to five times */
        for (i = 0; (i < 5) && (f == -1 && errno == EBUSY); i++) {
@@ -261,6 +261,19 @@ sg_open_excl(char *device, int mode)
                (i<4)?"retrying in 1 second.":"giving up.");
 	       usleep(1000000 + 100000.0 * rand()/(RAND_MAX+1.0));
 	       f = open(device, mode|O_EXCL);
+       }
+       if(i==5) {
+	       FILE *g = fopen("/proc/mounts", "r");
+	       if(g) {
+		       char buf[80];
+		       unsigned int len=strlen(device);
+		       while(!feof(g) && !ferror(g)) {
+			       if(fgets(buf, 79, g) && 0==strncmp(device, buf, len)) {
+				       fprintf(stderr, "WARNING: %s seems to be mounted!\n", device);
+			       }
+		       }
+		       fclose(g);
+	       }
        }
        return f;
 }
