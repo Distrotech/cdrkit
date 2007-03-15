@@ -4,6 +4,7 @@ cdrkit (9:1.1.3-1) unstable; urgency=medium
     + dealing with newline when searching for device (closes: #408456).
       Also telling the expected track size to not confuse (closes: #409005)
     + corrected picking up of the SCSI transfer size (closes: #407773)
+    + correct fallback to CDR_FIFOSIZE (closes: #408840)
     + restores forgotten compiler definitions on wodim (closes: #407611)
     + LFS support in UDF (closes: #411178, #401988)
     + transfer size extraction fix (part of #407773)
