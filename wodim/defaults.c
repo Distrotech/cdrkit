@@ -108,9 +108,9 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize,
 				exit(EXIT_FAILURE);
 			}
 		}
-		else if(wc>2 && *sFs) {
+		else if(wc>2 && *sFs && strcmp("-1", sFs)) {
 			if(getnum(sFs, p_fifosize)!=1 || *p_fifosize<-1) {
-				fprintf(stderr, "Bad fifo size (%s) in the config, device description.\n", sSpeed);
+				fprintf(stderr, "Bad fifo size (%s) in the config, device description.\n", sFs);
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -120,9 +120,6 @@ cdr_defaults(char **p_dev_name, int *p_speed, long *p_fifosize,
 				exit(EXIT_FAILURE);
 			}
 		}
-		/* undocumented option. Most likely to prevent killing Schily's
-		 * underpowered machines (see docs) by allocating too much memory after
-		 * doing a mistake in the config. */
 		if(NULL!=(t=cfg_get("CDR_MAXFIFOSIZE"))) {
 			long max;
 			if(getnum(t, &max)!=1 || *p_fifosize<-1) {

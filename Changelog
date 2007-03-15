@@ -16,6 +16,8 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
     cdrtools-2.01.01a24, excluding meta changes and big tree.c and mkisofs.c
     refactoring. Stream file name option enabled now.
   * wodim.1: "you have 4 seconds to abort ..."
+  * defaults.c: Correct fallback to CDR_FIFOSIZE and correct error message
+    on bad input.
 
   [ Peter Samuelson ]
   * Clean up Linux-2.6 CD/DVD-R drive detection, clearer error messages.
