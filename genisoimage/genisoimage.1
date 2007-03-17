@@ -188,6 +188,14 @@ in the
 .I .genisoimagerc
 file.
 .TP
+.B \-allow\-limited\-size
+When processing files larger than 2GiB which cannot be easily represented in
+ISO9660, add them with a shrunk visible file size to ISO9660 and with the
+correct visible file size to the UDF system. The result is an inconsistent
+filesystem and users need to make sure that they really use UDF rather than
+ISO9660 driver to read a such disk. Implies enabling
+.BR \-udf.
+.TP
 .B \-allow\-leading\-dots
 .TP
 .B \-ldots

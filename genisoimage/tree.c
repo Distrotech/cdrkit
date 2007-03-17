@@ -48,18 +48,12 @@
 #include <device.h>
 #include <schily.h>
 
-#ifdef UDF
-#include "udf.h"
-#endif
+extern int allow_limited_size;
 
 #ifdef VMS
 #include <sys/file.h>
 #include <vms/fabdef.h>
 #include "vms.h"
-#endif
-
-#ifdef UDF
-#include "udf.h"
 #endif
 
 /*
@@ -1554,13 +1548,13 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 	}
 	if (S_ISREG(lstatbuf.st_mode) && (lstatbuf.st_size >= (off_t)0x7FFFFFFF)) {
 		fprintf(stderr, "File %s is larger than 2GiB.\n", whole_path);
-		if(use_udf) {
+		if(allow_limited_size) {
 			fprintf(stderr, "This size can only be represented in the UDF filesystem.\n"
 					"Make sure that your clients support and use it.\n"
                                         "ISO9660, Joliet, RockRidge, HFS will display incorrect size.\n");
 		}
 		else {
-			fprintf(stderr, "-udf was not specified. There is no way do represent this file size. Aborting.\n");
+			fprintf(stderr, "-allow-limited-size was not specified. There is no way do represent this file size. Aborting.\n");
 			exit(1);
 		}
 	}

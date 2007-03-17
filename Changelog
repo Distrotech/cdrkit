@@ -3,6 +3,8 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
   [ Eduard Bloch ]
   * Fixed fishing for transfer size in sysfs, now ready for
     /dev/class/scsi_generic contents
+  * Fixed /dev/sgDIGIT pattern scan in --devices, now iterating over correct
+    sgX nodes. Thanks to Thomas Schmidt.
   * Dealing with the last newline char when processing
     /proc/sys/dev/cdrom/info contents
   * print the track size in the info message when guessing

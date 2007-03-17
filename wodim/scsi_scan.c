@@ -71,7 +71,8 @@ static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 	usal_fprintdev(f, ip);
 }
 
-#define MAXDEVCOUNT (256+26+26)
+#define MAXDEVCOUNT (256+26+256)
+
 int scan_devices() {
 	struct stat statbuf;
 	char *lines[MAXDEVCOUNT];
@@ -87,8 +88,8 @@ int scan_devices() {
 			snprintf(devname, sizeof (devname), "/dev/hd%c", 'a'+i);
 		else if(i<(256+26))
 			snprintf(devname, sizeof (devname), "/dev/sr%d", i-26);
-		else if(i<(256+26+26))
-			snprintf(devname, sizeof (devname), "/dev/sg%c", 'a'+i-26-256);
+		else if(i<(256+26+256))
+			snprintf(devname, sizeof (devname), "/dev/sg%d", i-26-256);
 		else
 			break;
 
@@ -133,8 +134,10 @@ int scan_devices() {
 	fprintf(stdout, "%s: Overview of accessible drives (%d found) :\n"
 			"----------------------------------------------------------------------\n",
 			get_progname(), ndevs);
-	for(i=0;i<ndevs;i++)
+	for(i=0;i<ndevs;i++) {
 		fprintf(stdout, "%s", lines[i]);
+    free(lines[i]);
+  }
 	fprintf(stdout,	"----------------------------------------------------------------------\n");
 
 	return 0;

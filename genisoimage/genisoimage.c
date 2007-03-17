@@ -197,6 +197,7 @@ int	allow_lowercase = 0;	/* Allow lower case letters */
 int	allow_multidot = 0;	/* Allow more than on dot in filename */
 int	iso_translate = 1;	/* 1 == enables '#', '-' and '~' removal */
 int	allow_leading_dots = 0;	/* DOS cannot read names with leading dots */
+int	allow_limited_size = 0;	/* Let the user to allow the trick explicitely */
 #ifdef	VMS
 int	use_fileversion = 1;	/* Use file version # from filesystem */
 #else
@@ -489,6 +490,8 @@ struct ld_option {
 
 #define	OPTION_MAP_FILE			2045
 
+#define	OPTION_ALLOW_LIMITED_SIZE 2046
+
 #endif	/* APPLE_HYB */
 
 static int	save_pname = 0;
@@ -592,6 +595,9 @@ static const struct ld_option ld_options[] =
 	'l', NULL, "Allow full 31 character filenames for ISO9660 names", ONE_DASH},
 	{{"max-iso9660-filenames", no_argument, NULL, OPTION_MAX_FILENAMES},
 	'\0', NULL, "Allow 37 character filenames for ISO9660 names (violates ISO9660)", ONE_DASH},
+
+	{{"allow-limited-size", no_argument, NULL, OPTION_ALLOW_LIMITED_SIZE},
+	'\0', NULL, "Allow different file sizes in ISO9660/UDF on large files", ONE_DASH},
 
 	{{"allow-leading-dots", no_argument, NULL, OPTION_ALLOW_LEADING_DOTS},
 	'\0', NULL, "Allow ISO9660 filenames to start with '.' (violates ISO9660)", ONE_DASH},
@@ -2404,6 +2410,10 @@ int main(int argc, char *argv[])
 			break;
 #endif	/* PREP_BOOT */
 #endif	/* APPLE_HYB */
+		case OPTION_ALLOW_LIMITED_SIZE:
+			allow_limited_size++;
+      use_udf++;
+			break;
 		default:
 			susage(1);
 		}

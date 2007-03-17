@@ -6,7 +6,7 @@ cdrkit (9:1.1.3-1) unstable; urgency=medium
     + corrected picking up of the SCSI transfer size (closes: #407773)
     + correct fallback to CDR_FIFOSIZE (closes: #408840)
     + restores forgotten compiler definitions on wodim (closes: #407611)
-    + LFS support in UDF (closes: #411178, #401988)
+    + provisional LFS support in UDF (closes: #401988)
     + transfer size extraction fix (part of #407773)
     + default gracetime value changed in recommendations (closes: #408844)
     + telling the user when the drive is mounted and therefore busy
