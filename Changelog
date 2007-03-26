@@ -1,10 +1,10 @@
-cdrkit (1.1.3) UNRELEASED; urgency=low
+cdrkit (1.1.3) RELEASED; urgency=medium
 
   [ Eduard Bloch ]
   * Fixed fishing for transfer size in sysfs, now ready for
     /dev/class/scsi_generic contents
-  * Fixed /dev/sgDIGIT pattern scan in --devices, now iterating over correct
-    sgX nodes. Thanks to Thomas Schmidt.
+  * Fixed /dev/sg%d pattern scan in --devices, now iterating over modern style
+    device files. Thanks to Thomas Schmidt.
   * Dealing with the last newline char when processing
     /proc/sys/dev/cdrom/info contents
   * print the track size in the info message when guessing
@@ -20,13 +20,13 @@ cdrkit (1.1.3) UNRELEASED; urgency=low
   * wodim.1: "you have 4 seconds to abort ..."
   * defaults.c: Correct fallback to CDR_FIFOSIZE and correct error message
     on bad input.
-  * tell the user his device is busy on Linux because it's mounted,  after
+  * tell the user his device is busy on Linux because it's mounted, after
     looking at /proc/mounts
 
   [ Peter Samuelson ]
   * Clean up Linux-2.6 CD/DVD-R drive detection, clearer error messages.
 
- -- Eduard Bloch <blade@debian.org>  Tue, 23 Jan 2007 19:13:44 +0100
+ -- Eduard Bloch <blade@debian.org>  Mon, 26 Mar 2007 17:35:10 +0200
 
 cdrkit (1.1.2) RELEASED; urgency=low
 
