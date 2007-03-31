@@ -247,9 +247,7 @@ int    sg_open_excl(char *device, int mode);
 
 static BOOL get_max_secs(char *dirpath, int *outval);
 
-int
-sg_open_excl(char *device, int mode)
-
+int sg_open_excl(char *device, int mode)
 {
        int f;
        int i=0;
@@ -278,6 +276,17 @@ sg_open_excl(char *device, int mode)
        return f;
 }
 
+void map_sg_to_block(char *device, int len) {
+	char globpat[100];
+	glob_t globbuf;
+	snprintf(globpat, 100, "/sys/class/scsi_generic/%s/device/block:*", device+5);
+	memset(&globbuf, 0, sizeof(glob_t));
+	if(0==glob(globpat, GLOB_DOOFFS | GLOB_NOSORT, NULL, &globbuf)) {
+		char *p = strrchr(globbuf.gl_pathv[0], ':');
+		if(p) snprintf(device, len, "/dev/%s", p+1);
+	}
+	globfree(&globbuf);
+}
 
 /*
  * Return version information for the low level SCSI transport code.
@@ -461,6 +470,8 @@ scanopen:
 	if (nopen == 0) {
 		for (i = 0; i < 32; i++) {
 			snprintf(devname, sizeof (devname), "/dev/sg%d", i);
+			map_sg_to_block(devname, sizeof(devname));
+			printf("verwende %s\n", devname);
 			/* O_NONBLOCK is dangerous */
 			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 			if (f < 0) {
