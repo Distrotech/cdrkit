@@ -539,12 +539,18 @@ openbydev:
 
 	if (device != NULL && *device != '\0') {
 		b = -1;
+		char buf[100];
 		if (strlen(device) == 8 && strncmp(device, "/dev/hd", 7) == 0) {
 			b = device[7] - 'a';
 			if (b < 0 || b > 25)
 				b = -1;
 		}
     /* O_NONBLOCK is dangerous */
+		if(0==strncmp(device, "/dev/sg", 7)) {
+			strncpy(buf, device, sizeof(buf)-1);
+			map_sg_to_block(buf, sizeof(buf));
+			device=buf;
+		}
 		f = sg_open_excl(device, O_RDWR | O_NONBLOCK);
 /*		if (f < 0 && errno == ENOENT)*/
 /*			goto openpg;*/
