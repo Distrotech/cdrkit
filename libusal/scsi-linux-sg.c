@@ -471,7 +471,6 @@ scanopen:
 		for (i = 0; i < 32; i++) {
 			snprintf(devname, sizeof (devname), "/dev/sg%d", i);
 			map_sg_to_block(devname, sizeof(devname));
-			printf("verwende %s\n", devname);
 			/* O_NONBLOCK is dangerous */
 			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 			if (f < 0) {
