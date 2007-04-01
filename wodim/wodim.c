@@ -406,22 +406,6 @@ int main(int argc, char *argv[])
 
   usalp = usal_open(dev, errstr, sizeof (errstr),
         debug, lverbose);
-  if(!usalp && dev) {
-     char *dalt;
-     int len=5+strlen(dev);
-
-     dalt=calloc(len, sizeof(char));
-     strcat(dalt, "ATA:");
-     strcat(dalt+4, dev);
-     usalp = usal_open(dalt, errstr, sizeof (errstr),
-           debug, lverbose);
-#ifdef __linux__
-     if(usalp && sscanf(dev, "%d,%d,%d", dalt, dalt, dalt)>1)
-        fprintf(stderr, "WARNING: mapped the pseudo SCSI syntax to ATA:%s. This method is considered"
-              "deprecated. Please specify the device by native path, run \"wodim --devices\".");
-#endif
-  }
-
   if(!usalp)
   {
      errmsg("\nCannot open SCSI driver!\n"

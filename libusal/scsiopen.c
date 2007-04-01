@@ -64,9 +64,8 @@
 #include <usal/scsitransp.h>
 
 #if    defined(linux) || defined(__linux) || defined(__linux__)
-#include <sys/utsname.h>
+extern BOOL check_linux_26();
 #endif
-
 
 #define	strbeg(s1, s2)	(strstr((s2), (s1)) == (s2))
 
@@ -125,42 +124,6 @@ usal_open(char *scsidev, char *errs, int slen, int debug, int be_verbose)
 	}
 	usalp->debug = debug;
 	usalp->overbose = be_verbose;
-
-#ifdef __linux__
-	struct utsname buf; 
-	if(scsidev) {
-		int gen, tmp;
-		struct stat statbuf;
-		if( 0==uname( &buf ) &&
-				sscanf(buf.release, "%d.%d", &gen, &tmp)>1 &&
-				tmp>=6)
-		{
-			if(0==strncmp(scsidev, "ATAPI:", 6))
-			{
-				scsidev+=6;
-				fprintf(stderr, "\nWarning, the ATAPI: method is considered deprecated on modern kernels!\n"
-						"Mapping device specification to dev=%s now.\n"
-						"To force the old ATAPI: method, replace ATAPI: with OLDATAPI:\n", scsidev);
-			}
-			if(0!=stat("/sys/kernel", &statbuf)) {
-				fprintf(stderr, "\nWarning, sysfs is not mounted on /sys!\n"
-						"It is recommended to mount sysfs to allow better device configuration\n");
-				sleep(5);
-			}
-      /* some bitching about old style, ATA:b,t,l warning was displayed already. */
-			if(sscanf(scsidev, "%d,%d,%d", &tmp, &tmp, &tmp)>1) {
-				fprintf(stderr, "\nWarning, the deprecated pseudo SCSI syntax found as device specification.\n"
-						"Support for that may cease in the future versions of wodim. For now,\n"
-						"the device will be mapped to a block device file where possible.\n"
-						"Run \"wodim --devices\" for details.\n" );
-				sleep(5);
-			}
-		}
-		if(0==strncmp(scsidev, "OLDATAPI:", 9))
-			scsidev+=3;
-	}
-#endif
-
 	devname[0] = '\0';
 	if (scsidev != NULL && scsidev[0] != '\0') {
 		sdev = scsidev;
