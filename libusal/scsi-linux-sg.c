@@ -276,6 +276,8 @@ int sg_open_excl(char *device, int mode)
        return f;
 }
 
+#if 0
+// Dead code, that sysfs parts may become deprecated soon
 void map_sg_to_block(char *device, int len) {
 	char globpat[100];
 	glob_t globbuf;
@@ -287,6 +289,7 @@ void map_sg_to_block(char *device, int len) {
 	}
 	globfree(&globbuf);
 }
+#endif
 
 /*
  * Return version information for the low level SCSI transport code.
@@ -464,13 +467,51 @@ scanopen:
 		if(nopen==0)
 			return(0);
 	}
+  else {
+     fprintf(stderr, "ATAPI devices not scanned.\n"
+           "wodim: HINT : To surely see all drives try option: --devices\n"
+           "wodim: HINT : Or try options:               dev=ATA -scanbus\n"
+           );
+  }
 	if (nopen > 0 && usalp->errstr)
 		usalp->errstr[0] = '\0';
 
 	if (nopen == 0) {
 		for (i = 0; i < 32; i++) {
+			snprintf(devname, sizeof (devname), "/dev/sr%d", i);
+			/* O_NONBLOCK is dangerous */
+			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
+			if (f < 0) {
+				/*
+				 * Set up error string but let us clear it later
+				 * if at least one open succeeded.
+				 */
+				if (usalp->errstr)
+					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+							"Cannot open '%s'", devname);
+				if(errno == EACCES || errno==EPERM)
+					continue;
+				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
+					if (usalp->errstr)
+						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+								"Cannot open '%s'", devname);
+					return (0);
+				}
+			} else {
+				sg_clearnblock(f);	/* Be very proper about this */
+				if (sg_setup(usalp, f, busno, tgt, tlun, -1))
+					return (++nopen);
+				if (busno < 0 && tgt < 0 && tlun < 0)
+					nopen++;
+			}
+		}
+	}
+	if (nopen > 0 && usalp->errstr)
+		usalp->errstr[0] = '\0';
+
+	if (nopen == 0) { /* don't do it if sr driver is workin */
+		for (i = 0; i < 32; i++) {
 			snprintf(devname, sizeof (devname), "/dev/sg%d", i);
-			map_sg_to_block(devname, sizeof(devname));
 			/* O_NONBLOCK is dangerous */
 			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK);
 			if (f < 0) {
@@ -542,14 +583,16 @@ openbydev:
 		if (strlen(device) == 8 && strncmp(device, "/dev/hd", 7) == 0) {
 			b = device[7] - 'a';
 			if (b < 0 || b > 25)
-				b = -1;
-		}
+         b = -1;
+    }
     /* O_NONBLOCK is dangerous */
-		if(0==strncmp(device, "/dev/sg", 7)) {
-			strncpy(buf, device, sizeof(buf)-1);
-			map_sg_to_block(buf, sizeof(buf));
-			device=buf;
-		}
+    /* Let the user open what he wants this time, the mapping is sysfs depending anyway and may be unreliable
+       if(0==strncmp(device, "/dev/sg", 7)) {
+       strncpy(buf, device, sizeof(buf)-1);
+       map_sg_to_block(buf, sizeof(buf));
+       device=buf;
+       }
+     * */
 		f = sg_open_excl(device, O_RDWR | O_NONBLOCK);
 /*		if (f < 0 && errno == ENOENT)*/
 /*			goto openpg;*/
@@ -692,6 +735,9 @@ sg_setup(SCSI *usalp, int f, int busno, int tgt, int tlun, int ataidx)
 
 	sg_mapdev(usalp, f, &Bus, &Target, &Lun, &Chan, &Ino, ataidx);
 
+  /*if(usallocal(usalp)) // skip it, already set up
+     return TRUE;
+*/
 	/*
 	 * For old kernels try to make the best guess.
 	 */

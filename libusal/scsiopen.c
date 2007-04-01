@@ -147,6 +147,7 @@ usal_open(char *scsidev, char *errs, int slen, int debug, int be_verbose)
 						"It is recommended to mount sysfs to allow better device configuration\n");
 				sleep(5);
 			}
+      /* some bitching about old style, ATA:b,t,l warning was displayed already. */
 			if(sscanf(scsidev, "%d,%d,%d", &tmp, &tmp, &tmp)>1) {
 				fprintf(stderr, "\nWarning, the deprecated pseudo SCSI syntax found as device specification.\n"
 						"Support for that may cease in the future versions of wodim. For now,\n"
