@@ -1,3 +1,15 @@
+cdrkit (1.1.4) RELEASED; urgency=low
+
+  [ Eduard Bloch ]
+  * On Linux, do device scanning on /dev/sr first and fallback to /dev/sg and
+    others only then, thus having better chances to use the same exclusive
+    lock as other programs when the user provided only the b/t/l
+    device specification, since the Linux kernel is not able to coordinate the
+    locking between the userspace interfaces
+  * some more warnings about b/t/l syntax deprecation
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 01 Apr 2007 18:27:31 +0200
+
 cdrkit (1.1.3) RELEASED; urgency=medium
 
   [ Eduard Bloch ]

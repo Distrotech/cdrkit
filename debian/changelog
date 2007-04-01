@@ -1,3 +1,13 @@
+cdrkit (9:1.1.4-1) unstable; urgency=low
+
+  * New upstream release
+    + picking /dev/sr* devices rather then /dev/sg*, making the additional sg
+      driver loading unneccesary when the b/t/l syntax is used, and sharing
+      the access controls with other programs acting on the block device
+      (closes: #413960)
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 01 Apr 2007 18:32:57 +0200
+
 cdrkit (9:1.1.3-1) unstable; urgency=medium
 
   * New upstream version with important bugfixes
