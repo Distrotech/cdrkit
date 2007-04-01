@@ -6,9 +6,11 @@ cdrkit (1.1.4) RELEASED; urgency=low
     lock as other programs when the user provided only the b/t/l
     device specification, since the Linux kernel is not able to coordinate the
     locking between the userspace interfaces
+  * some refactoring, moved new Linux specific extensions to scsi-linux-sg.c,
+    more relaxed device opening checks on scanning
   * some more warnings about b/t/l syntax deprecation
 
- -- Eduard Bloch <blade@debian.org>  Sun, 01 Apr 2007 18:27:31 +0200
+ -- Eduard Bloch <blade@debian.org>  Sun, 01 Apr 2007 21:49:03 +0200
 
 cdrkit (1.1.3) RELEASED; urgency=medium
 
