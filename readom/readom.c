@@ -203,7 +203,7 @@ BOOL	is_dvd;
 BOOL	do_write;
 BOOL	c2scan;
 BOOL	fulltoc;
-BOOL	clone;
+BOOL	clonemode;
 BOOL	noerror;
 BOOL	nocorr;
 BOOL	notrunc;
@@ -300,7 +300,7 @@ main(int argc, char *argv[])
 			&help, &help, &pversion,
 			&scanbus, &dev, &sectors, &do_write,
 			&c2scan,
-			&fulltoc, &clone,
+			&fulltoc, &clonemode,
 			&noerror, &nocorr,
 			&notrunc, &retries, &do_factor, &filename,
 			&speed, getnum, &Sbufsize,
@@ -535,7 +535,7 @@ main(int argc, char *argv[])
 			comerrno(EX_BAD, "Not root. Will only work on CD-ROM in suid/priv mode\n");
 	}
 
-	if (filename || sectors || c2scan || meshpoints || fulltoc || clone) {
+	if (filename || sectors || c2scan || meshpoints || fulltoc || clonemode) {
 		dorw(usalp, filename, sectors);
 	} else {
 		doit(usalp);
@@ -687,7 +687,7 @@ dorw(SCSI *usalp, char *filename, char *sectors)
 		if (params.name == NULL)
 			params.name = "/dev/null";
 		read_ftoc(usalp, &params, FALSE);
-	} else if (clone) {
+	} else if (clonemode) {
 		if (!is_mmc(usalp, NULL, NULL))
 			comerrno(EX_BAD, "Unsupported device for clone mode.\n");
 		noerror = TRUE;
