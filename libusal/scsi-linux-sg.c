@@ -248,7 +248,12 @@ int    sg_open_excl(char *device, int mode, BOOL beQuiet);
 
 static BOOL get_max_secs(char *dirpath, int *outval);
 
-static BOOL check_linux_26();
+
+BOOL check_linux_26() {
+	int gen, tmp;
+	struct utsname buf;
+	return ( 0==uname( &buf ) && sscanf(buf.release, "%d.%d", &gen, &tmp)>1 && tmp>=6);
+}
 
 int sg_open_excl(char *device, int mode, BOOL beQuiet)
 {
@@ -1836,10 +1841,4 @@ sg_rwsend(SCSI *usalp)
 	if (sp->timeout != usalp->deftimeout)
 		sg_settimeout(f, usalp->deftimeout);
 	return (0);
-}
-
-static BOOL check_linux_26() {
-	int gen, tmp;
-	struct utsname buf;
-	return ( 0==uname( &buf ) && sscanf(buf.release, "%d.%d", &gen, &tmp)>1 && tmp>=6);
 }

@@ -61,6 +61,8 @@ int	select_target(SCSI *usalp, FILE *f);
 static	int	select_unit(SCSI *usalp, FILE *f);
 #endif
 
+extern BOOL check_linux_26();
+
 static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 	fprintf(f, "'%.8s' ", ip->vendor_info);
 	fprintf(f, "'%.16s' ", ip->prod_ident);
@@ -71,7 +73,7 @@ static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 	usal_fprintdev(f, ip);
 }
 
-#define MAXDEVCOUNT (256+26+256)
+#define MAXDEVCOUNT (256+26)
 
 int scan_devices() {
 	struct stat statbuf;
@@ -80,16 +82,15 @@ int scan_devices() {
 	SCSI *usalp;
 	int i, ndevs=0;
 	BOOL have_tgt;
-
 #ifdef linux
+	char type=check_linux_26() ? 'r' : 'g';
 	fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
+
 	for(i=0;i<MAXDEVCOUNT;i++) {
 		if(i<26)
 			snprintf(devname, sizeof (devname), "/dev/hd%c", 'a'+i);
 		else if(i<(256+26))
-			snprintf(devname, sizeof (devname), "/dev/sr%d", i-26);
-		else if(i<(256+26+256))
-			snprintf(devname, sizeof (devname), "/dev/sg%d", i-26-256);
+			snprintf(devname, sizeof (devname), "/dev/s%c%d", type, i-26);
 		else
 			break;
 

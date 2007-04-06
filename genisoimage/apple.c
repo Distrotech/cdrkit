@@ -62,7 +62,7 @@
 magic_t magic_state = NULL;
 #ifndef MAGIC_ERROR
 /* workaround for older ´API */
-#define MAGIC_ERROR
+#define MAGIC_ERROR 0
 #endif
 #endif /* USE_MAGIC */
 
