@@ -1,3 +1,10 @@
+cdrkit (1.1.5) RELEASED; urgency=low
+
+  * Let --devices use sr on kernel 2.6 and sg on kernel 2.4
+  * forced MAGIC_ERROR definition for older version, thanks to T. Schmidt
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 06 Apr 2007 16:22:49 +0200
+
 cdrkit (1.1.4) RELEASED; urgency=low
 
   [ Eduard Bloch ]
