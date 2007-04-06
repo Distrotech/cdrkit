@@ -83,16 +83,14 @@ int scan_devices() {
 	int i, ndevs=0;
 	BOOL have_tgt;
 #ifdef linux
-	char type=check_linux_26() ? 'r' : 'g';
+	const char *srdev = check_linux_26() ? "/dev/scd" : "/dev/sg";
 	fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
 
 	for(i=0;i<MAXDEVCOUNT;i++) {
 		if(i<26)
 			snprintf(devname, sizeof (devname), "/dev/hd%c", 'a'+i);
-		else if(i<(256+26))
-			snprintf(devname, sizeof (devname), "/dev/s%c%d", type, i-26);
 		else
-			break;
+			snprintf(devname, sizeof (devname), "%s%d", srdev, i-26);
 
 		if(stat(devname, &statbuf))
 			continue;
