@@ -279,7 +279,7 @@ static int InitSCSIPT(SCSI *usalp) {
 					sptihamax++;
 				}
 
-				/* shortcut for device names */
+				/* shortcut for device names, remember the hit */
 				if(uDriveType==DRIVE_CDROM && usalp->device && ('A'+i)==toupper(usalp->device[0]))
 					explicite_number=i;
 			}

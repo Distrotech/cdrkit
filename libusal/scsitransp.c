@@ -1153,7 +1153,7 @@ usal_sense_table(SCSI *usalp)
 	if(!usal_cmd_err(usalp))
 		return (0);
 
-	if (cp->sense.code >= 0x70)
+	/* if (cp->sense.code >= 0x70) */
 	return (char *) &(cp->sense);
 }
 

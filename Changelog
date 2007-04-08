@@ -2,6 +2,8 @@ cdrkit (1.1.5) RELEASED; urgency=low
 
   * Let --devices use sr on kernel 2.6 and sg on kernel 2.4
   * forced MAGIC_ERROR definition for older version, thanks to T. Schmidt
+  * always return a value in usal_sense_table(...), from a patch from
+    SUSE (cdrkit-dvd-fix.patch)
 
  -- Eduard Bloch <blade@debian.org>  Fri, 06 Apr 2007 16:22:49 +0200
 
