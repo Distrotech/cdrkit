@@ -189,7 +189,8 @@ struct timeval	wstarttime;
 struct timeval	stoptime;
 struct timeval	fixtime;
 
-static	long	fs = -1L;	/* fifo (ring buffer) size */
+static	long	fs = -1;	/* fifo (ring buffer) size */
+static Llong warn_minisize = -1L;
 
 static	int	gracewait(cdr_t *dp, BOOL *didgracep);
 static	void	cdrstats(cdr_t *dp);
@@ -346,7 +347,7 @@ int main(int argc, char *argv[])
 		 * Solaris (USCSI only) regardless of the permissions for
 		 * opening files
 		 *
-		 * XXX The folowing test used to be
+		 * XXX The following test used to be
 		 * XXX #if defined(HAVE_MLOCKALL) || defined(_POSIX_MEMLOCK)
 		 * XXX but the definition for _POSIX_MEMLOCK did change during
 		 * XXX the last 8 years and the autoconf test is better for
@@ -1445,6 +1446,12 @@ gracewait(cdr_t *dp, BOOL *didgracep)
 	if (didgracep)
 		didgrace = *didgracep;
 
+	if(warn_minisize>=0) {
+		fprintf(stderr,  "\nWARNING: found a microscopic small track size (%lld bytes).\n"
+				"         Do you really want to write this image? Press Ctrl-C to abort...\n\n",
+				warn_minisize);
+		gracetime+=20;
+	}
 	if (gracetime < MIN_GRACE_TIME)
 		gracetime = MIN_GRACE_TIME;
 	if (gracetime > 999)
@@ -1460,7 +1467,7 @@ gracewait(cdr_t *dp, BOOL *didgracep)
 		printf("No chance to quit anymore.");
 		goto grace_done;
 	}
-	printf("Last chance to quit, starting %s write in %d seconds.",
+	printf("Last chance to quit, starting %s write in  %d seconds.",
 		(dp->cdr_cmdflags & F_DUMMY)?"dummy":"real", gracetime);
 	flush();
 	signal(SIGINT, intr);
@@ -3628,8 +3635,11 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 		trackp[tracks].itracksize = tracksize;
 		trackp[tracks].tracksize = tracksize;
 		trackp[tracks].tracksecs = -1L;
-		if (tracksize >= 0)
+		if (tracksize >= 0) {
 			trackp[tracks].tracksecs = (tracksize+secsize-1)/secsize;
+			if(tracksize<616448)
+				warn_minisize=tracksize;
+		}
 		if (trackp[tracks].pregapsize < 0)
 			trackp[tracks].pregapsize = pregapsize;
 		trackp[tracks+1].pregapsize = -1;
