@@ -89,6 +89,8 @@ static	char	_usal_itrans_version[] = "SPTI-scsi-wnt.c-1.45";	/* The version for 
 
 struct usal_local {
 	int	dummy;
+	char *filenames[MAX_SCG][MAX_TGT][MAX_LUN];
+	char drive_wanted;
 };
 #define	usallocal(p)	((struct usal_local *)((p)->local))
 
@@ -209,7 +211,7 @@ static int InitSCSIPT(SCSI *usalp) {
 	char	InquiryBuffer[2048];
 	PSCSI_ADAPTER_BUS_INFO	ai;
 	BYTE	bus;
-	int explicite_number=-1;
+	int	id_wanted=-1;
 
 	if (bSCSIPTInit)
 		return (0);
@@ -280,8 +282,12 @@ static int InitSCSIPT(SCSI *usalp) {
 				}
 
 				/* shortcut for device names, remember the hit */
-				if(uDriveType==DRIVE_CDROM && usalp->device && ('A'+i)==toupper(usalp->device[0]))
-					explicite_number=i;
+				if(uDriveType==DRIVE_CDROM && usalp->local) {
+					/* printf("seen, %d at %d, %d, %d\n", sptiglobal.drive[i].driveLetter, sptiglobal.drive[i].ha, sptiglobal.drive[i].tgt, sptiglobal.drive[i].lun); */
+				       if(usallocal(usalp)->drive_wanted && *buf==toupper(usallocal(usalp)->drive_wanted))
+					       id_wanted=i;
+				       /* don't keep the names, serial search in _natname is sufficient */
+				}
 			}
 		}
 	}
@@ -302,17 +308,16 @@ static int InitSCSIPT(SCSI *usalp) {
 	sptiglobal.numAdapters = SPTIGetNumAdapters();
 
 	bSCSIPTInit = TRUE;
-	if(explicite_number>0) {
-		usal_scsibus(usalp)=sptiglobal.drive[explicite_number].ha;
-		usal_target(usalp) =sptiglobal.drive[explicite_number].tgt;
-		usal_lun(usalp)    =sptiglobal.drive[explicite_number].lun;
-		/* now unset it to avoid further confusion */
-		usalp->device[0]='\0';
+	if(id_wanted>0) {
+		usal_scsibus(usalp)=sptiglobal.drive[id_wanted].ha;
+		usal_target(usalp) =sptiglobal.drive[id_wanted].tgt;
+		usal_lun(usalp)    =sptiglobal.drive[id_wanted].lun;
 
+		//#if 1
 		#ifdef _DEBUG_SCSIPT
 		fprintf(stderr, "named SCSIPT drive type %d found as %c, choosing %d, %d, %d\n", 
 				uDriveType,
-				'A'+explicite_number, 
+				'A'+id_wanted, 
 				usal_scsibus(usalp), 
 				usal_target(usalp), 
 				usal_lun(usalp));
@@ -835,7 +840,13 @@ usalo_open(SCSI *usalp, char *device)
 	int	tgt	= usal_target(usalp);
 	int	tlun	= usal_lun(usalp);
 
-	usalp->device = NULL;
+	/*usal_local(usalp)->drive_wanted = NULL;
+	for(i=0;i<MAX_SCG*MAX_TGT*MAX_LUN;i++)
+		usallocal(usalp)->filenames[i]=NULL;
+		*/
+	usalp->local = calloc(1, sizeof (struct usal_local));
+	if (usalp->local == NULL)
+		return (0);
 
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
@@ -846,9 +857,11 @@ usalo_open(SCSI *usalp, char *device)
 		return (-1);
 	}
 
+	/* Explicite choice of Schilling syntax */
 	if (device != NULL && (strcmp(device, "SPTI") == 0 || strcmp(device, "ASPI") == 0))
 		goto devok;
 
+	/* use device as drive letter */
 	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2)) {
 /*
 		errno = EINVAL;
@@ -859,7 +872,7 @@ usalo_open(SCSI *usalp, char *device)
 */
 
 		UsingSPTI = TRUE;
-		usalp->device = device;
+		usallocal(usalp)->drive_wanted = *device;
 
 		/* not the finest solution but prevents breaking on various
 		 * places for no good reasons... */
@@ -918,11 +931,6 @@ devok:
 	}
 
 openbydev:
-	if (usalp->local == NULL) {
-		usalp->local = malloc(sizeof (struct usal_local));
-		if (usalp->local == NULL)
-			return (0);
-	}
 	/*
 	 * Try to open ASPI-Router
 	 */
@@ -951,7 +959,21 @@ openbydev:
 static int
 usalo_close(SCSI *usalp)
 {
+	int i;
+	/*
+	for(i=0;i<MAX_SCG*MAX_TGT*MAX_LUN;i++) {
+		if(usallocal(usalp)->filenames[i]) {
+			free(usallocal(usalp)->filenames[i]);
+			usallocal(usalp)->filenames[i]=NULL;
+		}
+	}
+	*/
+	if(usalp->local) {
+	       free(usalp->local);
+	       usalp->local=NULL;
+	}
 	//printf("closing\n");
+
 	exit_func();
 	return (0);
 }
@@ -1802,3 +1824,25 @@ scsiabort(SCSI *usalp, SRB_ExecSCSICmd *sp)
 	 */
 	return (TRUE);
 }
+
+
+#define HAVE_NAT_NAMES
+static char * usalo_natname(SCSI *usalp, int busno, int tgt, int tlun) {
+	int i;
+	static char name[3];
+	printf("hm, %d, %d, %d\n", busno, tgt, tlun);
+	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN)
+		return "BADID";
+	for (i = NUM_FLOPPY_DRIVES; i < NUM_MAX_NTSCSI_DRIVES; i++) {
+		if(sptiglobal.drive[i].bUsed &&
+				tlun == sptiglobal.drive[i].lun &&
+				tgt == sptiglobal.drive[i].tgt && 
+				busno == sptiglobal.drive[i].ha)
+		{
+			snprintf(name, 3, "%c:", 'A'+sptiglobal.drive[i].driveLetter);
+			return name;
+		}
+	}
+	return "BADID";
+}
+

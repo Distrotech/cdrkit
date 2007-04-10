@@ -56,7 +56,6 @@ struct usal_scsi {
 	usal_ops_t *ops;		/* Ptr to low level SCSI transport ops	*/
 	int	fd;		/* File descriptor for next I/O		*/
 	usal_addr_t	addr;	/* SCSI address for next I/O		*/
-	char	*device;	/* plain text device name, optional	*/
 	int	flags;		/* Libusal flags (see below)		*/
 	int	dflags;		/* Drive specific flags (see below)	*/
 	int	kdebug;		/* Kernel debug value for next I/O	*/
