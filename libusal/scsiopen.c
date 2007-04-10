@@ -378,6 +378,14 @@ usal_close(SCSI *usalp)
 	return (0);
 }
 
+char * usal_natname(SCSI *usalp, int busno, int tgt, int tlun) {
+	return usalp->ops->usalo_natname(usalp, busno, tgt, tlun);
+}
+
+int usal_fileno(SCSI *usalp, int busno, int tgt, int tlun) {
+	return usalp->ops->usalo_fileno(usalp, busno, tgt, tlun);
+}
+
 void
 usal_settimeout(SCSI *usalp, int timeout)
 {

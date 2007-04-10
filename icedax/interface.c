@@ -613,7 +613,7 @@ static int OpenCdRom(char *pdev_name)
 	}
 
 	if (global.scandevs) {
-		scan_devices();
+		list_devices(stdout);
 		exit(0);
 	}
 

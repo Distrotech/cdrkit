@@ -57,9 +57,6 @@
 
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
 int	select_target(SCSI *usalp, FILE *f);
-#ifdef DEAD_CODE
-static	int	select_unit(SCSI *usalp, FILE *f);
-#endif
 
 extern BOOL check_linux_26();
 
@@ -75,133 +72,110 @@ static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 
 #define MAXDEVCOUNT (256+26)
 
-int scan_devices() {
-	struct stat statbuf;
+# warning Check windows SPT driver
+
+int list_devices(SCSI *usalp, FILE *f) {
+	int	initiator;
+#ifdef	FMT
+	int	cscsibus = usal_scsibus(usalp);
+	int	ctarget  = usal_target(usalp);
+	int	clun	 = usal_lun(usalp);
+#endif
+	int	n, i;
+	int	low	= -1;
+	int	high	= -1;
+	int	amt	= 0;
+	int	bus;
+	int	tgt;
+	int	lun = 0;
+	BOOL	have_tgt;
+
+	int fd, ndevs=0;
+  	struct stat statbuf;
 	char *lines[MAXDEVCOUNT];
-	char buf[256], devname[256], perms[8];
-	SCSI *usalp;
-	int i, ndevs=0;
-	BOOL have_tgt;
-#ifdef linux
-	const char *srdev = check_linux_26() ? "/dev/scd" : "/dev/sg";
-	fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
+	char buf[256], perms[8], *p;
 
-	for(i=0;i<MAXDEVCOUNT;i++) {
-		if(i<26)
-			snprintf(devname, sizeof (devname), "/dev/hd%c", 'a'+i);
-		else
-			snprintf(devname, sizeof (devname), "%s%d", srdev, i-26);
 
-		if(stat(devname, &statbuf))
+	usalp->silent++;
+
+	/* XXX should be done before opening usal fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n"); */
+
+	for (bus = 0; bus < 1256; bus++) {
+		usal_settarget(usalp, bus, 0, 0);
+
+		if (!usal_havebus(usalp, bus))
 			continue;
 
-		usalp = usal_open(devname, buf, sizeof (buf), 0, 0);
-		if(!usalp) continue;
+		initiator = usal_initiator_id(usalp);
+		//fprintf(f, "scsibus%d:\n", bus);
 
-		usalp->silent++;
-		have_tgt = unit_ready(usalp) || usalp->scmd->error != SCG_FATAL;
+		for (tgt = 0; tgt < 16; tgt++) {
+			n = bus*100 + tgt;
 
-		strcpy(perms,"------");
-		if(statbuf.st_mode&S_IRUSR) perms[0]= 'r';
-		if(statbuf.st_mode&S_IWUSR) perms[1]= 'w';
-		if(statbuf.st_mode&S_IRGRP) perms[2]= 'r';
-		if(statbuf.st_mode&S_IWGRP) perms[3]= 'w';
-		if(statbuf.st_mode&S_IROTH) perms[4]= 'r';
-		if(statbuf.st_mode&S_IWOTH) perms[5]= 'w';
+			usal_settarget(usalp, bus, tgt, lun);
+			have_tgt = unit_ready(usalp) || usalp->scmd->error != SCG_FATAL;
 
-		if(have_tgt) {
-			char *p;
+			if (!have_tgt && tgt > 7) {
+				if (usalp->scmd->ux_errno == EINVAL)
+					break;
+				continue;
+			}
 
+			fd=usal_fileno(usalp, bus, tgt, lun);
+			strcpy(perms,"------");
+			if(fd>=0 && 0==fstat(fd, &statbuf)) {
+				if(statbuf.st_mode&S_IRUSR) perms[0]= 'r';
+				if(statbuf.st_mode&S_IWUSR) perms[1]= 'w';
+				if(statbuf.st_mode&S_IRGRP) perms[2]= 'r';
+				if(statbuf.st_mode&S_IWGRP) perms[3]= 'w';
+				if(statbuf.st_mode&S_IROTH) perms[4]= 'r';
+				if(statbuf.st_mode&S_IWOTH) perms[5]= 'w';
+			}
 			getdev(usalp, FALSE);
-			for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
-				if(isspace((unsigned char)*p))
-					*p='\0';
-				else
-					break;
+			if(usalp->inq->type == INQ_ROMD || usalp->inq->type == INQ_WORM) {
+				char *p;
+				for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
+					if(isspace((unsigned char)*p))
+						*p='\0';
+					else
+						break;
+				}
+				for(p=usalp->inq->prod_ident + 15 ; p >= usalp->inq->prod_ident; p--) {
+					if(isspace((unsigned char)*p))
+						*p='\0';
+					else
+						break;
+				}
+				snprintf(buf, sizeof(buf), "%2d  dev='%s'\t%s : '%.8s' '%.16s'\n", ndevs, usal_natname(usalp, bus, tgt, lun), perms, usalp->inq->vendor_info, usalp->inq->prod_ident);
+				lines[ndevs++]=strdup(buf);
 			}
-			for(p=usalp->inq->prod_ident + 15 ; p >= usalp->inq->prod_ident; p--) {
-				if(isspace((unsigned char)*p))
-					*p='\0';
-				else
-					break;
-			}
-			snprintf(buf, sizeof(buf), "%d    dev='%s'   %s :  '%.8s'  '%.16s'\n", ndevs, devname, perms, usalp->inq->vendor_info, usalp->inq->prod_ident);
-			lines[ndevs++]=strdup(buf);
-			usal_close(usalp);
+
 		}
 	}
+	usalp->silent--;
+
 	fprintf(stdout, "%s: Overview of accessible drives (%d found) :\n"
-			"----------------------------------------------------------------------\n",
+			"-------------------------------------------------------------------------\n",
 			get_progname(), ndevs);
 	for(i=0;i<ndevs;i++) {
 		fprintf(stdout, "%s", lines[i]);
-    free(lines[i]);
-  }
-	fprintf(stdout,	"----------------------------------------------------------------------\n");
-
-	return 0;
-
-#endif
-
-#ifdef __CYGWIN32__
-	fprintf(stderr, "Beginning native device scan. This may take a while if devices are busy...\n");
-	devname[1]='\0';
-	for(i=2;i<26;i++) {
-		devname[0]='A'+i;
-		usalp = usal_open(devname, buf, sizeof (buf), 0, 0);
-		if(!usalp) continue;
-		if('\0' != usalp->device[0]) // must have been consumed by the pickup code!
-		{
-			usal_close(usalp);
-			continue;
-		}
-		usalp->silent++;
-		//usalp->verbose=3;
-		have_tgt = unit_ready(usalp) || usalp->scmd->error != SCG_FATAL;
-
-		strcpy(perms,"------");
-		if(statbuf.st_mode&S_IRUSR) perms[0]= 'r';
-		if(statbuf.st_mode&S_IWUSR) perms[1]= 'w';
-		if(statbuf.st_mode&S_IRGRP) perms[2]= 'r';
-		if(statbuf.st_mode&S_IWGRP) perms[3]= 'w';
-		if(statbuf.st_mode&S_IROTH) perms[4]= 'r';
-		if(statbuf.st_mode&S_IWOTH) perms[5]= 'w';
-
-		if(have_tgt) {
-			char *p;
-
-			getdev(usalp, FALSE);
-			for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
-				if(isspace((unsigned char)*p))
-					*p='\0';
-				else
-					break;
-			}
-			for(p=usalp->inq->prod_ident + 15 ; p >= usalp->inq->prod_ident; p--) {
-				if(isspace((unsigned char)*p))
-					*p='\0';
-				else
-					break;
-			}
-			snprintf(buf, sizeof(buf), "%d    dev='%s'   %s :  '%.8s'  '%.16s'\n", ndevs, devname, perms, usalp->inq->vendor_info, usalp->inq->prod_ident);
-			lines[ndevs++]=strdup(buf);
-			usal_close(usalp);
-		}
+		free(lines[i]);
 	}
-	fprintf(stdout, "%s: Overview of accessible drives (%d found) :\n"
-			"----------------------------------------------------------------------\n",
-			get_progname(), ndevs);
-	for(i=0;i<ndevs;i++)
-		fprintf(stdout, "%s", lines[i]);
-	fprintf(stdout,	"----------------------------------------------------------------------\n");
-
-	return 0;
+	fprintf(stdout,	"-------------------------------------------------------------------------\n");
 
 
+
+	n = -1;
+#ifdef	FMT
+	getint("Select target", &n, low, high);
+	bus = n/100;
+	tgt = n%100;
+	usal_settarget(usalp, bus, tgt, lun);
+	return (select_unit(usalp));
+
+	usal_settarget(usalp, cscsibus, ctarget, clun);
 #endif
-
-    fprintf(stderr, "Native device scanning is not supported on this plattform. Please use -scanbus.\n");
-	return 0;
+	return (amt);
 }
 
 int select_target(SCSI *usalp, FILE *f) {
@@ -222,7 +196,7 @@ int select_target(SCSI *usalp, FILE *f) {
 
 	usalp->silent++;
 
-	for (bus = 0; bus < 256; bus++) {
+	for (bus = 0; bus < 1256; bus++) {
 		usal_settarget(usalp, bus, 0, 0);
 
 		if (!usal_havebus(usalp, bus))

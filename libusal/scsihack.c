@@ -84,6 +84,7 @@ static	void	usalo_freebuf(SCSI *usalp);
 
 static	BOOL	usalo_havebus(SCSI *usalp, int busno);
 static	int	usalo_fileno(SCSI *usalp, int busno, int tgt, int tlun);
+static char * usalo_natname(SCSI *usalp, int busno, int tgt, int tlun);
 static	int	usalo_initiator_id(SCSI *usalp);
 static	int	usalo_isatapi(SCSI *usalp);
 static	int	usalo_reset(SCSI *usalp, int what);
@@ -104,6 +105,7 @@ usal_ops_t usal_std_ops = {
 	usalo_initiator_id,
 	usalo_isatapi,
 	usalo_reset,
+	usalo_natname,
 };
 
 /*#undef sun*/
@@ -317,6 +319,7 @@ usal_ops_t usal_remote_ops = {
 	usalo_dinitiator_id,
 	usalo_disatapi,
 	usalo_dreset,
+  usalo_natname,
 };
 
 usal_ops_t usal_dummy_ops = {
@@ -333,6 +336,7 @@ usal_ops_t usal_dummy_ops = {
 	usalo_dinitiator_id,
 	usalo_disatapi,
 	usalo_dreset,
+  usalo_natname,
 };
 
 /*
@@ -443,6 +447,14 @@ usalo_dfileno(SCSI *usalp, int busno, int tgt, int tlun)
 {
 	return (-1);
 }
+
+#ifndef HAVE_NAT_NAMES /* to be defined in included source if supported */
+static char * usalo_natname(SCSI *usalp, int busno, int tgt, int tlun) {
+   static char namebuf[81];
+   snprintf(namebuf, 80, "%d,%d,%d", usal_scsibus(usalp), usal_target(usalp), usal_lun(usalp));
+   return namebuf;
+}
+#endif
 
 static int
 usalo_dinitiator_id(SCSI *usalp)

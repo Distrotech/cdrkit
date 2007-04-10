@@ -54,9 +54,12 @@ typedef struct usal_ops {
 
 	BOOL	(*usalo_havebus)(SCSI *usalp, int busno);
 	int	(*usalo_fileno)(SCSI *usalp, int busno, int tgt, int tlun);
+
 	int	(*usalo_initiator_id)(SCSI *usalp);
 	int	(*usalo_isatapi)(SCSI *usalp);
 	int	(*usalo_reset)(SCSI *usalp, int what);
+
+	char *	(*usalo_natname)(SCSI *usalp, int busno, int tgt, int tlun);
 } usal_ops_t;
 
 #define	SCGO_SEND(usalp)				(*(usalp)->ops->usalo_send)(usalp)

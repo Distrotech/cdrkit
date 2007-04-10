@@ -402,9 +402,10 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
+  /*
   if (scandevs)
 	  return (scan_devices(usalp, stdout, stderr));
-
+*/
   usalp = usal_open(dev, errstr, sizeof (errstr),
         debug, lverbose);
   if(!usalp)
@@ -510,6 +511,9 @@ int main(int argc, char *argv[])
 	if ((buf = usal_getbuf(usalp, bufsize)) == NULL)
 		comerr("Cannot get SCSI I/O buffer.\n");
 
+  if (scandevs)
+	  return (list_devices(usalp, stdout));
+
 	if ((flags & F_SCANBUS) != 0) {
 		select_target(usalp, stdout);
 		exit(0);
@@ -527,9 +531,9 @@ int main(int argc, char *argv[])
 	/*
 	 * First try to check which type of SCSI device we
 	 * have.
-	 */
 	if (debug || lverbose)
 		printf("atapi: %d\n", usal_isatapi(usalp));
+	 */
 	usalp->silent++;
 	test_unit_ready(usalp);	/* eat up unit attention */
 	usalp->silent--;

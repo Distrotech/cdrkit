@@ -162,7 +162,7 @@ static	char	_usal_trans_version[] = "scsi-linux-sg.c-1.86";	/* The version for t
  * XXX Should add extra space in buscookies and usalfiles for a "PP bus"
  * XXX and for two or more "ATAPI busses".
  */
-#define	MAX_SCG		256	/* Max # of SCSI controllers */
+#define	MAX_SCG		1256	/* Max # of SCSI controllers */
 #define	MAX_TGT		16
 #define	MAX_LUN		8
 
@@ -181,6 +181,7 @@ typedef struct {
 struct usal_local {
 	int	usalfile;		/* Used for SG_GET_BUFSIZE ioctl()*/
 	short	usalfiles[MAX_SCG][MAX_TGT][MAX_LUN];
+  char *filenames[MAX_SCG][MAX_TGT][MAX_LUN];
 	short	buscookies[MAX_SCG];
 	int	pgbus;
 	int	pack_id;		/* Should be a random number	*/
@@ -199,7 +200,6 @@ struct usal_local {
 /*
  * Flag definitions
  */
-#define	LF_ATA		0x01		/* Using /dev/hd* ATA interface	*/
 
 #ifdef	SG_BIG_BUFF
 #define	MAX_DMA_LINUX	SG_BIG_BUFF	/* Defined in include/scsi/sg.h	*/
@@ -234,7 +234,7 @@ static	int	sg_rwsend(SCSI *usalp);
 #endif
 static	void	sg_clearnblock(int f);
 static	BOOL	sg_setup(SCSI *usalp, int f, int busno, int tgt, int tlun, 
-								int ataidx);
+								int ataidx, char *origname);
 static	void	sg_initdev(SCSI *usalp, int f);
 static	int	sg_mapbus(SCSI *usalp, int busno, int ino);
 static	BOOL	sg_mapdev(SCSI *usalp, int f, int *busp, int *tgtp, int *lunp,
@@ -312,6 +312,7 @@ usalo_version(SCSI *usalp, int what)
 {
 	if (usalp != (SCSI *)0) {
 #ifdef	USE_PG
+#error pg-junk
 		/*
 		 * If we only have a Parallel port or only opened a handle
 		 * for PP, just return PP version.
@@ -370,44 +371,23 @@ usalo_help(SCSI *usalp, FILE *f)
 
 #define in_scanmode (busno < 0 && tgt < 0 && tlun < 0)
 
-#if 0
-static int
-usalo_open(SCSI *usalp, char *device)
-{
-	  if(!usalp && dev && strncmp("ATA", dev, 3) ) {
-     char *dalt;
-     int len=5+strlen(dev);
-
-     fprintf(stderr, "Unable to open, trying with ATA: prefix...\n");
-     dalt=calloc(len, sizeof(char));
-     strcat(dalt, "ATA:");
-     strcat(dalt+4, dev);
-     usalp = usal_open(dalt, errstr, sizeof (errstr),
-           debug, lverbose);
-  }
-
-
-}
-#endif
-
 /*
  * b/t/l is chopped of the device string.
  */
 static int
 usalo_open(SCSI *usalp, char *device)
 {
-		int	busno	= usal_scsibus(usalp);
-		int	tgt	= usal_target(usalp);
-		int	tlun	= usal_lun(usalp);
-		register int	f;
-		register int	i;
-		register int	b;
-		register int	t;
-		register int	l;
-		register int	nopen = 0;
-		char		devname[64];
-		BOOL	use_ata = FALSE;
-
+	int	busno	= usal_scsibus(usalp);
+	int	tgt	= usal_target(usalp);
+	int	tlun	= usal_lun(usalp);
+	register int	f;
+	register int	i;
+	register int	b;
+	register int	t;
+	register int	l;
+	register int	nopen = 0;
+	char		devname[64];
+	int fake_atabus=0;
 
 	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN) {
 		errno = EINVAL;
@@ -430,36 +410,45 @@ usalo_open(SCSI *usalp, char *device)
 	}
 
 	if (device != NULL && *device != '\0') {
-		if(check_linux_26()) {
-			if(0==strncmp(device, "ATAPI:", 6))
-			{
-				device+=6;
-				fprintf(stderr, "\nWarning, the ATAPI: method is considered deprecated on modern kernels!\n"
-						"Mapping device specification to dev=%s now.\n"
-						"To force the old ATAPI: method, replace ATAPI: with OLDATAPI:\n", device);
-			}
-			if(0==strncmp(device, "OLDATAPI:", 9))
-				device+=3;
-		}
-
-#ifdef	USE_OLD_ATAPI
-		if (strncmp(device, "ATAPI", 5) == 0) {
+		fake_atabus=0;
+		if(0==strncmp(device, "OLDATAPI", 8)) {
+			device+=3;
 			usalp->ops = &ata_ops;
 			return (SCGO_OPEN(usalp, device));
 		}
-#endif
-		if (strcmp(device, "ATA") == 0) {
-			use_ata = TRUE;
-			device = NULL;
+		else if(0==strncmp(device, "ATAPI", 5)) {
+			if(check_linux_26()) {
+				device+=5;
+				fake_atabus=1;
+				fprintf(stderr, "WARNING: the ATAPI: method is considered deprecated on modern kernels!\n"
+						"Mapping device specification to ATA: method now.\n"
+						"To force the old ATAPI: method, replace ATAPI: with OLDATAPI:\n");
+			}
+			else {
+				usalp->ops = &ata_ops;
+				return (SCGO_OPEN(usalp, device));
+			}
 		}
+		else if(0==strncmp(device, "ATA", 3)) {
+			fprintf(stderr, "WARNING: the ATA: method is considered deprecated on modern kernels!\n"
+					"Use --devices to display the native names.\n");
+			fake_atabus=1;
+			device+=3;
+		}
+		if(device[0]==':')
+			device++;
+
 	}
 	else if( ! in_scanmode ) {
-			fprintf(stderr, "\nWarning, the deprecated pseudo SCSI syntax found as device specification.\n"
+			fprintf(stderr, "WARNING: the deprecated pseudo SCSI syntax found as device specification.\n"
 					"Support for that may cease in the future versions of wodim. For now,\n"
 					"the device will be mapped to a block device file where possible.\n"
 					"Run \"wodim --devices\" for details.\n" );
 			sleep(5);
 	}
+
+#warning fallbacks hier?
+#warning teste ATA: und ATA
 
 	if (usalp->local == NULL) {
 		usalp->local = malloc(sizeof (struct usal_local));
@@ -473,8 +462,6 @@ usalo_open(SCSI *usalp, char *device)
 		usallocal(usalp)->drvers = -1;
 		usallocal(usalp)->isold = -1;
 		usallocal(usalp)->flags = 0;
-		if (use_ata)
-			usallocal(usalp)->flags |= LF_ATA;
 		usallocal(usalp)->xbufsize = 0L;
 		usallocal(usalp)->xbuf = NULL;
 
@@ -483,199 +470,24 @@ usalo_open(SCSI *usalp, char *device)
 			for (t = 0; t < MAX_TGT; t++) {
 				for (l = 0; l < MAX_LUN; l++)
 					usallocal(usalp)->usalfiles[b][t][l] = (short)-1;
+					usallocal(usalp)->filenames[b][t][l] = NULL;
 			}
 		}
 	}
 
-	if (use_ata)
-		goto scanopen;
-
-	if ((device != NULL && *device != '\0') || (busno == -2 && tgt == -2))
-		goto openbydev;
-
-scanopen:
-	if (use_ata) {
-		for (i=2*busno+tgt >= 0 ? 2*busno+tgt:0; i <= 25; i++) {
-			snprintf(devname, sizeof (devname), "/dev/hd%c", i+'a');
-			/* O_NONBLOCK is dangerous */
-			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, in_scanmode);
-			if (f < 0) {
-				/*
-				 * Set up error string but let us clear it later
-				 * if at least one open succeeded.
-				 */
-				if (usalp->errstr)
-					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '%s'", devname);
-				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
-					if (usalp->errstr)
-						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-								"Cannot open '%s'", devname);
-					continue;
-				}
-			} else {
-				int	iparm;
-
-				if (ioctl(f, SG_GET_TIMEOUT, &iparm) < 0) {
-					if (usalp->errstr)
-						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-								"SCSI unsupported with '%s'", devname);
-					close(f);
-					continue;
-				}
-				sg_clearnblock(f);	/* Be very proper about this */
-				if (sg_setup(usalp, f, busno, tgt, tlun, i))
-					return (++nopen);
-				if (in_scanmode)
-					nopen++;
-			}
-		}
-
-		if(nopen==0)
-			return(0);
-	}
-	/*
-	else if(in_scanmode) {
-		fprintf(stderr, "ATAPI devices not scanned.\n"
-				"wodim: HINT : To surely see all drives try option: --devices\n"
-				"wodim: HINT : Or try options:               dev=ATA -scanbus\n"
-		       );
-	}
-	*/
-
-	if (nopen > 0 && usalp->errstr)
-		usalp->errstr[0] = '\0';
-
-	if(nopen == 0 && check_linux_26())
+	if (device != NULL && *device != '\0')
 	{
-		for (i = 0; i < 32; i++) {
-			snprintf(devname, sizeof (devname), "/dev/sr%d", i);
-			/* O_NONBLOCK is dangerous */
-			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, in_scanmode);
-			if (f < 0) {
-				/*
-				 * Set up error string but let us clear it later
-				 * if at least one open succeeded.
-				 */
-				if (usalp->errstr)
-					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '%s'", devname);
-				/*
-				 * Stop this paranoia, continue scanning.
-				if(errno == EACCES || errno==EPERM || errno == EBUSY)
-					continue;
-				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
-					if (usalp->errstr)
-						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-								"Cannot open '%s'", devname);
-					return (0);
-				}
-				*/
-			} else {
-				sg_clearnblock(f);	/* Be very proper about this */
-				if (sg_setup(usalp, f, busno, tgt, tlun, -1))
-					return (++nopen);
-				if (in_scanmode)
-					nopen++;
-			}
-		}
-	}
-	if (nopen > 0 && usalp->errstr)
-		usalp->errstr[0] = '\0';
-
-	if (nopen == 0) { /* don't do it if sr driver is working */
-		for (i = 0; i < 32; i++) {
-			snprintf(devname, sizeof (devname), "/dev/sg%d", i);
-			/* O_NONBLOCK is dangerous */
-			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, in_scanmode);
-			if (f < 0) {
-				/*
-				 * Set up error string but let us clear it later
-				 * if at least one open succeeded.
-				 */
-				if (usalp->errstr)
-					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '%s'", devname);
-				/*
-				 * Stop this paranoia, continue scanning.
-				if(errno == EACCES || errno==EPERM || errno==EBUSY)
-					continue;
-				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
-					if (usalp->errstr)
-						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-								"Cannot open '%s'", devname);
-					return (0);
-				}
-				*/
-			} else {
-				sg_clearnblock(f);	/* Be very proper about this */
-				if (sg_setup(usalp, f, busno, tgt, tlun, -1))
-					return (++nopen);
-				if (in_scanmode)
-					nopen++;
-			}
-		}
-	}
-	if (nopen > 0 && usalp->errstr)
-		usalp->errstr[0] = '\0';
-
-	if (nopen == 0) {
-		for (i = 0; i <= 25; i++) {
-			snprintf(devname, sizeof (devname), "/dev/sg%c", i+'a');
-			/* O_NONBLOCK is dangerous */
-			f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, in_scanmode);
-			if (f < 0) {
-				/*
-				 * Set up error string but let us clear it later
-				 * if at least one open succeeded.
-				 */
-				if (usalp->errstr)
-					snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-							"Cannot open '%s'", devname);
-				/*
-				 * Stop this paranoia, continue scanning.
-				if(errno == EACCES || errno==EPERM || errno=EBUSY)
-					continue;
-				if (errno != ENOENT && errno != ENXIO && errno != ENODEV) {
-					if (usalp->errstr)
-						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-								"Cannot open '%s'", devname);
-					return (0);
-				}
-				*/
-			} else {
-				sg_clearnblock(f);	/* Be very proper about this */
-				if (sg_setup(usalp, f, busno, tgt, tlun, -1))
-					return (++nopen);
-				if (in_scanmode)
-					nopen++;
-			}
-		}
-	}
-	if (nopen > 0 && usalp->errstr)
-		usalp->errstr[0] = '\0';
-
-openbydev:
-
-	if (device != NULL && *device != '\0') {
+		/* open ONE directly */
 		b = -1;
-		char buf[100];
-		if (strlen(device) == 8 && strncmp(device, "/dev/hd", 7) == 0) {
+		if (device && strncmp(device, "/dev/hd", 7) == 0 && device[8]=='\0') {
 			b = device[7] - 'a';
 			if (b < 0 || b > 25)
-         b = -1;
-    }
-    /* O_NONBLOCK is dangerous */
-    /* Let the user open what he wants this time, the mapping is sysfs depending anyway and may be unreliable
-       if(0==strncmp(device, "/dev/sg", 7)) {
-       strncpy(buf, device, sizeof(buf)-1);
-       map_sg_to_block(buf, sizeof(buf));
-       device=buf;
-       }
-     * */
+				b = -1;
+		}
+		if(b>=0 && fake_atabus)
+			b+=1000;
+
 		f = sg_open_excl(device, O_RDWR | O_NONBLOCK, FALSE);
-/*		if (f < 0 && errno == ENOENT)*/
-/*			goto openpg;*/
 
 		if (f < 0) {
 			/*
@@ -685,37 +497,116 @@ openbydev:
 			 */
 			if (usalp->errstr)
 				snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
-					"Cannot open '%s'",
-					device);
+						"Cannot open '%s'",
+						device);
 			return (0);
 		}
-
-		sg_clearnblock(f);		/* Be very proper about this */
-		if (!sg_mapdev(usalp, f, &busno, &tgt, &tlun, 0, 0, b)) {
-			close(f);
-			/*
-			 * If sg_mapdev() failes, this may be /dev/pg* device.
-			 */
-			goto openpg;
-		}
-
-#ifdef	OOO
-		if (usal_scsibus(usalp) < 0)
-			usal_scsibus(usalp) = busno;
-		if (usal_target(usalp) < 0)
-			usal_target(usalp) = tgt;
-		if (usal_lun(usalp) < 0)
-			usal_lun(usalp) = tlun;
-#endif
-
+		sg_clearnblock(f);
+		/* get some fake SCSI data */
+		sg_mapdev(usalp, f, &busno, &tgt, &tlun, 0, 0, b);
 		usal_settarget(usalp, busno, tgt, tlun);
-		if (sg_setup(usalp, f, busno, tgt, tlun, b))
+		if (sg_setup(usalp, f, busno, tgt, tlun, b, device))
 			return (++nopen);
 	}
-openpg:
-#ifdef	USE_PG
-	nopen += pg_open(usalp, device);
+	else {
+		/* scan and maybe keep one open, sg_setup decides */
+#define HDX 0
+#define SCD 1
+#define SG 2
+		int h;
+retry_scan_open:
+		for(h=HDX; h <= (fake_atabus ? HDX : SG) ; h++) {
+			char *pattern;
+			unsigned int first, last;
+			switch(h) {
+				case(HDX): 
+					{
+						pattern="/dev/hd%c";
+						first='a';
+						last='z';
+						break;
+					}
+				case(SCD):
+					{
+						if(!check_linux_26())
+							continue;
+						pattern="/dev/scd%d";
+						first=0;
+						last=255;
+						break;
+					}
+				case(SG):
+					{
+						if(check_linux_26())
+							continue; 
+#if 0
+						/*
+						 * Don't touch it on 2.6 until we have a proper locking scheme
+						 */
+							if(nopen<=0)
+								fprintf(stderr, "Warning, using /dev/sg* for SG_IO operation. This method is considered harmful.\n");
+							else if(found_scd)
+								continue;
 #endif
+						pattern="/dev/sg%d";
+						first=0;
+						last=255;
+						break;
+					}
+			}
+			for(i=first; i<=last; i++) {
+				snprintf(devname, sizeof (devname), pattern, i);
+				f = sg_open_excl(devname, O_RDWR | O_NONBLOCK, in_scanmode);
+				if (f < 0) {
+					if (usalp->errstr)
+						snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+								"Cannot open '%s'", devname);
+				} else {
+					if(h == HDX) { // double-check the capabilities on ATAPI devices
+						int	iparm;
+
+						if (ioctl(f, SG_GET_TIMEOUT, &iparm) < 0) {
+							if (usalp->errstr)
+								snprintf(usalp->errstr, SCSI_ERRSTR_SIZE,
+										"SCSI unsupported with '%s'", devname);
+							close(f);
+							continue;
+						}
+					}
+					sg_clearnblock(f);	/* Be very proper about this */
+					
+					/* construct the fake bus number hint, keep it readable */
+					b=-1;
+					if(h==HDX) {
+						b=i-'a';
+						if(!fake_atabus)
+							b+=1000;
+					}
+
+					/* sg_setup returns false in scan mode, true if one single target was specified and opened */
+					if (sg_setup(usalp, f, busno, tgt, tlun, b, devname))
+						return (++nopen);
+
+					if (in_scanmode)
+						nopen++;
+				}
+			}
+
+			if (nopen > 0 && usalp->errstr)
+				usalp->errstr[0] = '\0';
+
+			/* that's crap, should not be reached in non-scan mode.
+			 * Let's see whether it can be mapped to an atapi
+			 * device to emulate some old cludge's behaviour. */
+			if(!in_scanmode && busno < 1000 && busno >=0) {
+				fake_atabus=1;
+				fprintf(stderr, "Unable to open this SCSI ID. Trying to map to old ATA syntax."
+						"This workaround will disappear in the near future. Fix your configuration.");
+				goto retry_scan_open;
+			}
+		}
+	}
+
 	if (usalp->debug > 0) for (b = 0; b < MAX_SCG; b++) {
 		fprintf((FILE *)usalp->errfile,
 			"Bus: %d cookie: %X\n",
@@ -729,11 +620,6 @@ openpg:
 				}
 			}
 		}
-	}
-	if(nopen==0 && !use_ata) {
-		use_ata=TRUE;
-		fprintf(stderr, "Unable to open, trying with ATA: prefix...\n");
-		goto scanopen;
 	}
 
 	return (nopen);
@@ -760,6 +646,10 @@ usalo_close(SCSI *usalp)
 				if (f >= 0)
 					close(f);
 				usallocal(usalp)->usalfiles[b][t][l] = (short)-1;
+				if(usallocal(usalp)->filenames[b][t][l]) {
+					free(usallocal(usalp)->filenames[b][t][l]);
+					usallocal(usalp)->filenames[b][t][l]=NULL;
+				}
 			}
 		}
 	}
@@ -794,11 +684,11 @@ sg_clearnblock(int f)
 
 /*!
  *
- * Return: TRUE when single target is chosen and was opened successfully, FALSE otherwise
+ * Return: TRUE when single target is chosen and was opened successfully, FALSE otherwise (on scans, etc).
  */
 
 static BOOL
-sg_setup(SCSI *usalp, int f, int busno, int tgt, int tlun, int ataidx)
+sg_setup(SCSI *usalp, int f, int busno, int tgt, int tlun, int ataidx, char *origname)
 {
 	int	n;
 	int	Chan;
@@ -845,6 +735,9 @@ sg_setup(SCSI *usalp, int f, int busno, int tgt, int tlun, int ataidx)
 
 	if (usallocal(usalp)->usalfiles[Bus][Target][Lun] == (short)-1)
 		usallocal(usalp)->usalfiles[Bus][Target][Lun] = (short)f;
+
+	if (usallocal(usalp)->filenames[Bus][Target][Lun] == NULL)
+		usallocal(usalp)->filenames[Bus][Target][Lun] = strdup(origname);
 
 	if (onetarget) {
 		if (Bus == busno && Target == tgt && Lun == tlun) {
@@ -939,8 +832,10 @@ sg_mapbus(SCSI *usalp, int busno, int ino)
 			usallocal(usalp)->buscookies[busno] = ino;
 			return (busno);
 		}
-		if (usallocal(usalp)->buscookies[busno] != (short)ino)
+		/*
+		 * if (usallocal(usalp)->buscookies[busno] != (short)ino)
 			errmsgno(EX_BAD, "Warning Linux Bus mapping botch.\n");
+			*/
 		return (busno);
 
 	} else for (i = 0; i < MAX_SCG; i++) {
@@ -974,8 +869,8 @@ sg_mapdev(SCSI *usalp, int f, int *busp, int *tgtp, int *lunp, int *chanp,
 		 * The badly designed /dev/hd* interface maps everything
 		 * to 0,0,0 so we need to do the mapping ourselves.
 		 */
-		*busp = ataidx / 2;
-		*tgtp = ataidx % 2;
+		*busp = (ataidx/1000) * 1000;
+		*tgtp = ataidx%1000;
 		*lunp = 0;
 		if (chanp)
 			*chanp = 0;
@@ -1262,6 +1157,12 @@ usalo_initiator_id(SCSI *usalp)
 static int
 usalo_isatapi(SCSI *usalp)
 {
+	return -1;
+#if 0
+	/*
+	 * Who exactly needs this information? Just for some bitching in wodim?
+	 * Is this an _abstraction_ layer or spam layer?
+	 */
 #ifdef	USE_PG
 	if (usal_scsibus(usalp) == usallocal(usalp)->pgbus)
 		return (pg_isatapi(usalp));
@@ -1288,6 +1189,7 @@ usalo_isatapi(SCSI *usalp)
 	}
 #endif
 	return (-1);
+#endif
 }
 
 static int
@@ -1841,4 +1743,11 @@ sg_rwsend(SCSI *usalp)
 	if (sp->timeout != usalp->deftimeout)
 		sg_settimeout(f, usalp->deftimeout);
 	return (0);
+};
+
+#define HAVE_NAT_NAMES
+static char * usalo_natname(SCSI *usalp, int busno, int tgt, int tlun) {
+	if (busno >= MAX_SCG || tgt >= MAX_TGT || tlun >= MAX_LUN)
+		return "BADID";
+	return usallocal(usalp)->filenames[busno][tgt][tlun];
 }
