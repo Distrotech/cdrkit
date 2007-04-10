@@ -1,12 +1,17 @@
 cdrkit (1.1.5) RELEASED; urgency=low
 
-  * Let --devices use sr on kernel 2.6 and sg on kernel 2.4
   * forced MAGIC_ERROR definition for older version, thanks to T. Schmidt
   * always return a value in usal_sense_table(...), from a patch from
     SUSE (cdrkit-dvd-fix.patch)
   * explicite warning and more grace time if user specifies a size less than
     301 sectors, which is likely to be a mistake from copy-pasting of
     mkisofs/genisoimage -print-size output
+  * Native device name management directly in libusal, -scandev method uses it
+    directly now. If the backend driver does not implement it, the old-style
+    IDs are returned.
+  * ATA is now mapped directly into the b/t/l namespace, with some workarounds
+    to provide backward compatibility
+  * For SCSI devices, use only scd* on kernel 2.6 and sg* on kernel 2.4
 
  -- Eduard Bloch <blade@debian.org>  Fri, 06 Apr 2007 16:22:49 +0200
 
