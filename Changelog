@@ -1,4 +1,4 @@
-cdrkit (1.1.5) RELEASED; urgency=low
+cdrkit (1.1.5) UNRELEASED; urgency=low
 
   * forced MAGIC_ERROR definition for older version, thanks to T. Schmidt
   * always return a value in usal_sense_table(...), from a patch from
@@ -11,7 +11,9 @@ cdrkit (1.1.5) RELEASED; urgency=low
     IDs are returned.
   * ATA is now mapped directly into the b/t/l namespace, with some workarounds
     to provide backward compatibility
-  * For SCSI devices, use only scd* on kernel 2.6 and sg* on kernel 2.4
+  * For SCSI devices, use only scd* on kernel 2.6 and sg* on kernel 2.4 until
+    proper locking scheme is established
+  * customized the default APPID string in genisoimage
 
  -- Eduard Bloch <blade@debian.org>  Fri, 06 Apr 2007 16:22:49 +0200
 

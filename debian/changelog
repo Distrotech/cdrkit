@@ -1,3 +1,9 @@
+cdrkit (9:1.1.5-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 13 Apr 2007 18:40:44 +0200
+
 cdrkit (9:1.1.4-1) unstable; urgency=high
 
   * New upstream release
