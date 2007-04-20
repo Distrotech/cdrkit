@@ -447,9 +447,6 @@ usalo_open(SCSI *usalp, char *device)
 			sleep(5);
 	}
 
-#warning fallbacks hier?
-#warning teste ATA: und ATA
-
 	if (usalp->local == NULL) {
 		usalp->local = malloc(sizeof (struct usal_local));
 		if (usalp->local == NULL)
