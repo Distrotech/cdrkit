@@ -1420,6 +1420,8 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 	if (this_dir == root && strcmp(short_name, ".") == 0)
 		root_statbuf = statbuf;	/* Save this for later on */
 
+	printf("hab: %s, gesetzt, st_mode: %d\n", short_name, statbuf.st_mode);
+
 	/* We do this to make sure that the root entries are consistent */
 	if (this_dir == root && strcmp(short_name, "..") == 0) {
 		statbuf = root_statbuf;
