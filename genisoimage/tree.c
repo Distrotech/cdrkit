@@ -839,6 +839,7 @@ generate_reloc_directory()
 
 	/* Now create the . and .. entries in rr_moved */
 	/* Now create an actual directory  entry */
+	memset(&root_statbuf, 0x0, sizeof(struct stat)); /* be sure */
 	attach_dot_entries(reloc_dir, &root_statbuf);
 }
 
@@ -1424,6 +1425,9 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 
 	/* We do this to make sure that the root entries are consistent */
 	if (this_dir == root && strcmp(short_name, "..") == 0) {
+		if(root_statbuf.st_mode == 0) { /* not seen yet, fake it */
+			root_statbuf.st_mode=S_IFDIR | S_IRWXU | S_IRWXG | S_IRWXO;
+		}
 		statbuf = root_statbuf;
 		lstatbuf = root_statbuf;
 	}
