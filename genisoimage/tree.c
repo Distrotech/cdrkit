@@ -1547,22 +1547,22 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 #endif
 		return (0);
 	}
-    /* print a warning but don't spam too much */
-    if (S_ISREG(lstatbuf.st_mode) && (lstatbuf.st_size >= (off_t)0xFFFFFFFF)) {
+	/* print a warning but don't spam too much */
+	if (S_ISREG(lstatbuf.st_mode) && (lstatbuf.st_size >= (off_t)0xFFFFFFFF)) {
 
-        if( !allow_limited_size || verbose>1)
-            fprintf(stderr, "File %s is larger than 4GiB-1.\n", whole_path);
-        if( !allow_limited_size)
-        {
-            fprintf(stderr, "-allow-limited-size was not specified. There is no way do represent this file size. Aborting.\n");
-            exit(1);
-        }
-        if(verbose>=1 && ! udf_warned ) {
-            udf_warned++;
-            fprintf(stderr, "This size can only be represented in the UDF filesystem.\n"
-                    "Make sure that your clients support and use it.\n"
-                    "ISO9660, Joliet, RockRidge, HFS will display incorrect size.\n");
-        }
+		if( !allow_limited_size || verbose>1)
+			fprintf(stderr, "File %s is larger than 4GiB-1.\n", whole_path);
+		if( !allow_limited_size)
+		{
+			fprintf(stderr, "-allow-limited-size was not specified. There is no way do represent this file size. Aborting.\n");
+			exit(1);
+		}
+		if(verbose>=1 && ! udf_warned ) {
+			udf_warned++;
+			fprintf(stderr, "This size can only be represented in the UDF filesystem.\n"
+					"Make sure that your clients support and use it.\n"
+					"ISO9660, Joliet, RockRidge, HFS will display incorrect size.\n");
+		}
 	}
 	/*
 	 * Add this so that we can detect directory loops with hard links.
