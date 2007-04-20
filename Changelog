@@ -1,5 +1,6 @@
 cdrkit (1.1.5) UNRELEASED; urgency=low
 
+  * restored support for iso9660 file sizes up to 4GB-1
   * forced MAGIC_ERROR definition for older version, thanks to T. Schmidt
   * always return a value in usal_sense_table(...), from a patch from
     SUSE (cdrkit-dvd-fix.patch)
