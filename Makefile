@@ -31,6 +31,7 @@ clean:
 release:
 #	if test "$(shell svn status | grep -v -i make)" ; then echo Uncommited files found. Run \"svn status\" to display them. ; exit 1 ; fi
 	@if test -f ../$(DISTNAME).tar.gz ; then echo ../$(DISTNAME).tar.gz exists, not overwritting ; exit 1; fi
+	-svn up
 	rm -rf tmp
 	mkdir tmp
 	svn export . tmp/$(DISTNAME)
