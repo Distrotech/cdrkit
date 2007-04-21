@@ -1,3 +1,13 @@
+
+ - look for alternative ways to find the maximum DMA transfer size, Schilling
+   wrote something about SKGETSIZE ioctl being fixed in recent Linux kernel
+   versions
+
+ - wrong buffer size displayed with MMC5 DVD recorders, works with -prcap
+   though. Find a way to get the real one when printing status.
+ 
+ - check OpenBSD issues with OSS libs
+
  - fix the multi-file in cuefile support at all. First idea:
    import libcuefile from on cuetools-1.3.1/src/lib (after generating the
    parser with its build system), add CMakeLists.txt, drop cue.c and make wodim
@@ -9,8 +19,6 @@
    module which could be feeded from cue/toc or from CLI options.
    But OTOH this is similar to what libburnia is going to make real, spare time
    is better invested there.
-
- - wrong buffer size is displayed with MMC5 DVD recorders
 
  - Scale the command timeout with the recommended WRITE command minimum wait
    time? See Pioneer specs from DVR-111 for details.

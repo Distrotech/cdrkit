@@ -4,7 +4,7 @@ cdrkit (9:1.1.5-1) unstable; urgency=low
   * drop symlink or empty cdrecord directory before unpacking (closes: #418473)
   * drop symlink or empty mkisofs directory before unpacking (closes: #418474)
 
- -- Eduard Bloch <blade@debian.org>  Fri, 13 Apr 2007 18:40:44 +0200
+ -- Eduard Bloch <blade@debian.org>  Sat, 21 Apr 2007 11:16:52 +0200
 
 cdrkit (9:1.1.4-1) unstable; urgency=high
 
