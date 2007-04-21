@@ -1421,13 +1421,8 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 	if (this_dir == root && strcmp(short_name, ".") == 0)
 		root_statbuf = statbuf;	/* Save this for later on */
 
-	printf("hab: %s, gesetzt, st_mode: %d\n", short_name, statbuf.st_mode);
-
 	/* We do this to make sure that the root entries are consistent */
 	if (this_dir == root && strcmp(short_name, "..") == 0) {
-		if(root_statbuf.st_mode == 0) { /* not seen yet, fake it */
-			root_statbuf.st_mode=S_IFDIR | S_IRWXU | S_IRWXG | S_IRWXO;
-		}
 		statbuf = root_statbuf;
 		lstatbuf = root_statbuf;
 	}
@@ -1601,10 +1596,12 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 		!S_ISFIFO(lstatbuf.st_mode) && !S_ISSOCK(lstatbuf.st_mode) &&
 		!S_ISLNK(lstatbuf.st_mode) && !S_ISREG(lstatbuf.st_mode) &&
 		!S_ISDIR(lstatbuf.st_mode)) {
-		fprintf(stderr,
-		"Unknown file type (%s) %s - ignoring and continuing.\n",
-			filetype((int) lstatbuf.st_mode), whole_path);
-		return (0);
+        if ( ! (this_dir == root && strcmp(short_name, "..") == 0)) {
+            fprintf(stderr,
+                    "Unknown file type (%s) %s - ignoring and continuing.\n",
+                    filetype((int) lstatbuf.st_mode), whole_path);
+            return (0);
+        }
 	}
 	/* Who knows what trash this is - ignore and continue */
 

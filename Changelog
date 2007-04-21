@@ -16,8 +16,7 @@ cdrkit (1.1.5) UNRELEASED; urgency=low
   * genisoimage: restored support for iso9660 file sizes up to 4GB-1
   * genisoimage: forced MAGIC_ERROR definition for older version, thanks 
     to T. Schmidt
-  * genisoimage: workaround to create dummy ".." entry in the root directory
-    where it could be just ignored before
+  * genisoimage: avoid pointless warnings on filetype of <root directory>/".."
 
  -- Eduard Bloch <blade@debian.org>  Fri, 20 Apr 2007 23:41:13 +0200
 
