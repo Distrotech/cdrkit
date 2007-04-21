@@ -43,7 +43,8 @@ if [ "$1" = "upgrade" ] ||  [ "$1" = "install" ] ; then
       esac
    done
    # drop directories but only if empty
-   yes n | rm -r /etc/cdrecord /etc/wodim 2>/dev/null || true
+   test -d /etc/cdrecord && rmdir /etc/cdrecord 2>/dev/null || true
+   test -d /etc/wodim && rmdir /etc/wodim 2>/dev/null || true
 fi
 
 #DEBHELPER#

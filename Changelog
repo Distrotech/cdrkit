@@ -1,24 +1,26 @@
-cdrkit (1.1.5) UNRELEASED; urgency=low
+cdrkit (1.1.5) RELEASED; urgency=low
 
-  * always return a value in usal_sense_table(...), from a patch from
-    SUSE (cdrkit-dvd-fix.patch)
-  * explicite warning and more grace time if user specifies a size less than
-    301 sectors, which is likely to be a mistake from copy-pasting of
-    mkisofs/genisoimage -print-size output
-  * Native device name management directly in libusal, -scandev method uses it
-    directly now. If the backend driver does not implement it, the old-style
-    IDs are returned.
-  * ATA is now mapped directly into the b/t/l namespace, with some workarounds
-    to provide backward compatibility
-  * For SCSI devices, use only scd* on kernel 2.6 and sg* on kernel 2.4 until
-    proper locking scheme is established
+  * wodim: explicite warning and more grace time if user manually specifies a size
+    less than 301 sectors, which is likely to be a mistake from copy-pasting
+    of genisoimage -print-size output and omitting the block factor
+  * wodim: Native device name management directly in libusal now, the
+    rewritten device scan method uses it directly. If the backend driver does
+    not implement native names handling, the old-style IDs are displayed.
+  * libusal: native device name management, implemented on Linux and
+    Win32(SPT) for now
+  * libusal: ATA is now mapped directly into the b/t/l namespace, with some
+    workarounds to provide backward compatibility
+  * libusal: For SCSI devices, use only scd* on kernel 2.6 and sg* on kernel
+    2.4 until proper locking scheme is established
+  * libusal: always return a known value in usal_sense_table(...), from a
+    patch from SUSE (cdrkit-dvd-fix.patch)
   * genisoimage: customized the default APPID string in genisoimage
   * genisoimage: restored support for iso9660 file sizes up to 4GB-1
   * genisoimage: forced MAGIC_ERROR definition for older version, thanks 
-    to T. Schmidt
-  * genisoimage: avoid pointless warnings on filetype of <root directory>/".."
+    to Thomas Schmidt
+  * genisoimage: avoid pointless warnings on filetype of <root directory>/..
 
- -- Eduard Bloch <blade@debian.org>  Fri, 20 Apr 2007 23:41:13 +0200
+ -- Eduard Bloch <blade@debian.org>  Sat, 21 Apr 2007 10:17:35 +0200
 
 cdrkit (1.1.4) RELEASED; urgency=low
 
