@@ -13,6 +13,7 @@ endif
 default_target: all
 
 DISTNAME=cdrkit-$(shell cat VERSION)
+DEBSRCNAME=cdrkit_$(shell cat VERSION | sed -e "s,pre,~pre,").orig.tar.gz
 
 build/Makefile:
 	@-mkdir build 2>/dev/null
@@ -36,7 +37,8 @@ release:
 	rm -rf tmp/$(DISTNAME)/debian
 	tar -f - -c -C tmp $(DISTNAME) | gzip -9 > ../$(DISTNAME).tar.gz
 	rm -rf tmp
-	test -e /etc/debian_version && ln -f ../$(DISTNAME).tar.gz ../cdrkit_$(shell cat VERSION | sed -e "s,pre,~pre,").orig.tar.gz || true
+	test -e /etc/debian_version && ln -f ../$(DISTNAME).tar.gz ../$(DEBSRCNAME) || true
+	test -e ../tarballs && ln -f ../$(DISTNAME).tar.gz ../tarballs/$(DEBSRCNAME) || true
 
 #%::
 #	$(MAKE) $(MAKE_FLAGS) build/Makefile

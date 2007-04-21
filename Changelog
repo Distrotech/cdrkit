@@ -1,3 +1,11 @@
+cdrkit (1.1.5.1) RELEASED; urgency=low
+
+  * resync with cosmetical last-minute changes from Peter Samuelson
+  * Makefile: "release" target extension to make the Debian related source
+    file creation more convinient
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 21 Apr 2007 11:30:35 +0200
+
 cdrkit (1.1.5) RELEASED; urgency=low
 
   * wodim: explicite warning and more grace time if user manually specifies a size
