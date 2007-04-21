@@ -49,7 +49,6 @@
 #include <schily.h>
 
 extern int allow_limited_size;
-int udf_warned = 0;
 
 #ifdef VMS
 #include <sys/file.h>
@@ -1550,6 +1549,7 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 	}
 	/* print a warning but don't spam too much */
 	if (S_ISREG(lstatbuf.st_mode) && (lstatbuf.st_size >= (off_t)0xFFFFFFFF)) {
+		static int udf_warned;
 
 		if( !allow_limited_size || verbose>1)
 			fprintf(stderr, "File %s is larger than 4GiB-1.\n", whole_path);
