@@ -9,7 +9,7 @@ CMake framework. Therefore, the requirements to build this package are:
  - GNU make
  - working GCC compiler environment
  - maybe additional requirements for your operating system, see
-   doc/plattforms/... and FAQ.
+   doc/platforms/... and FAQ.
    Recommended: glibc (Linux standard) or GNU libiconv
 
 COMPILATION:
@@ -34,12 +34,12 @@ Problem: Linking error.
 Solution: Look for missing dependencies. If you installed additional libraries
 in non-system paths, they may have a conflict with the system libraries which
 are already installed. Make sure that the linker gets the right ones, those
-that belong to the headers. For example, if you installed libmagic and libiconf
+that belong to the headers. For example, if you installed libmagic and libiconv
 into /usr/local/{include,lib} and your compiler or linker have different
 defaults (eg. they use /usr/lib, /usr/include or intermix them), then you can
 set CFLAGS and LDFLAGS vars to override the system defaults, assumed by cmake.
 Example: 
-(AIX5l, /usr/lib is default lib dir but /usr/local/include is prefered by gcc
+(AIX5l, /usr/lib is default lib dir but /usr/local/include is preferred by gcc
 for headers), command:
     make clean
     make CFLAGS=-I/usr/local/include LDFLAGS=-L/usr/local/lib
@@ -64,7 +64,7 @@ Problem: None of those hints helps
 Solution: Examine the following files:
     build/CMakeFiles/CMakeFiles/CMakeOutput.log
     build/CMakeFiles/CMakeOutput.log
-and look for failed commands. Some checks are expected to fail if the plattform
+and look for failed commands. Some checks are expected to fail if the platform
 does not provide a certain feature, others must not fail. Look the failing
 check and use THE FORCE to find related problems and solutions.
 
