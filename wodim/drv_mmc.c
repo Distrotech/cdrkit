@@ -225,45 +225,45 @@ cdr_t	cdr_mmc = {
 };
 
 cdr_t   cdr_mdvd = {
-         0, 0,
-         CDR_SWABAUDIO,
-	 CDR_CDRW_ALL,
- 	 370,370,
-         "mmc_mdvd",
-         "generic SCSI-3/mmc DVD-R(W) driver",
-         0,
- 	 (dstat_t *)0,
-         identify_mmc,
-         attach_mdvd,
-	 init_mmc,
-         getdisktype_mdvd,
-         scsi_load,
-         scsi_unload,
-         read_buff_cap,
-         cmd_dummy,                                       /* check_recovery */
-         (int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,   /* recover     */
-         speed_select_mdvd,
-         select_secsize,
-         next_wr_addr_mdvd,
-         (int(*)(SCSI *, Ulong))cmd_ill,   /* reserve_track        */
-         scsi_cdr_write,
-         (int(*)__PR((track_t *, void *, BOOL)))cmd_dummy, /* gen_cue */
-	 (int(*)__PR((SCSI *usalp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
- 	 write_leadin_mmc,
-         open_track_mdvd,
-         close_track_mdvd,
-         open_session_mdvd,
-         cmd_dummy,
-	 cmd_dummy,					/* abort	*/
-         read_session_offset,
-         fixate_mdvd,
- 	 stats_mmc,
-         blank_mmc,
-	 format_mdvd,
-         send_opc_mmc,
- 	 opt1_mdvd,
- 	 opt2_mmc,
-	 dvd_dual_layer_split,
+	0, 0,
+	CDR_SWABAUDIO,
+	CDR_CDRW_ALL,
+	370,370,
+	"mmc_mdvd",
+	"generic SCSI-3/mmc DVD-R(W) driver",
+	0,
+	(dstat_t *)0,
+	identify_mmc,
+	attach_mdvd,
+	init_mmc,
+	getdisktype_mdvd,
+	scsi_load,
+	scsi_unload,
+	read_buff_cap,
+	cmd_dummy,                                       /* check_recovery */
+	(int(*)__PR((SCSI *, cdr_t *, int)))cmd_dummy,   /* recover     */
+	speed_select_mdvd,
+	select_secsize,
+	next_wr_addr_mdvd,
+	(int(*)(SCSI *, Ulong))cmd_ill,   /* reserve_track        */
+	scsi_cdr_write,
+	(int(*)__PR((track_t *, void *, BOOL)))cmd_dummy, /* gen_cue */
+	(int(*)__PR((SCSI *usalp, cdr_t *, track_t *)))cmd_dummy, /* send_cue */
+	write_leadin_mmc,
+	open_track_mdvd,
+	close_track_mdvd,
+	open_session_mdvd,
+	cmd_dummy,
+	cmd_dummy,					/* abort	*/
+	read_session_offset,
+	fixate_mdvd,
+	stats_mmc,
+	blank_mmc,
+	format_mdvd,
+	send_opc_mmc,
+	opt1_mdvd,
+	opt2_mmc,
+	dvd_dual_layer_split,
 };
 
 /*
@@ -1499,23 +1499,25 @@ init_mmc(SCSI *usalp, cdr_t *dp)
 static int 
 getdisktype_mdvd(SCSI *usalp, cdr_t *dp)
 {
-       int ret = 0;
-       dstat_t	*dsp = dp->cdr_dstat;
+	int ret = 0;
+	dstat_t	*dsp = dp->cdr_dstat;
 
-       struct track_info track_info;
-       if(getdisktype_mmc(usalp, dp)<0)
-	 return -1;
+	struct track_info track_info;
+	printf("HINT: use dvd+rw-mediainfo from dvd+rw-tools for information extraction.\n");
+	/* if(getdisktype_mmc(usalp, dp)<0)
+		return -1;
+		*/
 
-       /* read rzone info to get the space left on disk */
-       /*ds_trlast is the last rzone on disk, can be invisible */
-       if(read_rzone_info(usalp, (caddr_t)&track_info, sizeof(track_info))>=0)
-	  dsp->ds_maxblocks=a_to_u_4_byte(track_info.free_blocks)+a_to_4_byte(track_info.next_writable_addr);
-       
-       dsp->ds_disktype&= ~DT_CD;
-       dsp->ds_disktype|= DT_DVD;
-	
-       return (ret);
-  
+	/* read rzone info to get the space left on disk */
+	/*ds_trlast is the last rzone on disk, can be invisible */
+	if(read_rzone_info(usalp, (caddr_t)&track_info, sizeof(track_info))>=0)
+		dsp->ds_maxblocks=a_to_u_4_byte(track_info.free_blocks)+a_to_4_byte(track_info.next_writable_addr);
+
+	dsp->ds_disktype&= ~DT_CD;
+	dsp->ds_disktype|= DT_DVD;
+
+	return (ret);
+
 }
 
 static int 
