@@ -61,5 +61,5 @@ diag/isodebug.1
 diag/isodump.1
 diag/isoinfo.1
 diag/isovfy.1
-DESTINATION share/man/man1)
-INSTALL(FILES genisoimagerc.5 DESTINATION share/man/man5)
+DESTINATION ${MANSUBDIR}/man1)
+INSTALL(FILES genisoimagerc.5 DESTINATION "${MANSUBDIR}/man5")

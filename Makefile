@@ -10,6 +10,10 @@ ifneq ($(PREFIX),)
 CMAKETWEAKS += ( cd build ;  cmake .. -DCMAKE_INSTALL_PREFIX="$(PREFIX)") || exit 1; 
 endif
 
+ifneq ($(MANSUBDIR),)
+CMAKETWEAKS += ( cd build ;  cmake .. -DMANSUBDIR="$(MANSUBDIR)" ) || exit 1; 
+endif
+
 default_target: all
 
 DISTNAME=cdrkit-$(shell cat VERSION)

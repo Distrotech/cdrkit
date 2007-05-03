@@ -3,7 +3,11 @@ IF(NOT CHECKED_rols)
 
    LIST(APPEND EXTRA_LIBS "rols")
 
-# not the proper place but ok, because it is linked from everywhere
+# abuse this include file to make sure the target is set
+
+   IF(NOT MANSUBDIR)
+      SET(MANSUBDIR "share/man")
+   ENDIF(NOT MANSUBDIR)
 
 ENDIF(NOT CHECKED_rols)
 

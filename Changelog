@@ -4,6 +4,11 @@ cdrkit (1.1.6) UNRELEASED; urgency=low
   * genisoimage/eltorito.c: care about inhibit flags when preparing eltority
     boot catalog directory entry, avoiding possible crashes
 
+  [ Eduard Bloch]
+  * ALL: customize the base manpage subdirectory below PREFIX using the new
+    MANSUBDIR variable
+  * icedax: find libossaudio on OpenBSD and use it
+
  -- Eduard Bloch <blade@debian.org>  Thu, 03 May 2007 11:54:45 +0200
 
 cdrkit (1.1.5.1) RELEASED; urgency=low

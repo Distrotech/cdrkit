@@ -20,15 +20,11 @@ INSTALLATION:
 
 Run: make install
 
-To force a custom target directory, use something like:
-
-make install PREFIX=/opt/cdrkit
+To customize the target paths, some variables can be appended to this line:
+PREFIX=/opt/cdrkit/latest (default: CMake preset, e.g. /usr/local)
+MANSUBDIR=man (default: share/man)
 
 TROUBLESHOOTING:
-
-Problem: "make install" uses the wrong target directory and appends /usr/local
-  to it.
-Solution: override the complete target path with PREFIX=... (see above)
 
 Problem: Linking error.
 Solution: Look for missing dependencies. If you installed additional libraries
