@@ -35,9 +35,6 @@
 
 #include <mconfig.h>
 #include <stdio.h>
-#include <stdxlib.h>
-#include <standard.h>
-#include <btorder.h>
 #include <errno.h>
 #include <schily.h>
 
@@ -53,7 +50,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#include <ctype.h>
 
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
 int	select_target(SCSI *usalp, FILE *f);
@@ -71,8 +67,6 @@ static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 }
 
 #define MAXDEVCOUNT (256+26)
-
-# warning Check windows SPT driver
 
 int list_devices(SCSI *usalp, FILE *f) {
 	int	initiator;
