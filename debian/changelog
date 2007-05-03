@@ -1,3 +1,12 @@
+cdrkit (9:1.1.6-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  
+  [ Peter Samuelson ]
+  * Add genisoimagerc(5) to genisoimage package.  (Closes: #422025)
+
+ -- Peter Samuelson <peter@p12n.org>  Thu,  3 May 2007 16:00:56 -0500
+
 cdrkit (9:1.1.5.1-1) unstable; urgency=low
 
   * New minor upstream release
