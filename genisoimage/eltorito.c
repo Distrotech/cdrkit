@@ -228,6 +228,15 @@ insert_boot_cat()
 	iso9660_file_length(p2, s_entry, 0);
 
 	/* flag file as necessary */
+
+	/*
+	 * If the current directory is hidden, then hide this entry
+	 */
+	if (this_dir->dir_flags & INHIBIT_ISO9660_ENTRY)
+		bcat_de_flags |= INHIBIT_ISO9660_ENTRY;
+	if (this_dir->dir_flags & INHIBIT_JOLIET_ENTRY)
+		bcat_de_flags |= INHIBIT_JOLIET_ENTRY;
+
 	s_entry->de_flags = bcat_de_flags;
 
 	if ((use_XA || use_RockRidge) &&
