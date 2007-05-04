@@ -1,7 +1,7 @@
 cdrkit (1.1.6) RELEASED; urgency=low
 
   [ Vladimir Nadvornik ]
-  * genisoimage/eltorito.c: care about inhibit flags when preparing eltority
+  * genisoimage/eltorito.c: care about inhibit flags when preparing eltorito
     boot catalog directory entry, avoiding possible crashes
 
   [ Eduard Bloch]
