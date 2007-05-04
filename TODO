@@ -1,4 +1,9 @@
 
+ - (for consideration) similar got natname management in libusal, add a method
+   to check whether the device can be opened without side effects (for safety)
+   and then get the device capabilities to select the best drive for the input
+   size. Kind of generic implementation of the Linux specific guessing code.
+
  - look for alternative ways to find the maximum DMA transfer size, Schilling
    wrote something about SKGETSIZE ioctl being fixed in recent Linux kernel
    versions
