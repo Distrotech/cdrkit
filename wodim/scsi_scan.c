@@ -112,9 +112,9 @@ Can write RAM:          0       1
 ---
 */
 	struct stat statbuf;
+	/* XXX Good guess? BD-RE recorders may not support CDRW anymore... */
 	char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *result=NULL;
 	FILE *fh;
-
 
 	if( need_size > 360000*2048 ) {
 		type="DVD-R";
@@ -122,7 +122,7 @@ Can write RAM:          0       1
 		key="Can write DVD-R:";
 	}
 
-	//if(need_size>0)
+	if(need_size>10240) /* don't bother with weird numbers */
 		fprintf(stderr, "Looking for a %s drive to store %.2f MiB...\n", type, (float)need_size/1048576.0);
 	if(0==stat(guessdev, &statbuf))
 		result=guessdev;
@@ -168,20 +168,12 @@ Can write RAM:          0       1
 		fclose(fh);
 	}
 
-	/*
-	   if(result) {
-	   fprintf(stderr, "Detected %s drive: %s\n", type, result);
-	 *devp=result;
-	 }
-	 else if (0==stat("/dev/cdrom", &statbuf)) {
-	 *devp = "/dev/cdrom";
-	 fprintf(stderr, "Using /dev/cdrom of unknown capabilities\n");
-	 }
-	 else {
-	 fprintf(stderr,	"Unable to find a %s drive.  Please specify manually using the dev= argument\n"
-	 "or other configuration methods, see wodim(1) for details.\n", type);
-	 }
-	 */
+	if(result)
+		fprintf(stderr, "Detected %s drive: %s\n", type, result);
+	if (0==stat("/dev/cdrom", &statbuf)) {
+		result = "/dev/cdrom";
+		fprintf(stderr, "Using /dev/cdrom of unknown capabilities\n");
+	}
 	if(result)
 		return usal_open(result, errstr, sizeof(errstr), debug, lverbose);
 #endif /* __linux__ */
@@ -245,11 +237,8 @@ int list_devices(SCSI *usalp, FILE *f, int pickup_first) {
 				if(statbuf.st_mode&S_IWOTH) perms[5]= 'w';
 			}
 			getdev(usalp, FALSE);
-			/* alternative use, only select the device and stop there, no extra actions */
 			if(usalp->inq->type == INQ_ROMD || usalp->inq->type == INQ_WORM) {
 				char *p;
-				if(pickup_first)
-					return 1;
 
 				for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
 					if(isspace((unsigned char)*p))
@@ -264,6 +253,11 @@ int list_devices(SCSI *usalp, FILE *f, int pickup_first) {
 						break;
 				}
 				snprintf(buf, sizeof(buf), "%2d  dev='%s'\t%s : '%.8s' '%.16s'\n", ndevs, usal_natname(usalp, bus, tgt, lun), perms, usalp->inq->vendor_info, usalp->inq->prod_ident);
+				/* alternative use, only select the first device */
+				if(pickup_first) {
+					printf("Using drive: %s\n", usal_natname(usalp, bus, tgt, lun));
+					return 1;
+				}
 				lines[ndevs++]=strdup(buf);
 			}
 
