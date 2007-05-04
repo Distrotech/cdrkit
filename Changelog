@@ -10,7 +10,7 @@ cdrkit (1.1.6) UNRELEASED; urgency=low
   * icedax: find libossaudio on OpenBSD and use it
   * icedax: fixed bug with --devices (segfault, bad arguments gone unnoticed)
   * moved Linux-specific recorder location guesser to scsi_scan.h
-  * count all track sizes when guessing the needed disk type when guessing
+  * count all track sizes when guessing the needed disk type
   * added an alternative guessing method, using list_devices(...) picking up
     the first drive having appropriate device type in the inquiry info. This
     method is used as fall-back on Linux and by default on others platforms.
