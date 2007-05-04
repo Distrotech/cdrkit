@@ -54,6 +54,8 @@
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
 int	select_target(SCSI *usalp, FILE *f);
 
+#define MAXDEVCOUNT (256+26)
+
 extern BOOL check_linux_26();
 
 static void print_product(FILE *f, struct  scsi_inquiry *ip) {
@@ -66,19 +68,138 @@ static void print_product(FILE *f, struct  scsi_inquiry *ip) {
 	usal_fprintdev(f, ip);
 }
 
-#define MAXDEVCOUNT (256+26)
+SCSI * open_auto(int64_t need_size, int debug, int lverbose) {
+	int res;
+	SCSI * usalp = NULL;
+	char  errstr[80];
+	
+#ifdef __linux__
+	/* quick-and-dirty code but should do what is supposed to, more quickly */
 
-int list_devices(SCSI *usalp, FILE *f) {
+		/*
+		 * For Linux, try these strategies, in order:
+		 * 1. stat /dev/cdrw or /dev/dvdrw, depending on size we need.
+		 * 2. Read /proc/sys/dev/cdrom/info, look for a CD-R/DVD-R.
+		 *    Will fail for kernel 2.4 or if cdrom module not loaded.
+		 * 3. stat /dev/cdrom, just assume that it can write media.
+
+     An example for procfs file contents, beware of the TABs
+
+---
+CD-ROM information, Id: cdrom.c 3.20 2003/12/17
+
+drive name:		hdc     hda
+drive speed:		40      40
+drive # of slots:       1       1
+Can close tray:         1       1
+Can open tray:          1       1
+Can lock tray:          1       1
+Can change speed:       1       1
+Can select disk:        0       0
+Can read multisession:  1       1
+Can read MCN:           1       1
+Reports media changed:  1       1
+Can play audio:         1       1
+Can write CD-R:		0       1
+Can write CD-RW:        0       1
+Can read DVD:           1       1
+Can write DVD-R:        0       1
+Can write DVD-RAM:      0       1
+Can read MRW:           0       1
+Can write MRW:          0       1
+Can write RAM:          0       1
+
+---
+*/
+	struct stat statbuf;
+	char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *result=NULL;
+	FILE *fh;
+
+
+	if( need_size > 360000*2048 ) {
+		type="DVD-R";
+		guessdev="/dev/dvdrw";
+		key="Can write DVD-R:";
+	}
+
+	//if(need_size>0)
+		fprintf(stderr, "Looking for a %s drive to store %.2f MiB...\n", type, (float)need_size/1048576.0);
+	if(0==stat(guessdev, &statbuf))
+		result=guessdev;
+	else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
+		/* ok, going the hard way */
+		char *nameline=NULL;
+		static char buf[256];
+		int kn = strlen(key);
+
+		buf[255]='\0';
+
+		while(fgets(buf, sizeof(buf), fh)) {
+			if(0==strncmp(buf, "drive name:", 11))
+				nameline=strdup(buf);
+			if(nameline && 0==strncmp(buf, key, kn)) {
+				int p=kn;
+				char *descptr=nameline+11; /* start at the known whitespace */
+				while(p<sizeof(buf) && buf[p]) {
+					if(buf[p]=='1' || buf[p]=='0') {
+						/* find the beginning of the descriptor */
+						for(;isspace((Uchar) *descptr);descptr++)
+							;
+					}
+					if(buf[p]=='1') {
+						result=descptr-5;
+						/* terminate on space/newline and stop there */
+						for(;*descptr;descptr++) {
+							if(isspace((Uchar) *descptr))
+								*(descptr--)='\0';
+						}
+						strncpy(result, "/dev/", 5);
+						break;
+					}
+					else { /* no hit, move to after word ending */
+						for(; *descptr && ! isspace((Uchar) *descptr); descptr++)
+							;
+					}
+					p++;
+				}
+			}
+
+		}
+		fclose(fh);
+	}
+
+	/*
+	   if(result) {
+	   fprintf(stderr, "Detected %s drive: %s\n", type, result);
+	 *devp=result;
+	 }
+	 else if (0==stat("/dev/cdrom", &statbuf)) {
+	 *devp = "/dev/cdrom";
+	 fprintf(stderr, "Using /dev/cdrom of unknown capabilities\n");
+	 }
+	 else {
+	 fprintf(stderr,	"Unable to find a %s drive.  Please specify manually using the dev= argument\n"
+	 "or other configuration methods, see wodim(1) for details.\n", type);
+	 }
+	 */
+	if(result)
+		return usal_open(result, errstr, sizeof(errstr), debug, lverbose);
+#endif /* __linux__ */
+
+	usalp = usal_open(NULL, errstr, sizeof(errstr), debug, lverbose);
+	if(!usalp)
+		return NULL;
+	res = list_devices(usalp, stdout, 1);
+	if(res>0)
+		return usalp;
+	else
+		usal_close(usalp);
+	return NULL;
+}
+
+int list_devices(SCSI *usalp, FILE *f, int pickup_first) {
 	int	initiator;
-#ifdef	FMT
-	int	cscsibus = usal_scsibus(usalp);
-	int	ctarget  = usal_target(usalp);
-	int	clun	 = usal_lun(usalp);
-#endif
-	int	n, i;
-	int	low	= -1;
-	int	high	= -1;
-	int	amt	= 0;
+	int	i;
 	int	bus;
 	int	tgt;
 	int	lun = 0;
@@ -104,8 +225,6 @@ int list_devices(SCSI *usalp, FILE *f) {
 		//fprintf(f, "scsibus%d:\n", bus);
 
 		for (tgt = 0; tgt < 16; tgt++) {
-			n = bus*100 + tgt;
-
 			usal_settarget(usalp, bus, tgt, lun);
 			have_tgt = unit_ready(usalp) || usalp->scmd->error != SCG_FATAL;
 
@@ -126,8 +245,12 @@ int list_devices(SCSI *usalp, FILE *f) {
 				if(statbuf.st_mode&S_IWOTH) perms[5]= 'w';
 			}
 			getdev(usalp, FALSE);
+			/* alternative use, only select the device and stop there, no extra actions */
 			if(usalp->inq->type == INQ_ROMD || usalp->inq->type == INQ_WORM) {
 				char *p;
+				if(pickup_first)
+					return 1;
+
 				for(p=usalp->inq->vendor_info + 7 ; p >= usalp->inq->vendor_info; p--) {
 					if(isspace((unsigned char)*p))
 						*p='\0';
@@ -148,6 +271,12 @@ int list_devices(SCSI *usalp, FILE *f) {
 	}
 	usalp->silent--;
 
+	/* should have been returned before if there was a recorder */
+	if(pickup_first)
+		return 0;
+
+	/* now start the output */
+
 	fprintf(stdout, "%s: Overview of accessible drives (%d found) :\n"
 			"-------------------------------------------------------------------------\n",
 			get_progname(), ndevs);
@@ -157,19 +286,7 @@ int list_devices(SCSI *usalp, FILE *f) {
 	}
 	fprintf(stdout,	"-------------------------------------------------------------------------\n");
 
-
-
-	n = -1;
-#ifdef	FMT
-	getint("Select target", &n, low, high);
-	bus = n/100;
-	tgt = n%100;
-	usal_settarget(usalp, bus, tgt, lun);
-	return (select_unit(usalp));
-
-	usal_settarget(usalp, cscsibus, ctarget, clun);
-#endif
-	return (amt);
+	return ndevs;
 }
 
 int select_target(SCSI *usalp, FILE *f) {

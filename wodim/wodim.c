@@ -12,7 +12,7 @@
 
 /*
  *
- * Modified by Eduard Bloch in 08/2006
+ * Modified by Eduard Bloch in 08/2006 and later
  */
 
 /* @(#)cdrecord.c	1.310 06/02/09 Copyright 1995-2006 J. Schilling */
@@ -360,9 +360,9 @@ int main(int argc, char *argv[])
 		 * XXX mlockall() needs root privilleges.
 		 */
 		if (mlockall(MCL_CURRENT|MCL_FUTURE) < 0) {
-       if(lverbose>2)
-          fprintf(stderr,
-                "W: Cannot do mlockall(2). Possibly increased risk for buffer underruns.\n");
+			if(lverbose>2)
+				fprintf(stderr,
+						"W: Cannot do mlockall(2). Possibly increased risk for buffer underruns.\n");
 		}
 #endif
 
@@ -402,22 +402,36 @@ int main(int argc, char *argv[])
 		exit(0);
 	}
 
-  /*
-  if (scandevs)
-	  return (scan_devices(usalp, stdout, stderr));
-*/
-  usalp = usal_open(dev, errstr, sizeof (errstr),
-        debug, lverbose);
-  if(!usalp)
-  {
-     errmsg("\nCannot open SCSI driver!\n"
-           "For possible targets try 'wodim --devices' or 'wodim -scanbus'.\n"
-           "For possible transport specifiers try 'wodim dev=help'.\n"
-           "For IDE/ATAPI devices configuration, see the file README.ATAPI.setup from\n"
-           "the wodim documentation.\n");
-     exit(EX_BAD);
-  }
-  
+	if( (!dev || *dev=='\0'|| 0==strcmp(dev, "-1")) && (flags & F_SCANBUS)==0 ) {
+		int64_t need_size=0L;
+		struct stat statbuf;
+		int t;
+
+		fprintf(stderr, "Device was not specified. Trying to find an appropriate drive...\n");
+
+		/* estimate how much data user wants to write */
+		for(t=1;t<=tracks;t++) { 
+			if(track[t].tracksize>=0)
+				need_size+=track[t].tracksize;
+			else if(0==stat(track[t].filename, &statbuf))
+				need_size+=statbuf.st_size;
+		}
+		usalp=open_auto(need_size, debug, lverbose);
+	}
+
+	if(!usalp)
+		usalp = usal_open(dev, errstr, sizeof(errstr), debug, lverbose);
+
+	if(!usalp)
+	{
+		errmsg("\nCannot open SCSI driver!\n"
+				"For possible targets try 'wodim --devices' or 'wodim -scanbus'.\n"
+				"For possible transport specifiers try 'wodim dev=help'.\n"
+				"For IDE/ATAPI devices configuration, see the file README.ATAPI.setup from\n"
+				"the wodim documentation.\n");
+		exit(EX_BAD);
+	}
+
 #ifdef	HAVE_PRIV_SET
 #ifdef	PRIV_DEBUG
 	fprintf(stderr, "file_dac_read: %d\n", priv_ineffect(PRIV_FILE_DAC_READ));
@@ -511,8 +525,8 @@ int main(int argc, char *argv[])
 	if ((buf = usal_getbuf(usalp, bufsize)) == NULL)
 		comerr("Cannot get SCSI I/O buffer.\n");
 
-  if (scandevs)
-	  return (list_devices(usalp, stdout));
+	if (scandevs)
+		return (list_devices(usalp, stdout, 0));
 
 	if ((flags & F_SCANBUS) != 0) {
 		select_target(usalp, stdout);
@@ -3741,129 +3755,6 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 	if (dev != *devp && (*flagsp & F_SCANBUS) == 0)
 		*devp = dev;
 
-	/* quick-and-dirty code but should do what is supposed to. Possible
-	 * replacement with libhal using code in future. */
-	if ( (!*devp || 0 == strcmp(*devp, "-1")) && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
-#ifdef __linux__
-		/*
-		 * For Linux, try these strategies, in order:
-		 * 1. stat /dev/cdrw or /dev/dvdrw, depending on size we need.
-		 * 2. Read /proc/sys/dev/cdrom/info, look for a CD-R/DVD-R.
-		 *    Will fail for kernel 2.4 or if cdrom module not loaded.
-		 * 3. stat /dev/cdrom, just assume that it can write media.
-
-     An example for procfs file contents, beware of the TABs
-
----
-CD-ROM information, Id: cdrom.c 3.20 2003/12/17
-
-drive name:		hdc     hda
-drive speed:		40      40
-drive # of slots:       1       1
-Can close tray:         1       1
-Can open tray:          1       1
-Can lock tray:          1       1
-Can change speed:       1       1
-Can select disk:        0       0
-Can read multisession:  1       1
-Can read MCN:           1       1
-Reports media changed:  1       1
-Can play audio:         1       1
-Can write CD-R:		0       1
-Can write CD-RW:        0       1
-Can read DVD:           1       1
-Can write DVD-R:        0       1
-Can write DVD-RAM:      0       1
-Can read MRW:           0       1
-Can write MRW:          0       1
-Can write RAM:          0       1
-
----
-*/
-		struct stat statbuf;
-		char *type="CD-R", *key="Can write CD-R:", *guessdev="/dev/cdrw", *result=NULL;
-		long long filesize=0;
-		FILE *fh;
-
-		if(tracks>0) {
-			filesize=trackp[tracks].tracksize;
-			if(filesize<=0 && 0==stat(trackp[tracks].filename, &statbuf)) {
-				filesize=statbuf.st_size;
-			}
-		}
-
-		if( filesize > 360000*2048 ) {
-			type="DVD-R";
-			guessdev="/dev/dvdrw";
-      key="Can write DVD-R:";
-		}
-
-		fprintf(stderr, "INFO: no device specified, looking for a %s drive to store %.2f MiB...\n", type, (float)filesize/1048576.0);
-		if(0==stat(guessdev, &statbuf))
-			result=guessdev;
-		else if(0!= (fh = fopen("/proc/sys/dev/cdrom/info", "r")) ) {
-			/* ok, going the hard way */
-			char *nameline=NULL;
-			static char buf[256];
-			int kn = strlen(key);
-
-			buf[255]='\0';
-
-			while(fgets(buf, sizeof(buf), fh)) {
-				if(0==strncmp(buf, "drive name:", 11))
-					nameline=strdup(buf);
-				if(nameline && 0==strncmp(buf, key, kn)) {
-					int p=kn;
-					char *descptr=nameline+11; /* start at the known whitespace */
-					while(p<sizeof(buf) && buf[p]) {
-						if(buf[p]=='1' || buf[p]=='0') {
-							/* find the beginning of the descriptor */
-							for(;isspace((Uchar) *descptr);descptr++)
-								;
-						}
-						if(buf[p]=='1') {
-							result=descptr-5;
-							/* terminate on space/newline and stop there */
-							for(;*descptr;descptr++) {
-								if(isspace((Uchar) *descptr))
-									*(descptr--)='\0';
-							}
-							strncpy(result, "/dev/", 5);
-							break;
-						}
-						else { /* no hit, move to after word ending */
-							for(; *descptr && ! isspace((Uchar) *descptr); descptr++)
-								;
-						}
-						p++;
-					}
-				}
-
-			}
-			fclose(fh);
-		}
-
-		if(result) {
-			fprintf(stderr, "Detected %s drive: %s\n", type, result);
-			*devp=result;
-		}
-		else if (0==stat("/dev/cdrom", &statbuf)) {
-			*devp = "/dev/cdrom";
-			fprintf(stderr, "Using /dev/cdrom of unknown capabilities\n");
-		}
-		else {
-			fprintf(stderr,	"Unable to find a %s drive.  Please specify manually using the dev= argument\n"
-					"or other configuration methods, see wodim(1) for details.\n", type);
-		}
-#else
-		printf("Guessing of a capable drive not implemented for this platform yet.\n"
-		       "Use the dev= argument, or --devices to get a list of available drives.\n");
-#endif
-	}
-	if (!*devp && (*flagsp & (F_VERSION|F_SCANBUS)) == 0) {
-		errmsgno(EX_BAD, "No CD/DVD-Recorder device specified.\n");
-		susage(EX_BAD);
-	}
 	if (*devp &&
 	    ((strncmp(*devp, "HELP", 4) == 0) ||
 	    (strncmp(*devp, "help", 4) == 0))) {
@@ -3874,7 +3765,7 @@ Can write RAM:          0       1
 		if (tracks != 0) {
        fprintf(stderr,
              "No tracks allowed with -load, -lock, -setdropts, -msinfo, -toc, -atip, -fix,\n"
-             "-version, -checkdrive, -prcap, -inq, -scanbus, -devices, -reset and -abort options.\n" );
+             "-version, -checkdrive, -prcap, -inq, -scanbus, --devices, -reset and -abort options.\n" );
        exit(EXIT_FAILURE);
 		}
 		return ispacket;

@@ -34,6 +34,10 @@
 #ifndef	_SCSI_SCAN_H
 #define	_SCSI_SCAN_H
 
+#include <usal/scsitransp.h>
+
 extern	int	select_target(SCSI *usalp, FILE *f);
+extern int list_devices(SCSI *usalp, FILE *f, int pickup_type);
+extern SCSI * open_auto(int64_t need_size, int debug, int lverbose);
 
 #endif	/* _SCSI_SCAN_H */
