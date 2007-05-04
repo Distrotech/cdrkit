@@ -1,4 +1,4 @@
-cdrkit (1.1.6) UNRELEASED; urgency=low
+cdrkit (1.1.6) RELEASED; urgency=low
 
   [ Vladimir Nadvornik ]
   * genisoimage/eltorito.c: care about inhibit flags when preparing eltority
@@ -8,14 +8,16 @@ cdrkit (1.1.6) UNRELEASED; urgency=low
   * ALL: customize the base manpage subdirectory below PREFIX using the new
     MANSUBDIR variable
   * icedax: find libossaudio on OpenBSD and use it
-  * icedax: fixed bug with --devices (segfault, bad arguments gone unnoticed)
-  * moved Linux-specific recorder location guesser to scsi_scan.h
-  * count all track sizes when guessing the needed disk type
-  * added an alternative guessing method, using list_devices(...) picking up
-    the first drive having appropriate device type in the inquiry info. This
-    method is used as fall-back on Linux and by default on others platforms.
+  * icedax: fixed bug with --devices (unnoticed segfault due to wrong
+    list_devices arguments)
+  * wodim/scsi_scan.h: moved Linux-specific recorder location guesser to an
+    extra method for automatic drive opening, and added an alternative
+    guessing method, using list_devices(...) picking up the first drive having
+    appropriate device type in the inquiry info. This generic method is also
+    used on Linux when the original guesser fails.
+  * wodim/wodim.c: count all track sizes when looking for an appropriate drive
 
- -- Eduard Bloch <blade@debian.org>  Thu, 03 May 2007 11:54:45 +0200
+ -- Eduard Bloch <blade@debian.org>  Fri, 04 May 2007 14:31:22 +0200
 
 cdrkit (1.1.5.1) RELEASED; urgency=low
 
