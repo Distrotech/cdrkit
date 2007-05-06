@@ -19,7 +19,7 @@ cdrkit (1.1.6) RELEASED; urgency=low
     used on Linux when the original guesser fails.
   * wodim/wodim.c: count all track sizes when looking for an appropriate drive
 
- -- Eduard Bloch <blade@debian.org>  Sun, 06 May 2007 15:23:31 +0200
+ -- Eduard Bloch <blade@debian.org>  Sun, 06 May 2007 16:39:08 +0200
 
 cdrkit (1.1.5.1) RELEASED; urgency=low
 
