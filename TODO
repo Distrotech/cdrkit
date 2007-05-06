@@ -1,4 +1,7 @@
 
+ - on various places in drv_dvd.c, check for the correct answer ("long write in
+   progress" and friends) instead of using the dumb wait_unit_ready method.
+
  - (for consideration) similar got natname management in libusal, add a method
    to check whether the device can be opened without side effects (for safety)
    and then get the device capabilities to select the best drive for the input
