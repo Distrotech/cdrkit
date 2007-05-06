@@ -2719,6 +2719,11 @@ static int
 fixate_mdvd(SCSI *usalp, cdr_t *dp, track_t *trackp)
 {
 	int ret;
+	if (scsi_flush_cache(usalp, (dp->cdr_cmdflags&F_IMMED) != 0) < 0) {
+		printf("Trouble flushing the cache\n");
+		return -1;
+	}
+	wait_unit_ready(usalp, 300);		/* XXX Wait for ATAPI */
       /*set a really BIG timeout and call fixate_mmc
 	 The BIG timeout is needed in case there was a very short rzone to write at the 
 	 beginning of the disk, because lead-out needs to be at some distance.

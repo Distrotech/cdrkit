@@ -32,7 +32,7 @@ cmakepurge:
 clean:
 	rm -rf build
 
-release:
+tarball:
 #	if test "$(shell svn status | grep -v -i make)" ; then echo Uncommited files found. Run \"svn status\" to display them. ; exit 1 ; fi
 	@if test -f ../$(DISTNAME).tar.gz ; then echo ../$(DISTNAME).tar.gz exists, not overwritting ; exit 1; fi
 	-svn up
@@ -44,6 +44,14 @@ release:
 	rm -rf tmp
 	test -e /etc/debian_version && ln -f ../$(DISTNAME).tar.gz ../$(DEBSRCNAME) || true
 	test -e ../tarballs && ln -f ../$(DISTNAME).tar.gz ../tarballs/$(DEBSRCNAME) || true
+
+tarball-remove:
+	rm -f ../$(DISTNAME).tar.gz ../tarballs/$(DEBSRCNAME) ../$(DEBSRCNAME)
+
+SVNBASE=$(shell svn info | grep URL: | cut -f2 -d' ' | xargs dirname)
+release: tarball
+	svn ci
+	svn cp $(SVNBASE)/trunk $(SVNBASE)/tags/release_$(shell cat VERSION)
 
 #%::
 #	$(MAKE) $(MAKE_FLAGS) build/Makefile
