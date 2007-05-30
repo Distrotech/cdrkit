@@ -1,4 +1,4 @@
-PROJECT (MKISOFS)
+PROJECT (MKISOFS C)
 
 INCLUDE(../include/AddScgBits.cmake)
 INCLUDE(../include/AddSchilyBits.cmake)

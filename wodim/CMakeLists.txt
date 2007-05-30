@@ -1,4 +1,4 @@
-PROJECT (CDRECORD)
+PROJECT (CDRECORD C)
 INCLUDE_DIRECTORIES(../include ../libedc ${CMAKE_BINARY_DIR})
 INCLUDE(../include/AddScgBits.cmake)
 include(../include/AddSchilyBits.cmake)

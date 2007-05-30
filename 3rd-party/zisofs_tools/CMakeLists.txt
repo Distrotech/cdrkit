@@ -1,4 +1,4 @@
-PROJECT (ZISOFSTOOLS)
+PROJECT (ZISOFSTOOLS C)
 ADD_DEFINITIONS(-Wall -W -Wpointer-arith -Wbad-function-cast -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations -Wnested-externs -Winline -Wshadow -Wcast-align)
 AUX_SOURCE_DIRECTORY(. MKZ_SRCS)
 ADD_EXECUTABLE (mkzftree ${MKZ_SRCS})

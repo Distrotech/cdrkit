@@ -1,4 +1,4 @@
-PROJECT (icedax)
+PROJECT (icedax C)
 INCLUDE_DIRECTORIES(../include ../wodim ../libparanoia ${CMAKE_BINARY_DIR})
 include(../include/AddScgBits.cmake)
 include(../include/AddSchilyBits.cmake)

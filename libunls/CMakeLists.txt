@@ -1,4 +1,4 @@
-PROJECT (LIBunls)
+PROJECT (LIBunls C)
 INCLUDE_DIRECTORIES(../include ../libhfs_iso ../wodim ${CMAKE_BINARY_DIR})
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 
