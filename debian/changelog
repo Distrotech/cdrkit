@@ -5,6 +5,7 @@ cdrkit (9:1.1.6-1) unstable; urgency=low
   
   [ Peter Samuelson ]
   * Add genisoimagerc(5) to genisoimage package (closes: #422025)
+  * Fix typos in wodim(1) and isoinfo(1). (closes: #430555)
 
  -- Eduard Bloch <blade@debian.org>  Sun, 06 May 2007 16:38:38 +0200
 
