@@ -1,3 +1,10 @@
+cdrkit (1.1.7) UNRELEASED; urgency=low
+
+  [ Peter Samuelson ]
+  * wodim.1: small fixes.
+
+ -- Peter Samuelson <peter@p12n.org>  Mon, 06 Aug 2007 16:12:11 -0500
+
 cdrkit (1.1.6) RELEASED; urgency=low
 
   [ Vladimir Nadvornik ]
