@@ -3,7 +3,12 @@ cdrkit (1.1.7) UNRELEASED; urgency=low
   [ Peter Samuelson ]
   * wodim.1: small fixes.
 
- -- Peter Samuelson <peter@p12n.org>  Mon, 06 Aug 2007 16:12:11 -0500
+  [ Steve McIntyre ]
+  * genisoimage/jte.c: fix bzip2-compressed template data to be
+    compatible with jigdo.
+  * genisoimage/jte.c: fix exclude list handling.
+
+ -- Steve McIntyre <93sam@debian.org>  Wed, 19 Sep 2007 22:03:04 +0100
 
 cdrkit (1.1.6) RELEASED; urgency=low
 

@@ -204,8 +204,7 @@ extern int jte_add_exclude(char *pattern)
 	new->match_rule = pattern;
 
     /* Order on the exclude list doesn't matter! */
-    if (NULL != exclude_list)
-        new->next = exclude_list;
+	new->next = exclude_list;
 
     exclude_list = new;
     return 0;
@@ -246,8 +245,7 @@ extern int jte_add_include(char *pattern)
 	new->match_rule = pattern;
 
     /* Order on the include list doesn't matter! */
-    if (NULL != include_list)
-        new->next = include_list;
+	new->next = include_list;
 
     include_list = new;
     return 0;
