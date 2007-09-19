@@ -641,7 +641,7 @@ static void flush_bz2_chunk(void *buffer, off_t size)
     compressed_size_out = c_stream.total_out_lo32 + 16;
     err = BZ2_bzCompressEnd(&c_stream);
 
-    template_fwrite("DATA", 4, 1, t_file);
+    template_fwrite("BZIP", 4, 1, t_file);
 
     write_le48(compressed_size_out, &comp_size_out[0]);
     template_fwrite(comp_size_out, sizeof(comp_size_out), 1, t_file);
@@ -732,12 +732,7 @@ static void write_template_desc_entries(off_t image_len, char *image_md5)
             case JTET_NOMATCH:
             {
                 jigdo_chunk_entry_t jchunk;
-#ifdef BZ2_SUPPORT
-                if (use_bz2)
-                    jchunk.type = 8; /* Raw data, bzipped */
-                else
-#endif
-                    jchunk.type = 2; /* Raw data, gzipped */
+				jchunk.type = 2; /* Raw data, gzipped */
                 write_le48(entry->data.chunk.uncompressed_length, &jchunk.skipLen[0]);
                 template_fwrite(&jchunk, sizeof(jchunk), 1, t_file);
                 break;
