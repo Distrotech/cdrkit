@@ -1485,7 +1485,7 @@ gracewait(cdr_t *dp, BOOL *didgracep)
 		printf("No chance to quit anymore.");
 		goto grace_done;
 	}
-	printf("Last chance to quit, starting %s write in  %d seconds.",
+	printf("Last chance to quit, starting %s write in %4d seconds.",
 		(dp->cdr_cmdflags & F_DUMMY)?"dummy":"real", gracetime);
 	flush();
 	signal(SIGINT, intr);
