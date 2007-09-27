@@ -1596,12 +1596,12 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 		!S_ISFIFO(lstatbuf.st_mode) && !S_ISSOCK(lstatbuf.st_mode) &&
 		!S_ISLNK(lstatbuf.st_mode) && !S_ISREG(lstatbuf.st_mode) &&
 		!S_ISDIR(lstatbuf.st_mode)) {
-        if ( ! (this_dir == root && strcmp(short_name, "..") == 0)) {
-            fprintf(stderr,
-                    "Unknown file type (%s) %s - ignoring and continuing.\n",
-                    filetype((int) lstatbuf.st_mode), whole_path);
-            return (0);
-        }
+		if ( ! (this_dir == root && strcmp(short_name, "..") == 0)) {
+			fprintf(stderr,
+			"Unknown file type (%s) %s - ignoring and continuing.\n",
+				filetype((int) lstatbuf.st_mode), whole_path);
+		}
+		return (0);
 	}
 	/* Who knows what trash this is - ignore and continue */
 
