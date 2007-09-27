@@ -611,12 +611,6 @@ static int OpenCdRom(char *pdev_name)
 		usal_help(stderr);
 		exit(NO_ERROR);
 	}
-
-	if (global.scandevs) {
-		list_devices(usalp, stdout, 0);
-		exit(0);
-	}
-
 	/* device name, debug, verboseopen */
 	usalp = usal_open(pdev_name, errstr, sizeof(errstr), 0, 0);
 
@@ -660,6 +654,11 @@ static int OpenCdRom(char *pdev_name)
 	priv_off();
 	dontneedgroup();
 	dontneedroot();
+
+	if (global.scandevs) {
+		list_devices(usalp, stdout, 0);
+		exit(0);
+	}
 
 	if (global.scanbus) {
 		select_target(usalp, stdout);
