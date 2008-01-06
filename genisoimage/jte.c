@@ -9,16 +9,12 @@
  * GNU GPL v2
  */
 
-#undef BZ2_SUPPORT
-
 #include <mconfig.h>
 #include "genisoimage.h"
 #include <timedefs.h>
 #include <fctldefs.h>
 #include <zlib.h>
-#ifdef BZ2_SUPPORT
-#   include <bzlib.h>
-#endif
+#include <bzlib.h>
 #include <regex.h>
 #ifdef SORTING
 #include "match.h"
@@ -29,8 +25,8 @@
 #include "dvd_reader.h"
 #include "dvd_file.h"
 #include "ifo_read.h"
-#include "md5.h"
 #include "endianconv.h"
+#include "checksum.h"
 #endif
 #ifdef APPLE_HYB
 #include <ctype.h>
@@ -45,15 +41,11 @@
 #define JTET_NOMATCH    2
 
 #define JTE_VER_MAJOR     0x0001
-#define JTE_VER_MINOR     0x000F
+#define JTE_VER_MINOR     0x0012
 #define JTE_NAME          "JTE"
 #define JTE_COMMENT       "JTE at http://www.einval.com/~steve/software/JTE/ ; jigdo at http://atterer.net/jigdo/"
 
 #define JIGDO_TEMPLATE_VERSION "1.1"
-
-#ifdef BZ2_SUPPORT
-int use_bz2 = 0;
-#endif
 
 /*	
 	Simple list to hold the results of -jigdo-exclude and
@@ -81,14 +73,18 @@ char    *jjigdo_out = NULL;    /* Output name for jigdo .jigdo file; NULL means 
 char    *jtemplate_out = NULL; /* Output name for jigdo template file; NULL means don't do it */
 char    *jmd5_list = NULL;     /* Name of file to use for MD5 checking */
 int      jte_min_size = MIN_JIGDO_FILE_SIZE;
+jtc_t    jte_template_compression = JTE_TEMP_GZIP;
 struct  path_match *exclude_list = NULL;
 struct  path_match *include_list = NULL;
 struct  path_mapping  *map_list = NULL;
 unsigned long long template_size = 0;
 unsigned long long image_size = 0;
 
-static struct mk_MD5Context iso_context;
-static struct mk_MD5Context template_context;
+static checksum_context_t *iso_context = NULL;
+static checksum_context_t *template_context = NULL;
+
+unsigned char image_md5[16];  /* MD5SUM of the entire image */
+unsigned char image_sha1[20]; /* SHA1SUM of the entire image */
 
 /* List of files that we've seen, ready to write into the template and
    jigdo files */
@@ -305,7 +301,7 @@ extern int list_file_in_jigdo(char *filename, off_t size, char **realname, unsig
     /* Cheaper to check file size first */
     if (size < jte_min_size)
     {
-        if (verbose > 0)
+        if (verbose > 1)
             fprintf(stderr, "Jigdo-ignoring file %s; it's too small\n", filename);
         return 0;
     }
@@ -313,7 +309,7 @@ extern int list_file_in_jigdo(char *filename, off_t size, char **realname, unsig
     /* Now check the excluded list by name */
     if (check_exclude_by_name(filename, &matched_rule))
     {
-        if (verbose > 0)
+        if (verbose > 1)
             fprintf(stderr, "Jigdo-ignoring file %s; it's covered in the exclude list by \"%s\"\n", filename, matched_rule);
         return 0;
     }
@@ -435,7 +431,7 @@ static char *remap_filename(char *filename)
 /* Write data to the template file and update the MD5 sum */
 static size_t template_fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
-    mk_MD5Update(&template_context, ptr, size * nmemb);
+    checksum_update(template_context, ptr, size * nmemb);
     template_size += (unsigned long long)size * nmemb;
     return fwrite(ptr, size, nmemb, stream);
 }
@@ -449,7 +445,17 @@ static void write_template_header()
 
     memset(buf, 0, sizeof(buf));
 
-    mk_MD5Init(&template_context);
+    template_context = checksum_init_context(CHECK_MD5_USED);
+    if (!template_context)
+    {
+#ifdef	USE_LIBSCHILY
+        comerr("cannot allocate template checksum contexts\n");
+#else
+        fprintf(stderr, "cannot allocate template checksum contexts\n");
+        exit(1);
+#endif
+    }
+    
     i += sprintf(p, "JigsawDownload template %s %s/%d.%d \r\n",
                  JIGDO_TEMPLATE_VERSION, JTE_NAME, JTE_VER_MAJOR, JTE_VER_MINOR);
     p = &buf[i];
@@ -562,8 +568,17 @@ void write_jt_header(FILE *template_file, FILE *jigdo_file)
     t_file = template_file;
     j_file = jigdo_file;
 
-    /* Start MD5 work for the image */
-    mk_MD5Init(&iso_context);
+    /* Start checksum work for the image */
+    iso_context = checksum_init_context(CHECK_MD5_USED|CHECK_SHA1_USED);
+    if (!iso_context)
+    {
+#ifdef	USE_LIBSCHILY
+        comerr("cannot allocate iso checksum contexts\n");
+#else
+        fprintf(stderr, "cannot allocate iso checksum contexts\n");
+        exit(1);
+#endif
+    }
 
     /* Start the template file */
     write_template_header();
@@ -612,7 +627,6 @@ static void flush_gzip_chunk(void *buffer, off_t size)
     free(comp_buf);
 }
 
-#ifdef BZ2_SUPPORT
 /* Compress and flush out a buffer full of template data */
 static void flush_bz2_chunk(void *buffer, off_t size)
 {
@@ -650,15 +664,12 @@ static void flush_bz2_chunk(void *buffer, off_t size)
     template_fwrite(comp_buf, c_stream.total_out_lo32, 1, t_file);
     free(comp_buf);
 }
-#endif
 
 static void flush_compressed_chunk(void *buffer, off_t size)
 {
-#ifdef BZ2_SUPPORT
-    if (use_bz2)
+    if (jte_template_compression == JTE_TEMP_BZIP2)
         flush_bz2_chunk(buffer, size);
     else
-#endif
         flush_gzip_chunk(buffer, size);
 }
 
@@ -666,10 +677,29 @@ static void flush_compressed_chunk(void *buffer, off_t size)
    necessary */
 static void write_compressed_chunk(unsigned char *buffer, size_t size)
 {
-    static unsigned char uncomp_buf[1024 * 1024];
+    static unsigned char *uncomp_buf = NULL;
+	static size_t uncomp_size = 0;
     static size_t uncomp_buf_used = 0;
 
-    if ((uncomp_buf_used + size) > sizeof(uncomp_buf))
+	if (!uncomp_buf)
+	{
+		if (jte_template_compression == JTE_TEMP_BZIP2)
+			uncomp_size = 900 * 1024;
+		else
+			uncomp_size = 1024 * 1024;
+		uncomp_buf = malloc(uncomp_size);
+		if (!uncomp_buf)
+		{
+#ifdef	USE_LIBSCHILY
+            comerr("failed to allocate %d bytes for template compression buffer\n", uncomp_size);
+#else
+            fprintf(stderr, "failed to allocate %d bytes for template compression buffer\n", uncomp_size);
+            exit(1);
+#endif
+		}
+	}
+
+    if ((uncomp_buf_used + size) > uncomp_size)
     {
         flush_compressed_chunk(uncomp_buf, uncomp_buf_used);
         uncomp_buf_used = 0;
@@ -682,13 +712,13 @@ static void write_compressed_chunk(unsigned char *buffer, size_t size)
     }
     
     if (!uncomp_buf_used)
-        memset(uncomp_buf, 0, sizeof(uncomp_buf));
+        memset(uncomp_buf, 0, uncomp_size);
 
-    while (size > sizeof(uncomp_buf))
+    while (size > uncomp_size)
     {
-        flush_compressed_chunk(buffer, sizeof(uncomp_buf));
-        buffer += sizeof(uncomp_buf);
-        size -= sizeof(uncomp_buf);
+        flush_compressed_chunk(buffer, uncomp_size);
+        buffer += uncomp_size;
+        size -= uncomp_size;
     }
     memcpy(&uncomp_buf[uncomp_buf_used], buffer, size);
     uncomp_buf_used += size;
@@ -730,7 +760,7 @@ static void write_template_desc_entries(off_t image_len, char *image_md5)
             case JTET_NOMATCH:
             {
                 jigdo_chunk_entry_t jchunk;
-				jchunk.type = 2; /* Raw data, gzipped */
+				jchunk.type = 2; /* Raw data, compressed */
                 write_le48(entry->data.chunk.uncompressed_length, &jchunk.skipLen[0]);
                 template_fwrite(&jchunk, sizeof(jchunk), 1, t_file);
                 break;
@@ -789,7 +819,9 @@ static void write_jigdo_file(void)
     entry_t *entry = entry_list;
     struct path_mapping *map = map_list;
 
-    mk_MD5Final(&template_md5sum[0], &template_context);
+    checksum_final(template_context);
+    checksum_copy(template_context, CHECK_MD5, &template_md5sum[0]);
+//    mk_MD5Final(&template_md5sum[0], &template_context);
 
     fprintf(j_file, "# JigsawDownload\n");
     fprintf(j_file, "# See <http://atterer.net/jigdo/> for details about jigdo\n");
@@ -807,6 +839,10 @@ static void write_jigdo_file(void)
     fprintf(j_file, "# Template Hex MD5sum %s\n",
             hex_dump(&template_md5sum[0], sizeof(template_md5sum)));
     fprintf(j_file, "# Template size %lld bytes\n", template_size);
+    fprintf(j_file, "# Image Hex MD5Sum %s\n",
+            hex_dump(&image_md5[0], sizeof(image_md5)));
+    fprintf(j_file, "# Image Hex SHA1Sum %s\n",
+            hex_dump(&image_sha1[0], sizeof(image_sha1)));
     fprintf(j_file, "# Image size %lld bytes\n\n", image_size);
 
     fprintf(j_file, "[Parts]\n");
@@ -834,15 +870,16 @@ static void write_jigdo_file(void)
 */
 void write_jt_footer(void)
 {
-    unsigned char md5[16]; /* MD5SUM of the entire image */
-
     /* Finish calculating the image's checksum */
-    mk_MD5Final(&md5[0], &iso_context);
+    checksum_final(iso_context);
+    checksum_copy(iso_context, CHECK_MD5, &image_md5[0]);
+    checksum_copy(iso_context, CHECK_SHA1, &image_sha1[0]);
+//    mk_MD5Final(&md5[0], &iso_context);
 
     /* And calculate the image size */
     image_size = (unsigned long long)SECTOR_SIZE * last_extent_written;
 
-    write_template_desc_entries(image_size, md5);
+    write_template_desc_entries(image_size, image_md5);
 
     write_jigdo_file();
 }
@@ -919,14 +956,15 @@ void jtwrite(buffer, size, count, submode, islast)
 {
 #ifdef	JTWRITE_DEBUG
 	if (count != 1 || (size % 2048) != 0)
-		fprintf(stderr, "Count: %d, size: %d\n", count, size);
+		error("Count: %d, size: %d\n", count, size);
 #endif
 
     if (!jtemplate_out)
         return;
 
     /* Update the global image checksum */
-    mk_MD5Update(&iso_context, buffer, size*count);
+    checksum_update(iso_context, buffer, size * count);
+//    mk_MD5Update(&iso_context, buffer, size*count);
 
     /* Write a compressed version of the data to the template file,
        and add a reference on the state list so we can write that
@@ -983,7 +1021,8 @@ void write_jt_match_record(char *filename, char *mirror_name, int sector_size, o
 		}
         if (first_block)
             rsync64_sum = rsync64(buf, MIN_JIGDO_FILE_SIZE);
-        mk_MD5Update(&iso_context, buf, use);
+        checksum_update(iso_context, buf, use);
+//        mk_MD5Update(&iso_context, buf, use);
         remain -= use;
         first_block = 0;
     }
@@ -995,7 +1034,8 @@ void write_jt_match_record(char *filename, char *mirror_name, int sector_size, o
     {
         int pad_size = sector_size - (size % sector_size);
         memset(buf, 0, pad_size);
-        mk_MD5Update(&iso_context, buf, pad_size);
+        checksum_update(iso_context, buf, pad_size);
+//        mk_MD5Update(&iso_context, buf, pad_size);
     }
 
     add_file_entry(mirror_name, size, &md5[0], rsync64_sum);

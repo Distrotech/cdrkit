@@ -25,4 +25,13 @@ extern int  jte_add_exclude(char *pattern);
 extern int  jte_add_include(char *pattern);
 extern int  jte_add_mapping(char *arg);
 
+typedef enum _jtc_e
+{
+    JTE_TEMP_GZIP = 0,
+    JTE_TEMP_BZIP2
+} jtc_t;
+
+extern jtc_t jte_template_compression;
+
+
 #define MIN_JIGDO_FILE_SIZE 1024

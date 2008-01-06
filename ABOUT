@@ -27,13 +27,13 @@ This package contains the following software:
   cdrecord by Jörg Schilling <schilling@fokus.fhg.de> but
   developed independently now.
 
-- mkisofs (an ISO-9660 filesystem image creator)
+- genisoimage (an ISO-9660 filesystem image creator)
   By Eric Youngdale <eric@andante.org>, Jörg Schilling
   <schilling@fokus.fhg.de>, James Pearson
   <jcpearso@ge.ucl.ac.uk> and other contributors.
 
 - mkhybrid (an ISO-9660/HFS filesystem image creator)
-  Link to mkisofs
+  Link to genisoimage
 
 - several diagnostic programs for ISO-9660, originaly from
   cdrtools (by Jörg Schilling), 
