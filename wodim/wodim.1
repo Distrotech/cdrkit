@@ -57,12 +57,12 @@ The
 .I device
 is the device file or label offered by the operating system to access the
 recorder with SCSI GENERIC (sg) interface. Note that some operating systems may
-provide separate device nodes for block oriented and sg access. For example, on
+provide separate device nodes for block\-oriented and sg access. For example, on
 older
 .I Linux
-systems the sg access was available trough
+systems, the sg access was available through
 .IR /dev/sg...
-files while the block oriented access was done through associated (but not identic)
+files while the block oriented access was done through associated (but not identical)
 .IR /dev/hd...
 and 
 .IR /dev/sr...
@@ -107,9 +107,9 @@ option may also be a drive name label in that file (see FILES section).
 .PP
 As a special exception, the device specification can be
 .IR -1
-or just omited, which invokes automatic guessing of an appropriate device for
+or just omitted, which invokes automatic guessing of an appropriate device for
 the selected operation. However, this guessing is not available everywhere and
-is not reliable, it is only available for user's convinience in simple
+is not reliable; it is only available for the user's convenience in simple
 environments.
 .PP
 In 
@@ -133,15 +133,15 @@ concatenates all file arguments to a single track when writing to DVD media.
 .SH "PROCESS SCHEDULING PRIORITY"
 .PP
 Wodim tries to get higher process priority using different methods. This is
-important because the burn process is usualy a realtime task, no long delays
-should occur while transmiting fresh data to the recorder. This is especially
-important on systems with insufficient RAM where swaping can create delays of
+important because the burn process is usually a realtime task, no long delays
+should occur while transmitting fresh data to the recorder. This is especially
+important on systems with insufficient RAM where swapping can create delays of
 many seconds.
 .PP
 A possible workaround on underpowered systems is the use of the burnfree or
 similar feature, allowing the recorder to resume.
 .PP
-Root permissions are usualy required to get higher process scheduling priority.
+Root permissions are usually required to get higher process scheduling priority.
 .PP
 On 
 .B SVr4 
@@ -597,7 +597,7 @@ blanked. Note that you may need to specify
 because some drives will not continue with certain types of bad CD-RW
 disks. Note also that
 .B wodim
-does it's best if the 
+does its best if the 
 .B \-force 
 flag is used but it finally depends on the drive's firmware 
 whether the blanking operation will succeed or not.
@@ -1019,7 +1019,7 @@ Currently implemented driver options are:
 .B burnfree 
 Turn the support for Buffer Underrun Free writing on.
 This only works for drives that support Buffer Underrun Free technology, which
-is available on most drives manufactured in this millenium. 
+is available on most drives manufactured in this millennium. 
 This may be called:
 .BR "Sanyo BURN-Proof" ,
 .BR "Ricoh Just-Link" ,
@@ -1210,10 +1210,10 @@ Scan all SCSI devices on all SCSI busses and print the inquiry
 strings. This option may be used to find SCSI address of the 
 CD/DVD-Recorder on a system. If some device types are invisible, try using
 .B dev=ATA:
-or similar option to give a hint about the device typ you are looking for.
+or similar option to give a hint about the device type you are looking for.
 The numbers printed out as labels are computed by: 
 .B "bus * 100 + target.
-On plattforms and device systems without persistent SCSI number management the
+On platforms and device systems without persistent SCSI number management the
 results are not reliable. Use the .B \-\-devices option instead.
 .TP
 .B \-\-devices
@@ -2045,7 +2045,7 @@ may be set to -1 to tell wodim to use the global defaults.
 .I target
 can be -1 to use the auto-guessing of the drive (see above).
 
-The value for driveropts may be omited or set to "" if no driveropts are used.
+The value for driveropts may be omitted or set to "" if no driveropts are used.
 A typical line may look this way:
 .sp
 plex760= 0,5,0	12	50m	varirec=1
@@ -2058,7 +2058,7 @@ that a drive named
 .I plex760
 is at scsibus 0, target 5, lun 0 and should be used with speed 12 and
 a FIFO size of 50 MB. It also uses some device specific parameter.
-A second drive may is accesible via the device file /dev/hdd and uses the
+A second drive may is accessible via the device file /dev/hdd and uses the
 default speed and the default FIFO size.
 .RE
 
@@ -2155,7 +2155,7 @@ unsupported CD/DVD/BR/HD-DVD-Recorders, please contact the
 maintainers (see below).
 .PP
 Many CD recorders have bugs and often require a firmware update to work
-correctly. If you exprience problems which cannot be solved or explained by the
+correctly. If you experience problems which cannot be solved or explained by the
 notes above, please look for instructions on the homepage of the particular
 manufacturer.
 .PP
@@ -2250,7 +2250,7 @@ expanded to 300 sectors.
 .SH BUGS
 .PP
 .B netscsid
-does not work properly and is generaly unmaintained. It is probably not
+does not work properly and is generally unmaintained. It is probably not
 compatible with rscsi from 
 .BR cdrtools
 either. Good bugfixes are welcome, talk to Cdrkit maintainers.
@@ -2337,11 +2337,11 @@ D-13353 Berlin
 Germany
 .fi
 .PP
-This application is a spinoff from the original program "cdrecord" delivered
+This application is derived from "cdrecord" as included
 in the cdrtools package [1] created by Joerg
-Schilling, who deserves the most credits for its success. However, he is not
+Schilling, who deserves most of the credit for its success. However, he is not
 involved into the development of this spinoff and therefore he shall not be
-made responsible for any problem caused by it. Do not refer to this application
+held responsible for any problems caused by it. Do not refer to this application
 as "cdrecord", do not try to get support for wodim by contacting the original
 authors.
 .PP
@@ -2361,7 +2361,7 @@ If you have definitely found a bug, send a mail to this list or to
 submit@bugs.debian.org
 .br
 .PP
-writing at least a short description into the Subject and "Package: cdrkit" into the first line of the mail body.
+writing at least a short description into the Subject and "Package: cdrkit" in the first line of the mail body.
 .SH SOURCES
 .PP
 .br

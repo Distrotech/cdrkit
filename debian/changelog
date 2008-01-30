@@ -2,6 +2,7 @@ cdrkit (9:1.1.7-1) UNRELEASED; urgency=low
 
   * New upstream release.
     - wodim.1 no longer implies that dev= is required.  (Closes: #434172)
+    - Various typo fixes in wodim.1.  (Closes: #463273)
 
  -- Peter Samuelson <peter@p12n.org>  Mon, 06 Aug 2007 16:13:06 -0500
 
