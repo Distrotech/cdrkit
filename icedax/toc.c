@@ -864,7 +864,7 @@ int process_cddb_titles(int sock_fd, char *inbuff, int readbytes)
 	int	finished = 0;
 	char	*p = inbuff;
 	int	ind = 0;
-	char **	target = (char **)&global.creator;
+	unsigned char **	target = &global.creator;
 
 	do {
 		while (readbytes > 0) {
@@ -935,7 +935,7 @@ int process_cddb_titles(int sock_fd, char *inbuff, int readbytes)
 					if (*target != NULL)
 						**target = '\0';
 				} else {
-					*target = realloc(*target, strlen(*target) + clen - 1);
+				        *target = realloc(*target, strlen((char *)*target) + clen - 1);
 				}
 				if (*target != NULL) {
 					strcat((char *)*target, inbuff+ind+7);
@@ -943,7 +943,7 @@ int process_cddb_titles(int sock_fd, char *inbuff, int readbytes)
 
 				/* handle part after the delimiter, if present */
 				if (res != NULL) {
-					target = (char **)&global.disctitle;
+					target = (unsigned char **)&global.disctitle;
 					/* skip the delimiter */
 					q += 3;
 					clen = p - q;
@@ -1070,8 +1070,9 @@ static int handle_userchoice(char *p, unsigned size)
 
 	/* get user response. */
 	do {
+		int ret;
 		fprintf(stderr, "please choose one (0-%u): ", nr);
-		scanf("%u", &user_choice);
+		ret = scanf("%u", &user_choice);
 	} while (user_choice > nr);
 
 	if (user_choice == nr)

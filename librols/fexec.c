@@ -204,6 +204,8 @@ fexecve(name, in, out, err, av, env)
 	int	o[3];
 	int	f[3];
 	int	errsav;
+
+	o[0] = o[1] = o[2] = f[0] = f[1] = f[2] = 0;
 #endif
 
 	fflush(out);

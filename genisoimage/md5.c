@@ -352,15 +352,15 @@ int calculate_md5sum(char *filename, unsigned long long size, unsigned char out[
     remain = size;
     while (remain > 0)
     {
-        use = (remain > sizeof(buffer) ? sizeof(buffer) : remain);
-		if (fread(buffer, 1, use, infile) == 0)
-        {
-			fprintf(stderr, "cannot read from '%s'\n", filename);
-			exit(1);
-		}
-        /* Update the checksum */
-        mk_MD5Update(&file_context, buffer, use);
-        remain -= use;
+	use = (remain > sizeof(buffer) ? sizeof(buffer) : remain);
+	if (fread(buffer, 1, use, infile) == 0)
+	{
+		fprintf(stderr, "cannot read from '%s'\n", filename);
+		exit(1);
+	}
+	/* Update the checksum */
+	mk_MD5Update(&file_context, (unsigned char *)buffer, use);
+	remain -= use;
     }
     fclose(infile);
     mk_MD5Final(&out[0], &file_context);

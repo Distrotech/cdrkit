@@ -41,6 +41,7 @@
 #include <mconfig.h>
 #include "genisoimage.h"
 #include "match.h"
+#include "udf.h"
 #include "exclude.h"
 #include <timedefs.h>
 #include <errno.h>

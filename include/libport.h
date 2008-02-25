@@ -67,7 +67,9 @@
 			/* Linux MAXHOSTNAMELEN */
 #endif
 #ifdef	MAXHOSTNAMELEN
+#ifndef HOST_NAME_MAX
 #define	HOST_NAME_MAX	MAXHOSTNAMELEN
+#endif
 #endif
 #endif
 

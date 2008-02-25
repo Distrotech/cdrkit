@@ -63,6 +63,7 @@
 
 #include "scsimmc.h"
 #include "wodim.h"
+#include "scsi_scan.h"
 
 #define	strbeg(s1, s2)	(strstr((s2), (s1)) == (s2))
 

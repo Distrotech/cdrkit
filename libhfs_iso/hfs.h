@@ -29,6 +29,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
+#ifndef HFS_H
+#define HFS_H
 
 #include <timedefs.h>
 #include <standard.h>
@@ -195,8 +197,12 @@ int hfs_delete(hfsvol *, char *);
 
 int hfs_rename(hfsvol *, char *, char *);
 
+int f_trunc(hfsfile *file);
+
 #ifdef APPLE_HYB
 unsigned short hfs_get_drAllocPtr(hfsfile *);
 int hfs_set_drAllocPtr(hfsfile *, unsigned short, int size);
 void hfs_vsetbless(hfsvol *, unsigned long);
 #endif /* APPLE_HYB */
+
+#endif

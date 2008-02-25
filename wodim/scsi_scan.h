@@ -39,5 +39,6 @@
 extern	int	select_target(SCSI *usalp, FILE *f);
 extern int list_devices(SCSI *usalp, FILE *f, int pickup_type);
 extern SCSI * open_auto(int64_t need_size, int debug, int lverbose);
+extern int       scsi_set_streaming(SCSI *usalp, caddr_t addr, int size);
 
 #endif	/* _SCSI_SCAN_H */

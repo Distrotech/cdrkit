@@ -177,7 +177,7 @@ static int boot_hppa_write(FILE *outfile)
     write_be32(length, &boot_sector[20]);
 
     /* Now the commandline */
-    snprintf(&boot_sector[24], 127, "%s", hppa_cmdline);
+    snprintf((char *)&boot_sector[24], 127, "%s", hppa_cmdline);
 
     /* Find the dir entry for the 64-bit kernel by walking our file list */
     boot_file = search_tree_file(root, hppa_kernel_64);

@@ -58,8 +58,8 @@
 #ifndef	STDERR_FILENO
 #define	STDERR_FILENO	2
 #endif
-#define	eprints(a)	(void)write(STDERR_FILENO, (a), sizeof (a)-1)
-#define	eprintl(a)	(void)write(STDERR_FILENO, (a), strlen(a))
+#define	eprints(a)	do { int ret; ret = write(STDERR_FILENO, (a), sizeof (a)-1); } while (0)
+#define	eprintl(a)	do { int ret; ret = write(STDERR_FILENO, (a), strlen(a)); } while (0)
 
 #define	is_even(p)	((((long)(p)) & 1) == 0)
 #define	even(p)		(((long)(p)) & ~1L)

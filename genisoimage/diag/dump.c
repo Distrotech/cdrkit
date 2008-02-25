@@ -366,9 +366,10 @@ main(int argc, char *argv[])
 	on_comerr((void(*)(int, void *))reset_tty, NULL);
 
 	do {
+	        int ret;
 		if (file_addr < (off_t)0) file_addr = (off_t)0;
 		showblock(1);
-		read(STDIN_FILENO, &c, 1);
+		ret = read(STDIN_FILENO, &c, 1);
 		if (c == 'a')
 			file_addr -= PAGE;
 		if (c == 'b')
@@ -378,11 +379,11 @@ main(int argc, char *argv[])
 			printf("Enter new starting block (in hex):");
 			if (sizeof (file_addr) > sizeof (long)) {
 				Llong	ll;
-				scanf("%llx", &ll);
+				ret = scanf("%llx", &ll);
 				file_addr = (off_t)ll;
 			} else {
 				long	l;
-				scanf("%lx", &l);
+				ret = scanf("%lx", &l);
 				file_addr = (off_t)l;
 			}
 			file_addr = file_addr << 11;
@@ -390,9 +391,10 @@ main(int argc, char *argv[])
 			printf("                                     ");
 		}
 		if (c == 'f') {
+		        char *ret;
 			crsr2(20, 1);
 			printf("Enter new search string:");
-			fgets((char *)search, sizeof (search), stdin);
+			ret = fgets((char *)search, sizeof (search), stdin);
 			while (search[strlen((char *)search)-1] == '\n')
 				search[strlen((char *)search)-1] = 0;
 			crsr2(20, 1);

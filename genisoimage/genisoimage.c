@@ -2451,8 +2451,8 @@ parse_input_files:
 	if (stream_filename) {
 		if (strlen(stream_filename) > MAX_ISONAME)
 			comerrno(EX_BAD,
-					"stream-file-name too long (%d), max is %d.\n",
-					strlen(stream_filename), MAX_ISONAME);
+				 "stream-file-name too long (%d), max is %d.\n",
+				 (int)strlen(stream_filename), (int)MAX_ISONAME);
 		if (strchr(stream_filename, '/'))
 			comerrno(EX_BAD, "Illegal character '/' in stream-file-name.\n");
 		iso9660_level = 4;

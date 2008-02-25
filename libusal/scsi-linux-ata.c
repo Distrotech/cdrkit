@@ -258,7 +258,7 @@ openbydev:
 			starget,
 			slun;
 
-		f = sg_open_excl(device, O_RDONLY | O_NONBLOCK);
+		f = sg_open_excl(device, O_RDONLY | O_NONBLOCK, FALSE);
 
 		if (f < 0) {
 			if (usalp->errstr)
@@ -770,11 +770,11 @@ sg_amapdev(SCSI *usalp, int f, char *device, int *schillybus, int *target,
 			l = 0;
 #endif	/* nonono */
 			/* other solution, with ioctl */
-			int	Chan,
-				Ino,
-				Bus,
-				Target,
-				Lun;
+			int	Chan = 0,
+				Ino = 0,
+				Bus = 0,
+				Target = 0,
+				Lun = 0;
 
 			subsystem = HOST_SCSI;
 			sg_amapdev_scsi(usalp, f, &Bus, &Target, &Lun, &Chan, &Ino);
@@ -1008,7 +1008,7 @@ usalo_asend(SCSI *usalp)
 	}
 
 	sg_cgc.buflen = sp->size;
-	sg_cgc.buffer = sp->addr;
+	sg_cgc.buffer = (unsigned char *)sp->addr;
 
 	if (sp->sense_len > sizeof (sense_cgc))
 		sense_cgc.add_sense_len = sizeof (sense_cgc) - 8;

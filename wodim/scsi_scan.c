@@ -50,6 +50,9 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
+#include <stdlib.h>
+
 
 static	void	print_product(FILE *f, struct scsi_inquiry *ip);
 int	select_target(SCSI *usalp, FILE *f);
@@ -200,7 +203,7 @@ int list_devices(SCSI *usalp, FILE *f, int pickup_first) {
 	int fd, ndevs=0;
   	struct stat statbuf;
 	char *lines[MAXDEVCOUNT];
-	char buf[256], perms[8], *p;
+	char buf[256], perms[8];
 
 
 	usalp->silent++;

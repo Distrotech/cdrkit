@@ -50,6 +50,7 @@
 #include "node.h"
 #include "record.h"
 #include "volume.h"
+#include "hfs.h"
 
 /* High-Level Volume Routines ============================================== */
 

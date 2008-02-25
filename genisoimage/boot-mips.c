@@ -310,7 +310,7 @@ static int boot_mips_write(FILE *outfile)
         length = ((get_733(boot_file->isorec.size) + 2047) / 2048) * 2048;
         filename = file_base_name(boot_mips_filename[i]);
 
-        strncpy(vh.vh_vd[i].vd_name, filename, MIN(VDNAMESIZE, strlen(filename)));
+        strncpy((char *)vh.vh_vd[i].vd_name, filename, MIN(VDNAMESIZE, strlen(filename)));
         write_be32(extent, (unsigned char *)&vh.vh_vd[i].vd_lbn);
         write_be32(length, (unsigned char *)&vh.vh_vd[i].vd_nbytes);
         

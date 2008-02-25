@@ -583,6 +583,7 @@ check_path_tables(int typel_extent, int typem_extent, int path_table_size)
 	char	*pnt;
 	char	*typel;
 	char	*typem;
+	int     ret;
 
 	/* Now read in the path tables */
 
@@ -591,11 +592,11 @@ check_path_tables(int typel_extent, int typem_extent, int path_table_size)
 	readsecs(typel_extent * blocksize / 2048, typel, ISO_BLOCKS(path_table_size));
 #else
 	lseek(fileno(infile), (off_t)((off_t)typel_extent) * blocksize, SEEK_SET);
-	read(fileno(infile), typel, path_table_size);
+	ret = read(fileno(infile), typel, path_table_size);
 #endif
 	typem = (char *) malloc(path_table_size);
 	lseek(fileno(infile), (off_t)((off_t)typem_extent) * blocksize, SEEK_SET);
-	read(fileno(infile), typem, path_table_size);
+	ret = read(fileno(infile), typem, path_table_size);
 
 	j = path_table_size;
 	pnt = typel;

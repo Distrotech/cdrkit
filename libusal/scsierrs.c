@@ -55,6 +55,7 @@
 const char	*usal_sensemsg(int, int, int, const char **, char *, int maxcnt);
 int usal__errmsg(SCSI *usalp, char *obuf, int maxcnt, struct scsi_sense *, 
 					 struct scsi_status *, int);
+#ifdef ABC
 /*
  * Map old non extended sense to sense key.
  */
@@ -67,6 +68,7 @@ static Uchar sd_adaptec_keys[] = {
 	6, 6, 6, 5,  4,11,11,11			/* 0x28-0x2f */
 };
 #define	MAX_ADAPTEC_KEYS (sizeof (sd_adaptec_keys))
+#endif
 
 /*
  * Deviations to CCS found on old pre CCS devices
@@ -667,6 +669,7 @@ static char *sd_sense_keys[] = {
 	"Reserved"			/* 0x0f */
 };
 
+#ifdef ABC
 static char *sd_cmds[] = {
 	"\000test unit ready",		/* 0x00 */
 	"\001rezero",			/* 0x01 */
@@ -687,6 +690,8 @@ static char *sd_cmds[] = {
 	"\067read defect data",		/* 0x37 */
 	NULL
 };
+#endif
+
 
 const char *
 usal_sensemsg(register int ctype, register int code, register int qual, 

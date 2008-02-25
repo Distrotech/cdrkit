@@ -303,7 +303,8 @@ xfwrite(void *buffer, int size, int count, FILE *file, int submode, BOOL islast)
 		 * which is wrong this code. (void *) introduces a compatible
 		 * intermediate type in the cast list.
 		 */
-		count -= got, *(char **)(void *)&buffer += size * got;
+		count -= got;
+		buffer = (void *)(((char *)buffer) + size * got);
 	}
 }
 
@@ -918,8 +919,8 @@ reassign_link_addresses(struct directory *dpnt)
 
 			if (verbose > 2 && s_entry->size != 0) {
 				fprintf(stderr, "%8d %8d ",
-					s_entry->starting_block,
-					s_entry->starting_block + ISO_BLOCKS(s_entry->size) - 1);
+					(int)s_entry->starting_block,
+					(int)(s_entry->starting_block + ISO_BLOCKS(s_entry->size) - 1));
 
 				if (s_entry->inode != TABLE_INODE) {
 					fprintf(stderr, "%s\n", s_entry->whole_name);

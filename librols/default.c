@@ -56,7 +56,7 @@ static char *get_value(FILE *srcfile, const char *key, int dorewind) {
 next_line:
 	while(fgets(linebuf, sizeof(linebuf)-1, srcfile)) {
 		int i;
-		int keybeg;
+		int keybeg=0;
 		int s=KEYBEGINSEARCH;
 		char *ret=NULL;
 		int lastchar=0;

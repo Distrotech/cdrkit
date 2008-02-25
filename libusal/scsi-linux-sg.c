@@ -181,7 +181,7 @@ typedef struct {
 struct usal_local {
 	int	usalfile;		/* Used for SG_GET_BUFSIZE ioctl()*/
 	short	usalfiles[MAX_SCG][MAX_TGT][MAX_LUN];
-  char *filenames[MAX_SCG][MAX_TGT][MAX_LUN];
+        char    *filenames[MAX_SCG][MAX_TGT][MAX_LUN];
 	short	buscookies[MAX_SCG];
 	int	pgbus;
 	int	pack_id;		/* Should be a random number	*/
@@ -217,13 +217,6 @@ struct usal_local {
 /*#define	MISALIGN*/
 /*#undef	SG_GET_BUFSIZE*/
 
-#if	defined(USE_PG) && !defined(USE_PG_ONLY)
-#include "scsi-linux-pg.c"
-#endif
-#ifdef	USE_OLD_ATAPI
-#include "scsi-linux-ata.c"
-#endif
-
 
 #ifdef	MISALIGN
 static	int	sg_getint(int *ip);
@@ -248,6 +241,12 @@ int    sg_open_excl(char *device, int mode, BOOL beQuiet);
 
 static BOOL get_max_secs(char *dirpath, int *outval);
 
+#if	defined(USE_PG) && !defined(USE_PG_ONLY)
+#include "scsi-linux-pg.c"
+#endif
+#ifdef	USE_OLD_ATAPI
+#include "scsi-linux-ata.c"
+#endif
 
 BOOL check_linux_26() {
 	int gen, tmp;
@@ -465,9 +464,10 @@ usalo_open(SCSI *usalp, char *device)
 		for (b = 0; b < MAX_SCG; b++) {
 			usallocal(usalp)->buscookies[b] = (short)-1;
 			for (t = 0; t < MAX_TGT; t++) {
-				for (l = 0; l < MAX_LUN; l++)
+				for (l = 0; l < MAX_LUN; l++) {
 					usallocal(usalp)->usalfiles[b][t][l] = (short)-1;
 					usallocal(usalp)->filenames[b][t][l] = NULL;
+				}
 			}
 		}
 	}
@@ -511,10 +511,12 @@ usalo_open(SCSI *usalp, char *device)
 #define SCD 1
 #define SG 2
 		int h;
+/*
 retry_scan_open:
+*/
 		for(h=HDX; h <= (fake_atabus ? HDX : SG) ; h++) {
-			char *pattern;
-			unsigned int first, last;
+			char *pattern = NULL;
+			unsigned int first = 0, last = 0;
 			switch(h) {
 				case(HDX): 
 					{
@@ -594,13 +596,14 @@ retry_scan_open:
 
 			/* that's crap, should not be reached in non-scan mode.
 			 * Let's see whether it can be mapped to an atapi
-			 * device to emulate some old cludge's behaviour. */
+			 * device to emulate some old cludge's behaviour. 
 			if(!in_scanmode && busno < 1000 && busno >=0) {
 				fake_atabus=1;
 				fprintf(stderr, "Unable to open this SCSI ID. Trying to map to old ATA syntax."
 						"This workaround will disappear in the near future. Fix your configuration.");
 				goto retry_scan_open;
 			}
+			*/
 		}
 	}
 
@@ -801,7 +804,7 @@ sg_initdev(SCSI *usalp, int f)
 	for (i = 0; i < 1000; i++) {	/* Read at least 32k from /dev/sg* */
 		int	ret;
 
-		ret = read(f, &sg_rep, sizeof (sg_rep));
+		ret = read(f, &sg_rep, sizeof (struct sg_rep));
 		if (ret > 0)
 			continue;
 		if (ret == 0 || errno == EAGAIN || errno == EIO)
@@ -993,12 +996,14 @@ sg_raisedma(SCSI *usalp, long newmax)
 }
 #endif
 
-static void freadstring(char *fn, char *out, int len) {
+static char *freadstring(char *fn, char *out, int len) {
+        char *ret;
 	FILE *fd=fopen(fn, "r");
 	out[0]='\0';
-	if(!fd) return;
-	fgets(out, len, fd);
+	if(!fd) return NULL;
+	ret = fgets(out, len, fd);
 	fclose(fd);
+        return ret;
 }
 
 static long
@@ -1026,14 +1031,13 @@ usalo_maxdma(SCSI *usalp, long amt)
 		major=stbuf.st_rdev>>8;
 		minor=stbuf.st_rdev&0xFF;
 		if (usalp->debug > 0)
-			fprintf(stderr, "Looking for data for major:minor: %d:%d\n", major, minor);
+		  fprintf(stderr, "Looking for data for major:minor: %ld:%ld\n", major, minor);
 		glob_t globbuf;
 		memset(&globbuf, 0, sizeof(glob_t));
 		/* *dev files contain the major:minor strings to compare */
 		glob("/sys/class/scsi_generic/*/device/block*/queue/max_sectors_kb", GLOB_DOOFFS | GLOB_NOSORT, NULL, &globbuf);
 		glob("/sys/block/*/device/block*/queue/max_sectors_kb", GLOB_DOOFFS | GLOB_NOSORT | GLOB_APPEND, NULL, &globbuf);
 		for(i=0;i<globbuf.gl_pathc; i++) {
-			FILE *fd;
 			char *cut, *ende;
 			char buf[64];
 			cut=strstr(globbuf.gl_pathv[i], "/device/")+4;

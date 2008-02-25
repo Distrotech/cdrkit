@@ -1064,7 +1064,7 @@ check_prev_session(struct directory_entry **ptr, int len,
 		}
 		/* We found it and we can reuse the extent */
 		memcpy(curr_entry->isorec.extent, ptr[i]->isorec.extent, 8);
-		curr_entry->starting_block = isonum_733(ptr[i]->isorec.extent);
+		curr_entry->starting_block = isonum_733((unsigned char *)ptr[i]->isorec.extent);
 		curr_entry->de_flags |= SAFE_TO_REUSE_TABLE_ENTRY;
 		goto found_it;
 	}

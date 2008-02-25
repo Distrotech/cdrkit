@@ -69,7 +69,8 @@ isosize(int f)
 	vp = (struct iso9660_pr_voldesc *) &vd;
 
 	do {
-		read(f, &vd, sizeof (vd));
+	  	int ret;
+		ret = read(f, &vd, sizeof (vd));
 		if (GET_UBYTE(vd.vd_type) == VD_PRIMARY)
 			break;
 

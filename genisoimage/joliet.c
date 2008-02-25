@@ -250,9 +250,9 @@ convert_to_unicode(unsigned char *buffer, int size, char *source,
 #ifdef USE_ICONV
 	if (inls->iconv_d && inls->unls_cs2uni==NULL &&
 			inls->unls_uni2cs==NULL) {
-		char *inptr = tmpbuf;
-		char *outptr = buffer;
-		size_t inleft = strlen(tmpbuf);
+		char *inptr = (char *)tmpbuf;
+		char *outptr = (char *)buffer;
+		size_t inleft = (size_t)strlen((char *)tmpbuf);
 		size_t inlen = inleft;
 		size_t outleft = size;
 

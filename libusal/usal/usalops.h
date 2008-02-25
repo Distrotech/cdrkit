@@ -76,6 +76,8 @@ typedef struct usal_ops {
 #define	SCGO_ISATAPI(usalp)			(*(usalp)->ops->usalo_isatapi)(usalp)
 #define	SCGO_RESET(usalp, what)			(*(usalp)->ops->usalo_reset)(usalp, what)
 
+extern int usal_fileno(SCSI *usalp, int busno, int tgt, int tlun);
+extern char * usal_natname(SCSI *usalp, int busno, int tgt, int tlun);
 #ifdef	__cplusplus
 }
 #endif

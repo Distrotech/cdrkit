@@ -59,6 +59,7 @@
 #include "scsimmc.h"
 #include "mmcvendor.h"
 #include "wodim.h"
+#include "scsi_scan.h"
 
 extern	char	*driveropts;
 
@@ -165,6 +166,9 @@ static 	int	do_tattoo_yamaha(SCSI *usalp, FILE *f);
 static 	int	yamaha_write_buffer(SCSI *usalp, int mode, int bufferid, long offset,
 										  long parlen, void *buffer, long buflen);
 static	int	dvd_dual_layer_split(SCSI *usalp, cdr_t *dp, long tsize);
+
+extern int 	reserve_track(SCSI *usalp, Ulong size); /* FIXME */
+extern int 	scsi_format(SCSI *usalp, caddr_t addr, int size, BOOL background); /* FIXME */
 
 #ifdef	__needed__
 static int 
@@ -2851,9 +2855,9 @@ extern	char	*buf;
 		flush();
 	}
 	if (formattype == FULL_FORMAT) {
-	    ret = scsi_format(usalp, &addr, sizeof(addr), FALSE);
+		ret = scsi_format(usalp, (caddr_t)&addr, sizeof(addr), FALSE);
 	} else {
-	    ret = scsi_format(usalp, &addr, sizeof(addr), TRUE);
+		ret = scsi_format(usalp, (caddr_t)&addr, sizeof(addr), TRUE);
 	}
 	if (ret < 0)
 		return (ret);

@@ -535,13 +535,13 @@ static void parse_md5_list(void)
     }
 
     memset(buf, 0, sizeof(buf));
-    while (fgets(buf, sizeof(buf), md5_file))
+    while (fgets((char *)buf, sizeof(buf), md5_file))
     {
         numbuf = &buf[34];
-        filename = &buf[48];
+        filename = (char *)&buf[48];
         /* Lose the trailing \n from the fgets() call */
-        if (buf[strlen(buf)-1] == '\n')
-            buf[strlen(buf)-1] = 0;
+        if (buf[strlen((char *)buf)-1] == '\n')
+	  buf[strlen((char *)buf)-1] = 0;
 
         if (mk_MD5Parse(buf, md5))
         {
@@ -879,7 +879,7 @@ void write_jt_footer(void)
     /* And calculate the image size */
     image_size = (unsigned long long)SECTOR_SIZE * last_extent_written;
 
-    write_template_desc_entries(image_size, image_md5);
+    write_template_desc_entries(image_size, (char *)image_md5);
 
     write_jigdo_file();
 }
