@@ -181,7 +181,7 @@ typedef struct {
 struct usal_local {
 	int	usalfile;		/* Used for SG_GET_BUFSIZE ioctl()*/
 	short	usalfiles[MAX_SCG][MAX_TGT][MAX_LUN];
-        char    *filenames[MAX_SCG][MAX_TGT][MAX_LUN];
+	char    *filenames[MAX_SCG][MAX_TGT][MAX_LUN];
 	short	buscookies[MAX_SCG];
 	int	pgbus;
 	int	pack_id;		/* Should be a random number	*/
