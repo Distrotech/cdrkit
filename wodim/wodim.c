@@ -4076,7 +4076,6 @@ audioread(SCSI *usalp, cdr_t *dp, int flags)
 #ifdef	DEBUG
 	int speed = 1;
 	int	oflags = dp->cdr_cmdflags;
-	int ret;
 
 	dp->cdr_cmdflags &= ~F_DUMMY;
 	if ((*dp->cdr_set_speed_dummy)(usalp, dp, &speed) < 0)
@@ -4090,7 +4089,7 @@ audioread(SCSI *usalp, cdr_t *dp, int flags)
 
 	read_scsi(usalp, buf, 1000, 1);
 	printf("XXX:\n");
-	ret = write(1, buf, 512);
+	write(1, buf, 512); /* FIXME: handle return value */
 	unload_media(usalp, dp, flags);
 	comexit(0);
 #endif

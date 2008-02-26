@@ -641,7 +641,6 @@ extract_file(struct iso_directory_record *idr)
 	len = isonum_733((unsigned char *)idr->size);
 
 	while (len > 0) {
-	        int ret;
 #ifdef	USE_SCG
 		readsecs(extent - sector_offset, buff, ISO_BLOCKS(sizeof (buff)));
 		tlen = (len > sizeof (buff) ? sizeof (buff) : len);
@@ -652,7 +651,7 @@ extract_file(struct iso_directory_record *idr)
 #endif
 		len -= tlen;
 		extent++;
-		ret = write(STDOUT_FILENO, buff, tlen);
+		write(STDOUT_FILENO, buff, tlen); /* FIXME: check return value */
 	}
 }
 

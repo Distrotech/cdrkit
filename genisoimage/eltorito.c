@@ -600,7 +600,6 @@ fill_boot_desc(struct eltorito_defaultboot_entry *boot_desc_entry,
 		static char	csum_buffer[SECTOR_SIZE];
 		int		len;
 		struct genisoimage_boot_info bi_table;
-		int             ret;
 		bootimage = open(de->whole_name, O_RDWR | O_BINARY);
 		if (bootimage == -1) {
 #ifdef	USE_LIBSCHILY
@@ -661,7 +660,7 @@ fill_boot_desc(struct eltorito_defaultboot_entry *boot_desc_entry,
 		set_731(bi_table.bi_length, de->size);
 		set_731(bi_table.bi_csum, bi_checksum);
 
-		ret = write(bootimage, &bi_table, sizeof (bi_table));
+		write(bootimage, &bi_table, sizeof (bi_table)); /* FIXME: check return value */
 		close(bootimage);
 	}
 }/* fill_boot_desc(... */

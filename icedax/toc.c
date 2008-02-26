@@ -1070,9 +1070,8 @@ static int handle_userchoice(char *p, unsigned size)
 
 	/* get user response. */
 	do {
-		int ret;
 		fprintf(stderr, "please choose one (0-%u): ", nr);
-		ret = scanf("%u", &user_choice);
+		scanf("%u", &user_choice); /* FIXME: check return value */
 	} while (user_choice > nr);
 
 	if (user_choice == nr)
