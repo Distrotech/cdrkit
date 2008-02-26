@@ -55,7 +55,7 @@
 const char	*usal_sensemsg(int, int, int, const char **, char *, int maxcnt);
 int usal__errmsg(SCSI *usalp, char *obuf, int maxcnt, struct scsi_sense *, 
 					 struct scsi_status *, int);
-#ifdef ABC
+#ifdef 0
 /*
  * Map old non extended sense to sense key.
  */
@@ -669,7 +669,7 @@ static char *sd_sense_keys[] = {
 	"Reserved"			/* 0x0f */
 };
 
-#ifdef ABC
+#ifdef 0
 static char *sd_cmds[] = {
 	"\000test unit ready",		/* 0x00 */
 	"\001rezero",			/* 0x01 */
