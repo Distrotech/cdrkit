@@ -97,6 +97,7 @@
 #include <intcvt.h>
 #include <unls.h>	/* For UNICODE translation */
 #include <schily.h>
+#include <string.h>
 
 #ifdef USE_ICONV
 #include <iconv.h>
@@ -252,7 +253,7 @@ convert_to_unicode(unsigned char *buffer, int size, char *source,
 			inls->unls_uni2cs==NULL) {
 		char *inptr = (char *)tmpbuf;
 		char *outptr = (char *)buffer;
-		size_t inleft = (size_t)strlen((char *)tmpbuf);
+		size_t inleft = strlen((char *)tmpbuf);
 		size_t inlen = inleft;
 		size_t outleft = size;
 
