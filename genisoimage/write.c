@@ -918,9 +918,9 @@ reassign_link_addresses(struct directory *dpnt)
 			}
 
 			if (verbose > 2 && s_entry->size != 0) {
-				fprintf(stderr, "%8d %8d ",
-					(int)s_entry->starting_block,
-					(int)(s_entry->starting_block + ISO_BLOCKS(s_entry->size) - 1));
+				fprintf(stderr, "%8u %8u ",
+					s_entry->starting_block,
+					(unsigned int)(s_entry->starting_block + ISO_BLOCKS(s_entry->size) - 1));
 
 				if (s_entry->inode != TABLE_INODE) {
 					fprintf(stderr, "%s\n", s_entry->whole_name);
