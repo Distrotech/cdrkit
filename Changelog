@@ -1,6 +1,8 @@
-cdrkit (1.1.7) UNRELEASED; urgency=low
+cdrkit (1.1.7) RELEASED; urgency=low
+
   [ Harald Hoyer ]
   * lots of fixes to prevent gcc warnings
+  * Fix for Joliet directory length bug in genisoimage
 	
   [ Peter Samuelson ]
   * wodim.1: small fixes.
@@ -17,7 +19,7 @@ cdrkit (1.1.7) UNRELEASED; urgency=low
   * genisoimage/sha1.[ch]: Add GPL-licensed SHA1 implementation.
   * s/mkisofs/genisoimage/ in ABOUT
 
- -- Steve McIntyre <93sam@debian.org>  Sun, 06 Jan 2008 02:32:42 +0000
+ -- Steve McIntyre <93sam@debian.org>  Mon, 17 Mar 2008 20:07:58 +0000
 
 cdrkit (1.1.6) RELEASED; urgency=low
 

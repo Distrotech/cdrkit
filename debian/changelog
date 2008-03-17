@@ -1,10 +1,21 @@
-cdrkit (9:1.1.7-1) UNRELEASED; urgency=low
+cdrkit (9:1.1.7-1) unstable; urgency=low
 
   * New upstream release.
     - wodim.1 no longer implies that dev= is required.  (Closes: #434172)
-    - Various typo fixes in wodim.1.  (Closes: #463273)
+    - Various typo fixes in wodim.1.  (Closes: #463273, #430555)
+    - Typo fixes in readom.1.  (Closes: #446041)
+    - lots of fixes to prevent gcc warnings
+    - fix jigdo exclude list handling (Closes: #411873)
+    - Fix for Joliet directory length bug in genisoimage
+      (Closes: #430558, #429244)
+    - add support for bzip2-compressed templates
+    - genisoimage/jte.c: fix exclude list handling.
+    - Add a generic infrastructure for checksums so we can use
+      sha1/<whatever> as well as just md5sum. Will make things much
+      faster for generating sha1sums for images and jigdos.
+    - Add GPL-licensed SHA1 implementation.
 
- -- Peter Samuelson <peter@p12n.org>  Mon, 06 Aug 2007 16:13:06 -0500
+ -- Steve McIntyre <93sam@debian.org>  Mon, 17 Mar 2008 20:07:58 +0000
 
 cdrkit (9:1.1.6-1) unstable; urgency=low
 
