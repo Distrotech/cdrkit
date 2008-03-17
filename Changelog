@@ -1,3 +1,10 @@
+cdrkit (1.1.7.1) RELEASED; urgency=low
+
+  [ Steve McIntyre ]
+  * Re-spin the 1.1.7 release with a few silly release process errors fixed.
+
+ -- Steve McIntyre <93sam@debian.org>  Mon, 17 Mar 2008 21:25:56 +0000
+
 cdrkit (1.1.7) RELEASED; urgency=low
 
   [ Harald Hoyer ]
