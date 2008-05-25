@@ -1054,16 +1054,6 @@ usage(int excode)
 {
 	const char	*program_name = "genisoimage";
 
-#if 0
-	fprintf(stderr, "Usage:\n");
-	fprintf(stderr,
-		"genisoimage [-o outfile] [-R] [-V volid] [-v] [-a] \
-[-T]\n [-l] [-d] [-V] [-D] [-L] [-p preparer]"
-		"[-P publisher] [ -A app_id ] [-z] \n \
-[-b boot_image_name] [-c boot_catalog-name] \
-[-x path -x path ...] path\n");
-#endif
-
 	int	i;
 
 /*	const char **targets, **pp;*/
