@@ -1641,7 +1641,7 @@ merge_previous_session(struct directory *this_dir,
 
 		if (reloc_root && reloc_root[0]) {
 			/* also decend into new root before searching for files */
-			this_dir = find_or_create_directory(this_dir, reloc_root, NULL, TRUE);
+			this_dir = find_or_create_directory(this_dir, reloc_root, NULL, TRUE, NULL);
 			if (!this_dir) {
 				return (-1);
 			}
@@ -1707,7 +1707,7 @@ merge_previous_session(struct directory *this_dir,
 				 */
 				child = find_or_create_directory(this_dir,
 					s_entry->whole_name,
-					s_entry, 1);
+					s_entry, 1, NULL);
 				dflag = merge_previous_session(child,
 					&odpnt->isorec,
 					NULL, reloc_old_root);

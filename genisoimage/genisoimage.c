@@ -3051,7 +3051,7 @@ parse_input_files:
 	 * Create an empty root directory. If we ever scan it for real,
 	 * we will fill in the contents.
 	 */
-	find_or_create_directory(NULL, "", &de, TRUE);
+	find_or_create_directory(NULL, "", &de, TRUE, NULL);
 
 #ifdef APPLE_HYB
 	/* may need to set window layout of the volume */
@@ -3113,6 +3113,7 @@ if (check_session == 0)
 			char		*pnt;
 			char		*xpnt;
 			size_t		len;
+			int		node_is_dir;
 
 			/* insert -root prefix */
 			if (reloc_root != NULL) {
@@ -3160,7 +3161,9 @@ if (check_session == 0)
 				status = stat_filter(node, &st);
 			else
 				status = lstat_filter(node, &st);
-			if (status == 0 && S_ISDIR(st.st_mode)) {
+
+			node_is_dir = S_ISDIR(st.st_mode);
+			if (status == 0 && node_is_dir) {
 				len = strlen(graft_point);
 
 				if ((len <= (sizeof (graft_point) -1)) &&
@@ -3177,6 +3180,8 @@ if (check_session == 0)
 			 * Canonicalize the filename while parsing it.
 			 */
 			for (;;) {
+				struct stat* stat_template;
+
 				do {
 					while (xpnt[0] == '.' && xpnt[1] == '/')
 						xpnt += 2;
@@ -3204,9 +3209,22 @@ if (check_session == 0)
 						graft_dir->de_name,
 						graft_point);
 				}
-				graft_dir = find_or_create_directory(graft_dir,
-					graft_point,
-					NULL, TRUE);
+				/*
+				 * If the node being grafted is a
+				 * directory, then we want the last
+				 * directory in this graft chain to have
+				 * the ownership and permissions of the
+				 * source node.  Other directories in the
+				 * chain get default ownership and
+				 * permissions.
+				 */
+				stat_template = 
+				  (pnt[1] == '\0' && node_is_dir) ? &st : 0;
+
+ 				graft_dir = find_or_create_directory(graft_dir,
+					graft_point, NULL, TRUE, 
+					stat_template);
+
 				*pnt = PATH_SEPARATOR;
 				xpnt = pnt + 1;
 			}
@@ -3219,8 +3237,7 @@ if (check_session == 0)
 		}
 
 		/*
-		 * Now see whether the user wants to add a regular file, or a
-		 * directory at this point.
+		 * Get information on the node
 		 */
 		if (follow_links)
 			status = stat_filter(node, &st);
@@ -3238,6 +3255,10 @@ if (check_session == 0)
 			exit(1);
 #endif
 		} else {
+			/*
+			 * Now see whether the user wants to add a regular
+			 * file or a directory at this point.
+			 */
 			if (S_ISDIR(st.st_mode)) {
 				if (debug) {
 					fprintf(stderr, "graft_dir: '%s : %s', node: '%s', (scan)\n",

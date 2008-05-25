@@ -74,8 +74,8 @@ int	stat_filter(char *path, struct stat *st);
 int	lstat_filter(char *path, struct stat *st);
 static	int	sort_n_finish(struct directory *this_dir);
 static	void	generate_reloc_directory(void);
-static	void	attach_dot_entries(struct directory *dirnode,
-											 struct stat *parent_stat);
+static	void	attach_dot_entries(struct directory *dirnode, struct stat *dir_stat,
+					struct stat *parent_stat);
 static	void	update_nlink(struct directory_entry *s_entry, int value);
 static	void	increment_nlink(struct directory_entry *s_entry);
 char	*find_rr_attribute(unsigned char *pnt, int len, char *attr_type);
@@ -95,9 +95,10 @@ int	insert_file_entry(struct directory *this_dir,
 void	generate_iso9660_directories(struct directory *node,
 											  FILE *outfile);
 struct directory *find_or_create_directory(struct directory *parent,
-														 const char *path,
-														 struct directory_entry *de,
-														 int flag);
+						const char *path,
+						struct directory_entry *de,
+						int flag,
+						struct stat* stat_template);
 static	void	delete_directory(struct directory *parent,
 										  struct directory *child);
 int	sort_tree(struct directory *node);
@@ -284,7 +285,9 @@ sort_n_finish(struct directory *this_dir)
 	 */
 	if ((this_dir->dir_flags & (DIR_HAS_DOT | DIR_HAS_DOTDOT)) !=
 		(DIR_HAS_DOT | DIR_HAS_DOTDOT)) {
-		attach_dot_entries(this_dir, &fstatbuf);
+		fstatbuf.st_mode = new_dir_mode | S_IFDIR;
+		fstatbuf.st_nlink = 2;
+		attach_dot_entries(this_dir, &fstatbuf, &fstatbuf);
 	}
 	flush_file_hash();
 	s_entry = this_dir->contents;
@@ -840,7 +843,7 @@ generate_reloc_directory()
 	/* Now create the . and .. entries in rr_moved */
 	/* Now create an actual directory  entry */
 	memset(&root_statbuf, 0x0, sizeof(struct stat)); /* be sure */
-	attach_dot_entries(reloc_dir, &root_statbuf);
+	attach_dot_entries(reloc_dir, &fstatbuf, &root_statbuf);
 }
 
 /*
@@ -848,12 +851,17 @@ generate_reloc_directory()
  *
  * Purpose:		Create . and .. entries for a new directory.
  *
+ * Arguments:		dir_stat contains the ownership/permission information
+ *			for dirnode, and parent_stat contains 
+ *			ownership/permission information for its parent
+ *
+ *
  * Notes:		Only used for artificial directories that
  *			we are creating.
  */
 static void
-attach_dot_entries(struct directory *dirnode, 
-						 struct stat *parent_stat)
+attach_dot_entries(struct directory *dirnode, struct stat *dir_stat,
+			struct stat *parent_stat)
 {
 	struct directory_entry *s_entry;
 	struct directory_entry *orig_contents;
@@ -894,9 +902,6 @@ attach_dot_entries(struct directory *dirnode,
 		orig_contents = s_entry;
 
 		if (use_XA || use_RockRidge) {
-			if (parent_stat == NULL) {
-				parent_stat = &fstatbuf;
-			}
 			generate_xa_rr_attributes("",
 				"..", s_entry,
 				parent_stat,
@@ -934,15 +939,12 @@ attach_dot_entries(struct directory *dirnode,
 		dirnode->contents->next = orig_contents;
 
 		if (use_XA || use_RockRidge) {
-			fstatbuf.st_mode = new_dir_mode | S_IFDIR;
-			fstatbuf.st_nlink = 2;
 
 			if (dirnode == root) {
 				deep_flag |= NEED_CE | NEED_SP;	/* For extension record */
 			}
-			generate_xa_rr_attributes("",
-				".", s_entry,
-				&fstatbuf, &fstatbuf, deep_flag);
+			generate_xa_rr_attributes("", ".", s_entry,
+				dir_stat, dir_stat, deep_flag);
 		}
 		dirnode->dir_flags |= DIR_HAS_DOT;
 	}
@@ -1646,11 +1648,11 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 				}
 				child = find_or_create_directory(reloc_dir,
 					whole_path,
-					s_entry, 1);
+					s_entry, 1, NULL);
 			} else {
 				child = find_or_create_directory(this_dir,
 					whole_path,
-					s_entry, 1);
+					s_entry, 1, NULL);
 				/*
 				 * If unable to scan directory, mark this as a
 				 * non-directory
@@ -1985,14 +1987,14 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 		 */
 		s_entry1->filedir = reloc_dir;
 		child = find_or_create_directory(reloc_dir, whole_path,
-			s_entry1, 0);
+			s_entry1, 0, NULL);
 /*		if (!no_scandir)*/
 		if (!0)
 			scan_directory_tree(child, whole_path, s_entry1);
 		s_entry1->filedir = this_dir;
 
 		statbuf.st_size = (off_t)0;
-		statbuf.st_mode &= 0777;
+//		statbuf.st_mode &= 0777;
 		set_733((char *) s_entry->isorec.size, 0);
 		s_entry->realsize=0;
 		s_entry->size = 0;
@@ -2091,7 +2093,7 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 			struct directory *child;
 
 			child = find_or_create_directory(this_dir, whole_path,
-				s_entry, 1);
+				s_entry, 1, NULL);
 			if (no_scandir)
 				dflag = 1;
 			else
@@ -2217,18 +2219,25 @@ generate_iso9660_directories(struct directory *node, FILE *outfile)
  * Function:	find_or_create_directory
  *
  * Purpose:	Locate a directory entry in the tree, create if needed.
+ * 		If a directory is created and stat_template is non-null,
+ *		create the directory with ownership, permissions, etc.,
+ *		from stat_template, otherwise use fallback defaults.
  *
  * Arguments:	parent & de are never NULL at the same time.
  */
 struct directory *
-find_or_create_directory(struct directory *parent, const char *path, 
-								 struct directory_entry *de, int flag)
+find_or_create_directory(struct directory *parent,
+			 const char *path, 
+			 struct directory_entry *de,
+			 int flag,
+			 struct stat *stat_template)
 {
 	struct directory *dpnt;
 	struct directory_entry *orig_de;
 	struct directory *next_brother;
 	const char	*cpnt;
 	const char	*pnt;
+	struct stat	my_statbuf;
 
 	orig_de = de;
 
@@ -2287,18 +2296,27 @@ find_or_create_directory(struct directory *parent, const char *path,
 						volume_sequence_number);
 		iso9660_file_length(pnt, de, 1);
 
-		init_fstatbuf();
 		/*
-		 * It doesn't exist for real, so we cannot add any
-		 * XA or Rock Ridge attributes.
+		 * If we were given a stat template, use it for
+		 * ownership/permissions, otherwise use fallback defaults.
+		 */
+		init_fstatbuf();
+		if (stat_template) {
+			my_statbuf = *stat_template;
+		} else {
+			my_statbuf = fstatbuf; /* defaults */
+			my_statbuf.st_mode = new_dir_mode;
+		}
+		my_statbuf.st_mode &= ~S_IFMT; /* zero out file type */
+		my_statbuf.st_mode |= S_IFDIR; /* force to be a directory */
+		my_statbuf.st_nlink = 2;
+		
+		/*
+		 * Apply attributes from my_statbuf to the new directory.
 		 */
 		if (use_XA || use_RockRidge) {
-			fstatbuf.st_mode = new_dir_mode | S_IFDIR;
-			fstatbuf.st_nlink = 2;
-			generate_xa_rr_attributes("",
-				(char *) pnt, de,
-				&fstatbuf,
-				&fstatbuf, 0);
+			generate_xa_rr_attributes("", (char *) pnt, de,
+				&my_statbuf, &my_statbuf, 0);
 		}
 		iso9660_date(de->isorec.date, fstatbuf.st_mtime);
 #ifdef APPLE_HYB
@@ -2310,8 +2328,8 @@ find_or_create_directory(struct directory *parent, const char *path,
 
 			/* fill in the defaults */
 			memset(hfs_ent, 0, sizeof (hfsdirent));
-			hfs_ent->crdate = fstatbuf.st_ctime;
-			hfs_ent->mddate = fstatbuf.st_mtime;
+			hfs_ent->crdate = my_statbuf.st_ctime;
+			hfs_ent->mddate = my_statbuf.st_mtime;
 
 			de->hfs_ent = hfs_ent;
 
@@ -2347,6 +2365,7 @@ find_or_create_directory(struct directory *parent, const char *path,
 
 	if (orig_de == NULL) {
 		struct stat	xstatbuf;
+		struct stat	parent_statbuf;
 		int		sts;
 
 		/*
@@ -2358,16 +2377,19 @@ find_or_create_directory(struct directory *parent, const char *path,
 		if (parent == NULL || parent->whole_name[0] == '\0')
 			sts = -1;
 		else
-			sts = stat_filter(parent->whole_name, &xstatbuf);
+			sts = stat_filter(parent->whole_name, &parent_statbuf);
+		
+		if (sts != 0) {
+			parent_statbuf = fstatbuf;
+			parent_statbuf.st_mode = new_dir_mode | S_IFDIR;
+			parent_statbuf.st_nlink = 2;
+		}
+		
 		if (debug && parent) {
 			fprintf(stderr, "stat parent->whole_name: '%s' -> %d.\n",
 				parent->whole_name, sts);
 		}
-		if (sts == 0) {
-			attach_dot_entries(dpnt, &xstatbuf);
-		} else {
-			attach_dot_entries(dpnt, &fstatbuf);
-		}
+		attach_dot_entries(dpnt, &my_statbuf, &parent_statbuf);
 	}
 	if (!parent || parent == root) {
 		if (!root) {

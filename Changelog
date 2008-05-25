@@ -9,6 +9,8 @@ cdrkit (1.1.8) UNRELEASED; urgency=low
     on 64-bit arches.
   * genisoimage/checksum.[ch]: Added test code; changed internal
     layout slightly to make for easier debug.
+  * genisoimage: Applied patch from Roman Rakus <rrakus@redhat.com> to
+    preserve directory permissions.
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 25 May 2008 21:22:26 +0100
 

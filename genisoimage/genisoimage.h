@@ -433,8 +433,10 @@ extern int stat_filter(char *, struct stat *);
 extern int lstat_filter(char *, struct stat *);
 extern int sort_tree(struct directory *);
 extern struct directory *
-find_or_create_directory(struct directory *, const char *, 
-								 struct directory_entry *self, int);
+find_or_create_directory(struct directory *, const char *,
+			 struct directory_entry *self,
+			 int,
+			 struct stat *stat_template);
 extern void	finish_cl_pl_entries(void);
 extern int	scan_directory_tree(struct directory *this_dir, char *path,
 										  struct directory_entry *self);
