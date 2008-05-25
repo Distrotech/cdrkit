@@ -413,6 +413,7 @@ struct ld_option {
 #define	OPTION_JT_MD5_LIST		1105
 #define	OPTION_JT_INCLUDE		1106
 #define	OPTION_JT_EXCLUDE		1107
+#define	OPTION_JT_COMPRESS_ALGO	1108
 #endif
 
 #define	OPTION_BOOTALPHA		1200
@@ -688,6 +689,8 @@ static const struct ld_option ld_options[] =
 	'\0', "PATTERN1=PATTERN2", "Pattern(s) to map paths (e.g. Debian=/mirror/debian)", ONE_DASH },
 	{{"md5-list", required_argument, NULL, OPTION_JT_MD5_LIST},
 	'\0', "FILE", "File containing MD5 sums of the files that should be checked", ONE_DASH },
+    {{"jigdo-template-compress", required_argument, NULL, OPTION_JT_COMPRESS_ALGO},
+     '\0', "ALGORITHM", "Choose to use gzip or bzip2 compression for template data; default is gzip", ONE_DASH },
 #endif
 
 #ifdef SORTING
@@ -1489,6 +1492,21 @@ int main(int argc, char *argv[])
 #endif
 			}
 			break;
+        case OPTION_JT_COMPRESS_ALGO:
+            if (!strcasecmp(optarg, "gzip"))
+                jte_template_compression = JTE_TEMP_GZIP;
+            else if (!strcasecmp(optarg, "bzip2"))
+                jte_template_compression = JTE_TEMP_BZIP2;
+            else
+            {
+#ifdef USE_LIBSCHILY
+                comerrno(EX_BAD, "Compression algorithm %s unknown\n", optarg);
+#else
+                fprintf(stderr, "Compression algorithm %s unknown\n", optarg);
+                exit(1);
+#endif
+            }
+            break;                
 #endif /* JIGDO_TEMPLATE */
 		case OPTION_NOBAK:
 			all_files = 0;
