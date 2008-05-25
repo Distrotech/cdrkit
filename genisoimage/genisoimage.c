@@ -3445,6 +3445,13 @@ if (check_session == 0)
 			}
 			write_jt_header(jttemplate, jtjigdo);
 		}
+	} else if ((outfile == NULL)
+               && isatty (fileno (stdout))) {
+		/* FIXME: a cleaner way to override this check? */
+		fputs (("image not written to a terminal.\n"
+                "Use -o - to force the output.\n"),
+		       stderr);
+		exit (1);
 	} else {
 		discimage = stdout;
 
