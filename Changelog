@@ -1,3 +1,10 @@
+cdrkit (1.1.8) UNRELEASED; urgency=low
+
+  [ Steve McIntyre ]
+  * joliet.c: Fix a potential memory corruption bug.
+
+ -- Steve McIntyre <93sam@debian.org>  Mon, 25 May 2008 21:22:26 +0100
+
 cdrkit (1.1.7.1) RELEASED; urgency=low
 
   [ Steve McIntyre ]
