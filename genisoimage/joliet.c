@@ -242,8 +242,9 @@ convert_to_unicode(unsigned char *buffer, int size, char *source,
 	 * inplace copy, and we need to make a temporary working copy first.
 	 */
 	if (source == NULL) {
-		tmpbuf = (Uchar *) e_malloc(size);
+		tmpbuf = (Uchar *) e_malloc(size+1);
 		memcpy(tmpbuf, buffer, size);
+		tmpbuf[size] = 0;
 	} else {
 		tmpbuf = (Uchar *) source;
 	}
