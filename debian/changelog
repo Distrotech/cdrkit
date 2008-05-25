@@ -1,3 +1,23 @@
+cdrkit (9:1.1.8-1) unstable; urgency=low
+
+  * New upstream release, lots of changes in genisoimage:
+    - Add command-line support for -jigdo-template-compress.
+    - Fix a type issue that broke sha1 support on 64-bit arches.
+    - Added test code; changed internal layout slightly to make
+      for easier debug.
+    - Applied patch from Roman Rakus <rrakus@redhat.com> to
+      preserve directory permissions.
+    - Add a patch from Ivan Shmakov. "-o -" will now write
+      to stdout, as typical for command line programs. And we will try
+      not to corrupt stdout by default if it's a terminal.
+      Closes: #426389
+    - Fix broken changes in mac_label.c and add -chrp-boot to the man
+      page. Closes: #437221
+    - Other small cleanups.
+  * Update Build-Dependency to libcap2-dev. Closes: #482200.
+
+ -- Steve McIntyre <93sam@debian.org>  Sun, 25 May 2008 23:38:35 +0100
+
 cdrkit (9:1.1.7.1-1) unstable; urgency=low
 
   * New upstream release.
