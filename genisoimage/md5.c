@@ -186,8 +186,6 @@ mk_MD5Final (unsigned char digest[16], struct mk_MD5Context *ctx)
 	memset(ctx, 0, sizeof(ctx));	/* In case it's sensitive */
 }
 
-#ifndef ASM_MD5
-
 /* The four core functions - F1 is optimized somewhat */
 
 /* #define F1(x, y, z) (x & y | ~x & z) */
@@ -293,7 +291,6 @@ mk_MD5Transform (mk_uint32 buf[4], const unsigned char inraw[64])
 	buf[2] += c;
 	buf[3] += d;
 }
-#endif
 
 /* Read in a hex-dumped MD5 sum and parse it */
 int mk_MD5Parse(unsigned char in[33], unsigned char out[16])
