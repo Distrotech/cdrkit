@@ -11,6 +11,8 @@ cdrkit (1.1.8) UNRELEASED; urgency=low
     layout slightly to make for easier debug.
   * genisoimage: Applied patch from Roman Rakus <rrakus@redhat.com> to
     preserve directory permissions.
+  * genisoimage: Add (some of) a patch from Ivan Shmakov. "-o -" will
+    now write to stdout, as typical for command line programs.
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 25 May 2008 21:22:26 +0100
 

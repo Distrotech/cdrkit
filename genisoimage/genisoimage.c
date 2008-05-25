@@ -3414,7 +3414,7 @@ if (check_session == 0)
 			exit(1);
 #endif
 		}
-	} else if (outfile) {
+	} else if (outfile && (strcmp (outfile, "-")) != 0) {
 		discimage = fopen(outfile, "wb");
 		if (!discimage) {
 #ifdef	USE_LIBSCHILY
