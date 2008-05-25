@@ -32,8 +32,8 @@
 /*
  *	mac_label.c: generate Mactintosh partition maps and label
  *
- *	Taken from "genisoimage 1.05 PLUS" by Andy Polyakov <appro@fy.chalmers.se>
- *	(see http://fy.chalmers.se/~appro/genisoimage_plus.html for details)
+ *	Taken from "mkisofs 1.05 PLUS" by Andy Polyakov <appro@fy.chalmers.se>
+ *	(see http://fy.chalmers.se/~appro/mkisofs_plus.html for details)
  *
  *	The format of the HFS driver file:
  *

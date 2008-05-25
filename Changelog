@@ -14,6 +14,8 @@ cdrkit (1.1.8) UNRELEASED; urgency=low
   * genisoimage: Add a patch from Ivan Shmakov. "-o -" will now write
     to stdout, as typical for command line programs. And we will try
     not to corrupt stdout by default if it's a terminal.
+  * genisoimage/genisoimage.1: Add a mention of -chrp-boot.
+  * genisoimage/mac_label.c: Fix an over-keen s/mkisofs/genisoimage.
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 25 May 2008 21:22:26 +0100
 
