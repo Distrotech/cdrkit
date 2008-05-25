@@ -445,7 +445,7 @@ static void write_template_header()
 
     memset(buf, 0, sizeof(buf));
 
-    template_context = checksum_init_context(CHECK_MD5_USED);
+    template_context = checksum_init_context(CHECK_MD5_USED, "template");
     if (!template_context)
     {
 #ifdef	USE_LIBSCHILY
@@ -569,7 +569,7 @@ void write_jt_header(FILE *template_file, FILE *jigdo_file)
     j_file = jigdo_file;
 
     /* Start checksum work for the image */
-    iso_context = checksum_init_context(CHECK_MD5_USED|CHECK_SHA1_USED);
+    iso_context = checksum_init_context(CHECK_MD5_USED|CHECK_SHA1_USED, "iso");
     if (!iso_context)
     {
 #ifdef	USE_LIBSCHILY
@@ -821,7 +821,6 @@ static void write_jigdo_file(void)
 
     checksum_final(template_context);
     checksum_copy(template_context, CHECK_MD5, &template_md5sum[0]);
-//    mk_MD5Final(&template_md5sum[0], &template_context);
 
     fprintf(j_file, "# JigsawDownload\n");
     fprintf(j_file, "# See <http://atterer.net/jigdo/> for details about jigdo\n");
@@ -834,6 +833,7 @@ static void write_jigdo_file(void)
     fprintf(j_file, "[Image]\n");
     fprintf(j_file, "Filename=%s\n", file_base_name(outfile));
     fprintf(j_file, "Template=http://localhost/%s\n", jtemplate_out);
+
     fprintf(j_file, "Template-MD5Sum=%s \n",
             base64_dump(&template_md5sum[0], sizeof(template_md5sum)));
     fprintf(j_file, "# Template Hex MD5sum %s\n",
@@ -874,7 +874,6 @@ void write_jt_footer(void)
     checksum_final(iso_context);
     checksum_copy(iso_context, CHECK_MD5, &image_md5[0]);
     checksum_copy(iso_context, CHECK_SHA1, &image_sha1[0]);
-//    mk_MD5Final(&md5[0], &iso_context);
 
     /* And calculate the image size */
     image_size = (unsigned long long)SECTOR_SIZE * last_extent_written;

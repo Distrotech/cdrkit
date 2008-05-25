@@ -19,12 +19,14 @@ enum checksum_types
 
 #define CHECK_MD5_USED   (1 << CHECK_MD5)
 #define CHECK_SHA1_USED  (1 << CHECK_SHA1)
+#define CHECK_ALL_USED   0xFFFFFFFF
 
 typedef void checksum_context_t;
 
 struct checksum_info
 {
     char          *name;
+    char          *prog;
     int            digest_size;
 };
 
@@ -35,7 +37,7 @@ struct checksum_info *checksum_information(enum checksum_types which);
 
 /* Allocate / initialise a context for the chosen checksums. OR
  * together the desired checksums as the parameter */
-checksum_context_t   *checksum_init_context(int checksums);
+checksum_context_t   *checksum_init_context(int checksums, const char *owner);
 
 /* Cleanup and free a context when it's finished with */
 void                  checksum_free_context(checksum_context_t *context);

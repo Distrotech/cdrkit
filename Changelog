@@ -7,6 +7,8 @@ cdrkit (1.1.8) UNRELEASED; urgency=low
     -jigdo-template-compress
   * genisoimage/sha1.h: Fix a type issue that broke sha1 support
     on 64-bit arches.
+  * genisoimage/checksum.[ch]: Added test code; changed internal
+    layout slightly to make for easier debug.
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 25 May 2008 21:22:26 +0100
 
