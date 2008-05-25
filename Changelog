@@ -1,4 +1,4 @@
-cdrkit (1.1.8) UNRELEASED; urgency=low
+cdrkit (1.1.8) RELEASED; urgency=low
 
   [ Steve McIntyre ]
   * genisoimage/joliet.c: Fix a potential memory corruption bug.
