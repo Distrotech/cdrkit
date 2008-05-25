@@ -21,7 +21,7 @@
 
 # include <stdio.h>
 
-typedef unsigned long md5_uint32;
+typedef unsigned int md5_uint32;
 
 /* Structure to save state of computation between the single steps.  */
 struct sha1_ctx

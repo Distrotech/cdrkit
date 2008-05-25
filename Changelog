@@ -3,7 +3,10 @@ cdrkit (1.1.8) UNRELEASED; urgency=low
   [ Steve McIntyre ]
   * genisoimage/joliet.c: Fix a potential memory corruption bug.
   * genisoimage/md5.c: Trivial cleanup
-  * genisoimage/genisoimage.[c1]: Add command-line support for -jigdo-template-compress
+  * genisoimage/genisoimage.[c1]: Add command-line support for
+    -jigdo-template-compress
+  * genisoimage/sha1.h: Fix a type issue that broke sha1 support
+    on 64-bit arches.
 
  -- Steve McIntyre <93sam@debian.org>  Mon, 25 May 2008 21:22:26 +0100
 
