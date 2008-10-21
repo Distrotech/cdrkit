@@ -1507,7 +1507,8 @@ getdisktype_mdvd(SCSI *usalp, cdr_t *dp)
 	dstat_t	*dsp = dp->cdr_dstat;
 
 	struct track_info track_info;
-	printf("HINT: use dvd+rw-mediainfo from dvd+rw-tools for information extraction.\n");
+    if(lverbose)
+        printf("HINT: use dvd+rw-mediainfo from dvd+rw-tools for information extraction.\n");
 	/* if(getdisktype_mmc(usalp, dp)<0)
 		return -1;
 		*/
