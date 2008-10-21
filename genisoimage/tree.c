@@ -1994,7 +1994,7 @@ insert_file_entry(struct directory *this_dir, char *whole_path,
 		s_entry1->filedir = this_dir;
 
 		statbuf.st_size = (off_t)0;
-//		statbuf.st_mode &= 0777;
+		statbuf.st_mode &= 0777;
 		set_733((char *) s_entry->isorec.size, 0);
 		s_entry->realsize=0;
 		s_entry->size = 0;

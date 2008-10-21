@@ -4,7 +4,8 @@ cdrkit (1.1.9) UNRELEASED; urgency=low
   * wodim: In -msinfo mode, only suggest dvd+rw-mediainfo in verbose mode.
     Thanks to Michael Karcher <debian@mkarcher.dialup.fu-berlin.de> for the
     patch.
-  * 
+  * genisoimage: undo a mistake in the directory permissions change in
+    the last release. Fixes handling of deep directory structures.
 
  -- Steve McIntyre <93sam@debian.org>  Wed, 22 Oct 2008 12:47:38 +0100
 
