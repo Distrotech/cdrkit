@@ -1,3 +1,15 @@
+cdrkit (9:1.1.9-1) unstable; urgency=low
+
+  * New upstream release with a couple of important bugfixes:
+    - wodim: In -msinfo mode, only suggest dvd+rw-mediainfo in verbose mode.
+      Thanks to Michael Karcher <debian@mkarcher.dialup.fu-berlin.de> for the
+      patch. Closes: #436146
+    - genisoimage: undo a mistake in the directory permissions change in
+      the last release. Fixes handling of deep directory structures.
+      Closes: #488482
+
+ -- Steve McIntyre <93sam@debian.org>  Sun, 26 Oct 2008 15:43:54 -0700
+
 cdrkit (9:1.1.8-1) unstable; urgency=low
 
   * New upstream release, lots of changes in genisoimage:
