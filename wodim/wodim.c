@@ -3081,7 +3081,7 @@ raise_memlock()
 	rlim.rlim_cur = rlim.rlim_max = RLIM_INFINITY;
 
 	if (setrlimit(RLIMIT_MEMLOCK, &rlim) < 0)
-		errmsg("Warning: Cannot raise RLIMIT_MEMLOCK limits.");
+		errmsg("Warning: Cannot raise RLIMIT_MEMLOCK limits.\n");
 #endif	/* RLIMIT_MEMLOCK */
 }
 
