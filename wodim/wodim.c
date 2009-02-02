@@ -3618,7 +3618,7 @@ gargs(int ac, char **av, int *tracksp, track_t *trackp, char **devp,
 		}
 		if (tracks == 0 && (wm == 0)) {
 			errmsgno(EX_BAD, "No write mode specified.\n");
-			errmsgno(EX_BAD, "Asuming -tao mode.\n");
+			errmsgno(EX_BAD, "Assuming -tao mode.\n");
 			errmsgno(EX_BAD, "Future versions of wodim may have different drive dependent defaults.\n");
 			tao = 1;
 		}
