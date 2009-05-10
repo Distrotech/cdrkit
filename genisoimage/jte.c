@@ -848,7 +848,7 @@ static void write_jigdo_file(void)
             hex_dump(&image_md5[0], sizeof(image_md5)));
     fprintf(j_file, "# Image Hex SHA1Sum %s\n",
             hex_dump(&image_sha1[0], sizeof(image_sha1)));
-    fprintf(j_file, "# Image Hex SHA512Sum %s\n",
+    fprintf(j_file, "# Image Hex SHA256Sum %s\n",
             hex_dump(&image_sha256[0], sizeof(image_sha256)));
     fprintf(j_file, "# Image Hex SHA512Sum %s\n",
             hex_dump(&image_sha512[0], sizeof(image_sha512)));
