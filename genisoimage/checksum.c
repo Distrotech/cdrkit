@@ -16,6 +16,8 @@
 #include <stdlib.h>
 #include "md5.h"
 #include "sha1.h"
+#include "sha256.h"
+#include "sha512.h"
 #include "checksum.h"
 
 static void md5_init(void *context)
@@ -42,6 +44,32 @@ static void sha1_update(void *context, unsigned char const *buf, unsigned int le
 static void sha1_final(unsigned char *digest, void *context)
 {
     sha1_finish_ctx(context, digest);
+}
+
+static void sha256_init(void *context)
+{
+    sha256_init_ctx(context);
+}
+static void sha256_update(void *context, unsigned char const *buf, unsigned int len)
+{
+    sha256_process_bytes(buf, len, context);
+}
+static void sha256_final(unsigned char *digest, void *context)
+{
+    sha256_finish_ctx(context, digest);
+}
+
+static void sha512_init(void *context)
+{
+    sha512_init_ctx(context);
+}
+static void sha512_update(void *context, unsigned char const *buf, unsigned int len)
+{
+    sha512_process_bytes(buf, len, context);
+}
+static void sha512_final(unsigned char *digest, void *context)
+{
+    sha512_finish_ctx(context, digest);
 }
 
 struct checksum_details
@@ -74,6 +102,24 @@ static const struct checksum_details algorithms[] =
         sha1_init,
         sha1_update,
         sha1_final
+    },
+    {
+        "SHA256",
+        "sha256sum",
+        32,
+        sizeof(struct sha256_ctx),
+        sha256_init,
+        sha256_update,
+        sha256_final
+    },
+    {
+        "SHA512",
+        "sha512sum",
+        64,
+        sizeof(struct sha512_ctx),
+        sha512_init,
+        sha512_update,
+        sha512_final
     }
 };
 

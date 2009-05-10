@@ -14,12 +14,16 @@ enum checksum_types
 {
     CHECK_MD5 = 0,
     CHECK_SHA1,
+    CHECK_SHA256,
+    CHECK_SHA512,
     NUM_CHECKSUMS
 };
 
-#define CHECK_MD5_USED   (1 << CHECK_MD5)
-#define CHECK_SHA1_USED  (1 << CHECK_SHA1)
-#define CHECK_ALL_USED   0xFFFFFFFF
+#define CHECK_MD5_USED     (1 << CHECK_MD5)
+#define CHECK_SHA1_USED    (1 << CHECK_SHA1)
+#define CHECK_SHA256_USED  (1 << CHECK_SHA256)
+#define CHECK_SHA512_USED  (1 << CHECK_SHA512)
+#define CHECK_ALL_USED     0xFFFFFFFF
 
 typedef void checksum_context_t;
 

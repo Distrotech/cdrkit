@@ -1,3 +1,11 @@
+cdrkit (1.2.0) UNRELEASED; urgency=low
+
+  [ Steve McIntyre ]
+  * genisoimage: add support for sha256 and sha512 checksum generation
+    when making jigdo files.
+
+ -- Steve McIntyre <93sam@debian.org>  Sun, 10 May 2009 22:42:01 +0100
+
 cdrkit (1.1.9) RELEASED; urgency=low
 
   [ Steve McIntyre ]

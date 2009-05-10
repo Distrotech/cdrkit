@@ -41,7 +41,7 @@
 #define JTET_NOMATCH    2
 
 #define JTE_VER_MAJOR     0x0001
-#define JTE_VER_MINOR     0x0012
+#define JTE_VER_MINOR     0x0013
 #define JTE_NAME          "JTE"
 #define JTE_COMMENT       "JTE at http://www.einval.com/~steve/software/JTE/ ; jigdo at http://atterer.net/jigdo/"
 
@@ -85,6 +85,11 @@ static checksum_context_t *template_context = NULL;
 
 unsigned char image_md5[16];  /* MD5SUM of the entire image */
 unsigned char image_sha1[20]; /* SHA1SUM of the entire image */
+unsigned char image_sha256[32]; /* SHA1SUM of the entire image */
+unsigned char image_sha512[64]; /* SHA1SUM of the entire image */
+
+#define CHECK_USED_ISO  (CHECK_MD5_USED | CHECK_SHA1_USED | CHECK_SHA256_USED | CHECK_SHA512_USED)
+#define CHECK_USED_TPL  (CHECK_MD5_USED)
 
 /* List of files that we've seen, ready to write into the template and
    jigdo files */
@@ -445,7 +450,7 @@ static void write_template_header()
 
     memset(buf, 0, sizeof(buf));
 
-    template_context = checksum_init_context(CHECK_MD5_USED, "template");
+    template_context = checksum_init_context(CHECK_USED_TPL, "template");
     if (!template_context)
     {
 #ifdef	USE_LIBSCHILY
@@ -569,7 +574,7 @@ void write_jt_header(FILE *template_file, FILE *jigdo_file)
     j_file = jigdo_file;
 
     /* Start checksum work for the image */
-    iso_context = checksum_init_context(CHECK_MD5_USED|CHECK_SHA1_USED, "iso");
+    iso_context = checksum_init_context(CHECK_USED_ISO, "iso");
     if (!iso_context)
     {
 #ifdef	USE_LIBSCHILY
@@ -843,6 +848,10 @@ static void write_jigdo_file(void)
             hex_dump(&image_md5[0], sizeof(image_md5)));
     fprintf(j_file, "# Image Hex SHA1Sum %s\n",
             hex_dump(&image_sha1[0], sizeof(image_sha1)));
+    fprintf(j_file, "# Image Hex SHA512Sum %s\n",
+            hex_dump(&image_sha256[0], sizeof(image_sha256)));
+    fprintf(j_file, "# Image Hex SHA512Sum %s\n",
+            hex_dump(&image_sha512[0], sizeof(image_sha512)));
     fprintf(j_file, "# Image size %lld bytes\n\n", image_size);
 
     fprintf(j_file, "[Parts]\n");
@@ -874,6 +883,8 @@ void write_jt_footer(void)
     checksum_final(iso_context);
     checksum_copy(iso_context, CHECK_MD5, &image_md5[0]);
     checksum_copy(iso_context, CHECK_SHA1, &image_sha1[0]);
+    checksum_copy(iso_context, CHECK_SHA256, &image_sha256[0]);
+    checksum_copy(iso_context, CHECK_SHA512, &image_sha512[0]);
 
     /* And calculate the image size */
     image_size = (unsigned long long)SECTOR_SIZE * last_extent_written;
