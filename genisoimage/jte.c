@@ -83,11 +83,6 @@ unsigned long long image_size = 0;
 static checksum_context_t *iso_context = NULL;
 static checksum_context_t *template_context = NULL;
 
-unsigned char image_md5[16];  /* MD5SUM of the entire image */
-unsigned char image_sha1[20]; /* SHA1SUM of the entire image */
-unsigned char image_sha256[32]; /* SHA1SUM of the entire image */
-unsigned char image_sha512[64]; /* SHA1SUM of the entire image */
-
 #define CHECK_USED_ISO  (CHECK_MD5_USED | CHECK_SHA1_USED | CHECK_SHA256_USED | CHECK_SHA512_USED)
 #define CHECK_USED_TPL  (CHECK_MD5_USED)
 
@@ -170,26 +165,6 @@ static char *file_base_name(char *path)
             ++ptr;
     }
     return endptr;
-}
-
-/* Dump a buffer in hex */
-static char *hex_dump(unsigned char *buf, size_t buf_size)
-{
-    unsigned int i;
-    static char output_buffer[2048];
-    char *p = output_buffer;
-
-    memset(output_buffer, 0, sizeof(output_buffer));
-    if (buf_size >= (sizeof(output_buffer) / 2))
-    {
-        fprintf(stderr, "hex_dump: Buffer too small!\n");
-        exit(1);
-    }
-
-    for (i = 0; i < buf_size ; i++)
-        p += sprintf(p, "%2.2x", buf[i]);
-
-    return output_buffer;
 }
 
 /* Build the list of exclusion regexps */
@@ -731,7 +706,7 @@ static void write_compressed_chunk(unsigned char *buffer, size_t size)
 
 /* Loop through the list of DESC entries that we've built up and
    append them to the template file */
-static void write_template_desc_entries(off_t image_len, char *image_md5)
+static void write_template_desc_entries(off_t image_len)
 {
     entry_t *entry = entry_list;
     off_t desc_len = 0;
@@ -776,7 +751,7 @@ static void write_template_desc_entries(off_t image_len, char *image_md5)
 
     jimage.type = 5;
     write_le48(image_len, &jimage.imageLen[0]);
-    memcpy(jimage.imageMD5, image_md5, sizeof(jimage.imageMD5));
+    memcpy(jimage.imageMD5, checksum_hex(iso_context, CHECK_MD5), sizeof(jimage.imageMD5));
     write_le32(MIN_JIGDO_FILE_SIZE, &jimage.blockLen[0]);
     template_fwrite(&jimage, sizeof(jimage), 1, t_file);    
     template_fwrite(out_len, sizeof(out_len), 1, t_file);
@@ -823,6 +798,8 @@ static void write_jigdo_file(void)
     unsigned char template_md5sum[16];
     entry_t *entry = entry_list;
     struct path_mapping *map = map_list;
+    int i = 0;
+    struct checksum_info *info = NULL;
 
     checksum_final(template_context);
     checksum_copy(template_context, CHECK_MD5, &template_md5sum[0]);
@@ -841,17 +818,18 @@ static void write_jigdo_file(void)
 
     fprintf(j_file, "Template-MD5Sum=%s \n",
             base64_dump(&template_md5sum[0], sizeof(template_md5sum)));
-    fprintf(j_file, "# Template Hex MD5sum %s\n",
-            hex_dump(&template_md5sum[0], sizeof(template_md5sum)));
+    fprintf(j_file, "# Template Hex MD5sum %s\n", checksum_hex(template_context, CHECK_MD5));
     fprintf(j_file, "# Template size %lld bytes\n", template_size);
-    fprintf(j_file, "# Image Hex MD5Sum %s\n",
-            hex_dump(&image_md5[0], sizeof(image_md5)));
-    fprintf(j_file, "# Image Hex SHA1Sum %s\n",
-            hex_dump(&image_sha1[0], sizeof(image_sha1)));
-    fprintf(j_file, "# Image Hex SHA256Sum %s\n",
-            hex_dump(&image_sha256[0], sizeof(image_sha256)));
-    fprintf(j_file, "# Image Hex SHA512Sum %s\n",
-            hex_dump(&image_sha512[0], sizeof(image_sha512)));
+
+    for (i = 0; i < NUM_CHECKSUMS; i++)
+    {
+        if (CHECK_USED_ISO & (1 << i))
+        {
+            info = checksum_information(i);
+            fprintf(j_file, "# Image Hex %sSum %s\n", info->name, checksum_hex(iso_context, i));
+        }
+    }
+
     fprintf(j_file, "# Image size %lld bytes\n\n", image_size);
 
     fprintf(j_file, "[Parts]\n");
@@ -881,15 +859,11 @@ void write_jt_footer(void)
 {
     /* Finish calculating the image's checksum */
     checksum_final(iso_context);
-    checksum_copy(iso_context, CHECK_MD5, &image_md5[0]);
-    checksum_copy(iso_context, CHECK_SHA1, &image_sha1[0]);
-    checksum_copy(iso_context, CHECK_SHA256, &image_sha256[0]);
-    checksum_copy(iso_context, CHECK_SHA512, &image_sha512[0]);
 
     /* And calculate the image size */
     image_size = (unsigned long long)SECTOR_SIZE * last_extent_written;
 
-    write_template_desc_entries(image_size, (char *)image_md5);
+    write_template_desc_entries(image_size);
 
     write_jigdo_file();
 }

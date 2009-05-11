@@ -128,6 +128,8 @@ struct algo_context
     void          *context;
     unsigned char *digest;
     int            enabled;
+    int            finalised;
+    char          *hexdump;
 };
 
 struct _checksum_context
@@ -139,6 +141,17 @@ struct _checksum_context
 struct checksum_info *checksum_information(enum checksum_types which)
 {
     return (struct checksum_info *)&algorithms[which];
+}
+
+/* Dump a buffer in hex */
+static void hex_dump_to_buffer(char *output_buffer, unsigned char *buf, size_t buf_size)
+{
+    unsigned int i;
+    char *p = output_buffer;
+
+    memset(output_buffer, 0, 1 + (2*buf_size));
+    for (i = 0; i < buf_size ; i++)
+        p += sprintf(p, "%2.2x", buf[i]);
 }
 
 checksum_context_t *checksum_init_context(int checksums, const char *owner)
@@ -165,8 +178,12 @@ checksum_context_t *checksum_init_context(int checksums, const char *owner)
             context->algo[i].digest = malloc(algorithms[i].digest_size);
             if (!context->algo[i].digest)
                 return NULL;        
+            context->algo[i].hexdump = malloc(1 + (2*algorithms[i].digest_size));
+            if (!context->algo[i].hexdump)
+                return NULL;        
             algorithms[i].init(context->algo[i].context);
             context->algo[i].enabled = 1;
+            context->algo[i].finalised = 0;
         }
         else
             context->algo[i].enabled = 0;
@@ -184,6 +201,7 @@ void checksum_free_context(checksum_context_t *context)
     {
         free(c->algo[i].context);
         free(c->algo[i].digest);
+        free(c->algo[i].hexdump);
     }
     free(c->owner);
     free(c);
@@ -210,7 +228,11 @@ void checksum_final(checksum_context_t *context)
     for (i = 0; i < NUM_CHECKSUMS; i++)
     {
         if (c->algo[i].enabled)
+        {
             algorithms[i].final(c->algo[i].digest, c->algo[i].context);
+            hex_dump_to_buffer(c->algo[i].hexdump, c->algo[i].digest, algorithms[i].digest_size);
+            c->algo[i].finalised = 1;
+        }
     }
 }
 
@@ -221,10 +243,27 @@ void checksum_copy(checksum_context_t *context,
     struct _checksum_context *c = context;
 
     if (c->algo[which].enabled)
-        memcpy(digest, c->algo[which].digest, algorithms[which].digest_size);
+    {
+        if (c->algo[which].finalised)
+            memcpy(digest, c->algo[which].digest, algorithms[which].digest_size);
+        else
+            memset(digest, 0, algorithms[which].digest_size);
+    }
     else
         fprintf(stderr, "Asked for %s checksum, not enabled!\n",
                 algorithms[which].name);
+}
+
+const char *checksum_hex(checksum_context_t *context,
+                         enum checksum_types which)
+{
+    struct _checksum_context *c = context;
+
+    if (c->algo[which].enabled && c->algo[which].finalised)
+        return c->algo[which].hexdump;
+
+    /* else */
+    return NULL;
 }
 
 #ifdef CHECKSUM_SELF_TEST

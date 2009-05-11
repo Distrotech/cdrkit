@@ -56,7 +56,16 @@ void                  checksum_final(checksum_context_t *context);
 
 /* Extract a particular algorithm's checksum once checksum_final() has
  * been called. Use the details in checksum_information() above first
- * to see how big the digest will be. */
+ * to see how big the digest will be. Only valid once checksum_final()
+ * has been called, otherwise the digest returned will be all
+ * zeroes. */
 void                  checksum_copy(checksum_context_t *context,
                                     enum checksum_types which,
                                     unsigned char *digest);
+
+/* Helper function: return a pointer to a string containing the ASCII
+ * hexadecimal dump of a checksum. Only valid once checksum_final()
+ * has been called, otherwise will return NULL */
+const char *          checksum_hex(checksum_context_t *context,
+                                   enum checksum_types which);
+
