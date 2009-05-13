@@ -20,6 +20,10 @@
 #include "sha512.h"
 #include "checksum.h"
 
+#ifdef THREADED_CHECKSUMS
+#   include <pthread.h>
+#endif
+
 static void md5_init(void *context)
 {
     mk_MD5Init(context);
@@ -125,17 +129,33 @@ static const struct checksum_details algorithms[] =
 
 struct algo_context
 {
-    void          *context;
-    unsigned char *digest;
-    int            enabled;
-    int            finalised;
-    char          *hexdump;
+    void                     *context;
+    unsigned char            *digest;
+    int                       enabled;
+    int                       finalised;
+    char                     *hexdump;
+#ifdef THREADED_CHECKSUMS
+    unsigned char const      *buf;
+    unsigned int              len;
+    int                       which;
+    pthread_t                 thread;
+    struct _checksum_context *parent;
+    pthread_mutex_t           start_mutex;
+    pthread_cond_t            start_cv;
+#endif
 };
 
 struct _checksum_context
 {
-    char          *owner;
-    struct algo_context algo[NUM_CHECKSUMS];
+#ifdef THREADED_CHECKSUMS
+    unsigned int           index;
+    unsigned int           threads_running;
+    unsigned int           threads_desired;
+    pthread_mutex_t        done_mutex;
+    pthread_cond_t         done_cv;
+#endif
+    char                  *owner;
+    struct algo_context    algo[NUM_CHECKSUMS];
 };
 
 struct checksum_info *checksum_information(enum checksum_types which)
@@ -154,10 +174,52 @@ static void hex_dump_to_buffer(char *output_buffer, unsigned char *buf, size_t b
         p += sprintf(p, "%2.2x", buf[i]);
 }
 
+#ifdef THREADED_CHECKSUMS
+static void *checksum_thread(void *arg)
+{
+    struct algo_context *a = arg;
+    struct _checksum_context *c = a->parent;
+    int num_blocks_summed = 0;
+
+    while (1)
+    {
+        /* wait to be given some work to do */
+        pthread_mutex_lock(&a->start_mutex);
+        while (a->buf == NULL)
+        {
+            pthread_cond_wait(&a->start_cv, &a->start_mutex);
+        }
+        pthread_mutex_unlock(&a->start_mutex);
+
+        /* if we're given a zero-length buffer, then that means we're
+         * done */
+        if (a->len == 0)
+            break;
+
+        /* actually do the checksum on the supplied buffer */
+        algorithms[a->which].update(a->context, a->buf, a->len);
+        num_blocks_summed++;
+        a->buf = NULL;
+
+        /* and tell the main thread that we're done with that
+         * buffer */
+        pthread_mutex_lock(&c->done_mutex);
+        c->threads_running--;
+        if (c->threads_running == 0)
+            pthread_cond_signal(&c->done_cv);
+        pthread_mutex_unlock(&c->done_mutex);
+    }
+
+    pthread_exit(0);
+}
+#endif
+
 checksum_context_t *checksum_init_context(int checksums, const char *owner)
 {
     int i = 0;
-    struct _checksum_context *context = malloc(sizeof(struct _checksum_context));
+    int ret = 0;
+    struct _checksum_context *context = calloc(1, sizeof(struct _checksum_context));
+
     if (!context)
         return NULL;
 
@@ -168,25 +230,62 @@ checksum_context_t *checksum_init_context(int checksums, const char *owner)
         return NULL;
     }   
 
+#ifdef THREADED_CHECKSUMS
+    pthread_mutex_init(&context->done_mutex, NULL);
+    pthread_cond_init(&context->done_cv, NULL);
+    context->index = 0;
+    context->threads_running = 0;
+    context->threads_desired = 0;
+
+    for (i = 0; i < NUM_CHECKSUMS; i++)
+        if ( (1 << i) & checksums)
+            context->threads_desired++;    
+#endif
+
     for (i = 0; i < NUM_CHECKSUMS; i++)
     {
+        struct algo_context *a = &context->algo[i];
         if ( (1 << i) & checksums)
         {
-            context->algo[i].context = malloc(algorithms[i].context_size);
-            if (!context->algo[i].context)
+            a->context = malloc(algorithms[i].context_size);
+            if (!a->context)
+            {
+                checksum_free_context(context);
                 return NULL;
-            context->algo[i].digest = malloc(algorithms[i].digest_size);
-            if (!context->algo[i].digest)
-                return NULL;        
-            context->algo[i].hexdump = malloc(1 + (2*algorithms[i].digest_size));
-            if (!context->algo[i].hexdump)
-                return NULL;        
-            algorithms[i].init(context->algo[i].context);
-            context->algo[i].enabled = 1;
-            context->algo[i].finalised = 0;
+            }
+            a->digest = malloc(algorithms[i].digest_size);
+            if (!a->digest)
+            {
+                checksum_free_context(context);
+                return NULL;
+            }
+            a->hexdump = malloc(1 + (2*algorithms[i].digest_size));
+            if (!a->hexdump)
+            {
+                checksum_free_context(context);
+                return NULL;
+            }
+            algorithms[i].init(a->context);
+            a->enabled = 1;
+            a->finalised = 0;
+#ifdef THREADED_CHECKSUMS
+            a->which = i;
+            a->parent = context;
+            a->buf = NULL;
+            a->len = 0;
+            pthread_mutex_init(&a->start_mutex, NULL);
+            pthread_cond_init(&a->start_cv, NULL);
+            ret = pthread_create(&a->thread, NULL, checksum_thread, a);
+            if (ret != 0)
+            {
+                fprintf(stderr, "failed to create new thread: %d\n", ret);
+                checksum_free_context(context);
+                return NULL;
+            }
+#endif
         }
         else
-            context->algo[i].enabled = 0;
+            a->enabled = 0;
     }
     
     return context;
@@ -199,13 +298,59 @@ void checksum_free_context(checksum_context_t *context)
 
     for (i = 0; i < NUM_CHECKSUMS; i++)
     {
-        free(c->algo[i].context);
-        free(c->algo[i].digest);
-        free(c->algo[i].hexdump);
+        struct algo_context *a = &c->algo[i];
+
+#ifdef THREADED_CHECKSUMS
+        if (a->thread)
+        {
+            void *ret;
+            pthread_cancel(a->thread);
+            pthread_join(a->thread, &ret);
+            a->thread = 0;
+        }
+#endif
+        free(a->context);
+        free(a->digest);
+        free(a->hexdump);
     }
     free(c->owner);
     free(c);
 }
+
+#ifdef THREADED_CHECKSUMS
+void checksum_update(checksum_context_t *context,
+                     unsigned char const *buf, unsigned int len)
+{
+    int i = 0;
+    struct _checksum_context *c = context;
+    static int index = 0;
+
+    index++;
+
+    c->threads_running = c->threads_desired;    
+    for (i = 0; i < NUM_CHECKSUMS; i++)
+    {
+        if (c->algo[i].enabled)
+        {
+            struct algo_context *a = &c->algo[i];
+            pthread_mutex_lock(&a->start_mutex);
+            a->len = len;
+            a->buf = buf;
+            pthread_cond_signal(&a->start_cv);
+            pthread_mutex_unlock(&a->start_mutex);
+        }
+    }
+
+    /* Should now all be running, wait on them all to return */
+    pthread_mutex_lock(&c->done_mutex);
+    while (c->threads_running > 0)
+    {
+        pthread_cond_wait(&c->done_cv, &c->done_mutex);
+    }
+    pthread_mutex_unlock(&c->done_mutex);
+}
+
+#else // THREADED_CHECKSUMS
 
 void checksum_update(checksum_context_t *context,
                      unsigned char const *buf, unsigned int len)
@@ -216,22 +361,51 @@ void checksum_update(checksum_context_t *context,
     for (i = 0; i < NUM_CHECKSUMS; i++)
     {
         if (c->algo[i].enabled)
-            algorithms[i].update(c->algo[i].context, buf, len);
+        {
+            struct algo_context *a = &c->algo[i];
+            algorithms[i].update(a->context, buf, len);
+        }
     }
 }
+
+#endif // THREADED_CHECKSUMS
 
 void checksum_final(checksum_context_t *context)
 {
     int i = 0;
     struct _checksum_context *c = context;
     
+#ifdef THREADED_CHECKSUMS
+    void *thread_ret;
+    /* Clean up the threads */
+    c->threads_running = c->threads_desired;    
+
     for (i = 0; i < NUM_CHECKSUMS; i++)
     {
         if (c->algo[i].enabled)
         {
-            algorithms[i].final(c->algo[i].digest, c->algo[i].context);
-            hex_dump_to_buffer(c->algo[i].hexdump, c->algo[i].digest, algorithms[i].digest_size);
-            c->algo[i].finalised = 1;
+            void *ret = 0;
+            struct algo_context *a = &c->algo[i];
+
+            pthread_mutex_lock(&a->start_mutex);
+            a->len = 0;
+            a->buf = (unsigned char *)-1;
+            pthread_cond_signal(&a->start_cv);
+            pthread_mutex_unlock(&a->start_mutex);
+            pthread_join(a->thread, &ret);
+            a->thread = 0;
+        }
+    }
+#endif
+
+    for (i = 0; i < NUM_CHECKSUMS; i++)
+    {
+        struct algo_context *a = &c->algo[i];
+        if (a->enabled)
+        {
+            algorithms[i].final(a->digest, a->context);
+            hex_dump_to_buffer(a->hexdump, a->digest, algorithms[i].digest_size);
+            a->finalised = 1;
         }
     }
 }
