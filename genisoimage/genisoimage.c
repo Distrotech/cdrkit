@@ -414,6 +414,9 @@ struct ld_option {
 #define	OPTION_JT_INCLUDE		1106
 #define	OPTION_JT_EXCLUDE		1107
 #define	OPTION_JT_COMPRESS_ALGO	1108
+
+#define OPTION_JT_CHECKSUM_ALGO_ISO   1120
+#define OPTION_JT_CHECKSUM_ALGO_TMPL  1121
 #endif
 
 #define	OPTION_BOOTALPHA		1200
@@ -691,6 +694,10 @@ static const struct ld_option ld_options[] =
 	'\0', "FILE", "File containing MD5 sums of the files that should be checked", ONE_DASH },
     {{"jigdo-template-compress", required_argument, NULL, OPTION_JT_COMPRESS_ALGO},
      '\0', "ALGORITHM", "Choose to use gzip or bzip2 compression for template data; default is gzip", ONE_DASH },
+	{{"checksum_algorithm_iso", required_argument, NULL, OPTION_JT_CHECKSUM_ALGO_ISO},
+	'\0', "alg1,alg2,...", "Specify the checksum types desired for the output image", ONE_DASH},
+	{{"checksum_algorithm_template", required_argument, NULL, OPTION_JT_CHECKSUM_ALGO_TMPL},
+	'\0', "alg1,alg2,...", "Specify the checksum types desired for the output jigdo template", ONE_DASH},
 #endif
 
 #ifdef SORTING
@@ -1496,7 +1503,33 @@ int main(int argc, char *argv[])
                 exit(1);
 #endif
             }
-            break;                
+            break;
+
+        case OPTION_JT_CHECKSUM_ALGO_ISO:
+            if (parse_checksum_algo(optarg, &checksum_algo_iso))
+            {
+#ifdef USE_LIBSCHILY
+                comerrno(EX_BAD, "Problem with ISO checksum choices: %s \n", optarg);
+#else
+                fprintf(stderr, "Problem with ISO checksum choices: %s\n", optarg);
+                exit(1);
+#endif
+            }
+
+            break;
+
+        case OPTION_JT_CHECKSUM_ALGO_TMPL:
+            if (parse_checksum_algo(optarg, &checksum_algo_tmpl))
+            {
+#ifdef USE_LIBSCHILY
+                comerrno(EX_BAD, "Problem with template checksum choices: %s \n", optarg);
+#else
+                fprintf(stderr, "Problem with template checksum choices: %s\n", optarg);
+                exit(1);
+#endif
+            }
+            break;
+
 #endif /* JIGDO_TEMPLATE */
 		case OPTION_NOBAK:
 			all_files = 0;

@@ -5,6 +5,8 @@ cdrkit (1.1.10) UNRELEASED; urgency=low
     when making jigdo files.
   * genisoimage: checksumming with lots of algorithms can be very
     time-consuming, so split it out into multiple threads if possible.
+  * genisoimage: allow user to specify which checksum algorithms to run
+    on the command line.
 
  -- Steve McIntyre <93sam@debian.org>  Thu, 14 May 2009 00:28:48 +0100
 

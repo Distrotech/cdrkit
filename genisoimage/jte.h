@@ -15,6 +15,8 @@ extern FILE	*jthelper;
 extern FILE *jtjigdo;
 extern FILE *jttemplate;
 extern int  jte_min_size;
+extern int  checksum_algo_iso;
+extern int  checksum_algo_tmpl;
 
 extern void write_jt_header(FILE *template_file, FILE *jigdo_file);
 extern void write_jt_footer(void);

@@ -14,6 +14,8 @@
 #include <fctldefs.h>
 #include <regex.h>
 #include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 #include "md5.h"
 #include "sha1.h"
 #include "sha256.h"
@@ -438,6 +440,65 @@ const char *checksum_hex(checksum_context_t *context,
 
     /* else */
     return NULL;
+}
+
+
+/* Parse the command line options for which checksums to use */
+int parse_checksum_algo(char *arg, int *algo)
+{
+    int error = 0;
+    int i = 0;
+    char *start_ptr = arg;
+    int len = 0;
+
+    *algo = 0;
+
+    if (!strcasecmp(arg, "all"))
+    {
+        *algo = 0xFF;
+        return 0;
+    }
+    
+    while (*start_ptr != 0)
+    {
+        int match = 0;
+        len = 0;
+
+        while (start_ptr[len] != ',' && start_ptr[len] != 0)
+            len++;
+        
+        if (len)
+        {
+            for (i = 0; i < NUM_CHECKSUMS; i++)
+            {
+                if (len == strlen(algorithms[i].name) &&
+                    !strncasecmp(start_ptr, algorithms[i].name, len))
+                {
+                    match = 1;
+                    *algo |= (1 << i);
+                }
+            }
+        
+            if (!match)
+            {
+                fprintf(stderr, "invalid algorithm name found in %s\n", arg);
+                return EINVAL;
+            }
+        }
+        
+        if (start_ptr[len] == 0)
+            break;
+            
+        start_ptr += len + 1;
+    }
+    
+    if (! (*algo & CHECK_MD5_USED))
+    {
+        fprintf(stderr, "invalid choices: algorithms *must* include MD5\n");
+        return EINVAL;
+    }
+    
+    return 0;
 }
 
 #ifdef CHECKSUM_SELF_TEST

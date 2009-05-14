@@ -69,3 +69,6 @@ void                  checksum_copy(checksum_context_t *context,
 const char *          checksum_hex(checksum_context_t *context,
                                    enum checksum_types which);
 
+
+extern int            parse_checksum_algo(char *arg,
+                                          int *algo);

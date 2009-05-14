@@ -79,12 +79,14 @@ struct  path_match *include_list = NULL;
 struct  path_mapping  *map_list = NULL;
 unsigned long long template_size = 0;
 unsigned long long image_size = 0;
+int checksum_algo_iso = (CHECK_MD5_USED | \
+                         CHECK_SHA1_USED | \
+                         CHECK_SHA256_USED | \
+                         CHECK_SHA512_USED);
+int checksum_algo_tmpl = CHECK_MD5_USED;
 
 static checksum_context_t *iso_context = NULL;
 static checksum_context_t *template_context = NULL;
-
-#define CHECK_USED_ISO  (CHECK_MD5_USED | CHECK_SHA1_USED | CHECK_SHA256_USED | CHECK_SHA512_USED)
-#define CHECK_USED_TPL  (CHECK_MD5_USED)
 
 /* List of files that we've seen, ready to write into the template and
    jigdo files */
@@ -425,7 +427,7 @@ static void write_template_header()
 
     memset(buf, 0, sizeof(buf));
 
-    template_context = checksum_init_context(CHECK_USED_TPL, "template");
+    template_context = checksum_init_context(checksum_algo_tmpl, "template");
     if (!template_context)
     {
 #ifdef	USE_LIBSCHILY
@@ -549,7 +551,7 @@ void write_jt_header(FILE *template_file, FILE *jigdo_file)
     j_file = jigdo_file;
 
     /* Start checksum work for the image */
-    iso_context = checksum_init_context(CHECK_USED_ISO, "iso");
+    iso_context = checksum_init_context(checksum_algo_iso, "iso");
     if (!iso_context)
     {
 #ifdef	USE_LIBSCHILY
@@ -818,12 +820,20 @@ static void write_jigdo_file(void)
 
     fprintf(j_file, "Template-MD5Sum=%s \n",
             base64_dump(&template_md5sum[0], sizeof(template_md5sum)));
-    fprintf(j_file, "# Template Hex MD5sum %s\n", checksum_hex(template_context, CHECK_MD5));
+
+    for (i = 0; i < NUM_CHECKSUMS; i++)
+    {
+        if (checksum_algo_tmpl & (1 << i))
+        {
+            info = checksum_information(i);
+            fprintf(j_file, "# Template Hex %sSum %s\n", info->name, checksum_hex(template_context, i));
+        }
+    }
     fprintf(j_file, "# Template size %lld bytes\n", template_size);
 
     for (i = 0; i < NUM_CHECKSUMS; i++)
     {
-        if (CHECK_USED_ISO & (1 << i))
+        if (checksum_algo_iso & (1 << i))
         {
             info = checksum_information(i);
             fprintf(j_file, "# Image Hex %sSum %s\n", info->name, checksum_hex(iso_context, i));
