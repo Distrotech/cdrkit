@@ -18,7 +18,7 @@ READMEs : contains HOWTOs and instructions relevant to
           programs are involved
 
 wodim : contains README files relevant for the work with the
-        wodim application (writting data) and details specific
+        wodim application (writing data) and details specific
         to its usage
 
 genisoimage : documentation for work with genisoimage program, a
@@ -29,7 +29,7 @@ icedax : contains documentation for the CD audio
            extraction utility icedax. See icedax/README for
            details.
 
-plattforms : contains notes about portability to different
-           plattforms
+platforms : contains notes about portability to different
+           platforms
 
 
