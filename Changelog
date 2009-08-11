@@ -8,6 +8,10 @@ cdrkit (1.1.10) UNRELEASED; urgency=low
   * genisoimage: allow user to specify which checksum algorithms to run
     on the command line.
 
+  [ Nikola Pajkovsky ]
+  * genisoimage: fix string overflow breakage when using the -root
+    option (https://bugzilla.redhat.com/show_bug.cgi?id=508449)
+
  -- Steve McIntyre <93sam@debian.org>  Thu, 14 May 2009 00:28:48 +0100
 
 cdrkit (1.1.9) RELEASED; urgency=low

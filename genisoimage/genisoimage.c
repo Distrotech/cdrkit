@@ -3142,8 +3142,10 @@ if (check_session == 0)
 			if (reloc_root != NULL) {
 				strcpy(graft_point, reloc_root);
 				len = strlen(graft_point);
-				if (graft_point[len] != '/')
+				if (graft_point[len] != '/') {
 					graft_point[len++] = '/';
+					graft_point[len] = '\0';
+				}
 			} else {
 				len = 0;
 			}
