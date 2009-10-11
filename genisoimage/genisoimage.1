@@ -825,7 +825,7 @@ a shell wildcard pattern, from being written to CD-ROM.
 may match either the filename component or the full pathname.
 This option may be used multiple times.  For example:
 .sp
-     genisoimage \-o rom \-m '*.o' \-m core \-m foobar
+     genisoimage \-o rom \-m \(aq*.o\(aq \-m core \-m foobar
 .sp
 would exclude all files ending in `.o', or called
 .IR core " or " foobar
@@ -998,7 +998,7 @@ and catch the number from
 .IR stdout .
 This may be done with:
 .sp
-     cdblocks=` genisoimage \-print\-size \-quiet .\|.\|. `
+     cdblocks=\` genisoimage \-print\-size \-quiet .\|.\|. \`
 .br
      genisoimage .\|.\|. | wodim .\|.\|. tsize=${cdblocks}s \-
 .TP
@@ -1476,7 +1476,7 @@ will still exist in the ISO9660 and/or Joliet directory.
 may match any part of the filename.  Multiple globs may be excluded.
 Example:
 .sp
-     genisoimage \-o rom \-hfs \-hide\-hfs '*.o' \-hide\-hfs foobar
+     genisoimage \-o rom \-hfs \-hide\-hfs \(aq*.o\(aq \-hide\-hfs foobar
 .sp
 would exclude all files ending in `.o' or called
 .I foobar
@@ -1849,11 +1849,11 @@ l l l l l .
 # Example filename mapping file
 #
 # EXTN/XLate/CREATOR/TYPE/Comment
-\&.tif/Raw/'8BIM'/'TIFF'/"Photoshop TIFF image"
-\&.hqx/Ascii/'BnHq'/'TEXT'/"BinHex file"
-\&.doc/Raw/'MSWD'/'WDBN'/"Word file"
-\&.mov/Raw/'TVOD'/'MooV'/"QuickTime Movie"
-*/Ascii/'ttxt'/'TEXT'/"Text file"
+\&.tif/Raw/\(aq8BIM\(aq/\(aqTIFF\(aq/\(dqPhotoshop TIFF image\(dq
+\&.hqx/Ascii/\(aqBnHq\(aq/\(aqTEXT\(aq/\(dqBinHex file\(dq
+\&.doc/Raw/\(aqMSWD\(aq/\(aqWDBN\(aq/\(dqWord file\(dq
+\&.mov/Raw/\(aqTVOD\(aq/\(aqMooV\(aq/\(dqQuickTime Movie\(dq
+*/Ascii/\(aqttxt\(aq/\(aqTEXT\(aq/\(dqText file\(dq
 .TE
 .PP
 Where:
