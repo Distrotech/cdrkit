@@ -253,7 +253,6 @@ static	char	*skipwhite(const char *s);
 static	char	*peekword(void);
 static	char	*lineend(void);
 static	char	*markword(char *delim);
-static	char	getdelim(void);
 static	char	*getnextitem(char *delim);
 static	char	*neednextitem(char *delim);
 static	char	*nextword(void);
@@ -746,7 +745,7 @@ parse_track(track_t trackp[], state_t *sp)
 	if (kp == NULL)
 		cueabort("Unknown filetype '%s'", word);
 
-	if (getdelim() == '/') {
+	if (wordendc == '/') {
 		word = needitem();
 		if (*astol(++word, &secsize) != '\0')
 			cueabort("Not a number '%s'", word);
@@ -1125,12 +1124,6 @@ linelen--;
 	*s = '\0';
 
 	return (linep);
-}
-
-static char 
-getdelim()
-{
-	return (wordendc);
 }
 
 static char *
