@@ -3,7 +3,7 @@
    Copyright (C) 2007 Free Software Foundation, Inc.
 
    Copied here from the GNU C Library version 2.7 on the 10 May 2009
-   by Steve McIntyre <93sam@debian.org>. This code was under GPL v2.1
+   by Steve McIntyre <93sam@debian.org>. This code was under LGPL v2.1
    in glibc, and that license gives us the option to use and
    distribute the code under the terms of the GPL v2 instead. I'm
    taking that option.
