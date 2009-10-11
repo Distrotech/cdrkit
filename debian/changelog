@@ -1,3 +1,10 @@
+cdrkit (9:1.1.10-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+    - Several functions that clash with POSIX renamed.  (Closes: #547886)
+
+ -- Peter Samuelson <peter@p12n.org>  Sun, 11 Oct 2009 17:34:51 -0500
+
 cdrkit (9:1.1.9-1) unstable; urgency=low
 
   * New upstream release with a couple of important bugfixes:
