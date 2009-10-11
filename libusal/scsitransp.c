@@ -301,7 +301,7 @@ usal_yes(char *msg)
 
 	printf("%s", msg);
 	flush();
-	if (getline(okbuf, sizeof (okbuf)) == EOF)
+	if (rols_getline(okbuf, sizeof (okbuf)) == EOF)
 		exit(EX_BAD);
 	if (streql(okbuf, "y") || streql(okbuf, "yes") ||
 	    streql(okbuf, "Y") || streql(okbuf, "YES"))

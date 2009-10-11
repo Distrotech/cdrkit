@@ -3964,7 +3964,7 @@ reload_media(SCSI *usalp, cdr_t *dp)
 #endif
 		} else
 #endif
-		if (fgetline(tty, ans, 1) < 0)
+		if (rols_fgetline(tty, ans, 1) < 0)
 			comerrno(EX_BAD, "Aborted by EOF on input.\n");
 	}
 	usalp->silent--;

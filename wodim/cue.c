@@ -1037,7 +1037,7 @@ nextline(FILE *f)
 
 	do {
 		fillbytes(linebuf, sizeof (linebuf), '\0');
-		len = fgetline(f, linebuf, sizeof (linebuf));
+		len = rols_fgetline(f, linebuf, sizeof (linebuf));
 		if (len < 0)
 			return (NULL);
 		if (len > 0 && linebuf[len-1] == '\r') {

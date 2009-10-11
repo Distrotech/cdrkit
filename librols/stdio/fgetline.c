@@ -37,7 +37,7 @@
  */
 
 EXPORT int
-fgetline(f, buf, len)
+rols_fgetline(f, buf, len)
 	register	FILE	*f;
 			char	*buf;
 	register	int	len;
@@ -76,9 +76,9 @@ fgetline(f, buf, len)
 }
 
 EXPORT int
-getline(buf, len)
+rols_getline(buf, len)
 	char	*buf;
 	int	len;
 {
-	return (fgetline(stdin, buf, len));
+	return (rols_fgetline(stdin, buf, len));
 }

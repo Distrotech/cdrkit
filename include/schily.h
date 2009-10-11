@@ -112,17 +112,17 @@ extern	int	_cvmod(const char *, int *, int *);
 extern	FILE	*_fcons(FILE *, int, int);
 extern	FILE	*fdup(FILE *);
 extern	int	fdown(FILE *);
-extern	int	fexecl(const char *, FILE *, FILE *, FILE *, const char *, ...);
-extern	int	fexecle(const char *, FILE *, FILE *, FILE *, const char *, ...);
+extern	int	rols_fexecl(const char *, FILE *, FILE *, FILE *, const char *, ...);
+extern	int	rols_fexecle(const char *, FILE *, FILE *, FILE *, const char *, ...);
 		/* 6th arg not const, fexecv forces av[ac] = NULL */
-extern	int	fexecv(const char *, FILE *, FILE *, FILE *, int, char **);
-extern	int	fexecve(const char *, FILE *, FILE *, FILE *, char * const *, 
+extern	int	rols_fexecv(const char *, FILE *, FILE *, FILE *, int, char **);
+extern	int	rols_fexecve(const char *, FILE *, FILE *, FILE *, char * const *, 
 							  char * const *);
 extern	int	fspawnv(FILE *, FILE *, FILE *, int, char * const *);
 extern	int	fspawnl(FILE *, FILE *, FILE *, const char *, const char *, ...);
 extern	int	fspawnv_nowait(FILE *, FILE *, FILE *, const char *, int, 
 										char *const*);
-extern	int	fgetline(FILE *, char *, int);
+extern	int	rols_fgetline(FILE *, char *, int);
 extern	int	fgetstr(FILE *, char *, int);
 extern	void	file_raise(FILE *, int);
 extern	int	fileclose(FILE *);
@@ -190,7 +190,7 @@ extern	int	schily_error(const char *, ...) __printflike__(1, 2);
 extern	char	*fillbytes(void *, int, char);
 extern	char	*findbytes(const void *, int, char);
 extern	int	findline(const char *, char, const char *, int, char **, int);
-extern	int	getline(char *, int);
+extern	int	rols_getline(char *, int);
 extern	int	getstr(char *, int);
 extern	int	breakline(char *, char, char **, int);
 extern	int	getallargs(int *, char * const**, const char *, ...);

@@ -143,7 +143,7 @@ fspawnv_nowait(in, out, err, name, argc, argv)
 				 * silly: fexecv must set av[ac] = NULL
 				 * so we have to cast argv tp (char **)
 				 */
-	fexecv(name, in, out, err, argc, (char **)argv);
+	rols_fexecv(name, in, out, err, argc, (char **)argv);
 	exit(geterrno());
 	/* NOTREACHED */
 }

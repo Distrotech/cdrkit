@@ -130,7 +130,7 @@ BOOL getvalue(char *s, long *lp, long mini, long maxi,
 		(*prt)(s, *lp, mini, maxi, dp);
 		flush();
 		line[0] = '\0';
-		if (getline(line, 80) == EOF)
+		if (rols_getline(line, 80) == EOF)
 			exit(EX_BAD);
 
 		linep = skipwhite(line);
@@ -178,7 +178,7 @@ again:
 	vprintf(form, args);
 	va_end(args);
 	flush();
-	if (getline(okbuf, sizeof(okbuf)) == EOF)
+	if (rols_getline(okbuf, sizeof(okbuf)) == EOF)
 		exit(EX_BAD);
 	if (okbuf[0] == '?') {
 		printf("Enter 'y', 'Y', 'yes' or 'YES' if you agree with the previous asked question.\n");

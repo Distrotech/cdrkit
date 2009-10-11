@@ -83,7 +83,7 @@ getdomainname(name, namelen)
 	if (f == NULL)
 		return (-1);
 
-	while (fgetline(f, name1, sizeof (name1)) >= 0) {
+	while (rols_fgetline(f, name1, sizeof (name1)) >= 0) {
 		if ((p = strchr(name1, '#')) != NULL)
 			*p = '\0';
 

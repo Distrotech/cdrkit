@@ -891,7 +891,7 @@ xpopen(char *cmd, char *type)
 		setuid(0);
 
 		fclose(pp[0]);
-		(void) fexecl("/bin/sh", stdin, pp[1], stderr,
+		(void) rols_fexecl("/bin/sh", stdin, pp[1], stderr,
 					"sh", "-c", cmd, (char *)0);
 		_exit(1);
 	}

@@ -34,13 +34,13 @@
 #include <mconfig.h>
 #include <stdio.h>
 #include <standard.h>
-#define	fexecl	__nothing_1_	/* prototype in schily.h is wrong */
-#define	fexecle	__nothing_2_	/* prototype in schily.h is wrong */
+#define	rols_fexecl	__nothing_1_	/* prototype in schily.h is wrong */
+#define	rols_fexecle	__nothing_2_	/* prototype in schily.h is wrong */
 #include <schily.h>
-#undef	fexecl
-#undef	fexecle
-	int fexecl	__PR((const char *, FILE *, FILE *, FILE *, ...));
-	int fexecle	__PR((const char *, FILE *, FILE *, FILE *, ...));
+#undef	rols_fexecl
+#undef	rols_fexecle
+	int rols_fexecl  __PR((const char *, FILE *, FILE *, FILE *, ...));
+	int rols_fexecle __PR((const char *, FILE *, FILE *, FILE *, ...));
 #include <unixstd.h>
 #include <stdxlib.h>
 #include <strdefs.h>
@@ -66,10 +66,10 @@ LOCAL const char *getpath __PR((char * const *));
 
 #ifdef	PROTOTYPES
 EXPORT int
-fexecl(const char *name, FILE *in, FILE *out, FILE *err, ...)
+rols_fexecl(const char *name, FILE *in, FILE *out, FILE *err, ...)
 #else
 EXPORT int
-fexecl(name, in, out, err, va_alist)
+rols_fexecl(name, in, out, err, va_alist)
 	char	*name;
 	FILE	*in;
 	FILE	*out;
@@ -113,7 +113,7 @@ fexecl(name, in, out, err, va_alist)
 	} while (p != NULL);
 	va_end(args);
 
-	ret = fexecv(name, in, out, err, ac, av);
+	ret = rols_fexecv(name, in, out, err, ac, av);
 	if (av != xav)
 		free(av);
 	return (ret);
@@ -121,10 +121,10 @@ fexecl(name, in, out, err, va_alist)
 
 #ifdef	PROTOTYPES
 EXPORT int
-fexecle(const char *name, FILE *in, FILE *out, FILE *err, ...)
+rols_fexecle(const char *name, FILE *in, FILE *out, FILE *err, ...)
 #else
 EXPORT int
-fexecle(name, in, out, err, va_alist)
+rols_fexecle(name, in, out, err, va_alist)
 	char	*name;
 	FILE	*in;
 	FILE	*out;
@@ -170,25 +170,25 @@ fexecle(name, in, out, err, va_alist)
 	} while (p != NULL);
 	va_end(args);
 
-	ret = fexecve(name, in, out, err, av, env);
+	ret = rols_fexecve(name, in, out, err, av, env);
 	if (av != xav)
 		free(av);
 	return (ret);
 }
 
 EXPORT int
-fexecv(name, in, out, err, ac, av)
+rols_fexecv(name, in, out, err, ac, av)
 	const char *name;
 	FILE *in, *out, *err;
 	int ac;
 	char *av[];
 {
 	av[ac] = NULL;			/*  force list to be null terminated */
-	return (fexecve(name, in, out, err, av, environ));
+	return (rols_fexecve(name, in, out, err, av, environ));
 }
 
 EXPORT int
-fexecve(name, in, out, err, av, env)
+rols_fexecve(name, in, out, err, av, env)
 	const char *name;
 	FILE *in, *out, *err;
 	char * const av[], * const env[];
