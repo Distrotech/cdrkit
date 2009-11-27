@@ -73,6 +73,18 @@ typedef struct state {
 	int	flags;
 } state_t;
 
+static	char	linebuf[4096];
+static	char	*fname;
+static	char	*linep;
+static	char	*wordendp;
+static	char	wordendc;
+static	int	olinelen;
+static	int	linelen;
+static	int	lineno;
+
+static	char	worddelim[] = "=:,/";
+static	char	nulldelim[] = "";
+
 #define	STATE_NONE	0
 #define	STATE_POSTGAP	1
 #define	STATE_TRACK	2
@@ -989,18 +1001,6 @@ lookup(char *word, keyw_t table[])
 /*
  * Parser low level functions start here...
  */
-
-static	char	linebuf[4096];
-static	char	*fname;
-static	char	*linep;
-static	char	*wordendp;
-static	char	wordendc;
-static	int	olinelen;
-static	int	linelen;
-static	int	lineno;
-
-static	char	worddelim[] = "=:,/";
-static	char	nulldelim[] = "";
 
 static void 
 wdebug()
