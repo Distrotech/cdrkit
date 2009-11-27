@@ -1,5 +1,5 @@
 PROJECT (LIBunls C)
-INCLUDE_DIRECTORIES(../include ../libhfs_iso ../wodim ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../libhfs_iso ../wodim ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/include)
 ADD_DEFINITIONS(-DHAVE_CONFIG_H)
 
     IF(HAVE_ICONV_H)

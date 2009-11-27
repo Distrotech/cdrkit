@@ -1,5 +1,5 @@
 PROJECT (CDRECORD C)
-INCLUDE_DIRECTORIES(../include ../libedc ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../libedc ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/include)
 INCLUDE(../include/AddScgBits.cmake)
 include(../include/AddSchilyBits.cmake)
 

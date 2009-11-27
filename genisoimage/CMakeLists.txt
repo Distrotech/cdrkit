@@ -3,7 +3,7 @@ PROJECT (MKISOFS C)
 INCLUDE(../include/AddScgBits.cmake)
 INCLUDE(../include/AddSchilyBits.cmake)
 
-INCLUDE_DIRECTORIES(../include ../libhfs_iso ../wodim ${CMAKE_BINARY_DIR})
+INCLUDE_DIRECTORIES(../include ../libhfs_iso ../wodim ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/include)
 
 INCLUDE(CheckIncludeFiles)
 CHECK_INCLUDE_FILES("magic.h" USE_MAGIC)

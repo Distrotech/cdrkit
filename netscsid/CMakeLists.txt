@@ -1,5 +1,5 @@
 PROJECT (netscsid C)
-INCLUDE_DIRECTORIES(../include ../wodim ${CMAKE_BINARY_DIR} )
+INCLUDE_DIRECTORIES(../include ../wodim ${CMAKE_BINARY_DIR} ${CMAKE_BINARY_DIR}/include)
 INCLUDE(../include/AddScgBits.cmake)
 INCLUDE(../include/AddSchilyBits.cmake)
 INCLUDE(../include/AddNetworkBits.cmake)

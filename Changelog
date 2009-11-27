@@ -7,6 +7,7 @@ cdrkit (1.1.10) UNRELEASED; urgency=low
     time-consuming, so split it out into multiple threads if possible.
   * genisoimage: allow user to specify which checksum algorithms to run
     on the command line.
+  * Fix FTBFS with missing xconfig.h. Thanks to Matt Kraai for the patch.
 
   [ Nikola Pajkovsky ]
   * genisoimage: fix string overflow breakage when using the -root

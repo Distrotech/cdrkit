@@ -2,6 +2,8 @@ cdrkit (9:1.1.10-1) UNRELEASED; urgency=low
 
   * New upstream release.
     - Several functions that clash with POSIX renamed.  (Closes: #547886)
+  * Fix FTBFS with missing xconfig.h. Thanks to Matt Kraai for the patch.
+    Closes: #556382
 
  -- Peter Samuelson <peter@p12n.org>  Sun, 11 Oct 2009 17:34:51 -0500
 
