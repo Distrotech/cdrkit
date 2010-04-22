@@ -753,7 +753,7 @@ static void write_template_desc_entries(off_t image_len)
 
     jimage.type = 5;
     write_le48(image_len, &jimage.imageLen[0]);
-    memcpy(jimage.imageMD5, checksum_hex(iso_context, CHECK_MD5), sizeof(jimage.imageMD5));
+    checksum_copy(iso_context, CHECK_MD5, &jimage.imageMD5[0]);
     write_le32(MIN_JIGDO_FILE_SIZE, &jimage.blockLen[0]);
     template_fwrite(&jimage, sizeof(jimage), 1, t_file);    
     template_fwrite(out_len, sizeof(out_len), 1, t_file);
