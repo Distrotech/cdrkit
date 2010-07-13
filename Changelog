@@ -3,6 +3,10 @@ cdrkit (1.1.11) UNRELEASED; urgency=low
   [ Steve McIntyre ]
   * genisoimage: Fix silly bug in MD5 output in template files.
 
+  [ Mike Paul ]
+  * genisoimage: Use memmove() instead of strcpy() when cleaning
+    up graft points.
+
  -- Steve McIntyre <93sam@debian.org>  Fri, 23 Apr 2010 00:30:18 +0100
 
 cdrkit (1.1.10) RELEASED; urgency=low

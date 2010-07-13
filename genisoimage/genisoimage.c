@@ -3166,7 +3166,7 @@ if (check_session == 0)
 				while (*xpnt == PATH_SEPARATOR) {
 					xpnt++;
 				}
-				strcpy(graft_point, xpnt);
+				memmove(graft_point, xpnt, strlen(xpnt)+1);
 			} while (xpnt > graft_point);
 
 			if (node) {
