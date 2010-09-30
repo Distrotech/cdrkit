@@ -2,6 +2,7 @@ cdrkit (1.1.11) UNRELEASED; urgency=low
 
   [ Steve McIntyre ]
   * genisoimage: Fix silly bug in MD5 output in template files.
+  * genisoimage: Minor tweaks to the the genisoimage.1 man page.
 
   [ Mike Paul ]
   * genisoimage: Use memmove() instead of strcpy() when cleaning

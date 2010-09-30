@@ -2439,8 +2439,16 @@ MD5sum   File size  Path
 .fi
 .RE
 .IP
-The MD5sum should be written in jigdo's pseudo-base64 format. The file
-size should be in decimal, and the path to the file must be absolute.
+.PP
+The MD5sum must be written in standard hexadecimal notation, the
+file size must list the size of the file in bytes, and the path
+must list the absolute path to the file. For example:
+.sp
+.nf
+00006dcd58ff0756c36d2efae21be376         14736  /mirror/debian/file1
+000635c69b254a1be8badcec3a8d05c1        211822  /mirror/debian/file2
+00083436a3899a09633fc1026ef1e66e         22762  /mirror/debian/file3
+.fi
 .PP
 Once you have this file, call
 .B genisoimage
@@ -2452,7 +2460,7 @@ and pass in the location of your MD5 list with
 .PP
 If there are files that you do NOT want to be added into the jigdo
 file (e.g. if they are likely to change often), specify them using
-\-jigdo\-ignore. If you want to verify some of the files as they are
+\-jigdo\-exclude. If you want to verify some of the files as they are
 written into the image, specify them using \-jigdo\-force\-md5. If any
 files don't match,
 .B genisoimage
