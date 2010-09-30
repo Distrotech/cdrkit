@@ -43,7 +43,7 @@
 #define JTE_VER_MAJOR     0x0001
 #define JTE_VER_MINOR     0x0013
 #define JTE_NAME          "JTE"
-#define JTE_COMMENT       "JTE at http://www.einval.com/~steve/software/JTE/ ; jigdo at http://atterer.net/jigdo/"
+#define JTE_COMMENT       "JTE at http://www.einval.com/~steve/software/JTE/ ; jigdo at http://atterer.org/jigdo/"
 
 #define JIGDO_TEMPLATE_VERSION "1.1"
 
@@ -807,7 +807,7 @@ static void write_jigdo_file(void)
     checksum_copy(template_context, CHECK_MD5, &template_md5sum[0]);
 
     fprintf(j_file, "# JigsawDownload\n");
-    fprintf(j_file, "# See <http://atterer.net/jigdo/> for details about jigdo\n");
+    fprintf(j_file, "# See <http://atterer.org/jigdo/> for details about jigdo\n");
     fprintf(j_file, "# See <http://www.einval.com/~steve/software/CD/JTE/> for details about JTE\n\n");
     
     fprintf(j_file, "[Jigdo]\n");
