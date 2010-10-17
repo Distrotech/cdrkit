@@ -129,7 +129,7 @@ cdrkit (1.1.5.1) RELEASED; urgency=low
 
 cdrkit (1.1.5) RELEASED; urgency=low
 
-  * wodim: explicite warning and more grace time if user manually specifies a size
+  * wodim: explicit warning and more grace time if user manually specifies a size
     less than 301 sectors, which is likely to be a mistake from copy-pasting
     of genisoimage -print-size output and omitting the block factor
   * wodim: Native device name management directly in libusal now, the
@@ -202,7 +202,7 @@ cdrkit (1.1.2) RELEASED; urgency=low
 
   [ Eduard Bloch ]
   * stop confusion and bailing out if burnfree/burnproof options have been
-    explicitely specified
+    explicitly specified
   * be move carefull with -dummy when the DVD media may not support it
   * extracting drive's default speed in attach_mdvd()
   * automatic recorder device guessing code, currently Linux-only

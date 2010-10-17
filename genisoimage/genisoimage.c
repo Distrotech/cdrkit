@@ -197,7 +197,7 @@ int	allow_lowercase = 0;	/* Allow lower case letters */
 int	allow_multidot = 0;	/* Allow more than on dot in filename */
 int	iso_translate = 1;	/* 1 == enables '#', '-' and '~' removal */
 int	allow_leading_dots = 0;	/* DOS cannot read names with leading dots */
-int	allow_limited_size = 0;	/* Let the user to allow the trick explicitely */
+int	allow_limited_size = 0;	/* Let the user to allow the trick explicitly */
 #ifdef	VMS
 int	use_fileversion = 1;	/* Use file version # from filesystem */
 #else
