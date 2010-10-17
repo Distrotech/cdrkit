@@ -1,7 +1,8 @@
 cdrkit (1.1.11) UNRELEASED; urgency=low
 
   [ Steve McIntyre ]
-  * genisoimage: Fix silly bug in MD5 output in template files.
+  * genisoimage: Fix silly bug in MD5 output in template files. (Debian
+    bug #596681)
   * genisoimage: Minor tweaks to the the genisoimage.1 man page.
   * genisoimage: Update references to atterer.org (Debian bug #596860)
 
