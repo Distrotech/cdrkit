@@ -1,4 +1,4 @@
-cdrkit (1.1.11) UNRELEASED; urgency=low
+cdrkit (1.1.11) RELEASED; urgency=low
 
   [ Steve McIntyre ]
   * genisoimage: Fix silly bug in MD5 output in template files. (Debian
