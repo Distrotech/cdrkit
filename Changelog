@@ -5,6 +5,7 @@ cdrkit (1.1.11) UNRELEASED; urgency=low
     bug #596681)
   * genisoimage: Minor tweaks to the the genisoimage.1 man page.
   * genisoimage: Update references to atterer.org (Debian bug #596860)
+  * genisoimage.1: Make the description of the md5-list format clearer.
 
   [ Mike Paul ]
   * genisoimage: Use memmove() instead of strcpy() when cleaning
