@@ -1,6 +1,6 @@
 cdrkit (1.1.12) UNRELEASED; urgency=low
 
-  [ Jan Horák ]
+  [ Honza Horák ]
   * genisoimage.1: Document several more flags and aliases.
 
  --
