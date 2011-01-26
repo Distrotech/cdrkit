@@ -1,3 +1,10 @@
+cdrkit (1.1.12) UNRELEASED; urgency=low
+
+  [ Jan Horák ]
+  * genisoimage.1: Document several more flags and aliases.
+
+ --
+
 cdrkit (1.1.11) RELEASED; urgency=low
 
   [ Steve McIntyre ]
