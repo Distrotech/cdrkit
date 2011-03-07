@@ -773,9 +773,9 @@ static const struct ld_option ld_options[] =
 	{{"boot-info-table", no_argument, NULL, OPTION_BOOT_INFO_TABLE},
 	'\0', NULL, "Patch boot image with info table", ONE_DASH},
 	{{"XA", no_argument, NULL, OPTION_XA},
-	'\0', NULL, "Generate XA directory attruibutes", ONE_DASH},
+	'\0', NULL, "Generate XA directory attributes", ONE_DASH},
 	{{"xa", no_argument, NULL, OPTION_XA_RATIONALIZED},
-	'\0', NULL, "Generate rationalized XA directory attruibutes", ONE_DASH},
+	'\0', NULL, "Generate rationalized XA directory attributes", ONE_DASH},
 	{{"transparent-compression", no_argument, NULL, 'z'},
 	'z', NULL, "Enable transparent compression of files", ONE_DASH},
 
