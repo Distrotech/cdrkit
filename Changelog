@@ -2,6 +2,7 @@ cdrkit (1.1.12) UNRELEASED; urgency=low
 
   [ Honza Horák ]
   * genisoimage.1: Document several more flags and aliases.
+  * icedax.c: Fix a segfault on exit (Red Hat bug #709902).
 
   [ Ville Skyttä ]
   * Fix several typos in genisoimage.1, icedax.1 and the genisoimage help text.

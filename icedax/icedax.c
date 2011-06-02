@@ -1054,7 +1054,7 @@ static void exit_wrapper(int status)
 
 	if (child_pid != 0) {
 		SCSI *usalp = get_scsi_p();
-		if (usalp->running) {
+		if (usalp && usalp->running) {
 			usalp->cb_fun = on_exitscsi;
 			usalp->cb_arg = (void *) (uintptr_t) status;
 		} else {
