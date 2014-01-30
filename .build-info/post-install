@@ -1,0 +1,4 @@
+#!/bin/bash 
+
+rm ${3}/usr/bin/cdda2mp3 ${3}/usr/bin/cdda2ogg ${3}/usr/bin/devdump ${3}/usr/bin/isodebug \
+   ${3}/usr/bin/isodump ${3}/usr/bin/isoinfo ${3}/usr/bin/isovfy ${3}/usr/share/man/man1/cdda2ogg.1*
